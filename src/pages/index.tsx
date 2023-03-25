@@ -7,7 +7,10 @@ import { api } from "~/utils/api";
 const Home: NextPage = () => {
   const user = useUser();
 
-  const { data } = api.posts.getAll.useQuery();
+  const { data, isLoading } = api.posts.getAll.useQuery();
+
+  if (isLoading) return <div>loading...</div>;
+  if (!data) return <div>something went wrong... terribly wrong...</div>;
 
   return (
     <>
@@ -17,13 +20,15 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="dark flex min-h-screen flex-col items-center justify-center bg-[#101112] dark:text-stone-200">
+      <main className="dark flex min-h-screen flex-col items-center justify-center">
         {user.isSignedIn && <SignOutButton />}
         {!user.isSignedIn && <SignInButton />}
 
         <div>
           {data?.map((post) => (
-            <div key={post.id}>{post.content}</div>
+            <div className="animate-pulse" key={post.id}>
+              {post.content}
+            </div>
           ))}
         </div>
       </main>
