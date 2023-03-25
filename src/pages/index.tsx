@@ -4,6 +4,8 @@ import Head from "next/head";
 import Feed from "~/components/Feed";
 import Footer from "~/components/Footer";
 import Header from "~/components/Header";
+import Menu from "~/components/Menu";
+import Threads from "~/components/Threads";
 
 const Home: NextPage = () => {
   const user = useUser();
@@ -16,10 +18,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen flex-col place-content-between content-center items-center">
-        <Header />
+      <main className="flex min-h-screen flex-row place-content-center">
+        <Menu />
         <Feed />
-        <Footer />
+        <Threads />
       </main>
     </>
   );
