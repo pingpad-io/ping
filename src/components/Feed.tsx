@@ -1,4 +1,6 @@
 import { api } from "~/utils/api";
+import PostWizard from "./PostWizard";
+import { PostView } from "./PostView";
 
 export default function Feed() {
   const { data, isLoading } = api.posts.getAll.useQuery();
@@ -10,9 +12,7 @@ export default function Feed() {
   );
   let feed = data ? (
     data.map((post) => (
-      <div className="mt-10 border-2 border-slate-800 p-4" key={post.id}>
-        {post.content}
-      </div>
+      <PostView key={post.id} post={post}/>
     ))
   ) : (
     <div className="btn-error btn">
@@ -23,6 +23,7 @@ export default function Feed() {
 
   return (
     <div className="min-h-full w-full max-w-2xl shrink-0 grow border-x-2 border-slate-900 sm:shrink">
+      <PostWizard />
       <div className="divider">Global</div>
       {content}
     </div>

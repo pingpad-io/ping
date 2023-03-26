@@ -6,7 +6,7 @@ export const UserAvatar = () => {
 
   return (
     <div className="online avatar ">
-      <div className="w-14 rounded-full ">
+      <div className="w-12 rounded-full ">
         <img
           src={user.user?.profileImageUrl}
           alt={"profile image"}
