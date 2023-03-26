@@ -10,7 +10,7 @@ export const PostView = ({ post }: { post: Post }) => {
   let user = "@" + post.authorId;
 
   return (
-    <div className="mt-10 border-2 border-slate-800 p-4">
+    <div className="mt-2 border-b-2 border-slate-700 p-4">
       <div className="flex flex-row gap-2 text-xs">
         <div className="">{user}</div>
         <div>|</div>

@@ -27,13 +27,8 @@ export default function PostWizard() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           disabled={isPosting}
-          // onSubmit={(e) => mutate({content: input})}
         />
       </form>
-      {/* <button
-        className="btn"
-        onClick={() => mutate({ content: input })}
-      ></button> */}
     </div>
   );
 }

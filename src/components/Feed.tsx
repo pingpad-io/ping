@@ -1,6 +1,6 @@
 import { api } from "~/utils/api";
-import PostWizard from "./PostWizard";
 import { PostView } from "./PostView";
+import PostWizard from "./PostWizard";
 
 export default function Feed() {
   const { data, isLoading } = api.posts.getAll.useQuery();
@@ -11,9 +11,7 @@ export default function Feed() {
     </div>
   );
   let feed = data ? (
-    data.map((post) => (
-      <PostView key={post.id} post={post}/>
-    ))
+    data.map((post) => <PostView key={post.id} post={post} />)
   ) : (
     <div className="btn-error btn">
       something went wrong... terribly wrong...
@@ -22,7 +20,7 @@ export default function Feed() {
   let content = isLoading ? suspense : feed;
 
   return (
-    <div className="min-h-full w-full max-w-2xl shrink-0 grow border-x-2 border-slate-900 sm:shrink">
+    <div className="min-h-full w-full max-w-2xl shrink-0 grow border-x-2 border-slate-700 sm:shrink">
       <PostWizard />
       <div className="divider">Global</div>
       {content}
