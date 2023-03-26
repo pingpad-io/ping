@@ -19,19 +19,21 @@ export default function PostWizard() {
   return (
     <div className="flex flex-row gap-4 p-4">
       <UserAvatar />
-      <input
-        type="text"
-        className="input-bordered input-ghost input w-full"
-        placeholder="write a new twot?.."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        disabled={isPosting}
-        // onSubmit={(e) => mutate({content: input})}
-      />
-      <button
+      <form className="w-full" onSubmit={() => mutate({ content: input })}>
+        <input
+          type="text"
+          className="input-bordered input-ghost input w-full"
+          placeholder="write a new twot?.."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          disabled={isPosting}
+          // onSubmit={(e) => mutate({content: input})}
+        />
+      </form>
+      {/* <button
         className="btn"
         onClick={() => mutate({ content: input })}
-      ></button>
+      ></button> */}
     </div>
   );
 }
