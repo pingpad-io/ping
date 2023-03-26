@@ -22,10 +22,8 @@ export default function Feed() {
   let content = isLoading ? suspense : feed;
 
   return (
-    <div className="min-h-full w-full max-w-2xl border-x-2 border-slate-900">
-      <div className="flex h-12 items-center justify-center">
-        <h2 className="text-2xl">Global Board</h2>
-      </div>
+    <div className="min-h-full w-full max-w-2xl shrink-0 grow border-x-2 border-slate-900 sm:shrink">
+      <div className="divider">Global</div>
       {content}
     </div>
   );
