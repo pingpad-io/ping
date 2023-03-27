@@ -8,7 +8,10 @@ dayjs.extend(relativeTime);
 export const PostView = ({ post }: { post: Post }) => {
   const { user } = useUser();
 
-  let date = post.createdAt.toLocaleDateString(); // TODO: add tooltip
+  let fullDate =
+    post.createdAt.toLocaleDateString() +
+    " " +
+    post.createdAt.toLocaleTimeString();
   let time = dayjs(post.createdAt).fromNow();
   let username =
     "@" + post.authorId.substring(post.authorId.length - 7).toLowerCase();
@@ -27,7 +30,9 @@ export const PostView = ({ post }: { post: Post }) => {
           {username} {youText}
         </div>
         <div>·</div>
-        <div className="">{time}</div>
+        <div className="tooltip" data-tip={fullDate}>
+          <div className="">{time}</div>
+        </div>
         <div>·</div>
         <a className="text-slate-400">{postId}</a>
       </div>
