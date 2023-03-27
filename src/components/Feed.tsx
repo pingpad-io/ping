@@ -24,7 +24,9 @@ export default function Feed() {
   return (
     <div className="min-h-full w-full max-w-2xl shrink-0 grow border-x-2 border-slate-700 sm:shrink">
       <PostWizard />
-      <div className="divider">Global</div>
+      <div className="divider sticky top-0 select-none bg-[#111111]/[.5] py-4">
+        Global
+      </div>
       {content}
     </div>
   );
