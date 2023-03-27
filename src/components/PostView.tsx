@@ -10,8 +10,9 @@ export const PostView = ({ post }: { post: Post }) => {
 
   let date = post.createdAt.toLocaleDateString(); // TODO: add tooltip
   let time = dayjs(post.createdAt).fromNow();
-  let id = post.authorId.substring(post.authorId.length - 7);
-  let username = "@" + id.toLocaleLowerCase();
+  let username =
+    "@" + post.authorId.substring(post.authorId.length - 7).toLowerCase();
+  let postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
   let youText =
     user?.id === post.authorId ? (
       <span className="text-slate-400">(you)</span>
@@ -27,7 +28,10 @@ export const PostView = ({ post }: { post: Post }) => {
         </div>
         <div>·</div>
         <div className="">{time}</div>
+        <div>·</div>
+        <a className="text-slate-400">{postId}</a>
       </div>
+
       <div className="text-lg">{post.content}</div>
     </div>
   );
