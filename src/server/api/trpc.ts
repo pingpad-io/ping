@@ -1,13 +1,4 @@
 /**
- * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
- * 1. You want to modify request context (see Part 1).
- * 2. You want to create a new middleware or type of procedure (see Part 3).
- *
- * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
- * need to use are documented accordingly near the end.
- */
-
-/**
  * 1. CONTEXT
  *
  * This section defines the "contexts" that are available in the backend API.
@@ -27,7 +18,7 @@ import { prisma } from "~/server/db";
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
   const { req } = opts;
   const session = getAuth(req);
-  const userId = session.userId
+  const userId = session.userId;
 
   return {
     prisma,
@@ -84,7 +75,7 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 
-const enforceUserHasAuth = t.middleware(async ({ ctx, next }) => {
+const userIsAuthed = t.middleware(async ({ ctx, next }) => {
   if (!ctx.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -96,4 +87,4 @@ const enforceUserHasAuth = t.middleware(async ({ ctx, next }) => {
   });
 });
 
-export const privateProcedure = t.procedure.use(enforceUserHasAuth)
+export const privateProcedure = t.procedure.use(userIsAuthed);

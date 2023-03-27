@@ -7,15 +7,15 @@ export default function Footer() {
   let footer = user.isSignedIn ? (
     <>
       <UserAvatar />
-      <div className="btn-secondary btn-ghost btn w-32">
-        <SignOutButton />
-      </div>
+      <SignOutButton>
+        <div className="btn-secondary btn-ghost btn w-28">Sign out</div>
+      </SignOutButton>
     </>
   ) : (
     <>
-      <div className="btn-primary btn-ghost btn-wide btn">
-        <SignInButton />
-      </div>
+      <SignInButton>
+        <div className="btn-primary btn-ghost btn-wide btn">Sign In</div>
+      </SignInButton>
     </>
   );
 

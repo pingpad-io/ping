@@ -14,7 +14,7 @@ export const PostView = ({ post }: { post: Post }) => {
     post.createdAt.toLocaleTimeString();
   let time = dayjs(post.createdAt).fromNow();
   let username =
-    "@" + post.authorId.substring(post.authorId.length - 7).toLowerCase();
+    "@" + post.authorId.substring(post.authorId.length - 6).toLowerCase();
   let postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
   let youText =
     user?.id === post.authorId ? (
