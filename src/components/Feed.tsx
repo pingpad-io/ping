@@ -10,6 +10,7 @@ export default function Feed() {
       <div className="loading btn"> loading...</div>
     </div>
   );
+
   let feed = data ? (
     data.map((post) => <PostView key={post.id} post={post} />)
   ) : (
@@ -17,6 +18,7 @@ export default function Feed() {
       something went wrong... terribly wrong...
     </div>
   );
+
   let content = isLoading ? suspense : feed;
 
   return (
