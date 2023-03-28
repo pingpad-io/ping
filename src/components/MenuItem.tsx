@@ -8,15 +8,17 @@ export const MenuItem = (props: {
   children?: ReactNode;
 }) => {
   return (
-    <div className="py-2 px-8">
+    <>
       <Link
         href={props.href}
-        className="flex flex-row place-content-end items-center gap-4 text-2xl"
+        className="flex flex-row place-content-end items-center gap-4 rounded-full px-6 py-3 text-2xl hover:bg-slate-800"
       >
         {props.name}
-        <div className="h-8 w-8 place-content-center items-center flex">{props.icon}</div>
+        <div className="flex h-8 w-8 place-content-center items-center">
+          {props.icon}
+        </div>
       </Link>
       {props.children}
-    </div>
+    </>
   );
 };

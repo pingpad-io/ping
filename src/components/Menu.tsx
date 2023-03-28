@@ -8,9 +8,9 @@ export default function Menu() {
     <div className="sticky top-0 flex h-screen w-max shrink flex-col place-content-between p-4">
       <div className="flex flex-col gap-4">
         <div className="font-bold">
-          <MenuItem href={"/profile"} name={"Twotter"} icon={<OtterIcon />} />
+          <MenuItem href={"/"} name={"Twotter"} icon={<OtterIcon />} />
         </div>
-        <div className="flex flex-col gap-4 pl-1">
+        <div className="flex flex-col gap-2 pl-1">
           <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
           <MenuItem href={"/"} name={"Profile"} icon={<FiUser />} />
           <MenuItem href={"/"} name={"Global"} icon={<FiGlobe />} />
