@@ -6,11 +6,11 @@ import { MenuItem } from "./MenuItem";
 export default function Menu() {
   return (
     <div className="sticky top-0 flex h-screen w-max shrink flex-col place-content-between p-4">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col items-end gap-2">
         <div className="font-bold">
           <MenuItem href={"/"} name={"Twotter"} icon={<OtterIcon />} />
         </div>
-        <div className="flex flex-col gap-2 pl-1">
+        <div className="flex flex-col items-end gap-2">
           <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
           <MenuItem href={"/"} name={"Profile"} icon={<FiUser />} />
           <MenuItem href={"/"} name={"Global"} icon={<FiGlobe />} />

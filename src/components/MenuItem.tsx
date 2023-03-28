@@ -11,7 +11,7 @@ export const MenuItem = (props: {
     <>
       <Link
         href={props.href}
-        className="flex flex-row place-content-end items-center gap-4 rounded-full px-6 py-3 text-2xl hover:bg-slate-800"
+        className="flex w-fit flex-row place-content-end gap-4 rounded-full px-6 py-3 text-2xl hover:bg-base-300"
       >
         {props.name}
         <div className="flex h-8 w-8 place-content-center items-center">
