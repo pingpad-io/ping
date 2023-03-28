@@ -6,15 +6,15 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
+import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
 import { Redis } from "@upstash/redis";
-import { TRPCError } from "@trpc/server";
 
 // Create a new ratelimiter, that allows 4 requests per 1 minute
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(3, "1 m"),
-  analytics: true
+  limiter: Ratelimit.slidingWindow(2, "1 m"),
+  analytics: true,
 });
 
 export const postsRouter = createTRPCRouter({
@@ -28,15 +28,19 @@ export const postsRouter = createTRPCRouter({
   create: privateProcedure
     .input(
       z.object({
-        content: z.string().min(1).max(300).includes("?"),
+        content: z
+          .string()
+          .min(1, "Your twot must be longer")
+          .max(300, "Your twot must be less than 300 characters long")
+          .includes("?", { message: 'Your twot must include a "?"' }),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      const  { success } = await ratelimit.limit(authorId)
+      const { success } = await ratelimit.limit(authorId);
       if (!success) {
-        throw new TRPCError({code: "TOO_MANY_REQUESTS"})
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
       }
 
       const post = await ctx.prisma.post.create({
