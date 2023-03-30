@@ -22,7 +22,7 @@ export default function Feed() {
   let content = isLoading ? suspense : feed;
 
   return (
-    <div className="min-h-full max-w-2xl shrink-0 grow border-x border-base-300 sm:shrink">
+    <div className="min-h-full lg:max-w-2xl max-w-full shrink-0 grow border-x border-base-300 sm:shrink">
       <PostWizard />
       {content}
     </div>

@@ -1,11 +1,18 @@
-import { FiGlobe, FiHome, FiInfo, FiLogOut, FiMail, FiUser } from "react-icons/fi";
+import {
+  FiGlobe,
+  FiHome,
+  FiInfo,
+  FiLogOut,
+  FiMail,
+  FiUser,
+} from "react-icons/fi";
 import Footer from "./Footer";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
 
 export default function Menu() {
   return (
-    <div className="sticky top-0 flex h-screen w-max shrink flex-col place-content-between p-4">
+    <div className="sticky top-0 hidden h-screen w-max shrink flex-col place-content-between py-4 px-2 sm:flex">
       <div className="flex flex-col items-end gap-2">
         <div className="font-bold">
           <MenuItem href={"/"} name={"Twotter"} icon={<OtterIcon />} />
