@@ -1,4 +1,4 @@
-import { FiGlobe, FiHome, FiLogOut, FiMail, FiUser } from "react-icons/fi";
+import { FiGlobe, FiHome, FiInfo, FiLogOut, FiMail, FiUser } from "react-icons/fi";
 import Footer from "./Footer";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
@@ -15,6 +15,7 @@ export default function Menu() {
           <MenuItem href={"/profile"} name={"Profile"} icon={<FiUser />} />
           <MenuItem href={"/"} name={"Global"} icon={<FiGlobe />} />
           <MenuItem href={"/"} name={"Messages"} icon={<FiMail />} />
+          <MenuItem href={"/"} name={"About"} icon={<FiInfo />} />
           <MenuItem href={"/"} name={"Sign out"} icon={<FiLogOut />} />
         </div>
       </div>

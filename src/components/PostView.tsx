@@ -29,12 +29,11 @@ export const PostView = ({ post }: { post: Post }) => {
       <Link className="" href={`/post/${post.id}`}>
         <div className="flex flex-row gap-2 text-sm">
           <span className="">
-            {username}
-            {youText}
+            {username} {youText}
           </span>
           {`·`}
           <div className="tooltip" data-tip={fullDate}>
-            <div className="">{time}</div>
+            <div className="">{timeSince}</div>
           </div>
           {`·`}
           <a className="text-slate-400">{postId}</a>
