@@ -1,5 +1,14 @@
+import Head from "next/head";
+
 const PostPage = () => {
-    return ( <> Post View </>  );
-}
- 
+  return (
+    <>
+      <Head>
+        <title>Post</title>
+      </Head>
+      Post View
+    </>
+  );
+};
+
 export default PostPage;

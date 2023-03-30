@@ -44,8 +44,8 @@ export default function PostWizard() {
   if (!user) return null;
 
   return (
-    <div className="z-10 flex flex-col sticky top-0 ">
-      <div className="flex flex-row gap-4 z-10 p-4 bg-base-100">
+    <div className="sticky top-0 z-10 flex flex-col ">
+      <div className="z-10 flex flex-row gap-4 bg-base-100 p-4">
         <UserAvatar />
         <form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
           <input
@@ -59,7 +59,13 @@ export default function PostWizard() {
           {postButton}
         </form>
       </div>
-      <div className="divider m-0 bg-base-100/[.5]">Global</div>
+      <div
+        className="divider m-0 bg-base-100/[.5] 
+                  before:h-0 before:border-b before:border-base-300 before:bg-base-300 
+                  after:h-0 after:border-b after:border-base-300 after:bg-base-300"
+      >
+        Global
+      </div>
     </div>
   );
 }
