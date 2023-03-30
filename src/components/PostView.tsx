@@ -19,26 +19,26 @@ export const PostView = ({ post }: { post: Post }) => {
 
   let youText =
     user?.id === post.authorId ? (
-      <span className="text-slate-400">(you)</span>
+      <span className="text-neutral-content">(you)</span>
     ) : (
       <></>
     );
 
   return (
-    <div className="border-b-2 border-slate-700 p-4">
+    <div className="border-b border-base-300 p-4">
       <Link className="" href={`/post/${post.id}`}>
         <div className="flex flex-row gap-2 text-sm">
-          <span className="">
+          <span className="text-secondary-content">
             {username} {youText}
           </span>
           {`·`}
-          <div className="tooltip" data-tip={fullDate}>
+          <div className="tooltip text-secondary-content" data-tip={fullDate}>
             <div className="">{timeSince}</div>
           </div>
           {`·`}
-          <a className="text-slate-400">{postId}</a>
+          <a className="text-secondary-content">{postId}</a>
         </div>
-        <div className="text-lg">{post.content}</div>
+        <div className="text-lg text-primary-content">{post.content}</div>
       </Link>
     </div>
   );

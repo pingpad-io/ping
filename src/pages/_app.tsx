@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <ClerkProvider {...pageProps}>
-      <Toaster position="top-left" />
+      <Toaster position="top-center" />
       <Component {...pageProps} />
     </ClerkProvider>
   );

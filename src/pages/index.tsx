@@ -13,7 +13,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/otterino.svg" />
       </Head>
 
-      <main className="flex min-h-screen flex-row place-content-center">
+      <main className="flex min-h-screen flex-row place-content-center text-primary-content">
         <Menu />
         <Feed />
         <Sidebar />
