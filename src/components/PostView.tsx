@@ -25,7 +25,7 @@ export const PostView = ({ post }: { post: Post }) => {
     );
 
   return (
-    <div className="mt-2 border-b-2 border-slate-700 p-4">
+    <div className="border-b-2 border-slate-700 p-4">
       <Link className="" href={`/post/${post.id}`}>
         <div className="flex flex-row gap-2 text-sm">
           <span className="">

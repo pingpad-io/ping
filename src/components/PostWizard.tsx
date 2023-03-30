@@ -29,11 +29,11 @@ export default function PostWizard() {
 
   const postButton = isPosting ? (
     <>
-      <div className="btn-outline loading btn w-16"></div>
+      <div className="loading btn-outline btn w-16"></div>
     </>
   ) : (
     <>
-      {input != "" && (
+      {input !== "" && (
         <button className="btn-outline btn w-16" type="submit">
           Post
         </button>
@@ -49,7 +49,7 @@ export default function PostWizard() {
       <form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
         <input
           type="text"
-          className="input-bordered input-ghost input grow "
+          className="input-bordered input-ghost input shrink grow"
           placeholder="write a new twot?.."
           value={input}
           onChange={(e) => setInput(e.target.value)}

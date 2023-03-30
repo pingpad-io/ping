@@ -22,7 +22,7 @@ export default function Feed() {
   let content = isLoading ? suspense : feed;
 
   return (
-    <div className="min-h-full w-full max-w-2xl shrink-0 grow border-x-2 border-slate-700 sm:shrink">
+    <div className="min-h-full max-w-2xl shrink-0 grow border-x-2 border-slate-700 sm:shrink">
       <PostWizard />
       <div className="divider sticky top-0 select-none bg-[#111111]/[.5] py-4">
         Global

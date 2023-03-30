@@ -21,7 +21,7 @@ export default function Footer() {
 
   return (
     <>
-      <div className="flex w-full flex-row place-content-around">{footer}</div>
+      {/* <div className="flex w-full flex-row place-content-around">{footer}</div> */}
     </>
   );
 }
