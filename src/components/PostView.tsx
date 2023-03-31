@@ -36,7 +36,7 @@ export const PostView = ({ post }: { post: Post }) => {
             <div className="">{timeSince}</div>
           </div>
           {`·`}
-          <a className="text-secondary-content">{postId}</a>
+          <div className="text-secondary-content">{postId}</div>
         </div>
         <div className="text-lg text-primary-content">{post.content}</div>
       </Link>
