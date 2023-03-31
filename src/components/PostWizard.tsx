@@ -15,10 +15,12 @@ export default function PostWizard() {
       ctx.posts.invalidate();
     },
     onError: (e) => {
-      let errorText = e.data?.zodError?.fieldErrors.content || [
-        "Failed to post. Try again later",
-      ];
-      toast.error(errorText[0]!);
+      let errorText = e.data?.zodError?.fieldErrors.content
+      if (!errorText) {
+        toast.error("Failed to post. Try again.")
+      } else {
+        toast.error(errorText[0]!);
+      }
     },
   });
 
