@@ -11,6 +11,7 @@ import {
 import Footer from "./Footer";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
+import toast from "react-hot-toast";
 
 export default function Menu() {
   let user = useUser();
@@ -29,7 +30,7 @@ export default function Menu() {
         </div>
         <div className="flex flex-col items-end gap-2">
           <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
-          <MenuItem href={"/profile"} name={"Profile"} icon={<FiUser />} />
+          <MenuItem href={"/"} name={"Profile"} icon={<FiUser />} />
           <MenuItem href={"/"} name={"Global"} icon={<FiGlobe />} />
           <MenuItem href={"/"} name={"Messages"} icon={<FiMail />} />
           <MenuItem href={"/"} name={"About"} icon={<FiInfo />} />

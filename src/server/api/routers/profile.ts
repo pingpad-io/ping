@@ -9,17 +9,21 @@ export const profileRouter = createTRPCRouter({
   getUserByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input }) => {
-      console.log(input)
       const [user] = await clerkClient.users.getUserList({
         username: [input.username],
       });
-
       if (!user) {
         throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
       }
-
-      const filteredUser = filterUserForClient(user);
-
-      return filteredUser;
+      return filterUserForClient(user);
+    }),
+  getUserById: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input }) => {
+      const user = await clerkClient.users.getUser(input.userId);
+      if (!user) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+      }
+      return filterUserForClient(user);
     }),
 });
