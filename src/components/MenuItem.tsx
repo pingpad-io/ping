@@ -20,7 +20,7 @@ export const MenuItem = (props: {
         <Link
           onClick={props.onClick}
           href={props.href || "/"}
-          className="flex w-fit flex-row place-content-end gap-4 rounded-full px-3 py-3 text-2xl text-primary-content hover:bg-base-200 md:px-6"
+          className="flex w-fit flex-row place-content-end gap-4 rounded-full px-3 py-3 text-2xl hover:bg-base-200 md:px-6"
         >
           {body}
         </Link>
@@ -28,7 +28,7 @@ export const MenuItem = (props: {
       {props.href === "" && (
         <button
           onClick={props.onClick}
-          className="flex w-fit flex-row place-content-end gap-4 rounded-full px-3 py-3 text-2xl text-primary-content hover:bg-base-200 md:px-6"
+          className="flex w-fit flex-row place-content-end gap-4 rounded-full px-3 py-3 text-2xl hover:bg-base-200 md:px-6"
         >
           {body}
         </button>

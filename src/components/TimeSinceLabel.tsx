@@ -10,7 +10,7 @@ const TimeSince = ({ date }: { date: Date }) => {
   let timeSince = dayjs(date).fromNow();
 
   return (
-    <div className="tooltip text-secondary-content" data-tip={fullDate}>
+    <div className="tooltip" data-tip={fullDate}>
       <div className="">{timeSince}</div>
     </div>
   );

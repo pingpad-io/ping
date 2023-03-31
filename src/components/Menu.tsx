@@ -1,4 +1,4 @@
-import { UserButton, useClerk, useUser } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import {
   FiGlobe,
   FiHome,
@@ -11,7 +11,6 @@ import {
 import Footer from "./Footer";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
-import toast from "react-hot-toast";
 
 export default function Menu() {
   let user = useUser();

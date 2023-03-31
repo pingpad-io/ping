@@ -15,24 +15,23 @@ export const PostView = ({ post }: { post: Post }) => {
   return (
     <div className="border-b border-base-300 p-4">
       <Link className="" href={`/post/${post.id}`}>
-        <div className="flex flex-row gap-2 text-sm">
+        <div className="flex flex-row gap-2 text-sm text-neutral-content">
           {!author.isLoading && (
             <>
-              <span className="text-secondary-content">
+              <span className="">
                 {`@${username}`}{" "}
-                {user?.id === post.authorId && (
-                  <span className="text-neutral-content">(you)</span>
-                )}
+                {user?.id === post.authorId && <span className="">(you)</span>}
               </span>
               {`·`}
             </>
           )}
+
           <TimeSinceLabel date={post.createdAt} />
 
           {`·`}
-          <div className="text-secondary-content">{postId}</div>
+          <div className="">{postId}</div>
         </div>
-        <div className="text-lg text-primary-content">{post.content}</div>
+        <div className="text-lg text-base-content">{post.content}</div>
       </Link>
     </div>
   );
