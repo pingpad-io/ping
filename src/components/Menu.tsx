@@ -1,4 +1,4 @@
-import { useClerk, useUser } from "@clerk/nextjs";
+import { UserButton, useClerk, useUser } from "@clerk/nextjs";
 import {
   FiGlobe,
   FiHome,
