@@ -12,22 +12,29 @@ export const PostView = ({ post }: { post: Post }) => {
   let username = author.data?.username;
   let postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
 
+  if (author.isLoading) {
+    let width = post.content.length * 10;
+    let widthclass = "max-w-[" + width + "px]";
+
+    return (
+      <div className="animate-pulse border-b border-base-300 p-4">
+        <div className="mb-4 h-2 w-64 rounded-full bg-neutral"></div>
+        <div
+          className={`mb-3 h-3 rounded-full bg-neutral text-lg ${widthclass}`}
+        ></div>
+      </div>
+    );
+  }
+
   return (
     <div className="border-b border-base-300 p-4">
       <Link className="" href={`/post/${post.id}`}>
         <div className="flex flex-row gap-2 text-sm text-neutral-content">
-          {!author.isLoading && (
-            <>
-              <span className="">
-                {`@${username}`}{" "}
-                {user?.id === post.authorId && <span className="">(you)</span>}
-              </span>
-              {`·`}
-            </>
-          )}
-
+          <span className="">
+            {`@${username}`} {user?.id === post.authorId && <span>(you)</span>}
+          </span>
+          {`·`}
           <TimeSinceLabel date={post.createdAt} />
-
           {`·`}
           <div className="">{postId}</div>
         </div>
