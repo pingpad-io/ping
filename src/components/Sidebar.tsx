@@ -25,7 +25,7 @@ const SearchBar = () => {
 
 export default function Sidebar() {
   return (
-    <div className="sticky top-0 hidden lg:flex h-screen w-full max-w-xs shrink flex-col gap-4 p-4">
+    <div className="sticky top-0 hidden md:flex h-screen w-full max-w-xs shrink flex-col gap-4 p-4">
       <SearchBar />
       <Threads />
     </div>
