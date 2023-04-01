@@ -1,6 +1,7 @@
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import superjson from "superjson";
 import { PageLayout } from "~/components/Layout";
@@ -33,7 +34,20 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </Head>
 
       <PageLayout>
-        <div className="text-2xl">@{data.username}</div>
+        <div className="divider"></div>
+        <div className="flex flex-row items-center gap-4">
+          <Image
+            src={data.profileImageUrl}
+            alt={`${username}'s profile image`}
+            width={64}
+            height={64}
+            className="m-4 rounded-full"
+          />
+          <Link className="text-2xl" href={`/${data.username}`}>
+            @{data.username}
+          </Link>
+        </div>
+        <div className="divider"></div>
       </PageLayout>
     </>
   );
