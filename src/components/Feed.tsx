@@ -5,7 +5,7 @@ import PostWizard from "./PostWizard";
 export default function Feed() {
   const { data, isLoading } = api.posts.getAll.useQuery();
 
-  let suspense = (
+  let loading = (
     <div className="flex h-full w-full items-center justify-center ">
       <div className="loading btn"> loading...</div>
     </div>
@@ -19,12 +19,12 @@ export default function Feed() {
     </div>
   );
 
-  let content = isLoading ? suspense : feed;
+  let content = isLoading ? loading : feed;
 
   return (
-    <div className="min-h-full lg:max-w-2xl max-w-full shrink-0 grow border-x border-base-300 sm:shrink">
+    <>
       <PostWizard />
       {content}
-    </div>
+    </>
   );
 }

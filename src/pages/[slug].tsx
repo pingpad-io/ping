@@ -1,7 +1,9 @@
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import superjson from "superjson";
+import { PageLayout } from "~/components/Layout";
 import { appRouter } from "~/server/api/root";
 import { prisma } from "~/server/db";
 import { api } from "~/utils/api";
@@ -12,18 +14,27 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   });
 
   if (!data) {
-    return <div>404</div>;
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="card flex h-64 w-64 place-content-around items-center p-4">
+          <h1 className="card-title text-error-content">User not found?</h1>
+          <div className="card-actions justify-center">
+            <Link className="btn-primary btn" href={"/"}>{`< Go back`}</Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <>
       <Head>
-        <title>Profile</title>
+        <title>Twotter (@{data.username})</title>
       </Head>
 
-      <main className="flex min-h-screen flex-row place-content-center">
-        {data.username}
-      </main>
+      <PageLayout>
+        <div className="text-2xl">@{data.username}</div>
+      </PageLayout>
     </>
   );
 };

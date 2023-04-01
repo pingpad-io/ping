@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { PageLayout } from "~/components/Layout";
 
 const PostPage = () => {
   return (
@@ -6,7 +7,8 @@ const PostPage = () => {
       <Head>
         <title>Post</title>
       </Head>
-      Post View
+
+      <PageLayout>Post View</PageLayout>
     </>
   );
 };

@@ -1,14 +1,16 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { neobrutalism } from "@clerk/themes";
+import { shadesOfPurple } from "@clerk/themes";
 import { type AppType } from "next/app";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
+import Menu from "~/components/Menu";
+import Sidebar from "~/components/Sidebar";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
 const Twotter: AppType = ({ Component, pageProps }) => {
   return (
-    <ClerkProvider appearance={{ baseTheme: neobrutalism }}>
+    <ClerkProvider appearance={{ baseTheme: shadesOfPurple }}>
       <Head>
         <title>Twotter</title>
         <meta name="description" content="an anonymised twitter" />
@@ -16,7 +18,13 @@ const Twotter: AppType = ({ Component, pageProps }) => {
       </Head>
 
       <Toaster position="top-center" />
-      <Component {...pageProps} />
+
+      <main
+        data-theme="dracula"
+        className="flex min-h-screen flex-row place-content-center text-base-content"
+      >
+        <Component {...pageProps} />
+      </main>
     </ClerkProvider>
   );
 };
