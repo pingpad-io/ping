@@ -1,4 +1,5 @@
 import { useClerk, useUser } from "@clerk/nextjs";
+import { toast } from "react-hot-toast";
 import {
   FiGlobe,
   FiHome,
@@ -16,6 +17,10 @@ export default function Menu() {
   let user = useUser();
   const { signOut, openSignIn } = useClerk();
 
+  let todo = () => {
+    toast.error("Not implemented yet");
+  };
+
   let logButton = user.isSignedIn ? (
     <MenuItem onClick={signOut} name={"Sign out"} icon={<FiLogOut />} />
   ) : (
@@ -28,14 +33,24 @@ export default function Menu() {
           <MenuItem href={"/"} name={"Twotter"} icon={<OtterIcon />} />
         </div>
         <div className="flex flex-col items-end gap-2">
-          <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
+          <MenuItem onClick={todo} href={"/"} name={"Home"} icon={<FiHome />} />
+          <MenuItem
+            onClick={todo}
+            href={"/"}
+            name={"Global"}
+            icon={<FiGlobe />}
+          />
+          <MenuItem
+            onClick={todo}
+            href={"/"}
+            name={"Messages"}
+            icon={<FiMail />}
+          />
           <MenuItem
             href={`/${user.user?.username}`}
             name={"Profile"}
             icon={<FiUser />}
           />
-          <MenuItem href={"/"} name={"Global"} icon={<FiGlobe />} />
-          <MenuItem href={"/"} name={"Messages"} icon={<FiMail />} />
           <MenuItem href={"/about"} name={"About"} icon={<FiInfo />} />
           {logButton}
         </div>
