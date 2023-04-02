@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from "@clerk/themes";
 import { type AppType } from "next/app";
 import Head from "next/head";
+import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from "react-hot-toast";
 import Menu from "~/components/Menu";
 import Sidebar from "~/components/Sidebar";
@@ -18,6 +19,7 @@ const Twotter: AppType = ({ Component, pageProps }) => {
       </Head>
 
       <Toaster position="top-center" />
+      <Analytics />
 
       <main
         data-theme="dracula"
