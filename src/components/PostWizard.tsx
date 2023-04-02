@@ -8,6 +8,7 @@ import { FiLogIn } from "react-icons/fi";
 
 export default function PostWizard() {
   const { user } = useUser();
+  const { openSignIn } = useClerk();
   const [input, setInput] = useState("");
   const ctx = api.useContext();
 
@@ -45,12 +46,11 @@ export default function PostWizard() {
     </>
   );
 
-  const { signOut, openSignIn } = useClerk();
   if (!user) return (
     <>
       <div className="flex flex-row items-center">
           <button 
-          onClick={(e) => {openSignIn()}} 
+          onClick={() => {openSignIn()}} 
           className="btn btn-ghost btn-primary m-2">
             {`Sign in to Post `}
             <FiLogIn className="ml-2" size={24} />

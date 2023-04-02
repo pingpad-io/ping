@@ -4,7 +4,6 @@ import {
   FiGlobe,
   FiHome,
   FiInfo,
-  FiLogIn,
   FiLogOut,
   FiMail,
   FiUser,
@@ -15,17 +14,12 @@ import { MenuItem } from "./MenuItem";
 
 export default function Menu() {
   let user = useUser();
-  const { signOut, openSignIn } = useClerk();
+  const { signOut } = useClerk();
 
   let todo = () => {
     toast.error("Not implemented yet");
   };
 
-  let logButton = user.isSignedIn ? (
-    <MenuItem onClick={signOut} name={"Sign out"} icon={<FiLogOut />} />
-  ) : (
-    <MenuItem onClick={openSignIn} name={"Sign In"} icon={<FiLogIn />} />
-  );
   return (
     <div className="sticky top-0 hidden h-screen w-max shrink flex-col place-content-between py-4 px-2 sm:flex">
       <div className="flex flex-col items-end gap-2">
@@ -33,26 +27,31 @@ export default function Menu() {
           <MenuItem href={"/"} name={"Twotter"} icon={<OtterIcon />} />
         </div>
         <div className="flex flex-col items-end gap-2">
-          <MenuItem onClick={todo} href={"/"} name={"Home"} icon={<FiHome />} />
-          <MenuItem
-            onClick={todo}
-            href={"/"}
-            name={"Global"}
-            icon={<FiGlobe />}
-          />
-          <MenuItem
-            onClick={todo}
-            href={"/"}
-            name={"Messages"}
-            icon={<FiMail />}
-          />
-          <MenuItem
-            href={`/${user.user?.username}`}
-            name={"Profile"}
-            icon={<FiUser />}
-          />
+          <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
+          <MenuItem href={"/"} name={"Global"} icon={<FiGlobe />} />
           <MenuItem href={"/about"} name={"About"} icon={<FiInfo />} />
-          {logButton}
+          {user.isSignedIn ? (
+            <>
+              <MenuItem
+                onClick={todo}
+                href={"/"}
+                name={"Messages"}
+                icon={<FiMail />}
+              />
+              <MenuItem
+                href={`/${user.user?.username}`}
+                name={"Profile"}
+                icon={<FiUser />}
+              />
+              <MenuItem
+                onClick={signOut}
+                name={"Sign out"}
+                icon={<FiLogOut />}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <Footer />
