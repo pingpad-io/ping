@@ -1,6 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import { Post } from "@prisma/client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import TimeSinceLabel from "./TimeSinceLabel";
@@ -27,21 +28,34 @@ export const PostView = ({ post }: { post: Post }) => {
   }
 
   return (
-    <div className="border-b border-base-300 p-4">
-      <div className="flex flex-row gap-2 text-sm text-neutral-content">
+    <div className="flex flex-row gap-4 border-b border-base-300 p-4">
+      <div className="h-12 w-12 shrink-0 grow-0">
         <Link className="" href={`/${username}`}>
-          {`@${username}`} {user?.id === post.authorId && <span>(you)</span>}
-        </Link>
-        {`·`}
-        <TimeSinceLabel date={post.createdAt} />
-        {`·`}
-        <Link className="" href={`/post/${post.id}`}>
-          <div className="">{postId}</div>
+          <Image
+            className="avatar rounded-full"
+            src={author.data?.profileImageUrl ?? ""}
+            alt={`${author.data?.username}'s profile image`}
+            width={48}
+            height={48}
+          />
         </Link>
       </div>
-      <Link className="" href={`/post/${post.id}`}>
-        <div className="text-lg text-base-content">{post.content}</div>
-      </Link>
+      <div>
+        <div className="flex flex-row gap-2 text-sm text-neutral-content">
+          <Link className="" href={`/${username}`}>
+            {`@${username}`} {user?.id === post.authorId && <span>(you)</span>}
+          </Link>
+          {`·`}
+          <TimeSinceLabel date={post.createdAt} />
+          {`·`}
+          <Link className="" href={`/post/${post.id}`}>
+            <div className="">{postId}</div>
+          </Link>
+        </div>
+        <Link className="" href={`/post/${post.id}`}>
+          <div className="text-lg text-base-content">{post.content}</div>
+        </Link>
+      </div>
     </div>
   );
 };
