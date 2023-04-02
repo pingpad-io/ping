@@ -29,10 +29,14 @@ export default function Menu() {
         </div>
         <div className="flex flex-col items-end gap-2">
           <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
-          <MenuItem href={"/"} name={"Profile"} icon={<FiUser />} />
+          <MenuItem
+            href={`/${user.user?.username}`}
+            name={"Profile"}
+            icon={<FiUser />}
+          />
           <MenuItem href={"/"} name={"Global"} icon={<FiGlobe />} />
           <MenuItem href={"/"} name={"Messages"} icon={<FiMail />} />
-          <MenuItem href={"/"} name={"About"} icon={<FiInfo />} />
+          <MenuItem href={"/about"} name={"About"} icon={<FiInfo />} />
           {logButton}
         </div>
       </div>

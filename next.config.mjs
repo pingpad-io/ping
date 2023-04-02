@@ -25,6 +25,6 @@ const config = {
         hostname: 'images.clerk.dev',
       }
     ]
-  }
+  },
 };
 export default config;
