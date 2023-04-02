@@ -19,8 +19,8 @@ const AboutPage = () => {
               <b>what?</b>
               <div className="text-left">
                 this website is an experiment of combining two of the most
-                controversial places on the internet: <b>4chan.org</b> and{" "}
-                <b>twitter.com</b>
+                controversial places on the internet: <b>twitter.com</b> and{" "}
+                <b>4chan.org</b>
               </div>
             </div>
             <div className="card m-4 bg-base-200 p-4">
@@ -37,14 +37,13 @@ const AboutPage = () => {
                 <a className="underline" href="https://kualta.dev">
                   kualta
                 </a>
-                {' & '}
-              <a className="underline" href="https://github.com/kualta/twot">
-                contributors
-              </a>
+                {" & "}
+                <a className="underline" href="https://github.com/kualta/twot">
+                  contributors
+                </a>
               </div>
             </div>
-            <div className="card m-4 bg-base-100 p-4">
-            </div>
+            <div className="card m-4 bg-base-100 p-4"></div>
           </div>
         </div>
       </PageLayout>
