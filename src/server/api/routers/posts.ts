@@ -32,7 +32,6 @@ export const postsRouter = createTRPCRouter({
           .string()
           .min(1, "Your twot must be longer")
           .max(300, "Your twot must be less than 300 characters long")
-          .includes("?", { message: 'Your twot must include a "?"' }),
       })
     )
     .mutation(async ({ ctx, input }) => {

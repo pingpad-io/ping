@@ -1,10 +1,17 @@
 const Threads = () => {
   return (
     <>
-      <div className="flex justify-center">
-        <div className="text-lg">Threads</div>
+      <div className="flex flex-col justify-center">
+        <div className="card bg-base-200 p-4">
+          <div className="card-title text-lg">Latest Update</div>
+          Question marks are now not enforced in the global thread
+        </div>
+
+        <div className="mt-8 text-center text-lg">Threads</div>
+        <div className="items-left flex flex-col">
+          <div className="font-mono">· Global</div>
+        </div>
       </div>
-      <div className="font-mono">· Global</div>
     </>
   );
 };
@@ -25,7 +32,7 @@ const SearchBar = () => {
 
 export default function Sidebar() {
   return (
-    <div className="sticky top-0 hidden md:flex h-screen w-full max-w-xs shrink flex-col gap-4 p-4">
+    <div className="sticky top-0 hidden h-screen w-full max-w-xs shrink flex-col gap-4 p-4 md:flex">
       <SearchBar />
       <Threads />
     </div>
