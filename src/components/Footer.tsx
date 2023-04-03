@@ -1,27 +1,15 @@
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
-import { UserAvatar } from "./UserAvatar";
+import { useClerk, useUser } from "@clerk/nextjs";
+import { FiInfo, FiLogOut } from "react-icons/fi";
+import { MenuItem } from "./MenuItem";
 
 export default function Footer() {
-  const user = useUser();
-
-  let footer = user.isSignedIn ? (
-    <>
-      <UserAvatar />
-      <SignOutButton>
-        <div className="btn-secondary btn-ghost btn w-28">Sign out</div>
-      </SignOutButton>
-    </>
-  ) : (
-    <>
-      <SignInButton>
-        <div className="btn-primary btn-ghost btn-wide btn">Sign In</div>
-      </SignInButton>
-    </>
-  );
-
+  const { signOut } = useClerk();
   return (
     <>
-      {/* <div className="flex w-full flex-row place-content-around">{footer}</div> */}
+      <div>
+        {/* <MenuItem onClick={signOut} name={"Sign out"} icon={<FiLogOut />} /> */}
+        {/* <MenuItem href={"/about"} name={"About"} icon={<FiInfo />} /> */}
+      </div>
     </>
   );
 }

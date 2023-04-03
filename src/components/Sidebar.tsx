@@ -4,7 +4,7 @@ const Threads = () => {
       <div className="flex flex-col justify-center">
         <div className="card bg-base-200 p-4">
           <div className="card-title text-lg">Latest Update</div>
-          Question marks are now not enforced in the global thread
+          Added themes! Updated menu
         </div>
 
         <div className="mt-8 text-center text-lg">Threads</div>

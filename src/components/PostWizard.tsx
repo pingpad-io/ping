@@ -76,7 +76,7 @@ export default function PostWizard() {
         </form>
       </div>
       <div
-        className="divider m-0 bg-base-100/[.5] 
+        className="divider m-0 bg-base-100/[.5] mb-2 
                   before:h-0 before:border-b before:border-base-300 before:bg-base-300 
                   after:h-0 after:border-b after:border-base-300 after:bg-base-300"
       >
