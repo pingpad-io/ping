@@ -34,15 +34,16 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </Head>
 
       <PageLayout>
-        <div className="divider"></div>
-        <div className="flex flex-row items-center gap-4">
-          <Image
-            src={data.profileImageUrl}
-            alt={`${username}'s profile image`}
-            width={64}
-            height={64}
-            className="m-4 rounded-full"
-          />
+        <div className="flex flex-row items-center gap-4 p-4">
+          <div className="avatar">
+            <Image
+              src={data.profileImageUrl}
+              alt={`${username}'s profile image`}
+              width={64}
+              height={64}
+              className="m-4 rounded-full ring-base-300 ring-2"
+            />
+          </div>
           <Link className="text-2xl" href={`/${data.username}`}>
             @{data.username}
           </Link>

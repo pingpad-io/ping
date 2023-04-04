@@ -13,6 +13,7 @@ import {
 import { themeChange } from "theme-change";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
+import { themes } from "~/styles/themes";
 
 export default function Menu() {
   let user = useUser();
@@ -39,43 +40,13 @@ export default function Menu() {
     themeChange(false);
   }, []);
 
-  let themes = [
-    "light",
-    "dark",
-    "cupcake",
-    "bumblebee",
-    "emerald",
-    "corporate",
-    "synthwave",
-    "retro",
-    "cyberpunk",
-    "valentine",
-    "halloween",
-    "garden",
-    "forest",
-    "aqua",
-    "pastel",
-    "fantasy",
-    "wireframe",
-    "black",
-    "luxury",
-    "dracula",
-    "cmyk",
-    "autumn",
-    "business",
-    "acid",
-    "lemonade",
-    "night",
-    "coffee",
-    "winter",
-  ];
   let [theme, setTheme] = useState("pink");
   let cycleTheme = () => {
     setTheme(themes[Math.floor(Math.random() * themes.length)] ?? "");
   };
 
   useEffect(() => {
-    document.querySelector("main")?.setAttribute("data-theme", theme);
+    document.querySelector("html")?.setAttribute("data-theme", theme);
   }, [theme]);
 
   return (
@@ -106,7 +77,7 @@ export default function Menu() {
               onClick={cycleTheme}
               name={"Theme"}
               icon={<BsPalette />}
-            ></MenuItem>
+            />
             <SignedIn>
               <MenuItem
                 onClick={signOut}

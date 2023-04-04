@@ -20,7 +20,6 @@ const Twotter: AppType = ({ Component, pageProps }) => {
       <Analytics />
 
       <main
-        data-theme="lofi"
         className="flex min-h-screen flex-row place-content-center text-base-content"
       >
         <Component {...pageProps} />
