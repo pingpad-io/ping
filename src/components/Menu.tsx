@@ -45,7 +45,6 @@ export default function Menu() {
           <div className="font-bold">
             <MenuItem
               onClick={() => setCollapsed(!isCollapsed)}
-              href={"/"}
               name={"Twotter"}
               icon={<OtterIcon />}
             />
@@ -71,36 +70,34 @@ export default function Menu() {
             />
           </SignedIn>
           {isExpanded ? (
-            <>
-              <div className="-m-1 flex w-max flex-col items-end rounded-3xl border-4 border-dashed border-base-300">
+            <div className="flex w-max flex-col items-end rounded-3xl border-dashed border-base-300 hover:-m-1 hover:border-4">
+              <MenuItem
+                onClick={() => setExpanded(false)}
+                name={"Less"}
+                icon={<FiArrowUp />}
+              />
+              <MenuItem
+                onClick={cycleTheme}
+                name={"Theme"}
+                icon={<BsPalette />}
+              />
+              <MenuItem href="/about" name={"About"} icon={<FiInfo />} />
+              <SignedIn>
                 <MenuItem
-                  onClick={() => setExpanded(false)}
-                  name={"Less"}
-                  icon={<FiArrowUp />}
+                  onClick={signOut}
+                  name={"Sign out"}
+                  icon={<FiLogOut />}
                 />
-                <MenuItem
-                  onClick={cycleTheme}
-                  name={"Theme"}
-                  icon={<BsPalette />}
-                />
-                <MenuItem href="/about" name={"About"} icon={<FiInfo />} />
-                <SignedIn>
-                  <MenuItem
-                    onClick={signOut}
-                    name={"Sign out"}
-                    icon={<FiLogOut />}
-                  />
-                </SignedIn>
-              </div>
-            </>
+              </SignedIn>
+            </div>
           ) : (
-            <>
+            <div className="flex w-max flex-col items-end rounded-3xl border-dashed border-base-300 hover:-m-1 hover:border-4">
               <MenuItem
                 onClick={() => setExpanded(true)}
                 name={"More"}
                 icon={<FiArrowDown />}
               />
-            </>
+            </div>
           )}
         </div>
       </div>
