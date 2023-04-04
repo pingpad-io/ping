@@ -5,15 +5,16 @@ import { BsPalette } from "react-icons/bs";
 import {
   FiBell,
   FiHome,
+  FiInfo,
   FiLogOut,
   FiMail,
   FiMoreVertical,
   FiUser,
 } from "react-icons/fi";
 import { themeChange } from "theme-change";
+import { themes } from "~/styles/themes";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
-import { themes } from "~/styles/themes";
 
 export default function Menu() {
   let user = useUser();
@@ -25,15 +26,7 @@ export default function Menu() {
 
   let userButtons = <></>;
   if (user.isSignedIn) {
-    userButtons = (
-      <>
-        <MenuItem
-          href={`/${user.user?.username}`}
-          name={"Profile"}
-          icon={<FiUser />}
-        />
-      </>
-    );
+    userButtons = <></>;
   }
 
   useEffect(() => {
@@ -68,11 +61,18 @@ export default function Menu() {
           name={"Notifications"}
           icon={<FiBell />}
         />
-        {userButtons}
+        <SignedIn>
+          <MenuItem
+            href={`/${user.user?.username}`}
+            name={"Profile"}
+            icon={<FiUser />}
+          />
+        </SignedIn>
         <div className="dropdown-hover dropdown-end dropdown relative">
           <MenuItem name={"More"} icon={<FiMoreVertical />} />
 
           <div className="dropdown-content flex w-max flex-col items-end rounded-xl">
+            <MenuItem href="/about" name={"About"} icon={<FiInfo />} />
             <MenuItem
               onClick={cycleTheme}
               name={"Theme"}
