@@ -1,14 +1,15 @@
 import { SignedIn, useClerk, useUser } from "@clerk/nextjs";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { BsPalette } from "react-icons/bs";
 import {
+  FiArrowDown,
+  FiArrowUp,
   FiBell,
   FiHome,
   FiInfo,
   FiLogOut,
   FiMail,
-  FiMoreVertical,
   FiUser,
 } from "react-icons/fi";
 import { themeChange } from "theme-change";
@@ -19,6 +20,7 @@ import { MenuItem } from "./MenuItem";
 export default function Menu() {
   const { signOut } = useClerk();
   let theme = useContext(globalThemeContext);
+  let [isExpanded, setExpanded] = useState(false);
   let user = useUser();
 
   let todo = () => {
@@ -60,25 +62,38 @@ export default function Menu() {
             icon={<FiUser />}
           />
         </SignedIn>
-        <div className="dropdown-hover dropdown-end dropdown relative">
-          <MenuItem name={"More"} icon={<FiMoreVertical />} />
-
-          <div className="dropdown-content flex w-max flex-col items-end rounded-xl">
-            <MenuItem href="/about" name={"About"} icon={<FiInfo />} />
-            <MenuItem
-              onClick={cycleTheme}
-              name={"Theme"}
-              icon={<BsPalette />}
-            />
-            <SignedIn>
+        {isExpanded ? (
+          <>
+            <div className="-m-1 flex w-max flex-col items-end rounded-3xl border-4 border-dashed border-base-300">
               <MenuItem
-                onClick={signOut}
-                name={"Sign out"}
-                icon={<FiLogOut />}
+                onClick={() => setExpanded(false)}
+                name={"Less"}
+                icon={<FiArrowUp />}
               />
-            </SignedIn>
-          </div>
-        </div>
+              <MenuItem
+                onClick={cycleTheme}
+                name={"Theme"}
+                icon={<BsPalette />}
+              />
+              <MenuItem href="/about" name={"About"} icon={<FiInfo />} />
+              <SignedIn>
+                <MenuItem
+                  onClick={signOut}
+                  name={"Sign out"}
+                  icon={<FiLogOut />}
+                />
+              </SignedIn>
+            </div>
+          </>
+        ) : (
+          <>
+            <MenuItem
+              onClick={() => setExpanded(true)}
+              name={"More"}
+              icon={<FiArrowDown />}
+            />
+          </>
+        )}
       </div>
     </div>
   );
