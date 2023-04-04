@@ -1,5 +1,5 @@
 import { SignedIn, useClerk, useUser } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { BsPalette } from "react-icons/bs";
 import {
@@ -12,35 +12,27 @@ import {
   FiUser,
 } from "react-icons/fi";
 import { themeChange } from "theme-change";
-import { themes } from "~/styles/themes";
+import { globalThemeContext, themes } from "~/styles/themes";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
 
 export default function Menu() {
-  let user = useUser();
   const { signOut } = useClerk();
+  let theme = useContext(globalThemeContext);
+  let user = useUser();
 
   let todo = () => {
     toast.error("Not implemented yet");
   };
 
-  let userButtons = <></>;
-  if (user.isSignedIn) {
-    userButtons = <></>;
-  }
-
   useEffect(() => {
     themeChange(false);
   }, []);
 
-  let [theme, setTheme] = useState("pink");
   let cycleTheme = () => {
-    setTheme(themes[Math.floor(Math.random() * themes.length)] ?? "");
-  };
-
-  useEffect(() => {
+    theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
     document.querySelector("html")?.setAttribute("data-theme", theme);
-  }, [theme]);
+  };
 
   return (
     <div className="sticky top-0 hidden h-screen w-max shrink flex-col place-content-between py-4 px-2 sm:flex">

@@ -1,3 +1,8 @@
+import React from "react";
+
+export const globalTheme = "lofi"
+export const globalThemeContext = React.createContext(globalTheme);
+
 export const themes = [
   "light",
   "dark",
