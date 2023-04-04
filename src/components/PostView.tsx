@@ -28,7 +28,7 @@ export const PostView = ({ post }: { post: Post }) => {
   }
 
   return (
-    <div className="flex flex-row gap-4 border rounded-xl border-base-300 my-1 p-4">
+    <div className="my-1 flex flex-row gap-4 rounded-xl border border-base-300 p-4">
       <div className="h-12 w-12 shrink-0 grow-0">
         <Link className="" href={`/${username}`}>
           <Image

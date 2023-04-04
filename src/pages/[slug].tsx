@@ -4,17 +4,17 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import superjson from "superjson";
+import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import { appRouter } from "~/server/api/root";
 import { prisma } from "~/server/db";
 import { api } from "~/utils/api";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data } = api.profile.getUserByUsername.useQuery({
+  const { data: user } = api.profile.getUserByUsername.useQuery({
     username,
   });
-
-  if (!data) {
+  if (!user) {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="card flex h-64 w-64 place-content-around items-center p-4">
@@ -27,28 +27,32 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     );
   }
 
+  const posts = api.posts.getAllByUserId.useQuery(user.id);
+
   return (
     <>
       <Head>
-        <title>Twotter (@{data.username})</title>
+        <title>Twotter (@{user.username})</title>
       </Head>
 
       <PageLayout>
-        <div className="flex flex-row items-center gap-4 p-4">
+        <div className="m-4 flex flex-row items-center gap-4 rounded-3xl border p-2">
           <div className="avatar">
             <Image
-              src={data.profileImageUrl}
+              src={user.profileImageUrl}
               alt={`${username}'s profile image`}
               width={64}
               height={64}
-              className="m-4 rounded-full ring-base-300 ring-2"
+              className="m-4 rounded-full ring-2 ring-base-300"
             />
           </div>
-          <Link className="text-2xl" href={`/${data.username}`}>
-            @{data.username}
+          <Link className="text-2xl" href={`/${user.username}`}>
+            @{user.username}
           </Link>
         </div>
         <div className="divider"></div>
+
+        <Feed {...posts} />
       </PageLayout>
     </>
   );
