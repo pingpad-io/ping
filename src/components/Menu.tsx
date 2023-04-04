@@ -17,7 +17,7 @@ import { globalThemeContext, themes } from "~/styles/themes";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
 
-export const collapsedContext = createContext(false);
+export const CollapsedContext = createContext(false);
 export default function Menu() {
   const { signOut } = useClerk();
   let theme = useContext(globalThemeContext);
@@ -25,9 +25,7 @@ export default function Menu() {
   let [isCollapsed, setCollapsed] = useState(false);
   let user = useUser();
 
-  let todo = () => {
-    toast.error("Not implemented yet");
-  };
+  let todo = () => toast.error("Not implemented yet");
 
   useEffect(() => {
     themeChange(false);
@@ -39,7 +37,7 @@ export default function Menu() {
   };
 
   return (
-    <collapsedContext.Provider value={isCollapsed}>
+    <CollapsedContext.Provider value={isCollapsed}>
       <div className="sticky top-0 hidden h-screen w-max shrink flex-col place-content-between py-4 px-2 sm:flex">
         <div className="flex flex-col items-end gap-2">
           <div className="font-bold">
@@ -101,6 +99,6 @@ export default function Menu() {
           )}
         </div>
       </div>
-    </collapsedContext.Provider>
+    </CollapsedContext.Provider>
   );
 }

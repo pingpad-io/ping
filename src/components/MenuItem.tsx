@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ReactNode, useContext } from "react";
-import { collapsedContext } from "./Menu";
+import { CollapsedContext } from "./Menu";
 
 export const MenuItem = (props: {
   href?: string;
@@ -9,7 +9,7 @@ export const MenuItem = (props: {
   icon: JSX.Element;
   children?: ReactNode;
 }) => {
-  let collapsed = useContext(collapsedContext);
+  let collapsed = useContext(CollapsedContext);
   let text = collapsed ? (
     <></>
   ) : (

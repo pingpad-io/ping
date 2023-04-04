@@ -12,14 +12,19 @@ export default function Feed(props: {
         <div className="loading btn"> loading...</div>
       </div>
     );
-    console.log(props)
-  if (props.isError || !props.data) return (
-    <div className="btn-error btn">
-      something went wrong... terribly wrong...
-    </div>
-  )
 
-    let feed = props.data.map((post) => <PostView key={post.id} post={post} />)
+  if (props.isError || !props.data)
+    return (
+      <div className="btn-error btn">
+        something went wrong... terribly wrong...
+      </div>
+    );
 
-  return <>{feed}</>;
+  let feed = props.data.map((post) => <PostView key={post.id} post={post} />);
+
+  return (
+    <>
+      {feed}
+    </>
+  );
 }
