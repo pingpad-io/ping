@@ -16,6 +16,7 @@ import { themeChange } from "theme-change";
 import { globalThemeContext, themes } from "~/styles/themes";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
+import { SidebarButtons } from "./Sidebar";
 
 export const CollapsedContext = createContext(false);
 export default function Menu() {
@@ -38,7 +39,7 @@ export default function Menu() {
 
   return (
     <CollapsedContext.Provider value={isCollapsed}>
-      <div className="sticky top-0 hidden h-screen w-max shrink flex-col place-content-between py-4 px-2 sm:flex">
+      <div className="sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 px-2">
         <div className="flex flex-col items-end gap-2">
           <div className="font-bold">
             <MenuItem
@@ -67,6 +68,9 @@ export default function Menu() {
               icon={<FiUser />}
             />
           </SignedIn>
+          <div className="flex flex-col sm:hidden">
+            <SidebarButtons />
+          </div>
           {isExpanded ? (
             <div className="flex w-max flex-col items-end rounded-3xl border-dashed border-base-300 hover:-m-1 hover:border-4">
               <MenuItem

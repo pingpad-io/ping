@@ -10,7 +10,7 @@ const LatestNews = () => {
         <MenuItem name={""} icon={<BsNewspaper />}></MenuItem>
       </div>
 
-      <div className="card bg-base-200 p-4 hidden xl:flex">
+      <div className="card hidden bg-base-200 p-4 xl:flex">
         <div className="card-title text-lg">Latest Update</div>
         Global themes! New menu. Updated profile view. Updated suspense.
       </div>
@@ -53,14 +53,20 @@ const SearchBar = () => {
   );
 };
 
+export const SidebarButtons = () => {
+  return (
+    <CollapsedContext.Provider value={true}>
+      <SearchBar />
+      <LatestNews />
+      <Threads />
+    </CollapsedContext.Provider>
+  );
+};
+
 export default function Sidebar() {
   return (
     <div className="sticky top-0 hidden h-screen w-max max-w-xs shrink flex-col gap-2 py-4 px-2 sm:flex xl:gap-4">
-      <CollapsedContext.Provider value={true}>
-        <SearchBar />
-        <LatestNews />
-        <Threads />
-      </CollapsedContext.Provider>
+      <SidebarButtons />
     </div>
   );
 }
