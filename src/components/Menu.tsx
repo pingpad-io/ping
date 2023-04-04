@@ -1,5 +1,5 @@
 import { SignedIn, useClerk, useUser } from "@clerk/nextjs";
-import { useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { BsPalette } from "react-icons/bs";
 import {
@@ -17,10 +17,12 @@ import { globalThemeContext, themes } from "~/styles/themes";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
 
+export const collapsedContext = createContext(false);
 export default function Menu() {
   const { signOut } = useClerk();
   let theme = useContext(globalThemeContext);
   let [isExpanded, setExpanded] = useState(false);
+  let [isCollapsed, setCollapsed] = useState(false);
   let user = useUser();
 
   let todo = () => {
@@ -37,64 +39,71 @@ export default function Menu() {
   };
 
   return (
-    <div className="sticky top-0 hidden h-screen w-max shrink flex-col place-content-between py-4 px-2 sm:flex">
-      <div className="flex flex-col items-end gap-2">
-        <div className="font-bold">
-          <MenuItem href={"/"} name={"Twotter"} icon={<OtterIcon />} />
-        </div>
-        <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
-        <MenuItem
-          onClick={todo}
-          href={"/"}
-          name={"Messages"}
-          icon={<FiMail />}
-        />
-        <MenuItem
-          onClick={todo}
-          href={"/"}
-          name={"Notifications"}
-          icon={<FiBell />}
-        />
-        <SignedIn>
-          <MenuItem
-            href={`/${user.user?.username}`}
-            name={"Profile"}
-            icon={<FiUser />}
-          />
-        </SignedIn>
-        {isExpanded ? (
-          <>
-            <div className="-m-1 flex w-max flex-col items-end rounded-3xl border-4 border-dashed border-base-300">
-              <MenuItem
-                onClick={() => setExpanded(false)}
-                name={"Less"}
-                icon={<FiArrowUp />}
-              />
-              <MenuItem
-                onClick={cycleTheme}
-                name={"Theme"}
-                icon={<BsPalette />}
-              />
-              <MenuItem href="/about" name={"About"} icon={<FiInfo />} />
-              <SignedIn>
-                <MenuItem
-                  onClick={signOut}
-                  name={"Sign out"}
-                  icon={<FiLogOut />}
-                />
-              </SignedIn>
-            </div>
-          </>
-        ) : (
-          <>
+    <collapsedContext.Provider value={isCollapsed}>
+      <div className="sticky top-0 hidden h-screen w-max shrink flex-col place-content-between py-4 px-2 sm:flex">
+        <div className="flex flex-col items-end gap-2">
+          <div className="font-bold">
             <MenuItem
-              onClick={() => setExpanded(true)}
-              name={"More"}
-              icon={<FiArrowDown />}
+              onClick={() => setCollapsed(!isCollapsed)}
+              href={"/"}
+              name={"Twotter"}
+              icon={<OtterIcon />}
             />
-          </>
-        )}
+          </div>
+          <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
+          <MenuItem
+            onClick={todo}
+            href={"/"}
+            name={"Messages"}
+            icon={<FiMail />}
+          />
+          <MenuItem
+            onClick={todo}
+            href={"/"}
+            name={"Notifications"}
+            icon={<FiBell />}
+          />
+          <SignedIn>
+            <MenuItem
+              href={`/${user.user?.username}`}
+              name={"Profile"}
+              icon={<FiUser />}
+            />
+          </SignedIn>
+          {isExpanded ? (
+            <>
+              <div className="-m-1 flex w-max flex-col items-end rounded-3xl border-4 border-dashed border-base-300">
+                <MenuItem
+                  onClick={() => setExpanded(false)}
+                  name={"Less"}
+                  icon={<FiArrowUp />}
+                />
+                <MenuItem
+                  onClick={cycleTheme}
+                  name={"Theme"}
+                  icon={<BsPalette />}
+                />
+                <MenuItem href="/about" name={"About"} icon={<FiInfo />} />
+                <SignedIn>
+                  <MenuItem
+                    onClick={signOut}
+                    name={"Sign out"}
+                    icon={<FiLogOut />}
+                  />
+                </SignedIn>
+              </div>
+            </>
+          ) : (
+            <>
+              <MenuItem
+                onClick={() => setExpanded(true)}
+                name={"More"}
+                icon={<FiArrowDown />}
+              />
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </collapsedContext.Provider>
   );
 }

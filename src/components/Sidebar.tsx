@@ -4,7 +4,7 @@ const Threads = () => {
       <div className="flex flex-col justify-center">
         <div className="card bg-base-200 p-4">
           <div className="card-title text-lg">Latest Update</div>
-          Themes are now global. Updated post view suspense
+          Global themes! New menu. Updated profile view. Updated suspense.
         </div>
 
         <div className="mt-8 text-center text-lg">Threads</div>
