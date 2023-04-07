@@ -8,6 +8,7 @@ import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import { appRouter } from "~/server/api/root";
 import { prisma } from "~/server/db";
+import { getSSGHelper } from "~/server/extra/getSSGHelper";
 import { api } from "~/utils/api";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
@@ -59,13 +60,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = createProxySSGHelpers({
-    router: appRouter,
-    ctx: { prisma, userId: null },
-    transformer: superjson,
-  });
-
+  const ssg = getSSGHelper();
   const username = context.params?.slug;
+
   if (typeof username !== "string") throw new Error("Bad URL slug");
 
   await ssg.profile.getUserByUsername.prefetch({ username });
