@@ -6,25 +6,23 @@ import Link from "next/link";
 import { BsCircleFill } from "react-icons/bs";
 import { api } from "~/utils/api";
 import TimeSinceLabel from "./TimeSinceLabel";
+import { PostWithUser } from "./Feed";
 
-export const PostView = ({ post }: { post: Post }) => {
+export const PostView = ({ post: fullPost }: { post: PostWithUser }) => {
   const { user } = useUser();
 
-  let author = api.profile.getUserById.useQuery({ userId: post.authorId });
-  let username = author.data?.username;
-  let postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
+  const author = fullPost.author;
+  const post = fullPost.post;
+  const username = author.username;
+  const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
 
-  let avatar = author.isLoading ? (
-    <>
-      <BsCircleFill className="avatar h-12 w-12 animate-pulse rounded-full fill-base-300" />
-    </>
-  ) : (
+  let avatar = (
     <>
       <Link className="" href={`/${username}`}>
         <Image
           className="avatar rounded-full"
-          src={author.data?.profileImageUrl ?? ""}
-          alt={`${author.data?.username}'s profile image`}
+          src={author.profileImageUrl ?? ""}
+          alt={`${author.username}'s profile image`}
           width={48}
           height={48}
         />
@@ -32,12 +30,10 @@ export const PostView = ({ post }: { post: Post }) => {
     </>
   );
 
-  let metadata = author.isLoading ? (
-    <div className="mb-2 h-3 w-64 rounded-full bg-base-200"></div>
-  ) : (
+  let metadata = (
     <div className="flex flex-row gap-2 text-sm text-base-content">
       <Link className="" href={`/${username}`}>
-        {`@${username}`} {user?.id === post.authorId && <span>(you)</span>}
+        {`@${username}`} {user?.id === author.id && <span>(you)</span>}
       </Link>
       {`·`}
       <TimeSinceLabel date={post.createdAt} />
@@ -47,7 +43,6 @@ export const PostView = ({ post }: { post: Post }) => {
       </Link>
     </div>
   );
-
   return (
     <div className="my-1 flex flex-row gap-4 rounded-xl border border-base-300 p-4">
       <div className="h-12 w-12 shrink-0 grow-0">{avatar}</div>
