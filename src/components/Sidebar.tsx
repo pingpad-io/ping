@@ -1,7 +1,7 @@
+import { BsNewspaper } from "react-icons/bs";
 import { FiGlobe, FiMessageCircle, FiSearch } from "react-icons/fi";
 import { CollapsedContext } from "./Menu";
 import { MenuItem } from "./MenuItem";
-import { BsNewspaper } from "react-icons/bs";
 
 const LatestNews = () => {
   return (
@@ -12,7 +12,7 @@ const LatestNews = () => {
 
       <div className="card hidden bg-base-200 p-4 xl:flex">
         <div className="card-title text-lg">Latest Update</div>
-        Global themes! New menu. Updated profile view. Updated suspense.
+        Post view is here. Posts are also now blazingly fast to load.
       </div>
     </>
   );

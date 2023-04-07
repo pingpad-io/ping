@@ -1,40 +1,37 @@
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import ErrorPage from "~/components/ErrorBoundary";
 import { PageLayout } from "~/components/Layout";
+import { PostView } from "~/components/PostView";
 import { getSSGHelper } from "~/server/extra/getSSGHelper";
 import { api } from "~/utils/api";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
-  const { data: post } = api.posts.getById.useQuery(id);
+  const data = api.posts.getById.useQuery(id).data;
+  if (!data) return <ErrorPage title={"Post not found"} />;
 
-  // TODO FIXME
-  if (!post) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="card flex h-64 w-64 place-content-around items-center p-4">
-          <h1 className="card-title text-error-content">Post not found?</h1>
-          <div className="card-actions justify-center">
-            <Link className="btn-primary btn" href={"/"}>{`< Go back`}</Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const posts = api.posts.getAllByUserId.useQuery(post.post.id);
+  const post = data.post;
+  const author = data.author;
 
   return (
     <>
       <Head>
-        <title>Twotter (@{post.post.id})</title>
+        <title>
+          @{author?.username}: {post.content}
+        </title>
       </Head>
 
       <PageLayout>
-        <div className="m-4 flex flex-row items-center gap-4 rounded-3xl border border-base-300 p-2">
-          {post.post.content}
+        <div className="p-10">
+          <PostView post={data} />
         </div>
-        <div className="divider"></div>
+
+        <div className="flex items-center justify-center">
+          <div className="btn-ghost btn-wide btn m-4">
+            <Link href={"/"}>{`< Home`}</Link>
+          </div>
+        </div>
       </PageLayout>
     </>
   );
@@ -51,7 +48,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      username: id,
+      id: id,
     },
   };
 };
