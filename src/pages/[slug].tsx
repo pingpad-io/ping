@@ -1,13 +1,9 @@
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import superjson from "superjson";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import { appRouter } from "~/server/api/root";
-import { prisma } from "~/server/db";
 import { getSSGHelper } from "~/server/extra/getSSGHelper";
 import { api } from "~/utils/api";
 
@@ -29,11 +25,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   }
 
   const posts = api.posts.getAllByUserId.useQuery(user.id);
+  const title = `Twotter (@${user.username})`;
 
   return (
     <>
       <Head>
-        <title>Twotter (@{user.username})</title>
+        <title>{title}</title>
       </Head>
 
       <PageLayout>

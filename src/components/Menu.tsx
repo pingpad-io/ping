@@ -1,5 +1,6 @@
 import { SignedIn, useClerk, useUser } from "@clerk/nextjs";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { createContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { BsPalette } from "react-icons/bs";
 import {
@@ -12,8 +13,7 @@ import {
   FiMail,
   FiUser,
 } from "react-icons/fi";
-import { themeChange } from "theme-change";
-import { globalThemeContext, themes } from "~/styles/themes";
+import { themes } from "~/styles/themes";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
 import { SidebarButtons } from "./Sidebar";
@@ -21,20 +21,16 @@ import { SidebarButtons } from "./Sidebar";
 export const CollapsedContext = createContext(false);
 export default function Menu() {
   const { signOut } = useClerk();
-  let theme = useContext(globalThemeContext);
   let [isExpanded, setExpanded] = useState(false);
   let [isCollapsed, setCollapsed] = useState(false);
+  const { theme, setTheme } = useTheme();
   let user = useUser();
 
   let todo = () => toast.error("Not implemented yet");
 
-  useEffect(() => {
-    themeChange(false);
-  }, []);
-
   let cycleTheme = () => {
-    theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
-    document.querySelector("html")?.setAttribute("data-theme", theme);
+    let theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
+    setTheme(theme);
   };
 
   return (
