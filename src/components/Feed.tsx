@@ -1,8 +1,7 @@
 import { RouterOutputs } from "~/utils/api";
-import { PostView } from "./PostView";
-import { Post } from "@prisma/client";
 import ErrorPage from "./ErrorBoundary";
-import { SuspensePostView } from "./SuspencePostView";
+import { PostView } from "./PostView";
+import { SuspensePostView } from "./SuspensePostView";
 
 export type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
@@ -11,8 +10,10 @@ export default function Feed(props: {
   isLoading?: boolean;
   isError?: boolean;
 }) {
-  if (props.isLoading)
-    return [...Array(10)].map((e, i) => <SuspensePostView />);
+  if (props.isLoading) {
+    let suspense = [...Array(10)].map((e, i) => <SuspensePostView />);
+    return <> {suspense} </>;
+  }
 
   if (props.isError || !props.data)
     return <ErrorPage title="Couldn't fetch posts" />;
