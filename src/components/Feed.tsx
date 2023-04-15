@@ -1,8 +1,10 @@
 import { RouterOutputs } from "~/utils/api";
 import { PostView } from "./PostView";
 import { Post } from "@prisma/client";
+import ErrorPage from "./ErrorBoundary";
+import { SuspensePostView } from "./SuspencePostView";
 
-export type PostWithUser = RouterOutputs["posts"]["getAll"][number]
+export type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
 export default function Feed(props: {
   data?: PostWithUser[];
@@ -10,24 +12,14 @@ export default function Feed(props: {
   isError?: boolean;
 }) {
   if (props.isLoading)
-    return (
-      <div className="flex h-full w-full items-center justify-center ">
-        <div className="loading btn"> loading...</div>
-      </div>
-    );
+    return [...Array(10)].map((e, i) => <SuspensePostView />);
 
   if (props.isError || !props.data)
-    return (
-      <div className="btn-error btn">
-        something went wrong... terribly wrong...
-      </div>
-    );
+    return <ErrorPage title="Couldn't fetch posts" />;
 
-  let feed = props.data.map((post) => <PostView key={post.post.id} post={post} />);
+  let feed = props.data.map((post) => (
+    <PostView key={post.post.id} post={post} />
+  ));
 
-  return (
-    <>
-      {feed}
-    </>
-  );
+  return <>{feed}</>;
 }

@@ -2,6 +2,7 @@ import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import ErrorPage from "~/components/ErrorBoundary";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import { getSSGHelper } from "~/server/extra/getSSGHelper";
@@ -12,16 +13,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     username,
   });
   if (!user) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="card flex h-64 w-64 place-content-around items-center p-4">
-          <h1 className="card-title text-error-content">User not found?</h1>
-          <div className="card-actions justify-center">
-            <Link className="btn-primary btn" href={"/"}>{`< Go back`}</Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <ErrorPage title="User not found" />;
   }
 
   const posts = api.posts.getAllByUserId.useQuery(user.id);
