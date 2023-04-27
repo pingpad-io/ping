@@ -13,15 +13,17 @@ import {
   FiMail,
   FiUser,
 } from "react-icons/fi";
+import { RiQuillPenLine } from "react-icons/ri";
 import { themes } from "~/styles/themes";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
+import ModalPostWizard from "./ModalPostWizard";
 import { SidebarButtons } from "./Sidebar";
 
 export const CollapsedContext = createContext(false);
 export default function Menu() {
   const { signOut } = useClerk();
-  let [isExpanded, setExpanded] = useState(false);
+  let [isMoreOpen, setMoreOpen] = useState(false);
   let [isCollapsed, setCollapsed] = useState(false);
   const { theme, setTheme } = useTheme();
   let user = useUser();
@@ -67,10 +69,10 @@ export default function Menu() {
           <div className="flex flex-col sm:hidden">
             <SidebarButtons />
           </div>
-          {isExpanded ? (
+          {isMoreOpen ? (
             <div className="flex w-max flex-col items-end rounded-3xl border-dashed border-base-300 hover:-m-1 hover:border-4">
               <MenuItem
-                onClick={() => setExpanded(false)}
+                onClick={() => setMoreOpen(false)}
                 name={"Less"}
                 icon={<FiArrowUp />}
               />
@@ -91,12 +93,22 @@ export default function Menu() {
           ) : (
             <div className="flex w-max flex-col items-end rounded-3xl border-dashed border-base-300 hover:-m-1 hover:border-4">
               <MenuItem
-                onClick={() => setExpanded(true)}
+                onClick={() => setMoreOpen(true)}
                 name={"More"}
                 icon={<FiArrowDown />}
               />
             </div>
           )}
+
+          <ModalPostWizard>
+            <MenuItem
+              className={
+                "btn-outline btn-primary btn w-full rounded-3xl px-0 text-base font-extrabold "
+              }
+              name={"twot"}
+              icon={<RiQuillPenLine size={24} />}
+            ></MenuItem>
+          </ModalPostWizard>
         </div>
       </div>
     </CollapsedContext.Provider>

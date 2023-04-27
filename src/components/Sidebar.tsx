@@ -12,7 +12,7 @@ const LatestNews = () => {
 
       <div className="card hidden bg-base-200 p-4 xl:flex">
         <div className="card-title text-lg">Latest Update</div>
-        Post view is here. Posts are also now blazingly fast to load.
+          Modal Post Wizard. New UI components.
       </div>
     </>
   );

@@ -7,17 +7,20 @@ export const MenuItem = (props: {
   onClick?: () => void;
   name: string;
   icon: JSX.Element;
+  className?: string;
   children?: ReactNode;
 }) => {
   let collapsed = useContext(CollapsedContext);
+
   let text = collapsed ? (
     <></>
   ) : (
     <div className="hidden lg:block">{props.name}</div>
   );
   let padding = collapsed ? "px-3 lg:px-3 " : "px-3 lg:px-6";
-  let style =
-    `flex w-fit flex-row place-content-end gap-4 rounded-3xl \
+  let style = props.className
+    ? props.className
+    : `flex w-fit flex-row place-content-end gap-4 rounded-3xl \
     py-3 text-2xl hover:bg-base-200 ` + padding;
 
   return (
