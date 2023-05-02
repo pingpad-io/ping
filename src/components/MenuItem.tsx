@@ -33,7 +33,7 @@ export const MenuItem = (props: {
           </div>
           {props.children}
         </Link>
-      ) : (
+      ) : props.onClick ? (
         <button onClick={props.onClick} className={style}>
           {text}
           <div className="flex h-8 w-8 place-content-center items-center">
@@ -41,6 +41,14 @@ export const MenuItem = (props: {
           </div>
           {props.children}
         </button>
+      ) : (
+        <div className={style}>
+          {text}
+          <div className="flex h-8 w-8 place-content-center items-center">
+            {props.icon}
+          </div>
+          {props.children}
+        </div>
       )}
     </>
   );

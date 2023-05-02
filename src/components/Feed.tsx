@@ -11,7 +11,7 @@ export default function Feed(props: {
   isError?: boolean;
 }) {
   if (props.isLoading) {
-    let suspense = [...Array(10)].map((e, i) => <SuspensePostView />);
+    let suspense = [...Array(10)].map((e, i) => <SuspensePostView key={i} />);
     return <> {suspense} </>;
   }
 
