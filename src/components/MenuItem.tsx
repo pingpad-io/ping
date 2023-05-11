@@ -17,38 +17,35 @@ export const MenuItem = (props: {
   ) : (
     <div className="hidden lg:block">{props.name}</div>
   );
-  let padding = collapsed ? "px-3 lg:px-3 " : "px-3 lg:px-6";
-  let style = props.className
-    ? props.className
-    : `flex w-fit flex-row place-content-end gap-4 rounded-3xl \
-    py-3 text-2xl hover:bg-base-200 ` + padding;
+
+  let style =
+    props.className +
+    ` flex w-fit flex-row place-content-end gap-4 rounded-3xl text-2xl hover:bg-base-200 p-3`;
+
+  let content = (
+    <>
+      {text}
+
+      <div className="flex h-8 w-8 place-content-center items-center">
+        {props.icon}
+      </div>
+
+      {props.children}
+    </>
+  );
 
   return (
     <>
       {props.href ? (
         <Link onClick={props.onClick} href={props.href} className={style}>
-          {text}
-          <div className="flex h-8 w-8 place-content-center items-center">
-            {props.icon}
-          </div>
-          {props.children}
+          {content}
         </Link>
       ) : props.onClick ? (
         <button onClick={props.onClick} className={style}>
-          {text}
-          <div className="flex h-8 w-8 place-content-center items-center">
-            {props.icon}
-          </div>
-          {props.children}
+          {content}
         </button>
       ) : (
-        <div className={style}>
-          {text}
-          <div className="flex h-8 w-8 place-content-center items-center">
-            {props.icon}
-          </div>
-          {props.children}
-        </div>
+        <div className={style}>{content}</div>
       )}
     </>
   );

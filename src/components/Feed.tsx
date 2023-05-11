@@ -1,5 +1,5 @@
 import { RouterOutputs } from "~/utils/api";
-import ErrorPage from "./ErrorBoundary";
+import ErrorPage from "./ErrorPage";
 import { PostView } from "./PostView";
 import { SuspensePostView } from "./SuspensePostView";
 

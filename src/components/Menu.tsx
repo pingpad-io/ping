@@ -37,7 +37,9 @@ export default function Menu() {
 
   return (
     <CollapsedContext.Provider value={isCollapsed}>
-      <div className="sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 px-2">
+      <div
+        className={`sticky top-0 flex h-screen w-32 shrink flex-col place-content-between py-4 px-2`}
+      >
         <div className="flex flex-col items-end gap-2">
           <div className="font-bold">
             <MenuItem
@@ -99,15 +101,15 @@ export default function Menu() {
               />
             </div>
           )}
-
           <ModalPostWizard>
             <MenuItem
               className={
-                "btn-outline btn-primary btn w-full rounded-3xl px-0 text-base font-extrabold "
+                `border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
+                (isCollapsed ? `` : `pl-10 sm:pl-3`)
               }
-              name={"twot"}
+              name={"Twot"}
               icon={<RiQuillPenLine size={24} />}
-            ></MenuItem>
+            />
           </ModalPostWizard>
         </div>
       </div>

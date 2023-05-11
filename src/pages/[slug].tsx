@@ -2,7 +2,7 @@ import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import ErrorPage from "~/components/ErrorBoundary";
+import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import { getSSGHelper } from "~/server/extra/getSSGHelper";

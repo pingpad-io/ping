@@ -15,7 +15,7 @@ export default function ModalPostWizard(props: { children?: ReactNode }) {
 
   return (
     <>
-      <button type="button" onClick={openModal} className="w-full">
+      <button type="button" onClick={openModal} className="">
         {props.children}
       </button>
 

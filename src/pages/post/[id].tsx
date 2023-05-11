@@ -1,7 +1,7 @@
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import ErrorPage from "~/components/ErrorBoundary";
+import ErrorPage from "~/components/ErrorPage";
 import { PageLayout } from "~/components/Layout";
 import { PostView } from "~/components/PostView";
 import { getSSGHelper } from "~/server/extra/getSSGHelper";
