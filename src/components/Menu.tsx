@@ -105,7 +105,7 @@ export default function Menu() {
             <MenuItem
               className={
                 `border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
-                (isCollapsed ? `` : `pl-10 sm:pl-3`)
+                (isCollapsed ? `` : `lg:pl-10 pl-3`)
               }
               name={"Twot"}
               icon={<RiQuillPenLine size={24} />}
