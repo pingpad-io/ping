@@ -1,19 +1,20 @@
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  relationMode = "prisma"
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
-    id        String   @id @default(cuid())
-    authorId  String 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    content   String   @db.VarChar(300)
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
 
-    @@index([authorId])
+model Post {
+  id        String   @id @default(cuid())
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String   @db.VarChar(300)
+  likes     Int      @default(0)
+
+  @@index([authorId])
 }
