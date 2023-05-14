@@ -1,33 +1,51 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from "@clerk/themes";
+import {
+  Session,
+  createBrowserSupabaseClient,
+} from "@supabase/auth-helpers-nextjs";
+import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "next-themes";
-import { type AppType } from "next/app";
+import { AppProps, type AppType } from "next/app";
 import Head from "next/head";
+import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
-const Twotter: AppType = ({ Component, pageProps }) => {
+function Twotter({
+  Component,
+  pageProps,
+}: AppProps<{
+  initialSession: Session;
+}>) {
+  const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+
   return (
-    <ThemeProvider>
-      <ClerkProvider appearance={{ baseTheme: shadesOfPurple }}>
-        <Head>
-          <title>Twotter</title>
-          <meta name="description" content="an anonymised twitter" />
-          <link rel="icon" ref="/favicon.ico" />
-        </Head>
+    <SessionContextProvider
+      supabaseClient={supabaseClient}
+      initialSession={pageProps.initialSession}
+    >
+      <ThemeProvider>
+        <ClerkProvider appearance={{ baseTheme: shadesOfPurple }}>
+          <Head>
+            <title>Twotter</title>
+            <meta name="description" content="an anonymised twitter" />
+            <link rel="icon" ref="/favicon.ico" />
+          </Head>
 
-        <Toaster position="top-center" />
+          <Toaster position="top-center" />
 
-        <Analytics />
+          <Analytics />
 
-        <main className="flex min-h-screen flex-row place-content-center text-base-content">
-          <Component {...pageProps} />
-        </main>
-      </ClerkProvider>
-    </ThemeProvider>
+          <main className="flex min-h-screen flex-row place-content-center text-base-content">
+            <Component {...pageProps} />
+          </main>
+        </ClerkProvider>
+      </ThemeProvider>
+    </SessionContextProvider>
   );
-};
+}
 
 export default api.withTRPC(Twotter);
