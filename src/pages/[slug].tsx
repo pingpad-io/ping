@@ -13,7 +13,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     username,
   });
   if (!user) {
-    return <ErrorPage title="User not found" />;
+    return <ErrorPage title="∑(O_O;) Not Found " />;
   }
 
   const posts = api.posts.getAllByUserId.useQuery(user.id);

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BsNewspaper } from "react-icons/bs";
 import { FiGlobe, FiMessageCircle, FiSearch } from "react-icons/fi";
 import { CollapsedContext } from "./Menu";
@@ -12,7 +13,7 @@ const LatestNews = () => {
 
       <div className="card hidden bg-base-200 p-4 xl:flex">
         <div className="card-title text-lg">Latest Update</div>
-          Modal Post Wizard. New UI components.
+        Modal Post Wizard. New UI components.
       </div>
     </>
   );
@@ -31,6 +32,25 @@ const Threads = () => {
         <div className="flex flex-col">
           <div className="link-hover link p-4">- Global</div>
         </div>
+      </div>
+    </>
+  );
+};
+
+const Links = () => {
+  return (
+    <>
+      <div className="hidden h-fit w-fit flex-row flex-wrap gap-2 overflow-auto text-sm text-base-content xl:flex">
+        <Link className=" hover:underline" href={"/policy"}>
+          Privacy Policy
+        </Link>
+        <Link className=" hover:underline" href={"/conditions"}>
+          Terms of Service
+        </Link>
+        <Link className=" hover:underline" href={"/about"}>
+          About
+        </Link>
+        <p className="select-none">© 2023 K.U Corp.</p>
       </div>
     </>
   );
@@ -59,6 +79,7 @@ export const SidebarButtons = () => {
       <SearchBar />
       <LatestNews />
       <Threads />
+      <Links />
     </CollapsedContext.Provider>
   );
 };

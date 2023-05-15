@@ -7,7 +7,7 @@ import {
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "next-themes";
-import { AppProps, type AppType } from "next/app";
+import { AppProps } from "next/app";
 import Head from "next/head";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";

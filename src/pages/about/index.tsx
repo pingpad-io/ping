@@ -37,10 +37,10 @@ const AboutPage = () => {
                 <a className="underline" href="https://kualta.dev">
                   kualta
                 </a>
-                {" & "}
+                {/* {" & "}
                 <a className="underline" href="https://github.com/kualta/twot">
                   contributors
-                </a>
+                </a> */}
               </div>
             </div>
             <div className="card m-4 bg-base-100 p-4"></div>
