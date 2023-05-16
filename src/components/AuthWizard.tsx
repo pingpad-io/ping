@@ -6,18 +6,16 @@ const AuthWizard = () => {
   let supabase = useSupabaseClient();
 
   return (
-    <div className="bg-base-300 p-4">
-      <h3 className="text-center text-xl">Sign in to use Twotter</h3>
-      <div className="flex justify-center">
-        <div className="w-2/3">
-          <Auth
-            supabaseClient={supabase}
-            onlyThirdPartyProviders={true}
-            appearance={{ theme: ThemeSupa }}
-            providers={["google", "github"]}
-            theme="dark"
-          />
-        </div>
+    <div className="rounded-3xl bg-base-300 px-4 py-2 w-fit">
+      {/* <h3 className="text-center text-xl">Sign in to use Twotter</h3> */}
+      <div className="">
+        <Auth
+          supabaseClient={supabase}
+          onlyThirdPartyProviders={true}
+          appearance={{ theme: ThemeSupa }}
+          providers={["google", "github", "twitter"]}
+          theme="light"
+        />
       </div>
     </div>
   );

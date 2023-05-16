@@ -45,20 +45,20 @@ export default function PostWizard() {
     </>
   );
 
-  if (!user)
-    return (
-      <div className="flex flex-row items-center">
-        <button
-          onClick={() => {
-            openSignIn();
-          }}
-          className="btn-primary btn-ghost btn m-2"
-        >
-          {`Sign in to Post `}
-          <FiLogIn className="ml-2" size={24} />
-        </button>
-      </div>
-    );
+  // if (!user)
+  //   return (
+  //     <div className="flex flex-row items-center">
+  //       <button
+  //         onClick={() => {
+  //           openSignIn();
+  //         }}
+  //         className="btn-primary btn-ghost btn m-2"
+  //       >
+  //         {`Sign in to Post `}
+  //         <FiLogIn className="ml-2" size={24} />
+  //       </button>
+  //     </div>
+  //   );
 
   return (
     <div className="sticky top-0 z-10 flex flex-col ">

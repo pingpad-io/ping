@@ -109,7 +109,7 @@ export default function Menu() {
             </div>
           )} */}
           <MenuItem onClick={cycleTheme} name={"Theme"} icon={<BsPalette />} />
-          <MenuItem onClick={todo}  name={"Settings"} icon={<FiSettings />} />
+          <MenuItem onClick={todo} name={"Settings"} icon={<FiSettings />} />
           <SignedIn>
             <MenuItem
               onClick={() => supabase.auth.signOut()}
@@ -118,9 +118,17 @@ export default function Menu() {
             />
           </SignedIn>
           <SignedOut>
-            <ModalWizard wizardChildren={<AuthWizard />}>
-              <MenuItem name={"Sign In"} icon={<FiLogIn />} />
-            </ModalWizard>
+            {/* <ModalWizard wizardChildren={<AuthWizard />}> */}
+            <MenuItem
+              className="dropdown-right dropdown-hover dropdown"
+              name={"Sign In"}
+              icon={<FiLogIn />}
+            >
+              <div className="card dropdown-content w-max px-4 rounded-3xl">
+                <AuthWizard />
+              </div>
+            </MenuItem>
+            {/* </ModalWizard> */}
           </SignedOut>
           <ModalWizard wizardChildren={<PostWizard />}>
             <MenuItem
