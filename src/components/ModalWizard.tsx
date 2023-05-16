@@ -2,7 +2,10 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode, useState } from "react";
 import PostWizard from "./PostWizard";
 
-export default function ModalPostWizard(props: { children?: ReactNode }) {
+export default function ModalWizard(props: {
+  children?: ReactNode;
+  wizardChildren?: ReactNode;
+}) {
   let [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
@@ -46,7 +49,7 @@ export default function ModalPostWizard(props: { children?: ReactNode }) {
               >
                 <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl text-left align-middle shadow-xl transition-all">
                   <div onSubmit={closeModal}>
-                    <PostWizard />
+                    {props.wizardChildren}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

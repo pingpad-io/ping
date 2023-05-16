@@ -1,32 +1,39 @@
-import { SignedIn, useClerk, useUser } from "@clerk/nextjs";
+// import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useTheme } from "next-themes";
 import { createContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { BsPalette } from "react-icons/bs";
 import {
-  FiArrowDown,
-  FiArrowUp,
   FiBell,
   FiHome,
-  FiInfo,
+  FiLogIn,
   FiLogOut,
   FiMail,
+  FiSettings,
   FiUser,
 } from "react-icons/fi";
 import { RiQuillPenLine } from "react-icons/ri";
 import { themes } from "~/styles/themes";
+import AuthWizard from "./AuthWizard";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
-import ModalPostWizard from "./ModalPostWizard";
+import ModalWizard from "./ModalWizard";
+import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
+import { SignedIn, SignedOut } from "./Signed";
 
 export const CollapsedContext = createContext(false);
 export default function Menu() {
-  const { signOut } = useClerk();
-  let [isMoreOpen, setMoreOpen] = useState(false);
+  // const { signOut } = useClerk();
+  // let [isMoreOpen, setMoreOpen] = useState(false);
   let [isCollapsed, setCollapsed] = useState(false);
   const { theme, setTheme } = useTheme();
-  let user = useUser();
+  // let user = useUser();
+  let session = useSession();
+  let supabase = useSupabaseClient();
+
+  let user = session?.user;
 
   let todo = () => toast.error("Not implemented yet");
 
@@ -63,7 +70,7 @@ export default function Menu() {
           />
           <SignedIn>
             <MenuItem
-              href={`/${user.user?.username}`}
+              href={`/${user?.user_metadata.username}`}
               name={"Profile"}
               icon={<FiUser />}
             />
@@ -71,7 +78,7 @@ export default function Menu() {
           <div className="flex flex-col sm:hidden">
             <SidebarButtons />
           </div>
-          {isMoreOpen ? (
+          {/* {isMoreOpen ? (
             <div className="flex w-max flex-col items-end rounded-3xl border-dashed border-base-300 hover:-m-1 hover:border-4">
               <MenuItem
                 onClick={() => setMoreOpen(false)}
@@ -100,17 +107,31 @@ export default function Menu() {
                 icon={<FiArrowDown />}
               />
             </div>
-          )}
-          <ModalPostWizard>
+          )} */}
+          <MenuItem onClick={cycleTheme} name={"Theme"} icon={<BsPalette />} />
+          <MenuItem onClick={todo}  name={"Settings"} icon={<FiSettings />} />
+          <SignedIn>
+            <MenuItem
+              onClick={() => supabase.auth.signOut()}
+              name={"Sign out"}
+              icon={<FiLogOut />}
+            />
+          </SignedIn>
+          <SignedOut>
+            <ModalWizard wizardChildren={<AuthWizard />}>
+              <MenuItem name={"Sign In"} icon={<FiLogIn />} />
+            </ModalWizard>
+          </SignedOut>
+          <ModalWizard wizardChildren={<PostWizard />}>
             <MenuItem
               className={
                 `border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
-                (isCollapsed ? `` : `lg:pl-10 pl-3`)
+                (isCollapsed ? `` : `pl-3 lg:pl-10`)
               }
               name={"Twot"}
               icon={<RiQuillPenLine size={24} />}
             />
-          </ModalPostWizard>
+          </ModalWizard>
         </div>
       </div>
     </CollapsedContext.Provider>
