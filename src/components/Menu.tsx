@@ -118,17 +118,17 @@ export default function Menu() {
             />
           </SignedIn>
           <SignedOut>
-            {/* <ModalWizard wizardChildren={<AuthWizard />}> */}
+            <ModalWizard wizardChildren={<AuthWizard />}>
             <MenuItem
               className="dropdown-right dropdown-hover dropdown"
               name={"Sign In"}
               icon={<FiLogIn />}
             >
-              <div className="card dropdown-content w-max px-4 rounded-3xl">
+              {/* <div className="card dropdown-content w-max px-4 rounded-3xl">
                 <AuthWizard />
-              </div>
+              </div> */}
             </MenuItem>
-            {/* </ModalWizard> */}
+            </ModalWizard>
           </SignedOut>
           <ModalWizard wizardChildren={<PostWizard />}>
             <MenuItem
