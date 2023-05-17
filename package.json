@@ -10,8 +10,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.11.13",
-    "@clerk/themes": "^1.5.0",
     "@headlessui/react": "^1.7.14",
     "@prisma/client": "^4.14.0",
     "@supabase/auth-helpers-nextjs": "^0.6.1",

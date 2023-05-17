@@ -1,4 +1,3 @@
-import { useClerk, useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FiLogIn } from "react-icons/fi";
@@ -6,8 +5,6 @@ import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
 
 export default function PostWizard() {
-  const { user } = useUser();
-  const { openSignIn } = useClerk();
   const [input, setInput] = useState("");
   const ctx = api.useContext();
 
@@ -44,21 +41,6 @@ export default function PostWizard() {
       )}
     </>
   );
-
-  // if (!user)
-  //   return (
-  //     <div className="flex flex-row items-center">
-  //       <button
-  //         onClick={() => {
-  //           openSignIn();
-  //         }}
-  //         className="btn-primary btn-ghost btn m-2"
-  //       >
-  //         {`Sign in to Post `}
-  //         <FiLogIn className="ml-2" size={24} />
-  //       </button>
-  //     </div>
-  //   );
 
   return (
     <div className="sticky top-0 z-10 flex flex-col ">

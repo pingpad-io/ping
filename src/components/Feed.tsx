@@ -22,5 +22,5 @@ export default function Feed(props: {
     <PostView key={post.post.id} post={post} />
   ));
 
-  return <>{feed}</>;
+  return <div className="px-4 ">{feed}</div>;
 }

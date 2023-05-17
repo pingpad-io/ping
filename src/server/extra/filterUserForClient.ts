@@ -1,9 +1,22 @@
-import { User } from "@clerk/nextjs/dist/api";
+import { User } from "@supabase/supabase-js";
+import { supabase } from "../db";
 
-export const filterUserForClient = (user: User) => {
+export const getPublicUserData = async (user: User) => {
+  let id = user.id;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  console.log(data);
+
+  if (error) throw error;
+
   return {
     id: user.id,
-    username: user.username ?? "",
-    profileImageUrl: user.profileImageUrl,
+    username: data?.username,
+    profileImageUrl: data?.profileImageUrl,
   };
 };

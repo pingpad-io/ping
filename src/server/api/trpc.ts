@@ -17,8 +17,8 @@ import { prisma } from "~/server/db";
  */
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
   const { req } = opts;
-  const session = getAuth(req);
-  const userId = session.userId;
+  const session = useSession()
+  const userId = session?.user.id
 
   return {
     prisma,
@@ -33,10 +33,10 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-import { getAuth } from "@clerk/nextjs/server";
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { useSession } from "@supabase/auth-helpers-react";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

@@ -6,12 +6,9 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-import { clerkClient } from "@clerk/nextjs/server";
-import type { Post } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { filterUserForClient } from "~/server/extra/filterUserForClient";
 
 // Create a ratelimiter that allows 2 requests per 1 minute
 const ratelimit = new Ratelimit({
@@ -20,26 +17,35 @@ const ratelimit = new Ratelimit({
   analytics: true,
 });
 
-const addUserDataToPosts = async (posts: Post[]) => {
-  const authors = posts.map((post) => post.authorId);
-  const users = (
-    await clerkClient.users.getUserList({ userId: authors, limit: 110 })
-  ).map(filterUserForClient);
-  return posts.map((post) => {
-    const author = users.find((user) => user.id === post.authorId);
-    if (!author) {
-      console.error("AUTHOR NOT FOUND", post);
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: `Author for post not found. POST ID: ${post.id}, USER ID: ${post.authorId}`,
-      });
-    }
-    return {
-      post,
-      author,
-    };
-  });
-};
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { Database } from "prisma/database";
+type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
+const supabase = useSupabaseClient<Database>();
+
+// const addUserDataToPosts = async (posts: Post[]) => {
+//   const authors = posts.map((post) => post.authorId);
+//   let { data, error, status } = await supabase.from("profiles")
+//     .select(`username, website, avatar_url`)
+//     .eq("id", user.id)
+//     .single();
+//   const users = (
+
+//   ).map(filterUserForClient);
+//   return posts.map((post) => {
+//     const author = users.find((user) => user.id === post.authorId);
+//     if (!author) {
+//       console.error("AUTHOR NOT FOUND", post);
+//       throw new TRPCError({
+//         code: "INTERNAL_SERVER_ERROR",
+//         message: `Author for post not found. POST ID: ${post.id}, USER ID: ${post.authorId}`,
+//       });
+//     }
+//     return {
+//       post,
+//       author,
+//     };
+//   });
+// };
 
 export const postsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -47,7 +53,8 @@ export const postsRouter = createTRPCRouter({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
     });
-    return addUserDataToPosts(posts);
+    // return addUserDataToPosts(posts);
+    return posts
   }),
 
   getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
@@ -60,7 +67,8 @@ export const postsRouter = createTRPCRouter({
         message: `Post with id ${input} was not found.`,
       });
     }
-    return (await addUserDataToPosts([post]))[0]
+    // return (await addUserDataToPosts([post]))[0]
+    return post
   }),
 
   getAllByUserId: publicProcedure
@@ -71,7 +79,8 @@ export const postsRouter = createTRPCRouter({
         take: 100,
         orderBy: [{ createdAt: "desc" }],
       });
-      return addUserDataToPosts(posts);
+      // return addUserDataToPosts(posts);
+      return posts
     }),
 
   create: privateProcedure

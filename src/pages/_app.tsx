@@ -1,5 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
-import { shadesOfPurple } from "@clerk/themes";
 import {
   Session,
   createBrowserSupabaseClient,
@@ -28,7 +26,6 @@ function Twotter({
       initialSession={pageProps.initialSession}
     >
       <ThemeProvider>
-        <ClerkProvider appearance={{ baseTheme: shadesOfPurple }}>
           <Head>
             <title>Twotter</title>
             <meta name="description" content="an anonymised twitter" />
@@ -42,7 +39,6 @@ function Twotter({
           <main className="flex min-h-screen flex-row place-content-center text-base-content">
             <Component {...pageProps} />
           </main>
-        </ClerkProvider>
       </ThemeProvider>
     </SessionContextProvider>
   );

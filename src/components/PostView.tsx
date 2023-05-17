@@ -1,4 +1,3 @@
-import { useUser } from "@clerk/nextjs";
 import { Post } from "@prisma/client";
 
 import Image from "next/image";
@@ -9,8 +8,6 @@ import TimeSinceLabel from "./TimeSinceLabel";
 import { PostWithUser } from "./Feed";
 
 export const PostView = ({ post: fullPost }: { post: PostWithUser }) => {
-  const { user } = useUser();
-
   const author = fullPost.author;
   const post = fullPost.post;
   const username = author.username;

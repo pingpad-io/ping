@@ -1,4 +1,3 @@
-// import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useTheme } from "next-themes";
 import { createContext, useState } from "react";
@@ -25,11 +24,9 @@ import { SignedIn, SignedOut } from "./Signed";
 
 export const CollapsedContext = createContext(false);
 export default function Menu() {
-  // const { signOut } = useClerk();
   // let [isMoreOpen, setMoreOpen] = useState(false);
   let [isCollapsed, setCollapsed] = useState(false);
   const { theme, setTheme } = useTheme();
-  // let user = useUser();
   let session = useSession();
   let supabase = useSupabaseClient();
 
@@ -45,7 +42,7 @@ export default function Menu() {
   return (
     <CollapsedContext.Provider value={isCollapsed}>
       <div
-        className={`sticky top-0 flex h-screen w-32 shrink flex-col place-content-between py-4 px-2`}
+        className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 px-2 lg:w-56`}
       >
         <div className="flex flex-col items-end gap-2">
           <div className="font-bold">
@@ -119,15 +116,15 @@ export default function Menu() {
           </SignedIn>
           <SignedOut>
             <ModalWizard wizardChildren={<AuthWizard />}>
-            <MenuItem
-              className="dropdown-right dropdown-hover dropdown"
-              name={"Sign In"}
-              icon={<FiLogIn />}
-            >
-              {/* <div className="card dropdown-content w-max px-4 rounded-3xl">
+              <MenuItem
+                className="dropdown-right dropdown-hover dropdown"
+                name={"Sign In"}
+                icon={<FiLogIn />}
+              >
+                {/* <div className="card dropdown-content w-max px-4 rounded-3xl">
                 <AuthWizard />
               </div> */}
-            </MenuItem>
+              </MenuItem>
             </ModalWizard>
           </SignedOut>
           <ModalWizard wizardChildren={<PostWizard />}>
