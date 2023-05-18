@@ -7,7 +7,7 @@
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
-import { prisma, supabase } from "~/server/db";
+import { prisma, supabaseKey, supabaseUrl } from "~/server/db";
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -16,13 +16,23 @@ import { prisma, supabase } from "~/server/db";
  * @see https://trpc.io/docs/context
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const { req } = opts;
-  const session = await supabase.auth.getSession()
-  const userId = session.data.session?.user.id
+  const { req, res } = opts;
+
+  let supabase = createServerSupabaseClient(
+    { req, res },
+    { supabaseUrl, supabaseKey }
+  );
+
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) {
+    console.log(error);
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
 
   return {
     prisma,
-    userId: userId,
+    userId: data.user.id,
   };
 };
 
@@ -33,10 +43,10 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { useSession } from "@supabase/auth-helpers-react";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -76,6 +86,7 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 const userIsAuthed = t.middleware(async ({ ctx, next }) => {
+  console.log(ctx.userId);
   if (!ctx.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }

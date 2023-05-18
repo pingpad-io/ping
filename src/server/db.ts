@@ -16,9 +16,18 @@ export const prisma =
 
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
-
 // Supabase
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
+export const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+export const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error("Supabase URL or anon key not found");
+}
+
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+    detectSessionInUrl: false,
+  },
+});

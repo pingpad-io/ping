@@ -17,14 +17,16 @@ const config = {
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
-    
   },
   images: {
     remotePatterns: [
       {
-        hostname: '*.googleusercontent.com',
-      }
-    ]
+        hostname: "*.googleusercontent.com",
+      },
+      {
+        hostname: "avatars.githubusercontent.com",
+      },
+    ],
   },
 };
 export default config;
