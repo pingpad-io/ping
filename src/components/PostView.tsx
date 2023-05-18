@@ -1,23 +1,24 @@
-import { Post } from "@prisma/client";
-
+import { useSession } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
-import { BsCircleFill } from "react-icons/bs";
-import { api } from "~/utils/api";
+import { RouterOutputs } from "~/utils/api";
 import TimeSinceLabel from "./TimeSinceLabel";
-import { PostWithUser } from "./Feed";
 
-export const PostView = ({ post: fullPost }: { post: PostWithUser }) => {
+export type Post = RouterOutputs["posts"]["getAll"][number];
+
+export const PostView = ({ post: fullPost }: { post: Post }) => {
   const author = fullPost.author;
   const post = fullPost.post;
   const username = author.username;
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
 
+  const user = useSession()?.user;
+
   let avatar = (
     <Link className="" href={`/${username}`}>
       <Image
         className="avatar rounded-full"
-        src={author.profileImageUrl ?? ""}
+        src={author.avatar_url ?? ""}
         alt={`${author.username}'s profile image`}
         width={48}
         height={48}

@@ -2,33 +2,31 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { getPublicUserData } from "~/server/extra/filterUserForClient";
 
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { supabase } from "~/server/db";
 
 export const profileRouter = createTRPCRouter({
   getUserByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input }) => {
-      const {data: user, error} = await supabase
+      const { data: user, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select("username, full_name, avatar_url, id")
         .eq("username", input.username)
-        .single();      
+        .single();
 
-        if (error) {
+      if (error) {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: error.message });
       }
 
-      return getPublicUserData(user[0]);
+      return user
     }),
   getUserById: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ input }) => {
-      const {data: user, error} = await supabase
+      const { data: user, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select("username, full_name, avatar_url, id")
         .eq("id", input.userId)
         .single();
 
@@ -36,6 +34,6 @@ export const profileRouter = createTRPCRouter({
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: error.message });
       }
 
-      return getPublicUserData(user[0]);
+      return user
     }),
 });

@@ -12,6 +12,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data: user } = api.profile.getUserByUsername.useQuery({
     username,
   });
+
   if (!user) {
     return <ErrorPage title="∑(O_O;) Not Found " />;
   }
@@ -29,7 +30,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="m-4 flex flex-row items-center gap-4 rounded-3xl border border-base-300 p-2">
           <div className="avatar">
             <Image
-              src={user.profileImageUrl}
+              src={user.avatar_url}
               alt={`${username}'s profile image`}
               width={64}
               height={64}

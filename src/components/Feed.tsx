@@ -3,10 +3,10 @@ import ErrorPage from "./ErrorPage";
 import { PostView } from "./PostView";
 import { SuspensePostView } from "./SuspensePostView";
 
-export type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+export type Post = RouterOutputs["posts"]["getAll"][number];
 
 export default function Feed(props: {
-  data?: PostWithUser[];
+  data?: Post[];
   isLoading?: boolean;
   isError?: boolean;
 }) {

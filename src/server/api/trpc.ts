@@ -7,7 +7,7 @@
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
-import { prisma } from "~/server/db";
+import { prisma, supabase } from "~/server/db";
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -15,10 +15,10 @@ import { prisma } from "~/server/db";
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (opts: CreateNextContextOptions) => {
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req } = opts;
-  const session = useSession()
-  const userId = session?.user.id
+  const session = await supabase.auth.getSession()
+  const userId = session.data.session?.user.id
 
   return {
     prisma,
