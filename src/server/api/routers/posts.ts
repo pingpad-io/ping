@@ -59,13 +59,15 @@ export const postsRouter = createTRPCRouter({
     let post = await ctx.prisma.post.findUnique({
       where: { id: input },
     });
+
     if (!post) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `Post with id ${input} was not found.`,
       });
     }
-    return addAuthorDataToPosts([post]);
+
+    return (await addAuthorDataToPosts([post])).at(0);
   }),
 
   getAllByUserId: publicProcedure
@@ -76,7 +78,7 @@ export const postsRouter = createTRPCRouter({
         take: 100,
         orderBy: [{ createdAt: "desc" }],
       });
-    return addAuthorDataToPosts(posts);
+      return addAuthorDataToPosts(posts);
     }),
 
   create: privateProcedure
@@ -91,7 +93,7 @@ export const postsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId?? "");
+      const { success } = await ratelimit.limit(authorId ?? "");
       if (!success) {
         throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
       }

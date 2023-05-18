@@ -16,11 +16,15 @@ export const profileRouter = createTRPCRouter({
         .single();
 
       if (error) {
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: error.message });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
       }
 
-      return user
+      return user;
     }),
+
   getUserById: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ input }) => {
@@ -31,9 +35,12 @@ export const profileRouter = createTRPCRouter({
         .single();
 
       if (!user) {
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: error.message });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
       }
 
-      return user
+      return user;
     }),
 });
