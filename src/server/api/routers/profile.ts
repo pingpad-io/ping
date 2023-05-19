@@ -4,12 +4,15 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 import { supabase } from "~/server/db";
+import { RouterOutputs } from "~/utils/api";
+
+export type Profile = RouterOutputs["profile"]["getProfileById"];
 
 export const profileRouter = createTRPCRouter({
-  getUserByUsername: publicProcedure
+  getProfileByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input }) => {
-      const { data: user, error } = await supabase
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("username, full_name, avatar_url, id")
         .eq("username", input.username)
@@ -22,25 +25,30 @@ export const profileRouter = createTRPCRouter({
         });
       }
 
-      return user;
+      return profile;
     }),
 
-  getUserById: publicProcedure
-    .input(z.object({ userId: z.string() }))
+  getProfileById: publicProcedure
+    .input(z.object({ userId: z.string().optional() }))
     .query(async ({ input }) => {
-      const { data: user, error } = await supabase
+
+      if (!input.userId) {
+        return null;
+      }
+
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("username, full_name, avatar_url, id")
         .eq("id", input.userId)
         .single();
 
-      if (!user) {
+      if (!profile) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
       }
 
-      return user;
+      return profile;
     }),
 });

@@ -9,7 +9,7 @@ import { getSSGHelper } from "~/server/extra/getSSGHelper";
 import { api } from "~/utils/api";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data: user } = api.profile.getUserByUsername.useQuery({
+  const { data: user } = api.profile.getProfileByUsername.useQuery({
     username,
   });
 
@@ -55,7 +55,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (typeof username !== "string") throw new Error("Bad URL slug");
 
-  await ssg.profile.getUserByUsername.prefetch({ username });
+  await ssg.profile.getProfileByUsername.prefetch({ username });
 
   return {
     props: {

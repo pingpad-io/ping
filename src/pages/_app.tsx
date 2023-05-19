@@ -1,6 +1,7 @@
 import {
   Session,
   createBrowserSupabaseClient,
+  createServerSupabaseClient,
 } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { Analytics } from "@vercel/analytics/react";
@@ -26,19 +27,19 @@ function Twotter({
       initialSession={pageProps.initialSession}
     >
       <ThemeProvider>
-          <Head>
-            <title>Twotter</title>
-            <meta name="description" content="an anonymised twitter" />
-            <link rel="icon" ref="/favicon.ico" />
-          </Head>
+        <Head>
+          <title>Twotter</title>
+          <meta name="description" content="an anonymised twitter" />
+          <link rel="icon" ref="/favicon.ico" />
+        </Head>
 
-          <Toaster position="top-center" />
+        <Toaster position="top-center" />
 
-          <Analytics />
+        <Analytics />
 
-          <main className="flex min-h-screen flex-row place-content-center text-base-content">
-            <Component {...pageProps} />
-          </main>
+        <main className="flex min-h-screen flex-row place-content-center text-base-content">
+          <Component {...pageProps} />
+        </main>
       </ThemeProvider>
     </SessionContextProvider>
   );

@@ -1,4 +1,4 @@
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { useTheme } from "next-themes";
 import { createContext, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import { RiQuillPenLine } from "react-icons/ri";
 import { themes } from "~/styles/themes";
+import { api } from "~/utils/api";
 import AuthWizard from "./AuthWizard";
 import { OtterIcon } from "./Icons";
 import { MenuItem } from "./MenuItem";
@@ -23,17 +24,18 @@ import { SidebarButtons } from "./Sidebar";
 import { SignedIn, SignedOut } from "./Signed";
 
 export const CollapsedContext = createContext(false);
-export default function Menu() {
-  // let [isMoreOpen, setMoreOpen] = useState(false);
-  let [isCollapsed, setCollapsed] = useState(false);
-  const { theme, setTheme } = useTheme();
-  let session = useSession();
-  let supabase = useSupabaseClient();
 
-  let user = session?.user;
+export default function Menu() {
+  let [isCollapsed, setCollapsed] = useState(false);
+  let { theme, setTheme } = useTheme();
+  let supabase = useSupabaseClient();
+  let user = useUser();
+
+  let { data: profile } = api.profile.getProfileById.useQuery({
+    userId: user?.id,
+  });
 
   let todo = () => toast.error("Not implemented yet");
-
   let cycleTheme = () => {
     let theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
     setTheme(theme);
@@ -53,58 +55,30 @@ export default function Menu() {
             />
           </div>
           <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
-          <MenuItem
-            onClick={todo}
-            href={"/"}
-            name={"Messages"}
-            icon={<FiMail />}
-          />
-          <MenuItem
-            onClick={todo}
-            href={"/"}
-            name={"Notifications"}
-            icon={<FiBell />}
-          />
           <SignedIn>
             <MenuItem
-              href={`/${user?.user_metadata.username}`}
+              onClick={todo}
+              href={"/"}
+              name={"Messages"}
+              icon={<FiMail />}
+            />
+            <MenuItem
+              onClick={todo}
+              href={"/"}
+              name={"Notifications"}
+              icon={<FiBell />}
+            />
+            {
+            <MenuItem
+              href={profile?.username ? `/${profile?.username}` : undefined}
               name={"Profile"}
               icon={<FiUser />}
             />
+            }
           </SignedIn>
           <div className="flex flex-col sm:hidden">
             <SidebarButtons />
           </div>
-          {/* {isMoreOpen ? (
-            <div className="flex w-max flex-col items-end rounded-3xl border-dashed border-base-300 hover:-m-1 hover:border-4">
-              <MenuItem
-                onClick={() => setMoreOpen(false)}
-                name={"Less"}
-                icon={<FiArrowUp />}
-              />
-              <MenuItem
-                onClick={cycleTheme}
-                name={"Theme"}
-                icon={<BsPalette />}
-              />
-              <MenuItem href="/about" name={"About"} icon={<FiInfo />} />
-              <SignedIn>
-                <MenuItem
-                  onClick={signOut}
-                  name={"Sign out"}
-                  icon={<FiLogOut />}
-                />
-              </SignedIn>
-            </div>
-          ) : (
-            <div className="flex w-max flex-col items-end rounded-3xl border-dashed border-base-300 hover:-m-1 hover:border-4">
-              <MenuItem
-                onClick={() => setMoreOpen(true)}
-                name={"More"}
-                icon={<FiArrowDown />}
-              />
-            </div>
-          )} */}
           <MenuItem onClick={cycleTheme} name={"Theme"} icon={<BsPalette />} />
           <MenuItem onClick={todo} name={"Settings"} icon={<FiSettings />} />
           <SignedIn>
@@ -117,7 +91,7 @@ export default function Menu() {
           <SignedOut>
             <ModalWizard wizardChildren={<AuthWizard />}>
               <MenuItem
-                className="dropdown-right dropdown-hover dropdown"
+                className="dropdown-hover dropdown-right dropdown"
                 name={"Sign In"}
                 icon={<FiLogIn />}
               >

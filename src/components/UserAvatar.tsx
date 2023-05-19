@@ -1,20 +1,12 @@
-import {
-  useSession,
-  useSupabaseClient,
-  useUser,
-} from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
 
 export function UserAvatar() {
   const supabase = useSupabaseClient();
   const user = useUser();
-  const [avatar_url, setAvatarUrl] = useState("");
-
-  let todo = () => {
-    toast.error("Not yet implemented");
-  };
+  const [avatar_url, setAvatarUrl] = useState(null);
 
   useEffect(() => {
     async function loadData() {
@@ -33,11 +25,12 @@ export function UserAvatar() {
   }, [user]);
 
   if (!user) return null;
+  if (!avatar_url) return null;
 
   return (
     <div className="online avatar ">
       <div className="w-12 rounded-full ">
-        <button onClick={() => todo()}>
+        <Link href={"/profile"}>
           <Image
             src={avatar_url}
             alt={"profile image"}
@@ -45,7 +38,7 @@ export function UserAvatar() {
             height={48}
             placeholder="empty"
           />
-        </button>
+        </Link>
       </div>
     </div>
   );

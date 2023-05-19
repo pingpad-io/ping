@@ -15,12 +15,12 @@ const AuthWizard = () => {
       </div>
       <div className="">
         <Auth
-          redirectTo={getURL()}
           supabaseClient={supabase}
           onlyThirdPartyProviders={true}
           appearance={{ theme: ThemeSupa }}
           providers={["google", "github"]}
           theme="light"
+          redirectTo={getURL()}
         />
       </div>
     </div>
@@ -38,6 +38,7 @@ const getURL = () => {
 
   // Make sure to including trailing `/`.
   url = url.charAt(url.length - 1) === "/" ? url : `${url}/`;
+
   return url;
 };
 

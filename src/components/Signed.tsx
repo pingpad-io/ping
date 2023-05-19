@@ -1,22 +1,23 @@
-import { useSession } from "@supabase/auth-helpers-react";
+import { useUser } from "@supabase/auth-helpers-react";
+import { PropsWithChildren } from "react";
 
 // render any react children only if the user is signed out
-export function SignedIn({ children }: { children: JSX.Element }) {
-  const session = useSession();
+export function SignedIn(props: PropsWithChildren) {
+  const user = useUser();
 
-  if (!session) {
+  if (!user) {
     return null;
   }
 
-  return <div className="h-max w-max">{children}</div>;
+  return <>{props.children}</>;
 }
 
-export function SignedOut({ children }: { children: JSX.Element }) {
-  const session = useSession();
+export function SignedOut(props: PropsWithChildren) {
+  const user = useUser();
 
-  if (session) {
+  if (user) {
     return null;
   }
 
-  return <div className="h-max w-max">{children}</div>;
+  return <>{props.children}</>;
 }
