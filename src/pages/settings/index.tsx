@@ -1,16 +1,16 @@
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeMinimal, ThemeSupa } from "@supabase/auth-ui-shared";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-import Profile from "~/components/Profile";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { PageLayout } from "~/components/Layout";
+import Profile from "~/components/Profile";
 
-const ProfilePage = () => {
+const SettingsPage = () => {
   const session = useSession();
   const supabase = useSupabaseClient();
 
   return (
     <PageLayout>
-      <div className="card bg-base-300 rounded-3xl m-20 p-8">
+      <div className="card m-4 rounded-3xl bg-base-200 p-8">
         {!session ? (
           <Auth
             supabaseClient={supabase}
@@ -27,4 +27,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default SettingsPage;

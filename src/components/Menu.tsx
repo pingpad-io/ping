@@ -69,18 +69,18 @@ export default function Menu() {
               icon={<FiBell />}
             />
             {
-            <MenuItem
-              href={profile?.username ? `/${profile?.username}` : undefined}
-              name={"Profile"}
-              icon={<FiUser />}
-            />
+              <MenuItem
+                href={profile?.username ? `/${profile?.username}` : undefined}
+                name={"Profile"}
+                icon={<FiUser />}
+              />
             }
           </SignedIn>
           <div className="flex flex-col sm:hidden">
             <SidebarButtons />
           </div>
           <MenuItem onClick={cycleTheme} name={"Theme"} icon={<BsPalette />} />
-          <MenuItem onClick={todo} name={"Settings"} icon={<FiSettings />} />
+          <MenuItem href="/settings" name={"Settings"} icon={<FiSettings />} />
           <SignedIn>
             <MenuItem
               onClick={() => supabase.auth.signOut()}
@@ -94,11 +94,7 @@ export default function Menu() {
                 className="dropdown-hover dropdown-right dropdown"
                 name={"Sign In"}
                 icon={<FiLogIn />}
-              >
-                {/* <div className="card dropdown-content w-max px-4 rounded-3xl">
-                <AuthWizard />
-              </div> */}
-              </MenuItem>
+              ></MenuItem>
             </ModalWizard>
           </SignedOut>
           <ModalWizard wizardChildren={<PostWizard />}>
