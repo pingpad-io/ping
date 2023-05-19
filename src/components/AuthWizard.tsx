@@ -8,13 +8,14 @@ const AuthWizard = () => {
 
   return (
     <div className="w-72 bg-base-100 px-4 pt-4 pb-2">
-      <div className="text-lg flex flex-row items-center justify-center gap-2 font-semibold">
+      <div className="flex flex-row items-center justify-center gap-2 text-lg font-semibold">
         <h3>Sign in to </h3>
         <OtterIcon size={25} />
         <h3>Twotter</h3>
       </div>
       <div className="">
         <Auth
+          redirectTo={getURL()}
           supabaseClient={supabase}
           onlyThirdPartyProviders={true}
           appearance={{ theme: ThemeSupa }}
@@ -24,6 +25,20 @@ const AuthWizard = () => {
       </div>
     </div>
   );
+};
+
+const getURL = () => {
+  let url =
+    process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
+    process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
+    "http://localhost:3000/";
+
+  // Make sure to include `https://` when not localhost.
+  url = url.includes("http") ? url : `https://${url}`;
+
+  // Make sure to including trailing `/`.
+  url = url.charAt(url.length - 1) === "/" ? url : `${url}/`;
+  return url;
 };
 
 export default AuthWizard;
