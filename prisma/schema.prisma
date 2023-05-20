@@ -267,12 +267,12 @@ model User {
 }
 
 model Post {
-  id        String   @id @db.Uuid @default(uuid())
+  id        String   @id @db.Uuid
   authorId  String
   createdAt DateTime @default(now())
-  updatedAt DateTime 
+  updatedAt DateTime
   content   String   @db.VarChar(300)
-  likes     Int      @default(0)
+  likers    Profile[] 
 
   @@index([authorId], map: "Post_authorId_idx")
   @@map("posts")
@@ -287,6 +287,7 @@ model Profile {
   username   String?   @unique
   full_name  String?
   avatar_url String?
+  liked_posts Post[]
   users      User      @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("profiles")

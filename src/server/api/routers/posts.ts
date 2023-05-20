@@ -18,8 +18,8 @@ const ratelimit = new Ratelimit({
 });
 
 import { Post } from "@prisma/client";
-import { supabase } from "~/server/db";
 import { randomUUID } from "crypto";
+import { supabase } from "~/server/db";
 
 const addAuthorDataToPosts = async (posts: Post[]) => {
   const authors = posts.map((post) => post.authorId);
@@ -81,6 +81,48 @@ export const postsRouter = createTRPCRouter({
       });
       return addAuthorDataToPosts(posts);
     }),
+
+  like: privateProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    // const { success } = await ratelimit.limit(ctx.userId);
+    // if (!success) {
+    //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+    // }
+
+    const post = await ctx.prisma.post.findUnique({
+      where: { id: input },
+      include: { likers: true },
+    });
+
+    const profile = await ctx.prisma.profile.findUnique({
+      where: { id: ctx.userId },
+      include: { liked_posts: true, _count: true, users: true },
+    });
+
+    if (!profile || !post) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Post or Profile not found.`,
+      });
+    }
+
+    const isLiked = post.likers.includes(profile);
+
+    if (isLiked) {
+      await ctx.prisma.post.update({
+        where: { id: ctx.userId },
+        data: {
+          likers: { create: [{ ...profile }] },
+        },
+      });
+    } else {
+      await ctx.prisma.post.update({
+        where: { id: ctx.userId },
+        data: {
+          likers: { delete: { id: profile.id } },
+        },
+      });
+    }
+  }),
 
   create: privateProcedure
     .input(

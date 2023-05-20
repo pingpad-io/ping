@@ -1,6 +1,8 @@
-import { useSession, useUser } from "@supabase/auth-helpers-react";
+import { useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { RouterOutputs } from "~/utils/api";
 import TimeSinceLabel from "./TimeSinceLabel";
 
@@ -11,6 +13,7 @@ export const PostView = ({ data }: { data: Post }) => {
   const post = data.post;
   const username = author.username;
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
+  const [liked, setLiked] = useState(false);
   const user = useUser();
 
   let avatar = (
@@ -45,13 +48,22 @@ export const PostView = ({ data }: { data: Post }) => {
     </Link>
   );
 
+  let hearts = (
+    <div className="flex h-full w-full items-center justify-center">
+      <button className="btn-square btn border-0 bg-base-100 hover:bg-base-100" onClick={() => setLiked(!liked)}>
+        {liked ? <AiFillHeart size={30} /> : <AiOutlineHeart size={30} />}
+      </button>
+    </div>
+  );
+
   return (
     <div className="my-1 flex flex-row gap-4 rounded-xl border border-base-300 p-4">
       <div className="h-12 w-12 shrink-0 grow-0">{avatar}</div>
-      <div>
+      <div className="grow">
         {metadata}
         {content}
       </div>
+      <div className="h-12 w-12 items-center justify-center">{hearts}</div>
     </div>
   );
 };
