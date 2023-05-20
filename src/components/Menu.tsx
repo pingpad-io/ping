@@ -100,7 +100,7 @@ export default function Menu() {
           <ModalWizard wizardChildren={<PostWizard />}>
             <MenuItem
               className={
-                `border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
+                `border-2 border-primary my-2 font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
                 (isCollapsed ? `` : `pl-3 lg:pl-10`)
               }
               name={"Twot"}

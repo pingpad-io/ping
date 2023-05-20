@@ -19,6 +19,7 @@ const ratelimit = new Ratelimit({
 
 import { Post } from "@prisma/client";
 import { supabase } from "~/server/db";
+import { randomUUID } from "crypto";
 
 const addAuthorDataToPosts = async (posts: Post[]) => {
   const authors = posts.map((post) => post.authorId);
@@ -100,8 +101,10 @@ export const postsRouter = createTRPCRouter({
 
       const post = await ctx.prisma.post.create({
         data: {
+          id: randomUUID(),
           authorId,
           content: input.content,
+          updatedAt: new Date().toISOString(),
         },
       });
 

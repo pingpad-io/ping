@@ -50,7 +50,7 @@ model identities {
   created_at      DateTime? @db.Timestamptz(6)
   updated_at      DateTime? @db.Timestamptz(6)
   email           String?   @default(dbgenerated("lower((identity_data ->> 'email'::text))"))
-  users           User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users           User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([provider, id])
   @@index([email])
@@ -105,7 +105,7 @@ model mfa_factors {
   updated_at     DateTime         @db.Timestamptz(6)
   secret         String?
   mfa_challenges mfa_challenges[]
-  users          User            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          User             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([user_id, created_at], map: "factor_id_created_at_idx")
   @@schema("auth")
@@ -184,7 +184,7 @@ model sessions {
   not_after      DateTime?        @db.Timestamptz(6)
   mfa_amr_claims mfa_amr_claims[]
   refresh_tokens refresh_tokens[]
-  users          User            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          User             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([user_id])
   @@index([user_id, created_at], map: "user_id_created_at_idx")
@@ -262,21 +262,21 @@ model User {
   profiles                    Profile?
 
   @@index([instance_id])
+  @@map("users")
   @@schema("auth")
-	@@map("users")
 }
 
 model Post {
-  id        String   @id(map: "Post_pkey")
+  id        String   @id @db.Uuid @default(uuid())
   authorId  String
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime 
   content   String   @db.VarChar(300)
   likes     Int      @default(0)
 
   @@index([authorId], map: "Post_authorId_idx")
+  @@map("posts")
   @@schema("public")
-	@@map("posts")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -287,10 +287,10 @@ model Profile {
   username   String?   @unique
   full_name  String?
   avatar_url String?
-  users      User     @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      User      @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@map("profiles")
   @@schema("public")
-	@@map("profiles")
 }
 
 enum aal_level {

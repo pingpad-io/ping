@@ -13,8 +13,6 @@ export const PostView = ({ data }: { data: Post }) => {
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
   const user = useUser();
 
-  console.log(author)
-
   let avatar = (
     <Link className="" href={`/${username}`}>
       <Image

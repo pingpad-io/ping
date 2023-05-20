@@ -66,7 +66,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 
   return (
     <>
-      <div className="text-md form-control card m-4 gap-2 rounded-3xl bg-base-300 p-8">
+      <div className="text-md form-control card m-4 gap-2 rounded-3xl border-2 border-base-300 p-8">
         <h2 className="text-xl">Account Settings</h2>
         <div>
           <label className="label inline-block" htmlFor="email">
@@ -82,7 +82,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
         </div>
         <div>
           <label className="label inline-block" htmlFor="name">
-            Name:
+            Full Name:
           </label>
           <input
             className="input-bordered input input-sm"
@@ -96,13 +96,18 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
           <label className="label inline-block" htmlFor="username">
             Username:
           </label>
-          <input
-            className="input-bordered input input-sm"
-            id="username"
-            type="text"
-            value={"@" + username ?? ""}
-            onChange={(e) => setUsername(e.target.value.substring(1))}
-          />
+          <div className="inline-block">
+            <label className="input-group">
+              <span className="px-2">@</span>
+              <input
+                className="input-bordered input input-sm"
+                id="username"
+                type="text"
+                value={username ?? ""}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </label>
+          </div>
         </div>
 
         <div>

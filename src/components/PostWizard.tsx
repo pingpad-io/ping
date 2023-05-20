@@ -1,6 +1,5 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { FiLogIn } from "react-icons/fi";
 import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
 
@@ -14,12 +13,25 @@ export default function PostWizard() {
       ctx.posts.invalidate();
     },
     onError: (e) => {
-      let errorText = e.data?.zodError?.fieldErrors.content;
-      if (!errorText) {
-        toast.error("Failed to post. Try again.");
-      } else {
-        toast.error(errorText[0]!);
+      let error = "Something went wrong";
+      switch (e.data?.code) {
+        case "UNAUTHORIZED":
+          error = "You must be logged in to post";
+          break;
+        case "FORBIDDEN":
+          error = "You are not allowed to post";
+          break;
+        case "TOO_MANY_REQUESTS":
+          error = "Slow down! You are posting too fast";
+          break;
+        case "BAD_REQUEST":
+          error = "Invalid request";
+          break;
+        case "PAYLOAD_TOO_LARGE":
+          error = "Your message is too big";
+          break;
       }
+      toast.error(error);
     },
   });
 
