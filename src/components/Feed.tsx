@@ -19,7 +19,7 @@ export default function Feed(props: {
     return <ErrorPage title="Couldn't fetch posts" />;
 
   let feed = props.data.map((post) => (
-    <PostView key={post.post.id} post={post} />
+    <PostView key={post.post.id} data={post} />
   ));
 
   return <div className="px-4 ">{feed}</div>;

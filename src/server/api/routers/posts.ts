@@ -22,13 +22,13 @@ import { supabase } from "~/server/db";
 
 const addAuthorDataToPosts = async (posts: Post[]) => {
   const authors = posts.map((post) => post.authorId);
-  let { data: users } = await supabase
+  let { data: profiles } = await supabase
     .from("profiles")
     .select(`username, id, avatar_url`)
     .in("id", authors);
 
   return posts.map((post) => {
-    const author = users?.find((author) => author.id === post.authorId);
+    const author = profiles?.find((author) => author.id === post.authorId);
 
     if (!author) {
       console.error("AUTHOR NOT FOUND", post);

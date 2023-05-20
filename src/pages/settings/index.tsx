@@ -1,28 +1,70 @@
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
+import {
+  GetServerSidePropsContext,
+  NextApiRequest,
+  NextApiResponse,
+  NextPage,
+} from "next";
 import { PageLayout } from "~/components/Layout";
-import Profile from "~/components/Profile";
+import ProfileSettingsView from "~/components/ProfileSettingsView";
+import { api } from "~/utils/api";
+import { getSSGHelper } from "~/utils/getSSGHelper";
 
-const SettingsPage = () => {
-  const session = useSession();
+export const getServerSideProps = async (
+  context:
+    | GetServerSidePropsContext
+    | { req: NextApiRequest; res: NextApiResponse }
+) => {
+  const ssg = getSSGHelper();
+  let supabase = createServerSupabaseClient(context);
+
+  let {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  await ssg.profile.getProfileById.prefetch({
+    userId: user?.id,
+  });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      id: user?.id ?? null,
+    },
+  };
+};
+
+const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
   const supabase = useSupabaseClient();
 
-  return (
-    <PageLayout>
-      <div className="card m-4 rounded-3xl bg-base-200 p-8">
-        {!session ? (
+  if (!id) {
+    return (
+      <PageLayout>
+        <div className="p-8 m-4 card">
           <Auth
             supabaseClient={supabase}
             onlyThirdPartyProviders={true}
             appearance={{ theme: ThemeSupa }}
             providers={["google", "github"]}
-            theme="dark"
+            theme="light"
           />
-        ) : (
-          <Profile session={session} />
-        )}
-      </div>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  const { data: profile } = api.profile.getProfileById.useQuery({
+    userId: id,
+  });
+
+  if (!profile) return null;
+
+  return (
+    <PageLayout>
+        <ProfileSettingsView profile={profile} />
     </PageLayout>
   );
 };

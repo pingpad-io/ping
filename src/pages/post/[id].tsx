@@ -4,8 +4,8 @@ import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";
 import { PageLayout } from "~/components/Layout";
 import { PostView } from "~/components/PostView";
-import { getSSGHelper } from "~/server/extra/getSSGHelper";
 import { api } from "~/utils/api";
+import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
   const { data } = api.posts.getById.useQuery(id)
@@ -25,7 +25,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 
       <PageLayout>
         <div className="p-10">
-          <PostView post={data} />
+          <PostView data={data} />
         </div>
 
         <div className="flex items-center justify-center">

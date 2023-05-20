@@ -1,4 +1,4 @@
-import { useSession } from "@supabase/auth-helpers-react";
+import { useSession, useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 import { RouterOutputs } from "~/utils/api";
@@ -6,13 +6,14 @@ import TimeSinceLabel from "./TimeSinceLabel";
 
 export type Post = RouterOutputs["posts"]["getAll"][number];
 
-export const PostView = ({ post: fullPost }: { post: Post }) => {
-  const author = fullPost.author;
-  const post = fullPost.post;
+export const PostView = ({ data }: { data: Post }) => {
+  const author = data.author;
+  const post = data.post;
   const username = author.username;
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
+  const user = useUser();
 
-  const user = useSession()?.user;
+  console.log(author)
 
   let avatar = (
     <Link className="" href={`/${username}`}>

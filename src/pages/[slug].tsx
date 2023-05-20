@@ -5,8 +5,8 @@ import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import { getSSGHelper } from "~/server/extra/getSSGHelper";
 import { api } from "~/utils/api";
+import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data: user } = api.profile.getProfileByUsername.useQuery({

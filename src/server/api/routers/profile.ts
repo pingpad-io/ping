@@ -38,7 +38,7 @@ export const profileRouter = createTRPCRouter({
 
       const { data: profile, error } = await supabase
         .from("profiles")
-        .select("username, full_name, avatar_url, id")
+        .select("username, full_name, updated_at, avatar_url, id")
         .eq("id", input.userId)
         .single();
 
