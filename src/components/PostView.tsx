@@ -2,8 +2,9 @@ import { useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { RouterOutputs } from "~/utils/api";
+import { RouterOutputs, api } from "~/utils/api";
 import TimeSinceLabel from "./TimeSinceLabel";
 
 export type Post = RouterOutputs["posts"]["getAll"][number];
@@ -15,6 +16,18 @@ export const PostView = ({ data }: { data: Post }) => {
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
   const [liked, setLiked] = useState(false);
   const user = useUser();
+
+  const sendLike = api.posts.like.useMutation({
+    onSuccess: () => {},
+    onError: () => {
+      toast.error("Error liking post");
+    },
+  });
+
+  let like = () => {
+    setLiked(!liked);
+    sendLike.mutate(post.id);
+  };
 
   let avatar = (
     <Link className="" href={`/${username}`}>
@@ -50,7 +63,10 @@ export const PostView = ({ data }: { data: Post }) => {
 
   let hearts = (
     <div className="flex h-full w-full items-center justify-center">
-      <button className="btn-square btn border-0 bg-base-100 hover:bg-base-100" onClick={() => setLiked(!liked)}>
+      <button
+        className="btn-square btn border-0 bg-base-100 hover:bg-base-100"
+        onClick={() => like()}
+      >
         {liked ? <AiFillHeart size={30} /> : <AiOutlineHeart size={30} />}
       </button>
     </div>

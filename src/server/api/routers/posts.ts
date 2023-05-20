@@ -17,7 +17,7 @@ const ratelimit = new Ratelimit({
   analytics: true,
 });
 
-import { Post } from "@prisma/client";
+import { Post, Profile } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { supabase } from "~/server/db";
 
@@ -51,6 +51,7 @@ export const postsRouter = createTRPCRouter({
     let posts = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
+      include: { likers: true },
     });
 
     return addAuthorDataToPosts(posts);
@@ -95,7 +96,7 @@ export const postsRouter = createTRPCRouter({
 
     const profile = await ctx.prisma.profile.findUnique({
       where: { id: ctx.userId },
-      include: { liked_posts: true, _count: true, users: true },
+      include: { users: true, liked_posts: true },
     });
 
     if (!profile || !post) {
@@ -109,16 +110,18 @@ export const postsRouter = createTRPCRouter({
 
     if (isLiked) {
       await ctx.prisma.post.update({
-        where: { id: ctx.userId },
+        where: { id: input },
         data: {
-          likers: { create: [{ ...profile }] },
+          likers: { delete: { id: profile.id } },
         },
       });
     } else {
       await ctx.prisma.post.update({
-        where: { id: ctx.userId },
+        where: { id: input },
         data: {
-          likers: { delete: { id: profile.id } },
+          likers: {
+            connect: [{ id: profile.id }],
+          },
         },
       });
     }
