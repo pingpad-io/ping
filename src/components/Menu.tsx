@@ -30,6 +30,12 @@ export default function Menu() {
   let { theme, setTheme } = useTheme();
   let supabase = useSupabaseClient();
   let user = useUser();
+  let ctx = api.useContext();
+
+  let signOut = () => {
+    ctx.invalidate();
+    supabase.auth.signOut();
+  };
 
   let { data: profile } = api.profile.getProfileById.useQuery({
     userId: user?.id,
@@ -83,7 +89,7 @@ export default function Menu() {
           <MenuItem href="/settings" name={"Settings"} icon={<FiSettings />} />
           <SignedIn>
             <MenuItem
-              onClick={() => supabase.auth.signOut()}
+              onClick={() => signOut()}
               name={"Sign out"}
               icon={<FiLogOut />}
             />
@@ -100,7 +106,7 @@ export default function Menu() {
           <ModalWizard wizardChildren={<PostWizard />}>
             <MenuItem
               className={
-                `border-2 border-primary my-2 font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
+                `my-2 border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
                 (isCollapsed ? `` : `pl-3 lg:pl-10`)
               }
               name={"Twot"}

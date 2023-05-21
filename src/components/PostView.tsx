@@ -1,8 +1,9 @@
 import { Post } from "@prisma/client";
 import { useUser } from "@supabase/auth-helpers-react";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { RouterOutputs, api } from "~/utils/api";
@@ -21,11 +22,26 @@ export const PostView = ({ data }: { data: AuthoredPost }) => {
   const username = author.username;
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
   const user = useUser();
+  const queryClient = useQueryClient();
   let wasLiked =
     post.likers.find((liker) => liker.id === user?.id) !== undefined;
   const [liked, setLiked] = useState(wasLiked);
+  const [likesAmount, setLikesAmount] = useState(
+    post.likers.length > 0 ? post.likers.length : 0
+  );
+  const like_text_color = liked ? "text-base-100" : "text-base-content";
+
+  useEffect(() => {
+    if (!user) {
+      setLiked(false);
+    }
+  }, [user]);
 
   const sendLike = api.posts.like.useMutation({
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ stale: true });
+      console.log("invalidated");
+    },
     onError: (error) => {
       toast.error("Error liking post " + error.message);
     },
@@ -33,6 +49,7 @@ export const PostView = ({ data }: { data: AuthoredPost }) => {
 
   let like = () => {
     setLiked(!liked);
+    liked ? setLikesAmount(likesAmount - 1) : setLikesAmount(likesAmount + 1);
     sendLike.mutate(post.id);
   };
 
@@ -68,13 +85,26 @@ export const PostView = ({ data }: { data: AuthoredPost }) => {
     </Link>
   );
 
-  let hearts = (
+  let formatter = Intl.NumberFormat("en", { notation: "compact" });
+  let likes_text = formatter.format(likesAmount);
+
+  const likes = (
     <div className="flex h-full w-full items-center justify-center">
       <button
-        className="btn-square btn border-0 bg-base-100 hover:bg-base-100"
+        className="btn-square btn relative border-0 bg-base-100 hover:bg-base-100"
         onClick={() => like()}
       >
-        {liked ? <AiFillHeart size={30} /> : <AiOutlineHeart size={30} />}
+        <span
+          className={
+            `text-md absolute z-10 flex items-center justify-center font-bold ` +
+            like_text_color
+          }
+        >
+          {likesAmount > 0 ? likes_text : ""}
+        </span>
+        <span className="absolute flex items-center justify-center">
+          {liked ? <AiFillHeart size={35} /> : <AiOutlineHeart size={35} />}
+        </span>
       </button>
     </div>
   );
@@ -86,7 +116,7 @@ export const PostView = ({ data }: { data: AuthoredPost }) => {
         {metadata}
         {content}
       </div>
-      <div className="h-12 w-12 items-center justify-center">{hearts}</div>
+      <div className="h-12 w-12 items-center justify-center">{likes}</div>
     </div>
   );
 };
