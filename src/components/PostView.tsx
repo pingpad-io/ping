@@ -6,12 +6,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { RouterOutputs, api } from "~/utils/api";
 import TimeSinceLabel from "./TimeSinceLabel";
 
 export type AuthoredPost = RouterOutputs["posts"]["getAll"][number];
 
-export const PostView = ({ data, collapsed }: { data: AuthoredPost, collapsed?: boolean }) => {
+export const PostView = ({
+  data,
+  collapsed,
+}: {
+  data: AuthoredPost;
+  collapsed?: boolean;
+}) => {
   // Prisma doesn't strongly type implicit relationships, but we know that this field exists
   const post = data.post as Post & { likers: { id: string }[] };
   if (post.likers === undefined) {
@@ -25,7 +32,7 @@ export const PostView = ({ data, collapsed }: { data: AuthoredPost, collapsed?: 
   const queryClient = useQueryClient();
   let wasLiked =
     post.likers.find((liker) => liker.id === user?.id) !== undefined;
-  const [isCollapsed, setCollapsed] = useState(collapsed ?? true)
+  const [isCollapsed, setCollapsed] = useState(collapsed ?? true);
   const [liked, setLiked] = useState(wasLiked);
   const [likesAmount, setLikesAmount] = useState(
     post.likers.length > 0 ? post.likers.length : 0
@@ -111,14 +118,35 @@ export const PostView = ({ data, collapsed }: { data: AuthoredPost, collapsed?: 
     </div>
   );
 
+  let expandable = post.content.length > 65;
+
   return (
-    <div className="my-1 flex flex-row gap-4 rounded-xl border border-base-300 p-4">
-      <div className="h-12 w-12 shrink-0 grow-0">{avatar}</div>
-      <div className={`grow ` + isCollapsed ? "truncate" : ""}>
-        {metadata}
-        {content}
+    <div
+      className={
+        `my-1 flex flex-col gap-2 rounded-xl border border-base-300 p-4 ` +
+        (expandable ? "pb-2" : "pb-4")
+      }
+    >
+      <div className="flex flex-row gap-4">
+        <div className="h-12 w-12 shrink-0 grow-0">{avatar}</div>
+        <div className={`grow ` + (isCollapsed ? " truncate" : "")}>
+          {metadata}
+          {content}
+        </div>
+        <div className="h-12 w-12 items-center justify-center">{likes}</div>
       </div>
-      <div className="h-12 w-12 items-center justify-center">{likes}</div>
+      <div className="flex flex-row justify-center">
+        {expandable &&
+          (isCollapsed ? (
+            <button onClick={() => setCollapsed(false)}>
+              <RiArrowDownSLine />
+            </button>
+          ) : (
+            <button onClick={() => setCollapsed(true)}>
+              <RiArrowUpSLine />
+            </button>
+          ))}
+      </div>
     </div>
   );
 };
