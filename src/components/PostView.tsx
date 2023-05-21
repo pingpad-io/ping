@@ -11,7 +11,7 @@ import TimeSinceLabel from "./TimeSinceLabel";
 
 export type AuthoredPost = RouterOutputs["posts"]["getAll"][number];
 
-export const PostView = ({ data }: { data: AuthoredPost }) => {
+export const PostView = ({ data, collapsed }: { data: AuthoredPost, collapsed?: boolean }) => {
   // Prisma doesn't strongly type implicit relationships, but we know that this field exists
   const post = data.post as Post & { likers: { id: string }[] };
   if (post.likers === undefined) {
@@ -25,6 +25,7 @@ export const PostView = ({ data }: { data: AuthoredPost }) => {
   const queryClient = useQueryClient();
   let wasLiked =
     post.likers.find((liker) => liker.id === user?.id) !== undefined;
+  const [isCollapsed, setCollapsed] = useState(collapsed ?? true)
   const [liked, setLiked] = useState(wasLiked);
   const [likesAmount, setLikesAmount] = useState(
     post.likers.length > 0 ? post.likers.length : 0
@@ -40,7 +41,6 @@ export const PostView = ({ data }: { data: AuthoredPost }) => {
   const sendLike = api.posts.like.useMutation({
     onSuccess: async () => {
       await queryClient.refetchQueries({ stale: true });
-      console.log("invalidated");
     },
     onError: (error) => {
       toast.error("Error liking post " + error.message);
@@ -81,7 +81,9 @@ export const PostView = ({ data }: { data: AuthoredPost }) => {
 
   let content = (
     <Link className="" href={`/post/${post.id}`}>
-      <div className="text-lg text-base-content">{post.content}</div>
+      <div className="overflow-hidden overflow-ellipsis text-lg text-base-content">
+        {post.content}
+      </div>
     </Link>
   );
 
@@ -112,7 +114,7 @@ export const PostView = ({ data }: { data: AuthoredPost }) => {
   return (
     <div className="my-1 flex flex-row gap-4 rounded-xl border border-base-300 p-4">
       <div className="h-12 w-12 shrink-0 grow-0">{avatar}</div>
-      <div className="grow">
+      <div className={`grow ` + isCollapsed ? "truncate" : ""}>
         {metadata}
         {content}
       </div>

@@ -17,13 +17,6 @@ const postingRatelimit = new Ratelimit({
   analytics: true,
 });
 
-// Create a ratelimiter that allows 2 requests per 1 minute
-const likesRatelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(20, "1 m"),
-  analytics: true,
-});
-
 import { Post } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { supabase } from "~/server/db";
@@ -67,6 +60,7 @@ export const postsRouter = createTRPCRouter({
   getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     let post = await ctx.prisma.post.findUnique({
       where: { id: input },
+      include: { likers: true },
     });
 
     if (!post) {
@@ -84,6 +78,7 @@ export const postsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       let posts = await ctx.prisma.post.findMany({
         where: { authorId: input },
+        include: { likers: true },
         take: 100,
         orderBy: [{ createdAt: "desc" }],
       });
@@ -91,10 +86,10 @@ export const postsRouter = createTRPCRouter({
     }),
 
   like: privateProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
-    const { success } = await likesRatelimit.limit(ctx.userId);
-    if (!success) {
-      throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-    }
+    // const { success } = await likesRatelimit.limit(ctx.userId);
+    // if (!success) {
+    //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+    // }
 
     const post = await ctx.prisma.post.findUnique({
       where: { id: input },
