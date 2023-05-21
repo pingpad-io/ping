@@ -10,14 +10,21 @@ import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-// Create a ratelimiter that allows 2 requests per 1 minute
-const ratelimit = new Ratelimit({
+// Create a ratelimiter that allows to post 2 requests per 1 minute
+const postingRatelimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(2, "1 m"),
   analytics: true,
 });
 
-import { Post, Profile } from "@prisma/client";
+// Create a ratelimiter that allows 2 requests per 1 minute
+const likesRatelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(20, "1 m"),
+  analytics: true,
+});
+
+import { Post } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { supabase } from "~/server/db";
 
@@ -84,19 +91,23 @@ export const postsRouter = createTRPCRouter({
     }),
 
   like: privateProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
-    // const { success } = await ratelimit.limit(ctx.userId);
-    // if (!success) {
-    //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-    // }
+    const { success } = await likesRatelimit.limit(ctx.userId);
+    if (!success) {
+      throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+    }
 
     const post = await ctx.prisma.post.findUnique({
       where: { id: input },
-      include: { likers: true },
+      select: {
+        likers: {
+          select: { id: true },
+        },
+      },
     });
 
     const profile = await ctx.prisma.profile.findUnique({
       where: { id: ctx.userId },
-      include: { users: true, liked_posts: true },
+      select: { id: true },
     });
 
     if (!profile || !post) {
@@ -106,13 +117,13 @@ export const postsRouter = createTRPCRouter({
       });
     }
 
-    const isLiked = post.likers.includes(profile);
+    const isLiked = post.likers.find((liker) => liker.id === profile.id);
 
     if (isLiked) {
       await ctx.prisma.post.update({
         where: { id: input },
         data: {
-          likers: { delete: { id: profile.id } },
+          likers: { disconnect: { id: profile.id } },
         },
       });
     } else {
@@ -139,7 +150,7 @@ export const postsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId ?? "");
+      const { success } = await postingRatelimit.limit(authorId ?? "");
       if (!success) {
         throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
       }

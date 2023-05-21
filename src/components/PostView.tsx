@@ -1,3 +1,4 @@
+import { Post } from "@prisma/client";
 import { useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,20 +8,26 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { RouterOutputs, api } from "~/utils/api";
 import TimeSinceLabel from "./TimeSinceLabel";
 
-export type Post = RouterOutputs["posts"]["getAll"][number];
+export type AuthoredPost = RouterOutputs["posts"]["getAll"][number];
 
-export const PostView = ({ data }: { data: Post }) => {
+export const PostView = ({ data }: { data: AuthoredPost }) => {
+  // Prisma doesn't strongly type implicit relationships, but we know that this field exists
+  const post = data.post as Post & { likers: { id: string }[] };
+  if (post.likers === undefined) {
+    throw new Error("likers is undefined");
+  }
+
   const author = data.author;
-  const post = data.post;
   const username = author.username;
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
-  const [liked, setLiked] = useState(false);
   const user = useUser();
+  let wasLiked =
+    post.likers.find((liker) => liker.id === user?.id) !== undefined;
+  const [liked, setLiked] = useState(wasLiked);
 
   const sendLike = api.posts.like.useMutation({
-    onSuccess: () => {},
-    onError: () => {
-      toast.error("Error liking post");
+    onError: (error) => {
+      toast.error("Error liking post " + error.message);
     },
   });
 
