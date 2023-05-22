@@ -37,7 +37,6 @@ export const PostView = ({
   const [likesAmount, setLikesAmount] = useState(
     post.likers.length > 0 ? post.likers.length : 0
   );
-  const like_text_color = liked ? "text-base-100" : "text-base-content";
   const ctx = api.useContext();
 
   useEffect(() => {
@@ -76,7 +75,6 @@ export const PostView = ({
   let metadata = (
     <div className="flex flex-row gap-2 text-sm text-base-content">
       <Link className="" href={`/${username}`}>
-        
         {`@${username}`} {user?.id === author.id && <span>(you)</span>}
       </Link>
       {`·`}
@@ -98,11 +96,12 @@ export const PostView = ({
 
   let formatter = Intl.NumberFormat("en", { notation: "compact" });
   let likes_text = formatter.format(likesAmount);
+  let like_text_color = liked ? "text-base-100" : "text-secondary-content";
 
   const likes = (
     <div className="flex h-full w-full items-center justify-center">
       <button
-        className="btn-square btn relative border-0 bg-base-100 hover:bg-base-100"
+        className="btn-secondary btn-square btn relative border-0 bg-base-100 hover:bg-base-100"
         onClick={() => like()}
       >
         <span
