@@ -1,21 +1,20 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
-import { BsGear } from "react-icons/bs";
-import { FiEdit, FiEdit2, FiEdit3 } from "react-icons/fi";
+import { FiEdit2 } from "react-icons/fi";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import { CollapsedContext } from "~/components/Menu";
 import { MenuItem } from "~/components/MenuItem";
+import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const user = useUser();
+  let user = useUser();
   const { data: profile } = api.profile.getProfileByUsername.useQuery({
     username,
   });
@@ -42,6 +41,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             <div className="text-lg font-bold">{profile.full_name}</div>
             <div className="text-xs text-base-content">@{profile.username}</div>
           </Link>
+
+          <div className="flex flex-col gap-1 place-content-between">
+            <div className="text-sm text-base-content">
+              member since: <TimeSince date={profile.created_at} />
+            </div>
+          </div>
 
           {isUserProfile && (
             <CollapsedContext.Provider value={true}>

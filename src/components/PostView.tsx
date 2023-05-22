@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { RouterOutputs, api } from "~/utils/api";
-import TimeSinceLabel from "./TimeSinceLabel";
+import { TimeElapsed } from "./TimeLabel";
 
 export type AuthoredPost = RouterOutputs["posts"]["getAll"][number];
 
@@ -80,7 +80,7 @@ export const PostView = ({
         {`@${username}`} {user?.id === author.id && <span>(you)</span>}
       </Link>
       {`·`}
-      <TimeSinceLabel date={post.createdAt} />
+      <TimeElapsed date={post.createdAt} />
       {`·`}
       <Link className="" href={`/post/${post.id}`}>
         <div className="">{postId}</div>
