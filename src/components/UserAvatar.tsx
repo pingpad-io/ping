@@ -1,34 +1,36 @@
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { Profile } from "@prisma/client";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { api } from "~/utils/api";
 
-export function UserAvatar() {
+export function UserAvatar({
+  profile,
+  size,
+  online,
+}: {
+  profile?: Profile;
+  size?: number;
+  online?: boolean;
+}) {
+  const imageSize = size ? size : 48;
   const supabase = useSupabaseClient();
-  const user = useUser();
-  const [avatar_url, setAvatarUrl] = useState(null);
-  const [username, setUsername] = useState(null);
-  let { data } = api.profile.getProfileById.useQuery({ userId: user?.id });
+  const [avatar_url, setAvatarUrl] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    async function setData() {
-      setAvatarUrl(data?.avatar_url);
-      setUsername(data?.username)
+    if (profile && profile.avatar_url && profile.username) {
+      setAvatarUrl(profile.avatar_url);
+      setUsername(profile.username);
     }
+  }, [profile]);
 
-    if (user && data) {
-      setData();
-    }
-  }, [user, data]);
-
-  if (!user || !avatar_url || !username) return (
-
-    <div className="online avatar">
-      <div className="w-12 rounded-full ">
+  if (!profile || !avatar_url || !username)
+    return (
+      <div className={`${online ? "online" : ""} avatar`}>
+        <div className="w-12 rounded-full "></div>
       </div>
-    </div>
-   );
+    );
 
   return (
     <div className="online avatar">
@@ -36,9 +38,9 @@ export function UserAvatar() {
         <Link href={"/" + username}>
           <Image
             src={avatar_url}
-            alt={"profile image"}
-            width={48}
-            height={48}
+            alt={username + "'s profile image"}
+            width={imageSize}
+            height={imageSize}
             placeholder="empty"
           />
         </Link>

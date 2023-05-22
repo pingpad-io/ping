@@ -1,24 +1,32 @@
+import { useUser } from "@supabase/auth-helpers-react";
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { BsGear } from "react-icons/bs";
+import { FiEdit, FiEdit2, FiEdit3 } from "react-icons/fi";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
+import { CollapsedContext } from "~/components/Menu";
+import { MenuItem } from "~/components/MenuItem";
+import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data: user } = api.profile.getProfileByUsername.useQuery({
+  const user = useUser();
+  const { data: profile } = api.profile.getProfileByUsername.useQuery({
     username,
   });
+  const isUserProfile = profile?.id === user?.id;
 
-  if (!user) {
+  if (!profile) {
     return <ErrorPage title="∑(O_O;) Not Found " />;
   }
 
-  const posts = api.posts.getAllByUserId.useQuery(user.id);
-  const title = `Twotter (@${user.username})`;
+  const posts = api.posts.getAllByAuthorId.useQuery(profile.id);
+  const title = `Twotter (@${profile.username})`;
 
   return (
     <>
@@ -27,20 +35,25 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </Head>
 
       <PageLayout>
-        <div className="m-4 flex flex-row items-center gap-4 rounded-3xl border border-base-300 p-2">
-          <div className="avatar">
-            <Image
-              src={user.avatar_url}
-              alt={`${username}'s profile image`}
-              width={64}
-              height={64}
-              className="m-4 rounded-full ring-2 ring-base-300"
-            />
-          </div>
-          <Link className="text-2xl" href={`/${user.username}`}>
-            @{user.username}
+        <div className="m-4 flex flex-row items-center gap-4 rounded-3xl border border-base-300 p-4">
+          <UserAvatar profile={profile} />
+
+          <Link className="grow" href={`/${profile.username}`}>
+            <div className="text-lg font-bold">{profile.full_name}</div>
+            <div className="text-xs text-base-content">@{profile.username}</div>
           </Link>
+
+          {isUserProfile && (
+            <CollapsedContext.Provider value={true}>
+              <MenuItem
+                href="/settings"
+                icon={<FiEdit2 />}
+                name="Edit Profile"
+              />
+            </CollapsedContext.Provider>
+          )}
         </div>
+
         <div className="divider"></div>
 
         <Feed {...posts} />

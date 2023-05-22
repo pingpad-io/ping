@@ -1,3 +1,4 @@
+import { useUser } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
@@ -6,6 +7,10 @@ import { UserAvatar } from "./UserAvatar";
 export default function PostWizard() {
   const [input, setInput] = useState("");
   const ctx = api.useContext();
+  const user = useUser();
+  const { data: profile } = api.profile.getProfileById.useQuery({
+    userId: user?.id,
+  });
 
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
@@ -41,23 +46,19 @@ export default function PostWizard() {
   };
 
   const postButton = isPosting ? (
-    <>
-      <div className="btn-outline loading btn w-16"></div>
-    </>
+    <div className="loading btn-outline btn w-16"></div>
   ) : (
-    <>
-      {input !== "" && (
-        <button className="btn-outline btn-primary btn w-16" type="submit">
-          Twot
-        </button>
-      )}
-    </>
+    input !== "" && (
+      <button className="btn-outline btn-primary btn w-16" type="submit">
+        Twot
+      </button>
+    )
   );
 
   return (
     <div className="sticky top-0 z-10 flex flex-col ">
       <div className="z-10 flex flex-row gap-4 bg-base-100 p-4">
-        <UserAvatar />
+        {profile && <UserAvatar profile={profile} online={true} />}
         <form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
           <input
             type="text"
