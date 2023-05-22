@@ -2,35 +2,38 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { api } from "~/utils/api";
 
 export function UserAvatar() {
   const supabase = useSupabaseClient();
   const user = useUser();
   const [avatar_url, setAvatarUrl] = useState(null);
+  const [username, setUsername] = useState(null);
+  let { data } = api.profile.getProfileById.useQuery({ userId: user?.id });
 
   useEffect(() => {
-    async function loadData() {
-      let avatar_url = await supabase
-        .from("profiles")
-        .select("avatar_url")
-        .eq("id", user?.id)
-        .single()
-        .then((data) => data.data?.avatar_url);
-      setAvatarUrl(avatar_url);
+    async function setData() {
+      setAvatarUrl(data?.avatar_url);
+      setUsername(data?.username)
     }
 
-    if (user) {
-      loadData();
+    if (user && data) {
+      setData();
     }
-  }, [user]);
+  }, [user, data]);
 
-  if (!user) return null;
-  if (!avatar_url) return null;
+  if (!user || !avatar_url || !username) return (
+
+    <div className="online avatar">
+      <div className="w-12 rounded-full ">
+      </div>
+    </div>
+   );
 
   return (
-    <div className="online avatar ">
+    <div className="online avatar">
       <div className="w-12 rounded-full ">
-        <Link href={"/profile"}>
+        <Link href={"/" + username}>
           <Image
             src={avatar_url}
             alt={"profile image"}

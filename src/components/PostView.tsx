@@ -38,6 +38,7 @@ export const PostView = ({
     post.likers.length > 0 ? post.likers.length : 0
   );
   const like_text_color = liked ? "text-base-100" : "text-base-content";
+  const ctx = api.useContext();
 
   useEffect(() => {
     if (!user) {
@@ -47,7 +48,7 @@ export const PostView = ({
 
   const sendLike = api.posts.like.useMutation({
     onSuccess: async () => {
-      await queryClient.refetchQueries({ stale: true });
+      await ctx.posts.invalidate();
     },
     onError: (error) => {
       toast.error("Error liking post " + error.message);
@@ -75,6 +76,7 @@ export const PostView = ({
   let metadata = (
     <div className="flex flex-row gap-2 text-sm text-base-content">
       <Link className="" href={`/${username}`}>
+        
         {`@${username}`} {user?.id === author.id && <span>(you)</span>}
       </Link>
       {`·`}
