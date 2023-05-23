@@ -6,9 +6,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { FiMoreHorizontal } from "react-icons/fi";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { RouterOutputs, api } from "~/utils/api";
-import { TimeElapsed } from "./TimeLabel";
+import { TimeElapsedSince } from "./TimeLabel";
 
 export type AuthoredPost = RouterOutputs["posts"]["getAll"][number];
 
@@ -78,20 +79,28 @@ export const PostView = ({
         {`@${username}`} {user?.id === author.id && <span>(you)</span>}
       </Link>
       {`·`}
-      <TimeElapsed date={post.createdAt} />
-      {`·`}
-      <Link className="" href={`/post/${post.id}`}>
-        <div className="">{postId}</div>
-      </Link>
+      <TimeElapsedSince date={post.createdAt} />
+      {/* <div className="grow"></div> */}
+      <div className="dropdown ">
+        <button>
+          <FiMoreHorizontal size={15} />
+        </button>
+        <div className="dropdown-content menu rounded-box w-52 overflow-visible bg-base-100 p-2 shadow">
+          <li>
+            <a href="">1</a>
+          </li>
+          <li>
+            <a href="">2</a>
+          </li>
+        </div>
+      </div>
     </div>
   );
 
   let content = (
-    <Link className="" href={`/post/${post.id}`}>
-      <div className="overflow-hidden overflow-ellipsis text-lg text-base-content">
-        {post.content}
-      </div>
-    </Link>
+    <div className="text-lg text-base-content w-[30rem] text-ellipsis">
+      <Link href={`/post/${post.id}`}>{post.content}</Link>
+    </div>
   );
 
   let formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -124,16 +133,20 @@ export const PostView = ({
   return (
     <div
       className={
-        `my-1 flex flex-col gap-2 rounded-xl border border-base-300 p-4 ` +
+        `my-1 flex h-min flex-col rounded-xl border border-base-300 p-4 ` +
         (expandable ? "pb-2" : "pb-4")
       }
     >
       <div className="flex flex-row gap-4">
         <div className="h-12 w-12 shrink-0 grow-0">{avatar}</div>
-        <div className={`grow ` + (isCollapsed ? " truncate" : "")}>
+
+        <div className="relative flex grow flex-col">
           {metadata}
-          {content}
+          <div className="flex grow flex-row overflow-hidden">
+            <div className={(isCollapsed ? " truncate" : "")}>{content}</div>
+          </div>
         </div>
+
         <div className="h-12 w-12 items-center justify-center">{likes}</div>
       </div>
       <div className="flex flex-row justify-center">
