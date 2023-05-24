@@ -6,9 +6,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { FiMoreHorizontal } from "react-icons/fi";
-import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
+import { BsReply, BsTrash } from "react-icons/bs";
+import { FiEdit, FiEdit2, FiMoreHorizontal } from "react-icons/fi";
+import { RiArrowDownSLine, RiArrowUpSLine, RiHashtag } from "react-icons/ri";
 import { RouterOutputs, api } from "~/utils/api";
+import { MenuItem } from "./MenuItem";
+import { SignedIn } from "./Signed";
 import { TimeElapsedSince } from "./TimeLabel";
 
 export type AuthoredPost = RouterOutputs["posts"]["getAll"][number];
@@ -39,6 +42,8 @@ export const PostView = ({
     post.likers.length > 0 ? post.likers.length : 0
   );
   const ctx = api.useContext();
+
+  let todo = () => {};
 
   useEffect(() => {
     if (!user) {
@@ -74,31 +79,59 @@ export const PostView = ({
   );
 
   let metadata = (
-    <div className="flex flex-row gap-2 text-sm text-base-content">
+    <div className="flex flex-row place-items-center gap-2 text-sm text-base-content">
       <Link className="" href={`/${username}`}>
         {`@${username}`} {user?.id === author.id && <span>(you)</span>}
       </Link>
       {`·`}
       <TimeElapsedSince date={post.createdAt} />
-      {/* <div className="grow"></div> */}
-      <div className="dropdown ">
-        <button>
-          <FiMoreHorizontal size={15} />
-        </button>
-        <div className="dropdown-content menu rounded-box w-52 overflow-visible bg-base-100 p-2 shadow">
-          <li>
-            <a href="">1</a>
-          </li>
-          <li>
-            <a href="">2</a>
-          </li>
+      <SignedIn>
+        <div className="dropdown-right dropdown pt-2">
+          <button>
+            <FiMoreHorizontal size={15} />
+          </button>
+
+          <div className="dropdown-content rounded-box h-min w-52 gap-4 overflow-visible bg-base-200 p-2 shadow">
+            {user?.id === author.id && (
+              <>
+                <MenuItem
+                  onClick={todo}
+                  compact={true}
+                  side="left"
+                  icon={<FiEdit2 />}
+                  name="edit post"
+                />
+                <MenuItem
+                  onClick={todo}
+                  compact={true}
+                  side="left"
+                  icon={<BsTrash />}
+                  name="delete post"
+                />
+              </>
+            )}
+            <MenuItem
+              onClick={todo}
+              compact={true}
+              side="left"
+              icon={<BsReply />}
+              name="reply"
+            />
+            <MenuItem
+              onClick={todo}
+              compact={true}
+              side="left"
+              icon={<RiHashtag />}
+              name="copy link"
+            />
+          </div>
         </div>
-      </div>
+      </SignedIn>
     </div>
   );
 
   let content = (
-    <div className="text-lg text-base-content w-[30rem] text-ellipsis">
+    <div className="w-[30rem] text-ellipsis text-lg text-base-content">
       <Link href={`/post/${post.id}`}>{post.content}</Link>
     </div>
   );
@@ -143,7 +176,7 @@ export const PostView = ({
         <div className="relative flex grow flex-col">
           {metadata}
           <div className="flex grow flex-row overflow-hidden">
-            <div className={(isCollapsed ? " truncate" : "")}>{content}</div>
+            <div className={isCollapsed ? " truncate" : ""}>{content}</div>
           </div>
         </div>
 

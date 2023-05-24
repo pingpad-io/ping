@@ -50,7 +50,7 @@ export default function Menu() {
   return (
     <CollapsedContext.Provider value={isCollapsed}>
       <div
-        className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 px-2 lg:w-56`}
+        className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 px-2 text-2xl lg:w-56`}
       >
         <div className="flex flex-col items-end gap-2">
           <div className="font-bold">
@@ -97,7 +97,7 @@ export default function Menu() {
           <SignedOut>
             <ModalWizard wizardChildren={<AuthWizard />}>
               <MenuItem
-                className="dropdown-hover dropdown-right dropdown"
+                className="dropdown dropdown-right dropdown-hover"
                 name={"Sign In"}
                 icon={<FiLogIn />}
               ></MenuItem>

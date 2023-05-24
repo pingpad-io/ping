@@ -7,28 +7,38 @@ export const MenuItem = (props: {
   onClick?: () => void;
   name: string;
   icon: JSX.Element;
+  compact?: boolean;
+  side?: "left" | "right";
   className?: string;
   children?: ReactNode;
 }) => {
   let collapsed = useContext(CollapsedContext);
 
-  let text = collapsed ? (
-    <></>
-  ) : (
-    <div className="hidden lg:block">{props.name}</div>
-  );
+  let text = !collapsed && <div className="hidden lg:block">{props.name}</div>;
 
   let style =
-    props.className +
-    ` flex w-fit flex-row place-content-end gap-4 rounded-3xl text-2xl hover:bg-base-200 p-3`;
+    (props.className ?? "") +
+    (props.compact ?? false
+      ? ` flex h-min flex-row w-full pr-3 rounded-3xl place-items-center hover:bg-base-300`
+      : ` flex w-fit flex-row place-content-end gap-4 rounded-3xl hover:bg-base-200 p-3`);
 
   let content = (
     <>
-      {text}
-
-      <div className="flex h-8 w-8 place-content-center items-center">
-        {props.icon}
-      </div>
+      {props.side === "left" ? (
+        <>
+          <div className="flex h-8 w-8 place-content-center items-center">
+            {props.icon}
+          </div>
+          {text}
+        </>
+      ) : (
+        <>
+          {text}
+          <div className="flex h-8 w-8 place-content-center items-center">
+            {props.icon}
+          </div>
+        </>
+      )}
 
       {props.children}
     </>
