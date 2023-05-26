@@ -269,15 +269,29 @@ model User {
 model Post {
   id        String    @id @db.Uuid
   authorId  String
+  threadId  String    @db.Uuid @default("5cfda833-5000-439c-ad21-bf0dc05c88a0")
   createdAt DateTime  @default(now())
   updatedAt DateTime
   content   String    @db.VarChar(300)
   likers    Profile[] @relation("PostToProfile")
+  thread    Thread    @relation(fields: [threadId], references: [id])
 
   @@index([authorId], map: "Post_authorId_idx")
   @@map("posts")
   @@schema("public")
 }
+
+model Thread {
+  id          String    @id @db.Uuid 
+  title       String?    
+  updated_at  DateTime? @db.Timestamptz(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  posts       Post[]    
+
+  @@map("threads")
+  @@schema("public")
+}
+
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.

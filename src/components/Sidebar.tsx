@@ -3,6 +3,7 @@ import { BsNewspaper } from "react-icons/bs";
 import { FiGlobe, FiMessageCircle, FiSearch } from "react-icons/fi";
 import { CollapsedContext } from "./Menu";
 import { MenuItem } from "./MenuItem";
+import { Threads } from "./Threads";
 
 const LatestNews = () => {
   return (
@@ -19,23 +20,6 @@ const LatestNews = () => {
   );
 };
 
-const Threads = () => {
-  return (
-    <>
-      <div className="flex-col gap-2 sm:flex xl:hidden">
-        <MenuItem name={""} icon={<FiMessageCircle />}></MenuItem>
-        <MenuItem name={""} icon={<FiGlobe />}></MenuItem>
-      </div>
-
-      <div className="card hidden flex-col justify-center bg-base-300 p-4 xl:flex">
-        <div className="card-title">Threads</div>
-        <div className="flex flex-col">
-          <div className="link-hover link p-4">- Global</div>
-        </div>
-      </div>
-    </>
-  );
-};
 
 const Links = () => {
   return (
@@ -77,7 +61,6 @@ export const SidebarButtons = () => {
   return (
     <CollapsedContext.Provider value={true}>
       <SearchBar />
-      <LatestNews />
       <Threads />
       <Links />
     </CollapsedContext.Provider>

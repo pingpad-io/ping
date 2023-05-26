@@ -6,7 +6,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { supabase } from "~/server/db";
 import { RouterOutputs } from "~/utils/api";
 
-export type Profile = RouterOutputs["profile"]["getProfileById"];
+export type Profile = RouterOutputs["profiles"]["getProfileById"];
 
 export const profileRouter = createTRPCRouter({
   getProfileByUsername: publicProcedure

@@ -30,7 +30,7 @@ export const getServerSideProps = async (
     data: { user },
   } = await supabase.auth.getUser();
 
-  await ssg.profile.getProfileById.prefetch({
+  await ssg.profiles.getProfileById.prefetch({
     userId: user?.id,
   });
 
@@ -61,7 +61,7 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
     );
   }
 
-  const { data: profile } = api.profile.getProfileById.useQuery({
+  const { data: profile } = api.profiles.getProfileById.useQuery({
     userId: id,
   });
 
@@ -99,7 +99,7 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
       <SignedIn>
         <ProfileSettingsView profile={profile} />
 
-        <div className="card m-4 gap-4 rounded-3xl border-2 bg-base-200 p-8">
+        <div className="card m-4 gap-4 rounded-3xl border-2 border-base-300 bg-base-200 p-8">
           <h2 className="text-xl ">Personalization</h2>
           <div className="flex flex-row flex-wrap">{themeButtons}</div>
         </div>

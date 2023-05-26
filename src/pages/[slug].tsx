@@ -15,7 +15,7 @@ import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   let user = useUser();
-  const { data: profile } = api.profile.getProfileByUsername.useQuery({
+  const { data: profile } = api.profiles.getProfileByUsername.useQuery({
     username,
   });
   const isUserProfile = profile?.id === user?.id;
@@ -42,7 +42,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             <div className="text-xs text-base-content">@{profile.username}</div>
           </Link>
 
-          <div className="flex flex-col gap-1 place-content-between">
+          <div className="flex flex-col place-content-between gap-1">
             <div className="text-sm text-base-content">
               member since: <TimeSince date={profile.created_at} />
             </div>
@@ -73,7 +73,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (typeof username !== "string") throw new Error("Bad URL slug");
 
-  await ssg.profile.getProfileByUsername.prefetch({ username });
+  await ssg.profiles.getProfileByUsername.prefetch({ username });
 
   return {
     props: {

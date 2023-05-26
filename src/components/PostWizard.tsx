@@ -8,7 +8,7 @@ export default function PostWizard() {
   const [input, setInput] = useState("");
   const ctx = api.useContext();
   const user = useUser();
-  const { data: profile } = api.profile.getProfileById.useQuery({
+  const { data: profile } = api.profiles.getProfileById.useQuery({
     userId: user?.id,
   });
 
@@ -46,7 +46,7 @@ export default function PostWizard() {
   };
 
   const postButton = isPosting ? (
-    <div className="loading btn-outline btn w-16"></div>
+    <div className="btn-outline loading btn w-16"></div>
   ) : (
     input !== "" && (
       <button className="btn-outline btn-primary btn w-16" type="submit">

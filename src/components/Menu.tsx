@@ -37,7 +37,7 @@ export default function Menu() {
     supabase.auth.signOut();
   };
 
-  let { data: profile } = api.profile.getProfileById.useQuery({
+  let { data: profile } = api.profiles.getProfileById.useQuery({
     userId: user?.id,
   });
 
@@ -60,7 +60,9 @@ export default function Menu() {
               icon={<OtterIcon />}
             />
           </div>
+
           <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
+
           <SignedIn>
             <MenuItem
               onClick={todo}
@@ -82,27 +84,36 @@ export default function Menu() {
               />
             }
           </SignedIn>
+
           <div className="flex flex-col sm:hidden">
             <SidebarButtons />
           </div>
+
           <MenuItem onClick={cycleTheme} name={"Theme"} icon={<BsPalette />} />
-          <MenuItem href="/settings" name={"Settings"} icon={<FiSettings />} />
+
           <SignedIn>
+            <MenuItem
+              href="/settings"
+              name={"Settings"}
+              icon={<FiSettings />}
+            />
             <MenuItem
               onClick={() => signOut()}
               name={"Sign out"}
               icon={<FiLogOut />}
             />
           </SignedIn>
+
           <SignedOut>
             <ModalWizard wizardChildren={<AuthWizard />}>
               <MenuItem
-                className="dropdown dropdown-right dropdown-hover"
+                className="dropdown-right dropdown dropdown-hover"
                 name={"Sign In"}
                 icon={<FiLogIn />}
               ></MenuItem>
             </ModalWizard>
           </SignedOut>
+
           <ModalWizard wizardChildren={<PostWizard />}>
             <MenuItem
               className={
