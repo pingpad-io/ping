@@ -85,53 +85,75 @@ export const postsRouter = createTRPCRouter({
       return addAuthorDataToPosts(posts);
     }),
 
-  like: privateProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
-    // const { success } = await likesRatelimit.limit(ctx.userId);
-    // if (!success) {
-    //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-    // }
-
-    const post = await ctx.prisma.post.findUnique({
-      where: { id: input },
-      select: {
-        likers: {
-          select: { id: true },
-        },
-      },
-    });
-
-    const profile = await ctx.prisma.profile.findUnique({
-      where: { id: ctx.userId },
-      select: { id: true },
-    });
-
-    if (!profile || !post) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: `Post or Profile not found.`,
-      });
-    }
-
-    const isLiked = post.likers.find((liker) => liker.id === profile.id);
-
-    if (isLiked) {
-      await ctx.prisma.post.update({
+  deleteById: privateProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.findUnique({
         where: { id: input },
-        data: {
-          likers: { disconnect: { id: profile.id } },
-        },
       });
-    } else {
-      await ctx.prisma.post.update({
+
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Post with id ${input} was not found.`,
+        });
+      }
+
+      if (post.authorId !== ctx.userId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `You are not allowed to delete this post.`,
+        });
+      }
+
+      await ctx.prisma.post.delete({ where: { id: input } });
+    }),
+
+  likeById: privateProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+
+      const post = await ctx.prisma.post.findUnique({
         where: { id: input },
-        data: {
+        select: {
           likers: {
-            connect: [{ id: profile.id }],
+            select: { id: true },
           },
         },
       });
-    }
-  }),
+
+      const profile = await ctx.prisma.profile.findUnique({
+        where: { id: ctx.userId },
+        select: { id: true },
+      });
+
+      if (!profile || !post) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Post or Profile not found.`,
+        });
+      }
+
+      const isLiked = post.likers.find((liker) => liker.id === profile.id);
+
+      if (isLiked) {
+        await ctx.prisma.post.update({
+          where: { id: input },
+          data: {
+            likers: { disconnect: { id: profile.id } },
+          },
+        });
+      } else {
+        await ctx.prisma.post.update({
+          where: { id: input },
+          data: {
+            likers: {
+              connect: [{ id: profile.id }],
+            },
+          },
+        });
+      }
+    }),
 
   create: privateProcedure
     .input(

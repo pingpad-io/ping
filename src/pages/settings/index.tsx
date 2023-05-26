@@ -8,8 +8,13 @@ import {
   NextApiResponse,
   NextPage,
 } from "next";
+import { useTheme } from "next-themes";
+import { Theme } from "react-daisyui";
+import { BsCircleFill } from "react-icons/bs";
 import { PageLayout } from "~/components/Layout";
 import ProfileSettingsView from "~/components/ProfileSettingsView";
+import { SignedIn, SignedOut } from "~/components/Signed";
+import { themes } from "~/styles/themes";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
@@ -43,7 +48,7 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
   if (!id) {
     return (
       <PageLayout>
-        <div className="p-8 m-4 card">
+        <div className="card m-4 p-8">
           <Auth
             supabaseClient={supabase}
             onlyThirdPartyProviders={true}
@@ -62,9 +67,59 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
 
   if (!profile) return null;
 
+  let { theme, setTheme } = useTheme();
+
+  let cycleTheme = () => {
+    let theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
+    setTheme(theme);
+  };
+
+  let themeButtons = themes.map((theme) => (
+    <Theme
+      dataTheme={theme}
+      key={theme}
+      className="inline-block w-min bg-transparent p-1"
+    >
+      <button
+        key={theme}
+        className="btn-outline btn-sm btn bg-base-100"
+        onClick={() => setTheme(theme)}
+      >
+        <div className="flex flex-row gap-1">
+          {theme}
+          <BsCircleFill className="text-primary" />
+          <BsCircleFill className="text-secondary" />
+          <BsCircleFill className="text-accent" />
+        </div>
+      </button>
+    </Theme>
+  ));
   return (
     <PageLayout>
+      <SignedIn>
         <ProfileSettingsView profile={profile} />
+
+        <div className="card m-4 gap-4 rounded-3xl border-2 bg-base-200 p-8">
+          <h2 className="text-xl ">Personalization</h2>
+          <div className="flex flex-row flex-wrap">{themeButtons}</div>
+        </div>
+
+        <div className="form-control card m-4 gap-4 rounded-3xl border-2 border-error bg-base-300 p-8">
+          <h2 className="text-xl text-error">Danger Zone</h2>
+          <button
+            className="btn-error btn-wide btn-sm btn mt-4"
+            onClick={() => supabase.auth.signOut()}
+          >
+            Sign Out
+          </button>
+        </div>
+      </SignedIn>
+
+      <SignedOut>
+        <h1 className="m-8 flex flex-row items-center justify-center p-8 text-xl">
+          Sign in to view this page
+        </h1>
+      </SignedOut>
     </PageLayout>
   );
 };

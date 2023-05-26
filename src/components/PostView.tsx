@@ -7,10 +7,10 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BsReply, BsTrash } from "react-icons/bs";
-import { FiEdit, FiEdit2, FiMoreHorizontal } from "react-icons/fi";
+import { FiEdit2, FiMoreHorizontal } from "react-icons/fi";
 import { RiArrowDownSLine, RiArrowUpSLine, RiHashtag } from "react-icons/ri";
 import { RouterOutputs, api } from "~/utils/api";
-import { MenuItem } from "./MenuItem";
+import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
 import { TimeElapsedSince } from "./TimeLabel";
 
@@ -34,7 +34,7 @@ export const PostView = ({
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
   const user = useUser();
   const queryClient = useQueryClient();
-  let wasLiked =
+  const wasLiked =
     post.likers.find((liker) => liker.id === user?.id) !== undefined;
   const [isCollapsed, setCollapsed] = useState(collapsed ?? true);
   const [liked, setLiked] = useState(wasLiked);
@@ -43,15 +43,17 @@ export const PostView = ({
   );
   const ctx = api.useContext();
 
-  let todo = () => {};
+  const todo = () => {};
+  const deletePost = api.posts.deleteById.useMutation({
+    onSuccess: async () => {
+      await ctx.posts.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Error deleting post " + error.message);
+    },
+  });
 
-  useEffect(() => {
-    if (!user) {
-      setLiked(false);
-    }
-  }, [user]);
-
-  const sendLike = api.posts.like.useMutation({
+  const sendLike = api.posts.likeById.useMutation({
     onSuccess: async () => {
       await ctx.posts.invalidate();
     },
@@ -60,11 +62,28 @@ export const PostView = ({
     },
   });
 
-  let like = () => {
+  const like = () => {
     setLiked(!liked);
     liked ? setLikesAmount(likesAmount - 1) : setLikesAmount(likesAmount + 1);
     sendLike.mutate(post.id);
   };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(postId).then(
+      function () {
+        toast.success("Copied link to clipboard");
+      },
+      function (err) {
+        toast.error("Error copying link to clipboard " + err, );
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (!user) {
+      setLiked(false);
+    }
+  }, [user]);
 
   let avatar = (
     <Link className="" href={`/${username}`}>
@@ -94,32 +113,30 @@ export const PostView = ({
           <div className="dropdown-content rounded-box h-min w-52 gap-4 overflow-visible bg-base-200 p-2 shadow">
             {user?.id === author.id && (
               <>
-                <MenuItem
+                <CompactMenuItem
                   onClick={todo}
-                  compact={true}
                   side="left"
                   icon={<FiEdit2 />}
                   name="edit post"
                 />
-                <MenuItem
-                  onClick={todo}
-                  compact={true}
+                <CompactMenuItem
+                  onClick={() => {
+                    deletePost.mutate(post.id);
+                  }}
                   side="left"
                   icon={<BsTrash />}
                   name="delete post"
                 />
               </>
             )}
-            <MenuItem
+            <CompactMenuItem
               onClick={todo}
-              compact={true}
               side="left"
               icon={<BsReply />}
               name="reply"
             />
-            <MenuItem
-              onClick={todo}
-              compact={true}
+            <CompactMenuItem
+              onClick={() => {copyLink()}}
               side="left"
               icon={<RiHashtag />}
               name="copy link"

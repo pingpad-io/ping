@@ -121,15 +121,6 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
         </div>
       </div>
 
-      <div className="form-control card m-4 gap-4 rounded-3xl border-2 border-error bg-base-300 p-8">
-        <h2 className="text-xl text-error">Danger Zone</h2>
-        <button
-          className="btn-error btn-wide btn-sm btn mt-4"
-          onClick={() => supabase.auth.signOut()}
-        >
-          Sign Out
-        </button>
-      </div>
     </>
   );
 }
