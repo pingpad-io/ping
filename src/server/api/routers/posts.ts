@@ -57,6 +57,17 @@ export const postsRouter = createTRPCRouter({
     return addAuthorDataToPosts(posts);
   }),
 
+  getAllByThreadId: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    let posts = await ctx.prisma.post.findMany({
+      take: 100,
+      where: { threadId: input },
+      orderBy: [{ createdAt: "desc" }],
+      include: { likers: true },
+    });
+
+    return addAuthorDataToPosts(posts);
+  }),
+
   getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     let post = await ctx.prisma.post.findUnique({
       where: { id: input },
@@ -162,6 +173,7 @@ export const postsRouter = createTRPCRouter({
           .string()
           .min(1, "Your twot must be longer")
           .max(300, "Your twot must be less than 300 characters long"),
+        threadId: z.string().uuid().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -176,6 +188,7 @@ export const postsRouter = createTRPCRouter({
         data: {
           id: randomUUID(),
           authorId,
+          threadId: input.threadId,
           content: input.content,
           updatedAt: new Date().toISOString(),
         },

@@ -1,20 +1,18 @@
-import { Thread } from '@prisma/client'
 import { configureStore, Action } from '@reduxjs/toolkit'
 
-// Define types
 export interface State {
-  currentThread: Thread | null
+  currentThread: string 
 }
 
 interface SetCurrentThreadAction extends Action {
   type: 'SET_CURRENT_THREAD'
-  payload: Thread
+  payload: string
 }
 
 type ActionTypes = SetCurrentThreadAction
 
 const initialState: State = {
-  currentThread: null
+  currentThread: "5cfda833-5000-439c-ad21-bf0dc05c88a0"
 }
 
 const reducer = (state = initialState, action: ActionTypes): State => {

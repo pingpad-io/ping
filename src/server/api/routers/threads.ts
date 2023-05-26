@@ -19,20 +19,24 @@ export const threadsRouter = createTRPCRouter({
         return threads;
     }),
 
-    getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
-        let thread = await ctx.prisma.thread.findUnique({
-            where: { id: input },
-        });
+    getById: publicProcedure
+        .input(z.string().nullable())
+        .query(async ({ ctx, input }) => {
+            if (!input) return null;
 
-        if (!thread) {
-            throw new TRPCError({
-                code: "NOT_FOUND",
-                message: `Thread with id ${input} was not found.`,
+            let thread = await ctx.prisma.thread.findUnique({
+                where: { id: input },
             });
-        }
 
-        return thread;
-    }),
+            if (!thread) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: `Thread with id ${input} was not found.`,
+                });
+            }
+
+            return thread;
+        }),
 
     create: privateProcedure
         .input(z.object({ title: z.string() }))
