@@ -3,7 +3,7 @@ import { BsNewspaper } from "react-icons/bs";
 import { FiGlobe, FiMessageCircle, FiSearch } from "react-icons/fi";
 import { CollapsedContext } from "./Menu";
 import { MenuItem } from "./MenuItem";
-import { Threads } from "./Threads";
+import Threads from "./Threads";
 
 const LatestNews = () => {
   return (

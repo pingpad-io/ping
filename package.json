@@ -12,6 +12,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.14",
     "@prisma/client": "^4.14.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "@supabase/auth-helpers-nextjs": "^0.6.1",
     "@supabase/auth-helpers-react": "^0.3.1",
     "@supabase/auth-ui-react": "^0.4.2",
@@ -29,12 +30,15 @@
     "daisyui": "^2.51.6",
     "dayjs": "^1.11.7",
     "next": "^13.2.1",
+    "next-redux-wrapper": "^8.1.0",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-daisyui": "^3.0.3",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.8.0",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.1",
     "superjson": "1.9.1",
     "theme-change": "^2.5.0",
     "zod": "^3.20.6"
