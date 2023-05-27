@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
 import { useDispatch, useSelector } from "react-redux";
-import { State } from "~/pages/store";
+import { State } from "~/utils/store";
 
 export default function PostWizard() {
   const [input, setInput] = useState("");

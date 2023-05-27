@@ -1,10 +1,12 @@
-import { FiGlobe, FiMessageCircle } from "react-icons/fi";
+import { FiCrosshair, FiGlobe, FiMessageCircle } from "react-icons/fi";
 import { MenuItem } from "./MenuItem";
 import { api } from "~/utils/api";
 
 import { connect, ConnectedProps, useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { State } from "~/pages/store";
+import { RiCloseLine } from "react-icons/ri";
+import { BsPlus } from "react-icons/bs";
+import { State } from "~/utils/store";
 
 export default function Thread() {
   let { data: threads, isLoading } = api.threads.getAll.useQuery();
@@ -34,8 +36,15 @@ export default function Thread() {
       </div>
 
       <div className="card hidden flex-col justify-center bg-base-300 p-4 xl:flex">
-        <div className="card-title">Threads</div>
-        {threadList}
+        <div className="flex flex-row place-content-between">
+            <div className="card-title">Threads</div>
+            <button onClick={() => {}}>
+                <BsPlus size={27} />
+            </button>
+        </div>
+        <div className="card-content">
+            {threadList}
+        </div>
       </div>
     </>
   );

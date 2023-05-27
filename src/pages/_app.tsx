@@ -12,7 +12,7 @@ import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
-import store from "./store";
+import { store } from "../utils/store";
 
 function Twotter({
   Component,
