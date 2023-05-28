@@ -8,9 +8,18 @@ import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
-  const { data } = api.posts.getById.useQuery(id)
+  const { data, isError, error } = api.posts.getById.useQuery(id, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
 
-  if (!data) return <ErrorPage title={"Post not found qwq"} />;
+  if (isError)
+    return <ErrorPage title={error?.message  ?? "Post not found qwq"} />;
+
+
+  if (!data) return <ErrorPage title={""} />;
 
   const post = data.post;
   const author = data.author;

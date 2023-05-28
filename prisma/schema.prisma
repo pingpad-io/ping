@@ -266,6 +266,15 @@ model User {
   @@schema("auth")
 }
 
+enum PostStatus {
+  Posted
+  Drafted
+  Delayed
+  UserDeleted
+  AdminDeleted 
+  @@schema("public")
+}
+
 model Post {
   id        String    @id @db.Uuid
   authorId  String
@@ -275,6 +284,7 @@ model Post {
   content   String    @db.VarChar(300)
   likers    Profile[] @relation("PostToProfile")
   thread    Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  status    PostStatus @default(Posted)
 
   @@index([authorId], map: "Post_authorId_idx")
   @@map("posts")

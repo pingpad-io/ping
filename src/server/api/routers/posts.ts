@@ -52,21 +52,24 @@ export const postsRouter = createTRPCRouter({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
       include: { likers: true },
+      where: {status: "Posted"}
     });
 
     return addAuthorDataToPosts(posts);
   }),
 
-  getAllByThreadId: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    let posts = await ctx.prisma.post.findMany({
-      take: 100,
-      where: { threadId: input },
-      orderBy: [{ createdAt: "desc" }],
-      include: { likers: true },
-    });
+  getAllByThreadId: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      let posts = await ctx.prisma.post.findMany({
+        take: 100,
+        where: { threadId: input,  status: "Posted"  },
+        orderBy: [{ createdAt: "desc" }],
+        include: { likers: true },
+      });
 
-    return addAuthorDataToPosts(posts);
-  }),
+      return addAuthorDataToPosts(posts);
+    }),
 
   getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     let post = await ctx.prisma.post.findUnique({
@@ -81,7 +84,27 @@ export const postsRouter = createTRPCRouter({
       });
     }
 
-    return (await addAuthorDataToPosts([post])).at(0);
+    if (post.status === "UserDeleted") {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `Post with id ${input} was deleted.`,
+        cause: "the user"
+      });
+    }
+
+    if (post.status === "AdminDeleted") {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `Post with id ${input} was deleted.`,
+        cause: "the moderation team"
+      });
+    }
+
+    if (post.status === "Posted"){
+      return (await addAuthorDataToPosts([post])).at(0);
+    }
+
+    throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: "Something went wrong"})
   }),
 
   getAllByAuthorId: publicProcedure
@@ -117,13 +140,15 @@ export const postsRouter = createTRPCRouter({
         });
       }
 
-      await ctx.prisma.post.delete({ where: { id: input } });
+      await ctx.prisma.post.update({
+        where: { id: input },
+        data: { status: "UserDeleted" },
+      });
     }),
 
   likeById: privateProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
-
       const post = await ctx.prisma.post.findUnique({
         where: { id: input },
         select: {
