@@ -15,11 +15,8 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
     retry: false,
   });
 
-  if (isError)
-    return <ErrorPage title={error?.message  ?? "Post not found qwq"} />;
-
-
-  if (!data) return <ErrorPage title={""} />;
+  if (isError) return <ErrorPage title={error?.message} />;
+  if (!data) return <ErrorPage title={"Post not found qwq"} />;
 
   const post = data.post;
   const author = data.author;

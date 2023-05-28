@@ -52,7 +52,7 @@ export const postsRouter = createTRPCRouter({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
       include: { likers: true },
-      where: {status: "Posted"}
+      where: { status: "Posted" }
     });
 
     return addAuthorDataToPosts(posts);
@@ -63,7 +63,7 @@ export const postsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       let posts = await ctx.prisma.post.findMany({
         take: 100,
-        where: { threadId: input,  status: "Posted"  },
+        where: { threadId: input, status: "Posted" },
         orderBy: [{ createdAt: "desc" }],
         include: { likers: true },
       });
@@ -87,7 +87,7 @@ export const postsRouter = createTRPCRouter({
     if (post.status === "UserDeleted") {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: `Post with id ${input} was deleted.`,
+        message: `This twot was deleted by the user.`,
         cause: "the user"
       });
     }
@@ -95,16 +95,16 @@ export const postsRouter = createTRPCRouter({
     if (post.status === "AdminDeleted") {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: `Post with id ${input} was deleted.`,
+        message: `This twot was deleted by the moderation team.`,
         cause: "the moderation team"
       });
     }
 
-    if (post.status === "Posted"){
+    if (post.status === "Posted") {
       return (await addAuthorDataToPosts([post])).at(0);
     }
 
-    throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: "Something went wrong"})
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" })
   }),
 
   getAllByAuthorId: publicProcedure
