@@ -8,14 +8,18 @@ import { BsPlus } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { DEFAULT_THREAD_ID, State } from "~/utils/store";
 import ModalWizard from "./ModalWizard";
+import { ThreadLink } from "./ThreadLink";
 import ThreadWizard from "./ThreadWizard";
 
 export default function Thread() {
-  let { data: threads, isLoading } = api.threads.getAll.useQuery();
+  let { data: threads } = api.threads.getAll.useQuery();
   let currentThread = useSelector((state: State) => state.currentThread);
   let setCurrentThread = useDispatch();
   let user = useUser();
   let ctx = api.useContext();
+
+  let globalThreads = threads?.filter((thread) => thread.authorId === null);
+  let userThreads = threads?.filter((thread) => thread.authorId !== null);
 
   let deleteThread = api.threads.delete.useMutation({
     onSuccess: () => {
@@ -32,20 +36,28 @@ export default function Thread() {
     },
   });
 
-  let threadList = threads?.map((thread) => {
+  let globalThreadList = globalThreads?.map((thread) => {
     return (
       <div
         key={thread.id}
         className="flex flex-row place-items-center gap-2 px-4 py-2"
       >
-        <button
-          onClick={() =>
-            setCurrentThread({ type: "SET_CURRENT_THREAD", payload: thread.id })
-          }
-          className="hover:underline"
-        >
-          {thread.title}
-        </button>
+        <ThreadLink id={thread.id} title={thread.title} />
+      </div>
+    );
+  });
+
+  let userThreadList = userThreads?.map((thread) => {
+    return (
+      <div
+        key={thread.id}
+        className="flex flex-row place-items-center gap-2 px-4 py-2"
+      >
+        <ThreadLink id={thread.id} title={thread.title} />
+
+        <span className="text-xs text-base-content">
+          (@{thread.author?.username})
+        </span>
 
         {user?.id === thread.authorId && (
           <button
@@ -68,13 +80,15 @@ export default function Thread() {
       </div>
 
       <div className="card hidden flex-col justify-center bg-base-300 p-4 xl:flex">
+        <div className="card-title">Threads</div>
+        <div className="card-content">{globalThreadList}</div>
         <div className="flex flex-row place-content-between">
-          <div className="card-title">Threads</div>
+          <div className="card-title">User Threads</div>
           <ModalWizard wizardChildren={<ThreadWizard />}>
             <BsPlus size={27} />
           </ModalWizard>
         </div>
-        <div className="card-content">{threadList}</div>
+        <div className="card-content">{userThreadList}</div>
       </div>
     </>
   );
