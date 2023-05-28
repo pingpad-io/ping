@@ -11,8 +11,10 @@ interface SetCurrentThreadAction extends Action {
 
 type ActionTypes = SetCurrentThreadAction;
 
+export const DEFAULT_THREAD_ID = "5cfda833-5000-439c-ad21-bf0dc05c88a0"
+
 const initialState: State = {
-  currentThread: "5cfda833-5000-439c-ad21-bf0dc05c88a0",
+  currentThread: DEFAULT_THREAD_ID
 };
 
 const reducer = (state = initialState, action: ActionTypes): State => {

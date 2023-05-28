@@ -1,55 +1,76 @@
 import { z } from "zod";
 
 import {
-    createTRPCRouter,
-    privateProcedure,
-    publicProcedure,
+  createTRPCRouter,
+  privateProcedure,
+  publicProcedure,
 } from "~/server/api/trpc";
 
 import { TRPCError } from "@trpc/server";
 import { randomUUID } from "crypto";
 
 export const threadsRouter = createTRPCRouter({
-    getAll: publicProcedure.query(async ({ ctx }) => {
-        let threads = await ctx.prisma.thread.findMany({
-            take: 100,
-            orderBy: [{ created_at: "asc" }],
-        });
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    let threads = await ctx.prisma.thread.findMany({
+      take: 100,
+      orderBy: [{ created_at: "asc" }],
+    });
 
-        return threads;
+    return threads;
+  }),
+
+  getById: publicProcedure
+    .input(z.string().nullable())
+    .query(async ({ ctx, input }) => {
+      if (!input) return null;
+
+      let thread = await ctx.prisma.thread.findUnique({
+        where: { id: input },
+      });
+
+      if (!thread) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Thread with id ${input} was not found.`,
+        });
+      }
+
+      return thread;
     }),
 
-    getById: publicProcedure
-        .input(z.string().nullable())
-        .query(async ({ ctx, input }) => {
-            if (!input) return null;
+  delete: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const thread = await ctx.prisma.thread.findUnique({
+        where: { id: input.id },
+        select: { authorId: true },
+      });
 
-            let thread = await ctx.prisma.thread.findUnique({
-                where: { id: input },
-            });
+      if (thread?.authorId !== ctx.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not allowed to delete this thread.",
+        });
+      }
 
-            if (!thread) {
-                throw new TRPCError({
-                    code: "NOT_FOUND",
-                    message: `Thread with id ${input} was not found.`,
-                });
-            }
+      await ctx.prisma.thread.delete({
+        where: { id: input.id },
+      });
+    }),
 
-            return thread;
-        }),
+  create: privateProcedure
+    .input(z.object({ title: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.prisma.thread.create({
+        data: {
+          id: randomUUID(),
+          authorId: ctx.userId,
+          updated_at: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          title: input.title,
+        },
+      });
 
-    create: privateProcedure
-        .input(z.object({ title: z.string() }))
-        .mutation(async ({ ctx, input }) => {
-            const post = await ctx.prisma.thread.create({
-                data: {
-                    id: randomUUID(),
-                    updated_at: new Date().toISOString(),
-                    created_at: new Date().toISOString(),
-                    title: input.title,
-                },
-            });
-
-            return post;
-        }),
+      return post;
+    }),
 });

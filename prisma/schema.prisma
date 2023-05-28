@@ -269,12 +269,12 @@ model User {
 model Post {
   id        String    @id @db.Uuid
   authorId  String
-  threadId  String    @db.Uuid @default("5cfda833-5000-439c-ad21-bf0dc05c88a0")
+  threadId  String    @default("5cfda833-5000-439c-ad21-bf0dc05c88a0") @db.Uuid
   createdAt DateTime  @default(now())
   updatedAt DateTime
   content   String    @db.VarChar(300)
   likers    Profile[] @relation("PostToProfile")
-  thread    Thread    @relation(fields: [threadId], references: [id])
+  thread    Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([authorId], map: "Post_authorId_idx")
   @@map("posts")
@@ -282,28 +282,30 @@ model Post {
 }
 
 model Thread {
-  id          String    @id @db.Uuid 
-  title       String?    
-  updated_at  DateTime? @db.Timestamptz(6)
-  created_at  DateTime? @default(now()) @db.Timestamptz(6)
-  posts       Post[]    
+  id         String    @id @db.Uuid
+  title      String?
+  updated_at DateTime? @db.Timestamptz(6)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  posts      Post[]
+  author     Profile?   @relation(fields: [authorId], references: [id])
+  authorId   String?    @db.Uuid 
 
   @@map("threads")
   @@schema("public")
 }
 
-
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Profile {
-  id          String    @id @db.Uuid
-  updated_at  DateTime? @db.Timestamptz(6)
-  username    String?   @unique @default(dbgenerated("gen_random_uuid()"))
-  full_name   String?
-  avatar_url  String?
-  created_at  DateTime? @default(now()) @db.Timestamptz(6)
-  users       User      @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  liked_posts Post[]    @relation("PostToProfile")
+  id            String    @id @db.Uuid
+  updated_at    DateTime? @db.Timestamptz(6)
+  username      String?   @unique @default(dbgenerated("gen_random_uuid()"))
+  full_name     String?
+  avatar_url    String?
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  user          User      @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  liked_posts   Post[]    @relation("PostToProfile")
+  owned_threads Thread[]
 
   @@map("profiles")
   @@schema("public")

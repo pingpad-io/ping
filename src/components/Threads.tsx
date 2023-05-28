@@ -1,21 +1,43 @@
-import { FiCrosshair, FiGlobe, FiMessageCircle } from "react-icons/fi";
-import { MenuItem } from "./MenuItem";
+import { FiGlobe, FiMessageCircle, FiX } from "react-icons/fi";
 import { api } from "~/utils/api";
+import { MenuItem } from "./MenuItem";
 
-import { connect, ConnectedProps, useDispatch, useSelector } from "react-redux";
-import { Dispatch } from "redux";
-import { RiCloseLine } from "react-icons/ri";
+import { useUser } from "@supabase/auth-helpers-react";
+import { toast } from "react-hot-toast";
 import { BsPlus } from "react-icons/bs";
-import { State } from "~/utils/store";
+import { useDispatch, useSelector } from "react-redux";
+import { DEFAULT_THREAD_ID, State } from "~/utils/store";
+import ModalWizard from "./ModalWizard";
+import ThreadWizard from "./ThreadWizard";
 
 export default function Thread() {
   let { data: threads, isLoading } = api.threads.getAll.useQuery();
   let currentThread = useSelector((state: State) => state.currentThread);
   let setCurrentThread = useDispatch();
+  let user = useUser();
+  let ctx = api.useContext();
+
+  let deleteThread = api.threads.delete.useMutation({
+    onSuccess: () => {
+      ctx.threads.invalidate();
+      ctx.posts.invalidate();
+      setCurrentThread({
+        type: "SET_CURRENT_THREAD",
+        payload: DEFAULT_THREAD_ID,
+      });
+      toast.success("Thread deleted!");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   let threadList = threads?.map((thread) => {
     return (
-      <div key={thread.id} className="px-4 py-2">
+      <div
+        key={thread.id}
+        className="flex flex-row place-items-center gap-2 px-4 py-2"
+      >
         <button
           onClick={() =>
             setCurrentThread({ type: "SET_CURRENT_THREAD", payload: thread.id })
@@ -24,6 +46,16 @@ export default function Thread() {
         >
           {thread.title}
         </button>
+
+        {user?.id === thread.authorId && (
+          <button
+            onClick={() => {
+              deleteThread.mutate({ id: thread.id });
+            }}
+          >
+            <FiX />
+          </button>
+        )}
       </div>
     );
   });
@@ -37,14 +69,12 @@ export default function Thread() {
 
       <div className="card hidden flex-col justify-center bg-base-300 p-4 xl:flex">
         <div className="flex flex-row place-content-between">
-            <div className="card-title">Threads</div>
-            <button onClick={() => {}}>
-                <BsPlus size={27} />
-            </button>
+          <div className="card-title">Threads</div>
+          <ModalWizard wizardChildren={<ThreadWizard />}>
+            <BsPlus size={27} />
+          </ModalWizard>
         </div>
-        <div className="card-content">
-            {threadList}
-        </div>
+        <div className="card-content">{threadList}</div>
       </div>
     </>
   );

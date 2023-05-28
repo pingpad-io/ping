@@ -3,7 +3,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { OtterIcon } from "./Icons";
 
-const AuthWizard = () => {
+const LoginWizard = () => {
   let supabase = useSupabaseClient();
 
   return (
@@ -42,4 +42,4 @@ const getURL = () => {
   return url;
 };
 
-export default AuthWizard;
+export default LoginWizard;

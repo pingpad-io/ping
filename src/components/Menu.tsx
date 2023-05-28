@@ -15,8 +15,8 @@ import {
 import { RiQuillPenLine } from "react-icons/ri";
 import { themes } from "~/styles/themes";
 import { api } from "~/utils/api";
-import AuthWizard from "./AuthWizard";
 import { OtterIcon } from "./Icons";
+import LoginWizard from "./LoginWizard";
 import { MenuItem } from "./MenuItem";
 import ModalWizard from "./ModalWizard";
 import PostWizard from "./PostWizard";
@@ -105,7 +105,7 @@ export default function Menu() {
           </SignedIn>
 
           <SignedOut>
-            <ModalWizard wizardChildren={<AuthWizard />}>
+            <ModalWizard wizardChildren={<LoginWizard />}>
               <MenuItem
                 className="dropdown-right dropdown dropdown-hover"
                 name={"Sign In"}
