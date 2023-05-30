@@ -1,7 +1,6 @@
 import { Post } from "@prisma/client";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,6 +12,7 @@ import { RouterOutputs, api } from "~/utils/api";
 import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
 import { TimeElapsedSince } from "./TimeLabel";
+import { UserAvatar } from "./UserAvatar";
 
 export type AuthoredPost = RouterOutputs["posts"]["getAll"][number];
 
@@ -74,7 +74,7 @@ export const PostView = ({
         toast.success("Copied link to clipboard");
       },
       function (err) {
-        toast.error("Error copying link to clipboard " + err, );
+        toast.error("Error copying link to clipboard " + err);
       }
     );
   };
@@ -85,29 +85,23 @@ export const PostView = ({
     }
   }, [user]);
 
-  let avatar = (
-    <Link className="" href={`/${username}`}>
-      <Image
-        className="avatar rounded-full"
-        src={author.avatar_url ?? ""}
-        alt={`${author.username}'s profile image`}
-        width={48}
-        height={48}
-      />
-    </Link>
-  );
-
   let metadata = (
-    <div className="flex flex-row place-items-center gap-2 text-sm text-base-content">
-      <Link className="" href={`/${username}`}>
-        {`@${username}`} {user?.id === author.id && <span>(you)</span>}
+    <div className="flex flex-row place-items-center gap-2 text-sm font-light text-base-content ">
+      <Link className="flex gap-2" href={`/${username}`}>
+        <span className="font-bold ">{author.full_name}</span>
+        <span className="">{`@${username}`}</span>
       </Link>
-      {`·`}
-      <TimeElapsedSince date={post.createdAt} />
+
+      <span className="">{`·`}</span>
+
+      <span className="">
+        <TimeElapsedSince date={post.createdAt} />
+      </span>
+
       <SignedIn>
-        <div className="dropdown-right dropdown pt-2">
+        <div className="dropdown-right dropdown pt-2 font-normal">
           <button>
-            <FiMoreHorizontal size={15} />
+            <FiMoreHorizontal strokeWidth={1.5} size={15} />
           </button>
 
           <div className="dropdown-content rounded-box h-min w-52 gap-4 overflow-visible bg-base-200 p-2 shadow">
@@ -136,7 +130,9 @@ export const PostView = ({
               name="reply"
             />
             <CompactMenuItem
-              onClick={() => {copyLink()}}
+              onClick={() => {
+                copyLink();
+              }}
               side="left"
               icon={<RiHashtag />}
               name="copy link"
@@ -148,7 +144,7 @@ export const PostView = ({
   );
 
   let content = (
-    <div className="w-[30rem] text-ellipsis text-lg text-base-content">
+    <div className="w-[30rem] text-ellipsis  text-base-content">
       <Link href={`/post/${post.id}`}>{post.content}</Link>
     </div>
   );
@@ -188,7 +184,9 @@ export const PostView = ({
       }
     >
       <div className="flex flex-row gap-4">
-        <div className="h-12 w-12 shrink-0 grow-0">{avatar}</div>
+        <div className="h-12 w-12 shrink-0 grow-0">
+          <UserAvatar profile={author} />
+        </div>
 
         <div className="relative flex grow flex-col">
           {metadata}

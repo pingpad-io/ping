@@ -25,7 +25,7 @@ const addAuthorDataToPosts = async (posts: Post[]) => {
   const authors = posts.map((post) => post.authorId);
   let { data: profiles } = await supabase
     .from("profiles")
-    .select(`username, id, avatar_url`)
+    .select(`username, id, avatar_url, full_name`)
     .in("id", authors);
 
   return posts.map((post) => {
