@@ -13,7 +13,7 @@ export const threadsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     let threads = await ctx.prisma.thread.findMany({
       take: 100,
-      include: { author: { select: { username: true } } },
+      include: { author: { select: { username: true } },  posts: true },
       orderBy: [{ created_at: "asc" }],
     });
 
@@ -27,6 +27,7 @@ export const threadsRouter = createTRPCRouter({
 
       let thread = await ctx.prisma.thread.findUnique({
         where: { id: input },
+        include: { posts: true, author: true },
       });
 
       if (!thread) {

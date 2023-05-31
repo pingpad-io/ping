@@ -1,4 +1,3 @@
-import { Profile } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,7 +6,7 @@ export function UserAvatar({
   size = 48,
   online = false,
 }: {
-  profile?: {avatar_url: string, username: string};
+  profile?: { avatar_url: string | null; username: string | null };
   size?: number;
   online?: boolean;
 }) {

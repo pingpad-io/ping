@@ -1,21 +1,21 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { api } from "~/utils/api";
-import { UserAvatar } from "./UserAvatar";
-import { useDispatch, useSelector } from "react-redux";
 import { State } from "~/utils/store";
+import { UserAvatar } from "./UserAvatar";
 
 export default function PostWizard() {
   const [input, setInput] = useState("");
   const ctx = api.useContext();
   const user = useUser();
   const { data: profile } = api.profiles.getProfileById.useQuery({
-    userId: user?.id,
+    id: user?.id,
   });
 
   const currentThreadId = useSelector((state: State) => state.currentThread);
-  const {data: currentThread} = api.threads.getById.useQuery(currentThreadId);
+  const { data: currentThread } = api.threads.getById.useQuery(currentThreadId);
 
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
@@ -47,7 +47,7 @@ export default function PostWizard() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate({ content: input,  threadId: currentThreadId });
+    mutate({ content: input, threadId: currentThreadId });
   };
 
   const postButton = isPosting ? (
@@ -59,7 +59,6 @@ export default function PostWizard() {
       </button>
     )
   );
-
 
   return (
     <div className="sticky top-0 z-10 flex flex-col ">
@@ -82,7 +81,7 @@ export default function PostWizard() {
                   before:h-0 before:border-b before:border-base-300 before:bg-base-300 
                   after:h-0 after:border-b after:border-base-300 after:bg-base-300"
       >
-        {currentThread?.title} 
+        {currentThread?.title}
       </div>
     </div>
   );

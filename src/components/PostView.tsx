@@ -1,6 +1,5 @@
 import { Post } from "@prisma/client";
 import { useUser } from "@supabase/auth-helpers-react";
-import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -9,6 +8,7 @@ import { BsReply, BsTrash } from "react-icons/bs";
 import { FiEdit2, FiMoreHorizontal } from "react-icons/fi";
 import { RiArrowDownSLine, RiArrowUpSLine, RiHashtag } from "react-icons/ri";
 import { RouterOutputs, api } from "~/utils/api";
+import { FlairView } from "./FlairView";
 import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
 import { TimeElapsedSince } from "./TimeLabel";
@@ -33,7 +33,6 @@ export const PostView = ({
   const username = author.username;
   const postId = "#" + post.id.substring(post.id.length - 8).toLowerCase();
   const user = useUser();
-  const queryClient = useQueryClient();
   const wasLiked =
     post.likers.find((liker) => liker.id === user?.id) !== undefined;
   const [isCollapsed, setCollapsed] = useState(collapsed ?? true);
@@ -85,10 +84,19 @@ export const PostView = ({
     }
   }, [user]);
 
+  let flair =
+    author.flairs.length > 0 ? (
+      <span className="h-min">
+        <FlairView flair={author.flairs.at(0)} size="xs" />
+      </span>
+    ) : (
+      <></>
+    );
   let metadata = (
-    <div className="flex flex-row place-items-center gap-2 text-sm font-light text-base-content ">
+    <div className="flex  flex-row place-items-center gap-2 text-sm font-light text-base-content ">
       <Link className="flex gap-2" href={`/${username}`}>
         <span className="font-bold ">{author.full_name}</span>
+        {flair}
         <span className="">{`@${username}`}</span>
       </Link>
 
@@ -185,11 +193,12 @@ export const PostView = ({
     >
       <div className="flex flex-row gap-4">
         <div className="h-12 w-12 shrink-0 grow-0">
-          <UserAvatar profile={author} />
+          {<UserAvatar profile={author} />}
         </div>
 
         <div className="relative flex grow flex-col">
           {metadata}
+
           <div className="flex grow flex-row overflow-hidden">
             <div className={isCollapsed ? " truncate" : ""}>{content}</div>
           </div>

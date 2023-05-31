@@ -1,27 +1,20 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-
-import { supabase } from "~/server/db";
-import { RouterOutputs } from "~/utils/api";
-
-export type Profile = RouterOutputs["profiles"]["getProfileById"];
 
 export const profileRouter = createTRPCRouter({
   getProfileByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
-    .query(async ({ input }) => {
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("username, full_name, updated_at, created_at, avatar_url, id")
-        .eq("username", input.username)
-        .single();
+    .query(async ({ ctx, input }) => {
+      const profile = await ctx.prisma.profile.findUnique({
+        where: { username: input.username },
+        include: { flairs: true, liked_posts: true, owned_threads: true },
+      });
 
-      if (error) {
+      if (profile) {
         throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          code: "NOT_FOUND",
+          message: "Profile not found",
         });
       }
 
@@ -29,26 +22,25 @@ export const profileRouter = createTRPCRouter({
     }),
 
   getProfileById: publicProcedure
-    .input(z.object({ userId: z.string().optional() }))
-    .query(async ({ input }) => {
-
-      if (!input.userId) {
+    .input(z.object({ id: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      if (!input.id) {
         return null;
       }
 
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("username, full_name, updated_at, created_at, avatar_url, id")
-        .eq("id", input.userId)
-        .single();
+      const profile = await ctx.prisma.profile.findUnique({
+        where: { id: input.id },
+        include: { flairs: true, liked_posts: true, owned_threads: true },
+      });
 
       if (!profile) {
         throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          code: "NOT_FOUND",
+          message: "Profile not found",
         });
       }
 
       return profile;
     }),
-});
+  })
+;

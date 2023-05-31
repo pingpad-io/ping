@@ -38,7 +38,7 @@ export default function Menu() {
   };
 
   let { data: profile } = api.profiles.getProfileById.useQuery({
-    userId: user?.id,
+    id: user?.id,
   });
 
   let todo = () => toast.error("Not implemented yet");

@@ -19,14 +19,21 @@ const postingRatelimit = new Ratelimit({
 
 import { Post } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { supabase } from "~/server/db";
+import { prisma, supabase } from "~/server/db";
 
 const addAuthorDataToPosts = async (posts: Post[]) => {
   const authors = posts.map((post) => post.authorId);
-  let { data: profiles } = await supabase
-    .from("profiles")
-    .select(`username, id, avatar_url, full_name`)
-    .in("id", authors);
+
+  const profiles = await prisma.profile.findMany({
+    where: { id: { in: authors } },
+    select: {
+      username: true,
+      id: true,
+      avatar_url: true,
+      full_name: true,
+      flairs: true,
+    },
+  });
 
   return posts.map((post) => {
     const author = profiles?.find((author) => author.id === post.authorId);
@@ -51,8 +58,8 @@ export const postsRouter = createTRPCRouter({
     let posts = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
-      include: { likers: true },
-      where: { status: "Posted" }
+      include: { likers: true, thread: true },
+      where: { status: "Posted" },
     });
 
     return addAuthorDataToPosts(posts);
@@ -63,9 +70,9 @@ export const postsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       let posts = await ctx.prisma.post.findMany({
         take: 100,
-        where: { threadId: input, status: "Posted" },
         orderBy: [{ createdAt: "desc" }],
-        include: { likers: true },
+        include: { likers: true, thread: true },
+        where: { threadId: input, status: "Posted" },
       });
 
       return addAuthorDataToPosts(posts);
@@ -74,7 +81,7 @@ export const postsRouter = createTRPCRouter({
   getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     let post = await ctx.prisma.post.findUnique({
       where: { id: input },
-      include: { likers: true },
+      include: { likers: true, thread: true },
     });
 
     if (!post) {
@@ -88,7 +95,7 @@ export const postsRouter = createTRPCRouter({
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `This twot was deleted by the user.`,
-        cause: "the user"
+        cause: "the user",
       });
     }
 
@@ -96,7 +103,7 @@ export const postsRouter = createTRPCRouter({
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `This twot was deleted by the moderation team.`,
-        cause: "the moderation team"
+        cause: "the moderation team",
       });
     }
 
@@ -104,7 +111,10 @@ export const postsRouter = createTRPCRouter({
       return (await addAuthorDataToPosts([post])).at(0);
     }
 
-    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" })
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Something went wrong",
+    });
   }),
 
   getAllByAuthorId: publicProcedure
@@ -112,7 +122,7 @@ export const postsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       let posts = await ctx.prisma.post.findMany({
         where: { authorId: input },
-        include: { likers: true },
+        include: { likers: true, thread: true },
         take: 100,
         orderBy: [{ createdAt: "desc" }],
       });

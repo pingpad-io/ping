@@ -266,25 +266,16 @@ model User {
   @@schema("auth")
 }
 
-enum PostStatus {
-  Posted
-  Drafted
-  Delayed
-  UserDeleted
-  AdminDeleted 
-  @@schema("public")
-}
-
 model Post {
-  id        String    @id @db.Uuid
+  id        String     @id @db.Uuid
   authorId  String
-  threadId  String    @default("5cfda833-5000-439c-ad21-bf0dc05c88a0") @db.Uuid
-  createdAt DateTime  @default(now())
+  createdAt DateTime   @default(now())
   updatedAt DateTime
-  content   String    @db.VarChar(300)
-  likers    Profile[] @relation("PostToProfile")
-  thread    Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  content   String     @db.VarChar(300)
+  threadId  String     @default(dbgenerated("'5cfda833-5000-439c-ad21-bf0dc05c88a0'::uuid")) @db.Uuid
   status    PostStatus @default(Posted)
+  thread    Thread     @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  likers    Profile[]  @relation("PostToProfile")
 
   @@index([authorId], map: "Post_authorId_idx")
   @@map("posts")
@@ -293,12 +284,12 @@ model Post {
 
 model Thread {
   id         String    @id @db.Uuid
-  title      String?
   updated_at DateTime? @db.Timestamptz(6)
   created_at DateTime? @default(now()) @db.Timestamptz(6)
+  title      String?
+  authorId   String?   @db.Uuid
   posts      Post[]
-  author     Profile?   @relation(fields: [authorId], references: [id])
-  authorId   String?    @db.Uuid 
+  author     Profile?  @relation(fields: [authorId], references: [id])
 
   @@map("threads")
   @@schema("public")
@@ -314,10 +305,43 @@ model Profile {
   avatar_url    String?
   created_at    DateTime? @default(now()) @db.Timestamptz(6)
   user          User      @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  liked_posts   Post[]    @relation("PostToProfile")
   owned_threads Thread[]
+  flairs        Flair[]   @relation("FlairToProfile")
+  liked_posts   Post[]    @relation("PostToProfile")
 
   @@map("profiles")
+  @@schema("public")
+}
+
+enum Color {
+  primary
+  secondary
+  accent
+  info
+  success
+  warning
+  error
+
+  @@schema("public")
+}
+
+model Flair {
+  id       String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  title    String
+  color    Color    @default(info)
+  profiles Profile[] @relation("FlairToProfile")
+
+  @@map("flairs")
+  @@schema("public")
+}
+
+enum PostStatus {
+  Posted
+  UserDeleted
+  AdminDeleted
+  Drafted
+  Delayed
+
   @@schema("public")
 }
 

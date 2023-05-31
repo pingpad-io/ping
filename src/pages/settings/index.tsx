@@ -31,7 +31,7 @@ export const getServerSideProps = async (
   } = await supabase.auth.getUser();
 
   await ssg.profiles.getProfileById.prefetch({
-    userId: user?.id,
+    id: user?.id,
   });
 
   return {
@@ -44,6 +44,8 @@ export const getServerSideProps = async (
 
 const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
   const supabase = useSupabaseClient();
+  const { theme, setTheme } = useTheme();
+  const { data: profile } = api.profiles.getProfileById.useQuery({ id });
 
   if (!id) {
     return (
@@ -60,14 +62,7 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
       </PageLayout>
     );
   }
-
-  const { data: profile } = api.profiles.getProfileById.useQuery({
-    userId: id,
-  });
-
   if (!profile) return null;
-
-  let { theme, setTheme } = useTheme();
 
   let cycleTheme = () => {
     let theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
@@ -94,6 +89,7 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
       </button>
     </Theme>
   ));
+
   return (
     <PageLayout>
       <SignedIn>

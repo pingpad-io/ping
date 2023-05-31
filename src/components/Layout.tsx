@@ -3,7 +3,6 @@ import Menu from "./Menu";
 import Sidebar from "./Sidebar";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { api } from "~/utils/api";
-import { Profile } from "~/server/api/routers/profile";
 
 export const PageLayout = (props: PropsWithChildren) => {
   return (

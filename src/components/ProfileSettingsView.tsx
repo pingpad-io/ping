@@ -1,16 +1,22 @@
-import type { Profile } from "@prisma/client";
+// import type { Flair, Profile } from "@prisma/client";
+import { Flair } from "@prisma/client";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { RouterOutputs } from "~/utils/api";
+import { FlairView } from "./FlairView";
+
+type Profile = RouterOutputs["profiles"]["getProfileById"];
 
 export default function ProfileSettingsView({ profile }: { profile: Profile }) {
   const supabase = useSupabaseClient();
   const user = useUser();
 
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState<Profile["username"]>(null);
-  const [full_name, setFullName] = useState<Profile["full_name"]>(null);
-  const [avatar_url, setAvatarUrl] = useState<Profile["avatar_url"]>(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [full_name, setFullName] = useState<string | null>(null);
+  const [avatar_url, setAvatarUrl] = useState<string | null>(null);
+  const [flairs, setFlairs] = useState<Flair[] | null>(null);
 
   useEffect(() => {
     getProfile();
@@ -23,6 +29,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
         setUsername(profile.username);
         setFullName(profile.full_name);
         setAvatarUrl(profile.avatar_url);
+        setFlairs(profile.flairs);
       }
     } catch (error) {
       console.log(error);
@@ -31,15 +38,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
     }
   }
 
-  async function updateProfile({
-    username,
-    full_name,
-    avatar_url,
-  }: {
-    username: Profile["username"];
-    full_name: Profile["full_name"];
-    avatar_url: Profile["avatar_url"];
-  }) {
+  async function updateProfile() {
     try {
       setLoading(true);
       if (!user) throw new Error("No user");
@@ -49,6 +48,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
         username,
         full_name,
         avatar_url,
+        flairs,
         updated_at: new Date().toISOString(),
       };
 
@@ -63,6 +63,10 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
       setLoading(false);
     }
   }
+
+  const flairList = flairs?.map((flair) => {
+    return <FlairView flair={flair} key={flair.id} size="md" />;
+  });
 
   return (
     <>
@@ -108,19 +112,25 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
               />
             </label>
           </div>
+
+          <div>
+            <label className="label inline-block" htmlFor="username">
+              Flairs:
+            </label>
+            <div className="inline-block">{flairList}</div>
+          </div>
         </div>
 
         <div>
           <button
             className="btn-outline btn-primary btn-wide btn mt-4"
-            onClick={() => updateProfile({ username, full_name, avatar_url })}
+            onClick={() => updateProfile()}
             disabled={false}
           >
             {loading ? "Updating..." : "Update"}
           </button>
         </div>
       </div>
-
     </>
   );
 }
