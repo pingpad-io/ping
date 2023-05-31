@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FiEdit2 } from "react-icons/fi";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
+import { FlairView } from "~/components/FlairView";
 import { PageLayout } from "~/components/Layout";
 import { CollapsedContext } from "~/components/Menu";
 import { MenuItem } from "~/components/MenuItem";
@@ -27,6 +28,15 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const posts = api.posts.getAllByAuthorId.useQuery(profile.id);
   const title = `Twotter (@${profile.username})`;
 
+  const flair =
+    profile.flairs.length > 0 ? (
+      <span className="h-min">
+        <FlairView flair={profile.flairs.at(0)} size="md" />
+      </span>
+    ) : (
+      <></>
+    );
+
   return (
     <>
       <Head>
@@ -38,14 +48,19 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           <UserAvatar profile={profile} />
 
           <Link className="grow" href={`/${profile.username}`}>
-            <div className="text-lg font-bold">{profile.full_name}</div>
+            <div className="flex flex-row gap-2">
+              <div className="text-lg font-bold">{profile.full_name}</div>
+              {flair}
+            </div>
             <div className="text-xs text-base-content">@{profile.username}</div>
           </Link>
 
           <div className="flex flex-col place-content-between gap-1">
-            <div className="text-sm text-base-content">
-              member since: <TimeSince date={profile.created_at} />
-            </div>
+            {profile.created_at && (
+              <div className="text-sm text-base-content">
+                member since: <TimeSince date={profile.created_at} />
+              </div>
+            )}
           </div>
 
           {isUserProfile && (

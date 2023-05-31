@@ -92,6 +92,7 @@ export const PostView = ({
     ) : (
       <></>
     );
+
   let metadata = (
     <div className="flex  flex-row place-items-center gap-2 text-sm font-light text-base-content ">
       <Link className="flex gap-2" href={`/${username}`}>

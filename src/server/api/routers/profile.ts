@@ -11,7 +11,7 @@ export const profileRouter = createTRPCRouter({
         include: { flairs: true, liked_posts: true, owned_threads: true },
       });
 
-      if (profile) {
+      if (!profile) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Profile not found",
@@ -42,5 +42,5 @@ export const profileRouter = createTRPCRouter({
 
       return profile;
     }),
-  })
-;
+})
+  ;
