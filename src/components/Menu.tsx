@@ -1,6 +1,6 @@
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { useTheme } from "next-themes";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { BsPalette } from "react-icons/bs";
 import {
@@ -37,9 +37,14 @@ export default function Menu() {
     supabase.auth.signOut();
   };
 
-  let { data: profile } = api.profiles.getProfileById.useQuery({
-    id: user?.id,
-  });
+  // let profile = useEffect(() => {
+  //   if (user) {
+  //     let { data: profile, isLoading } = api.profiles.getProfileById.useQuery({
+  //       id: user?.id,
+  //     });
+  //     return profile
+  //   }
+  // }, [user]);
 
   let todo = () => toast.error("Not implemented yet");
   let cycleTheme = () => {
@@ -107,7 +112,7 @@ export default function Menu() {
           <SignedOut>
             <ModalWizard wizardChildren={<LoginWizard />}>
               <MenuItem
-                className="dropdown-right dropdown dropdown-hover"
+                className="dropdown dropdown-right dropdown-hover"
                 name={"Sign In"}
                 icon={<FiLogIn />}
               ></MenuItem>

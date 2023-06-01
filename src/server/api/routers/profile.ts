@@ -1,6 +1,11 @@
+import { Profile } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  privateProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
   getProfileByUsername: publicProcedure
@@ -22,12 +27,8 @@ export const profileRouter = createTRPCRouter({
     }),
 
   getProfileById: publicProcedure
-    .input(z.object({ id: z.string().optional() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      if (!input.id) {
-        return null;
-      }
-
       const profile = await ctx.prisma.profile.findUnique({
         where: { id: input.id },
         include: { flairs: true, liked_posts: true, owned_threads: true },
@@ -42,5 +43,29 @@ export const profileRouter = createTRPCRouter({
 
       return profile;
     }),
-})
-  ;
+
+  update: privateProcedure
+    .input(z.object({ updates: z.custom<Profile>() }))
+    .mutation(async ({ ctx, input }) => {
+      if (input.updates.id !== ctx.userId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You cannot update this profile",
+        });
+      }
+
+      const profile = await ctx.prisma.profile.update({
+        where: { id: input.updates.id },
+        data: input.updates,
+      });
+
+      if (!profile) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Profile not found",
+        });
+      }
+
+      return profile;
+    }),
+});
