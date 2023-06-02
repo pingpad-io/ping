@@ -14,7 +14,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
   const [avatar_url, setAvatarUrl] = useState(profile.avatar_url);
   const [flairs, setFlairs] = useState(profile.flairs);
 
-  const profileMutation = api.profiles.update.useMutation({
+  const {mutate: updateProfile} = api.profiles.update.useMutation({
     onSuccess() {
       toast.success("Profile updated!");
       setLoading(false);
@@ -25,7 +25,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
     },
   });
 
-  const updateProfile = async () => {
+  const commitUpdates = async () => {
     const updates = {
       id: profile.id,
       username,
@@ -35,7 +35,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
       created_at: profile?.created_at ?? null,
     };
 
-    profileMutation.mutate({ updates });
+    updateProfile({ updates });
   };
 
   const flairList = flairs?.map((flair) => {
@@ -98,7 +98,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
         <div>
           <button
             className="btn-outline btn-primary btn-wide btn mt-4"
-            onClick={() => updateProfile()}
+            onClick={() => commitUpdates()}
             disabled={false}
           >
             {loading ? "Updating..." : "Update"}

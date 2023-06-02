@@ -10,14 +10,10 @@ export default function PostWizard() {
   const [input, setInput] = useState("");
   const ctx = api.useContext();
   const user = useUser();
-  const { data: profile } = api.profiles.getProfileById.useQuery({
-    id: user?.id,
-  });
-
   const currentThreadId = useSelector((state: State) => state.currentThread);
   const { data: currentThread } = api.threads.getById.useQuery(currentThreadId);
 
-  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+  const { mutate: createPost, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
       setInput("");
       ctx.posts.invalidate();
@@ -47,7 +43,7 @@ export default function PostWizard() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate({ content: input, threadId: currentThreadId });
+    createPost({ content: input, threadId: currentThreadId });
   };
 
   const postButton = isPosting ? (
@@ -63,7 +59,7 @@ export default function PostWizard() {
   return (
     <div className="sticky top-0 z-10 flex flex-col ">
       <div className="z-10 flex flex-row gap-4 bg-base-100 p-4">
-        {profile && <UserAvatar profile={profile} online={true} />}
+        {user && <PostWizardAuthed userId={user.id} />}
         <form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
           <input
             type="text"
@@ -86,3 +82,11 @@ export default function PostWizard() {
     </div>
   );
 }
+
+export const PostWizardAuthed = ({ userId }: { userId: string }) => {
+  const { data: profile } = api.profiles.getProfileById.useQuery({
+    id: userId,
+  });
+
+  return <UserAvatar profile={profile} online={true} />;
+};

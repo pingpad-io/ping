@@ -26,7 +26,6 @@ import ModalWizard from "./ModalWizard";
 import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
 import { SignedIn, SignedOut } from "./Signed";
-import { MenuAuthed } from "./MenuAuthed";
 
 export const CollapsedContext = createContext(false);
 
@@ -90,3 +89,43 @@ export default function Menu() {
     </CollapsedContext.Provider>
   );
 }
+
+export const MenuAuthed = ({ userId }: { userId: string }) => {
+  let supabase = useSupabaseClient();
+  let ctx = api.useContext();
+
+  let { data: profile, isLoading } = api.profiles.getProfileById.useQuery({
+    id: userId,
+  });
+
+  if (isLoading || !profile) return null;
+
+  let todo = () => toast.error("Not implemented yet");
+  let signOut = () => {
+    ctx.invalidate();
+    supabase.auth.signOut();
+  };
+
+  return (
+    <>
+      <MenuItem onClick={todo} href={"/"} name={"Messages"} icon={<FiMail />} />
+      <MenuItem
+        onClick={todo}
+        href={"/"}
+        name={"Notifications"}
+        icon={<FiBell />}
+      />
+      <MenuItem
+        href={profile.username ? `/${profile.username}` : undefined}
+        name={"Profile"}
+        icon={<FiUser />}
+      />
+      <MenuItem href="/settings" name={"Settings"} icon={<FiSettings />} />
+      <MenuItem
+        onClick={() => signOut()}
+        name={"Sign out"}
+        icon={<FiLogOut />}
+      />
+    </>
+  );
+};

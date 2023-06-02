@@ -30,14 +30,16 @@ export const getServerSideProps = async (
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) return;
+
   await ssg.profiles.getProfileById.prefetch({
-    id: user?.id,
+    id: user.id,
   });
 
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      id: user?.id ?? null,
+      id: user.id,
     },
   };
 };
