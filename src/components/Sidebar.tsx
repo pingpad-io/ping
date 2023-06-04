@@ -27,7 +27,7 @@ const Links = () => {
 const SearchBar = () => {
   return (
     <>
-      <div className="flex xl:hidden">
+      <div className="md:flex xl:hidden">
         <MenuItem href="/search" icon={<FiSearch size={24} />} />
       </div>
       <div className="hidden w-full xl:flex">
@@ -44,9 +44,9 @@ const SearchBar = () => {
 const ThreadsBar = () => {
   return (
     <>
-      <div className="flex-col gap-2 sm:flex xl:hidden">
-        <MenuItem href="/threads" icon={<BiMessageSquareDetail size={22} />} />
-        <MenuItem icon={<FiGlobe size={22} />} />
+      <div className="flex-col gap-2 md:flex xl:hidden">
+        <MenuItem href="/threads" icon={<BiMessageSquareDetail size={24} />} />
+        <MenuItem icon={<FiGlobe size={24} />} />
       </div>
 
       <div className="hidden bg-base-300 xl:flex rounded-xl">

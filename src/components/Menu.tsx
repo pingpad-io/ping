@@ -1,7 +1,6 @@
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { createContext, useState } from "react";
 import { toast } from "react-hot-toast";
-import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import {
   FiBell,
   FiHome,
@@ -25,7 +24,14 @@ export const CollapsedContext = createContext(false);
 
 export default function Menu() {
   let [isCollapsed, setCollapsed] = useState(false);
+  let supabase = useSupabaseClient();
+  let ctx = api.useContext();
   let user = useUser();
+
+  let signOut = () => {
+    ctx.invalidate();
+    supabase.auth.signOut();
+  };
 
   return (
     <CollapsedContext.Provider value={isCollapsed}>
@@ -56,6 +62,14 @@ export default function Menu() {
             <SidebarButtons />
           </div>
 
+          {user && (
+            <MenuItem
+              onClick={() => signOut()}
+              text={"Sign out"}
+              icon={<FiLogOut />}
+            />
+          )}
+
           <SignedOut>
             <ModalWizard wizardChildren={<LoginWizard />}>
               <MenuItem
@@ -83,18 +97,12 @@ export default function Menu() {
 }
 
 export const MenuAuthed = ({ userId }: { userId: string }) => {
-  let supabase = useSupabaseClient();
-  let ctx = api.useContext();
 
   let { data: profile, isLoading } = api.profiles.getProfileById.useQuery({
     id: userId,
   });
 
   let todo = () => toast.error("Not implemented yet");
-  let signOut = () => {
-    ctx.invalidate();
-    supabase.auth.signOut();
-  };
 
   return (
     <>
@@ -111,11 +119,6 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
         icon={<FiUser />}
       />
       <MenuItem href="/settings" text={"Settings"} icon={<FiSettings />} />
-      <MenuItem
-        onClick={() => signOut()}
-        text={"Sign out"}
-        icon={<FiLogOut />}
-      />
     </>
   );
 };

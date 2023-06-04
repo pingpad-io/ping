@@ -43,7 +43,7 @@ export const PostView = ({
   const ctx = api.useContext();
 
   const todo = () => {};
-  const deletePost = api.posts.deleteById.useMutation({
+  const { mutate: deletePost } = api.posts.deleteById.useMutation({
     onSuccess: async () => {
       await ctx.posts.invalidate();
     },
@@ -52,7 +52,7 @@ export const PostView = ({
     },
   });
 
-  const sendLike = api.posts.likeById.useMutation({
+  const { mutate: sendLike } = api.posts.likeById.useMutation({
     onSuccess: async () => {
       await ctx.posts.invalidate();
     },
@@ -64,7 +64,7 @@ export const PostView = ({
   const like = () => {
     setLiked(!liked);
     liked ? setLikesAmount(likesAmount - 1) : setLikesAmount(likesAmount + 1);
-    sendLike.mutate(post.id);
+    sendLike(post.id);
   };
 
   const copyLink = () => {
@@ -108,7 +108,7 @@ export const PostView = ({
       </span>
 
       <SignedIn>
-        <div className="dropdown dropdown-right pt-2 font-normal">
+        <div className="dropdown-right dropdown pt-2 font-normal">
           <button>
             <FiMoreHorizontal strokeWidth={1.5} size={15} />
           </button>
@@ -124,7 +124,7 @@ export const PostView = ({
                 />
                 <CompactMenuItem
                   onClick={() => {
-                    deletePost.mutate(post.id);
+                    deletePost(post.id);
                   }}
                   side="left"
                   icon={<BsTrash />}
@@ -152,10 +152,19 @@ export const PostView = ({
     </div>
   );
 
+  const lineHeight = 1.5;
+  const maxHeight = 3 * lineHeight * 16; // Assumes font size of 16px
+  const needsTruncation = post.content.length * lineHeight > maxHeight;
+  const truncatedMessage = needsTruncation
+    ? post.content.slice(0, (maxHeight / lineHeight) * 4) + "..."
+    : post.content;
+
   let content = (
-    <div className="w-[30rem] text-ellipsis  text-base-content">
-      <Link href={`/post/${post.id}`}>{post.content}</Link>
-    </div>
+    <Link className="" href={`/post/${post.id}`}>
+      <p className="truncate whitespace-pre-wrap break-words">
+        {isCollapsed ? truncatedMessage : post.content}
+      </p>
+    </Link>
   );
 
   let formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -170,7 +179,7 @@ export const PostView = ({
       >
         <span
           className={
-            `text-md absolute z-10 flex items-center justify-center font-bold ` +
+            `text-md z-10 flex items-center justify-center font-bold ` +
             like_text_color
           }
         >
@@ -188,25 +197,23 @@ export const PostView = ({
   return (
     <div
       className={
-        `my-1 flex h-min flex-col rounded-xl border border-base-300 p-4 ` +
+        `flex h-min max-w-2xl shrink flex-col rounded-xl border border-base-300 p-4 ` +
         (expandable ? "pb-2" : "pb-4")
       }
     >
       <div className="flex flex-row gap-4">
         <div className="h-12 w-12 shrink-0 grow-0">
-          {<UserAvatar profile={author} />}
+          <UserAvatar profile={author} />
         </div>
 
-        <div className="relative flex grow flex-col">
+        <div className="flex max-w-lg grow flex-col">
           {metadata}
-
-          <div className="flex grow flex-row overflow-hidden">
-            <div className={isCollapsed ? " truncate" : ""}>{content}</div>
-          </div>
+          {content}
         </div>
 
-        <div className="h-12 w-12 items-center justify-center">{likes}</div>
+        <div className="h-12 w-12 ">{likes}</div>
       </div>
+
       <div className="flex flex-row justify-center">
         {expandable &&
           (isCollapsed ? (
