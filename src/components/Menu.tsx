@@ -1,12 +1,7 @@
-import {
-  useSessionContext,
-  useSupabaseClient,
-  useUser,
-} from "@supabase/auth-helpers-react";
-import { useTheme } from "next-themes";
-import { createContext, useEffect, useState } from "react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { createContext, useState } from "react";
 import { toast } from "react-hot-toast";
-import { BsPalette } from "react-icons/bs";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import {
   FiBell,
   FiHome,
@@ -17,7 +12,6 @@ import {
   FiUser,
 } from "react-icons/fi";
 import { RiQuillPenLine } from "react-icons/ri";
-import { themes } from "~/styles/themes";
 import { api } from "~/utils/api";
 import { OtterIcon } from "./Icons";
 import LoginWizard from "./LoginWizard";
@@ -25,22 +19,13 @@ import { MenuItem } from "./MenuItem";
 import ModalWizard from "./ModalWizard";
 import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
-import { SignedIn, SignedOut } from "./Signed";
+import { SignedOut } from "./Signed";
 
 export const CollapsedContext = createContext(false);
 
 export default function Menu() {
   let [isCollapsed, setCollapsed] = useState(false);
-  let { theme, setTheme } = useTheme();
-  let supabase = useSupabaseClient();
-  let user = useUser()
-  let ctx = api.useContext();
-
-
-  let cycleTheme = () => {
-    let theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
-    setTheme(theme);
-  };
+  let user = useUser();
 
   return (
     <CollapsedContext.Provider value={isCollapsed}>
@@ -48,15 +33,22 @@ export default function Menu() {
         className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 px-2 text-2xl lg:w-56`}
       >
         <div className="flex flex-col items-end gap-2">
-          <div className="font-bold">
+          <div className="flex flex-row gap-2">
+            <div className="hidden lg:block">
+              <MenuItem
+                onClick={() => setCollapsed(!isCollapsed)}
+                icon={isCollapsed ? <AiOutlineLeft /> : <AiOutlineRight />}
+              />
+            </div>
             <MenuItem
-              onClick={() => setCollapsed(!isCollapsed)}
-              name={"Twotter"}
+              href="/"
+              text={"Twotter"}
+              className="font-bold"
               icon={<OtterIcon />}
             />
           </div>
 
-          <MenuItem href={"/"} name={"Home"} icon={<FiHome />} />
+          <MenuItem href={"/"} text={"Home"} icon={<FiHome />} />
 
           {user && <MenuAuthed userId={user.id} />}
 
@@ -67,8 +59,8 @@ export default function Menu() {
           <SignedOut>
             <ModalWizard wizardChildren={<LoginWizard />}>
               <MenuItem
-                className="dropdown dropdown-right dropdown-hover"
-                name={"Sign In"}
+                className="dropdown-right dropdown-hover dropdown"
+                text={"Sign In"}
                 icon={<FiLogIn />}
               ></MenuItem>
             </ModalWizard>
@@ -80,7 +72,7 @@ export default function Menu() {
                 `my-2 border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
                 (isCollapsed ? `` : `pl-3 lg:pl-10`)
               }
-              name={"Twot"}
+              text={"Twot"}
               icon={<RiQuillPenLine size={24} />}
             />
           </ModalWizard>
@@ -98,8 +90,6 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
     id: userId,
   });
 
-  if (isLoading || !profile) return null;
-
   let todo = () => toast.error("Not implemented yet");
   let signOut = () => {
     ctx.invalidate();
@@ -108,22 +98,22 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 
   return (
     <>
-      <MenuItem onClick={todo} href={"/"} name={"Messages"} icon={<FiMail />} />
+      <MenuItem onClick={todo} href={"/"} text={"Messages"} icon={<FiMail />} />
       <MenuItem
         onClick={todo}
         href={"/"}
-        name={"Notifications"}
+        text={"Notifications"}
         icon={<FiBell />}
       />
       <MenuItem
-        href={profile.username ? `/${profile.username}` : undefined}
-        name={"Profile"}
+        href={profile?.username ? `/${profile.username}` : undefined}
+        text={"Profile"}
         icon={<FiUser />}
       />
-      <MenuItem href="/settings" name={"Settings"} icon={<FiSettings />} />
+      <MenuItem href="/settings" text={"Settings"} icon={<FiSettings />} />
       <MenuItem
         onClick={() => signOut()}
-        name={"Sign out"}
+        text={"Sign out"}
         icon={<FiLogOut />}
       />
     </>

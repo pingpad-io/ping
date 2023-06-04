@@ -5,38 +5,27 @@ import { CollapsedContext } from "./Menu";
 export const MenuItem = (props: {
   href?: string;
   onClick?: () => void;
-  name: string;
   icon: JSX.Element;
+  text?: string;
   side?: "left" | "right";
   className?: string;
   children?: ReactNode;
 }) => {
   let collapsed = useContext(CollapsedContext);
-
-  let text = !collapsed && <div className="hidden lg:block">{props.name}</div>;
-
+  let text = !collapsed && props.text && (
+    <div className="hidden lg:block">{props.text}</div>
+  );
   let style =
-    (props.className ?? "") +
-    ` flex w-fit flex-row place-content-end gap-4 rounded-3xl hover:bg-base-200 p-3`;
+    `flex w-fit flex-row place-content-end gap-4 rounded-3xl hover:bg-base-200 p-3 ` +
+    props.className;
 
   let content = (
     <>
-      {props.side === "left" ? (
-        <>
-          <div className="flex h-8 w-8 place-content-center items-center">
-            {props.icon}
-          </div>
-          {text}
-        </>
-      ) : (
-        <>
-          {text}
-          <div className="flex h-8 w-8 place-content-center items-center">
-            {props.icon}
-          </div>
-        </>
-      )}
-
+      {props.side !== "left" && text}
+      <div className="flex h-8 w-8 place-content-center items-center">
+        {props.icon}
+      </div>
+      {props.side === "left" && text}
       {props.children}
     </>
   );
@@ -61,13 +50,13 @@ export const MenuItem = (props: {
 export const CompactMenuItem = (props: {
   href?: string;
   onClick?: () => void;
-  name: string;
+  text: string;
   icon: JSX.Element;
   side?: "left" | "right";
   className?: string;
   children?: ReactNode;
 }) => {
-  let text = <div>{props.name}</div>;
+  let text = <div>{props.text}</div>;
 
   let style =
     (props.className ?? "") +
@@ -75,21 +64,11 @@ export const CompactMenuItem = (props: {
 
   let content = (
     <>
-      {props.side === "left" ? (
-        <>
-          <div className="flex h-8 w-8 place-content-center items-center">
-            {props.icon}
-          </div>
-          {text}
-        </>
-      ) : (
-        <>
-          {text}
-          <div className="flex h-8 w-8 place-content-center items-center">
-            {props.icon}
-          </div>
-        </>
-      )}
+      {props.side !== "left" && text}
+      <div className="flex h-8 w-8 place-content-center items-center">
+        {props.icon}
+      </div>
+      {props.side === "left" && text}
 
       {props.children}
     </>

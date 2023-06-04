@@ -108,7 +108,7 @@ export const PostView = ({
       </span>
 
       <SignedIn>
-        <div className="dropdown-right dropdown pt-2 font-normal">
+        <div className="dropdown dropdown-right pt-2 font-normal">
           <button>
             <FiMoreHorizontal strokeWidth={1.5} size={15} />
           </button>
@@ -120,7 +120,7 @@ export const PostView = ({
                   onClick={todo}
                   side="left"
                   icon={<FiEdit2 />}
-                  name="edit post"
+                  text="edit post"
                 />
                 <CompactMenuItem
                   onClick={() => {
@@ -128,7 +128,7 @@ export const PostView = ({
                   }}
                   side="left"
                   icon={<BsTrash />}
-                  name="delete post"
+                  text="delete post"
                 />
               </>
             )}
@@ -136,7 +136,7 @@ export const PostView = ({
               onClick={todo}
               side="left"
               icon={<BsReply />}
-              name="reply"
+              text="reply"
             />
             <CompactMenuItem
               onClick={() => {
@@ -144,7 +144,7 @@ export const PostView = ({
               }}
               side="left"
               icon={<RiHashtag />}
-              name="copy link"
+              text="copy link"
             />
           </div>
         </div>

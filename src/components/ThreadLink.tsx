@@ -1,7 +1,8 @@
 import { useDispatch } from "react-redux";
 
-export const ThreadLink = (props: { id: string; title: string | null }) => {
+export const ThreadLink = (props: { id: string; text?: string | null}) => {
   let setCurrentThread = useDispatch();
+
   return (
     <button
       onClick={() =>
@@ -9,7 +10,7 @@ export const ThreadLink = (props: { id: string; title: string | null }) => {
       }
       className="hover:underline"
     >
-      {props.title}
+      {props.text}
     </button>
   );
 };

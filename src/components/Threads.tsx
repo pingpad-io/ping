@@ -42,7 +42,7 @@ export default function Thread() {
         key={thread.id}
         className="flex flex-row place-items-center gap-2 px-4 py-2"
       >
-        <ThreadLink id={thread.id} title={thread.title} />
+        <ThreadLink id={thread.id} text={thread.title} />
       </div>
     );
   });
@@ -53,7 +53,7 @@ export default function Thread() {
         key={thread.id}
         className="flex flex-row place-items-center gap-2 px-4 py-2"
       >
-        <ThreadLink id={thread.id} title={thread.title} />
+        <ThreadLink id={thread.id} text={thread.title} />
 
         <span className="text-xs text-base-content">
           (@{thread.author?.username})
@@ -75,8 +75,8 @@ export default function Thread() {
   return (
     <>
       <div className="flex-col gap-2 sm:flex xl:hidden">
-        <MenuItem name={""} icon={<FiMessageCircle />}></MenuItem>
-        <MenuItem name={""} icon={<FiGlobe />}></MenuItem>
+        <MenuItem text={""} icon={<FiMessageCircle />}></MenuItem>
+        <MenuItem text={""} icon={<FiGlobe />}></MenuItem>
       </div>
 
       <div className="card hidden flex-col justify-center bg-base-300 p-4 xl:flex">

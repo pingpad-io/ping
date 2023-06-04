@@ -15,27 +15,21 @@ import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  let user = useUser();
+  const user = useUser();
   const { data: profile } = api.profiles.getProfileByUsername.useQuery({
     username,
   });
+  if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
+
   const isUserProfile = profile?.id === user?.id;
-
-  if (!profile) {
-    return <ErrorPage title="∑(O_O;) Not Found " />;
-  }
-
   const posts = api.posts.getAllByAuthorId.useQuery(profile.id);
   const title = `Twotter (@${profile.username})`;
 
-  const flair =
-    profile.flairs.length > 0 ? (
-      <span className="h-min">
-        <FlairView flair={profile.flairs.at(0)} size="md" />
-      </span>
-    ) : (
-      <></>
-    );
+  const flair = profile.flairs.length > 0 && (
+    <span className="h-min">
+      <FlairView flair={profile.flairs.at(0)} size="md" />
+    </span>
+  );
 
   return (
     <>
@@ -68,7 +62,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               <MenuItem
                 href="/settings"
                 icon={<FiEdit2 />}
-                name="Edit Profile"
+                text="Edit Profile"
               />
             </CollapsedContext.Provider>
           )}
