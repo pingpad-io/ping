@@ -34,12 +34,12 @@ export default function Menu() {
       >
         <div className="flex flex-col items-end gap-2">
           <div className="flex flex-row gap-2">
-            <div className="hidden lg:block">
+            {/* <div className="hidden lg:block">
               <MenuItem
                 onClick={() => setCollapsed(!isCollapsed)}
                 icon={isCollapsed ? <AiOutlineLeft /> : <AiOutlineRight />}
               />
-            </div>
+            </div> */}
             <MenuItem
               href="/"
               text={"Twotter"}

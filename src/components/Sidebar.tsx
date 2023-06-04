@@ -1,24 +1,9 @@
 import Link from "next/link";
-import { BsNewspaper } from "react-icons/bs";
-import { FiSearch } from "react-icons/fi";
+import { BiMessageSquareDetail } from "react-icons/bi";
+import { FiGlobe, FiSearch } from "react-icons/fi";
 import { CollapsedContext } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import Threads from "./Threads";
-
-const LatestNews = () => {
-  return (
-    <>
-      <div className="sm:flex xl:hidden">
-        <MenuItem text={""} icon={<BsNewspaper />}></MenuItem>
-      </div>
-
-      <div className="card hidden bg-base-200 p-4 xl:flex">
-        <div className="card-title text-lg">Latest Update</div>
-        Modal Post Wizard. New UI components.
-      </div>
-    </>
-  );
-};
 
 const Links = () => {
   return (
@@ -43,7 +28,7 @@ const SearchBar = () => {
   return (
     <>
       <div className="flex xl:hidden">
-        <MenuItem text={""} icon={<FiSearch />}></MenuItem>
+        <MenuItem href="/search" icon={<FiSearch size={24} />} />
       </div>
       <div className="hidden w-full xl:flex">
         <input
@@ -56,11 +41,26 @@ const SearchBar = () => {
   );
 };
 
+const ThreadsBar = () => {
+  return (
+    <>
+      <div className="flex-col gap-2 sm:flex xl:hidden">
+        <MenuItem href="/threads" icon={<BiMessageSquareDetail size={22} />} />
+        <MenuItem icon={<FiGlobe size={22} />} />
+      </div>
+
+      <div className="hidden bg-base-300 xl:flex rounded-xl">
+        <Threads />
+      </div>
+    </>
+  );
+};
+
 export const SidebarButtons = () => {
   return (
     <CollapsedContext.Provider value={true}>
       <SearchBar />
-      <Threads />
+      <ThreadsBar />
       <Links />
     </CollapsedContext.Provider>
   );

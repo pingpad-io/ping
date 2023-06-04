@@ -1,6 +1,5 @@
-import { FiGlobe, FiMessageCircle, FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 import { api } from "~/utils/api";
-import { MenuItem } from "./MenuItem";
 
 import { useUser } from "@supabase/auth-helpers-react";
 import { toast } from "react-hot-toast";
@@ -11,18 +10,37 @@ import ModalWizard from "./ModalWizard";
 import { ThreadLink } from "./ThreadLink";
 import ThreadWizard from "./ThreadWizard";
 
-export default function Thread() {
-  let { data: threads } = api.threads.getAll.useQuery();
-  let currentThread = useSelector((state: State) => state.currentThread);
-  let setCurrentThread = useDispatch();
-  let user = useUser();
-  let ctx = api.useContext();
+export function GlobalThreads() {
+  const { data: threads } = api.threads.getAll.useQuery();
+  const globalThreads = threads?.filter((thread) => thread.authorId === null);
 
-  let globalThreads = threads?.filter((thread) => thread.authorId === null);
-  let userThreads = threads?.filter((thread) => thread.authorId !== null);
+  const globalThreadList = globalThreads?.map((thread) => {
+    return (
+      <div
+        key={thread.id}
+        className="flex flex-row place-items-center gap-2 px-4 py-2"
+      >
+        <ThreadLink id={thread.id} text={thread.title} />
+      </div>
+    );
+  });
 
-  let deleteThread = api.threads.delete.useMutation({
+  return (
+    <div className="card-content">
+      <div className="card-title">Threads</div>
+      {globalThreadList}
+    </div>
+  );
+}
+
+export function UserThreads() {
+  const { data: threads } = api.threads.getAll.useQuery();
+  const user = useUser();
+  const userThreads = threads?.filter((thread) => thread.authorId !== null);
+  const deleteThread = api.threads.delete.useMutation({
     onSuccess: () => {
+      const ctx = api.useContext();
+      const setCurrentThread = useDispatch();
       ctx.threads.invalidate();
       ctx.posts.invalidate();
       setCurrentThread({
@@ -36,18 +54,7 @@ export default function Thread() {
     },
   });
 
-  let globalThreadList = globalThreads?.map((thread) => {
-    return (
-      <div
-        key={thread.id}
-        className="flex flex-row place-items-center gap-2 px-4 py-2"
-      >
-        <ThreadLink id={thread.id} text={thread.title} />
-      </div>
-    );
-  });
-
-  let userThreadList = userThreads?.map((thread) => {
+  const userThreadList = userThreads?.map((thread) => {
     return (
       <div
         key={thread.id}
@@ -73,22 +80,31 @@ export default function Thread() {
   });
 
   return (
-    <>
-      <div className="flex-col gap-2 sm:flex xl:hidden">
-        <MenuItem text={""} icon={<FiMessageCircle />}></MenuItem>
-        <MenuItem text={""} icon={<FiGlobe />}></MenuItem>
+    <div className="card-content">
+      <div className="flex gap-4">
+        <div className="card-title">User Threads</div>
+        <ModalWizard wizardChildren={<ThreadWizard />}>
+          <BsPlus size={27} />
+        </ModalWizard>
       </div>
+      {userThreadList}
+    </div>
+  );
+}
 
-      <div className="card hidden flex-col justify-center bg-base-300 p-4 xl:flex">
-        <div className="card-title">Threads</div>
-        <div className="card-content">{globalThreadList}</div>
-        <div className="flex flex-row place-content-between">
-          <div className="card-title">User Threads</div>
-          <ModalWizard wizardChildren={<ThreadWizard />}>
-            <BsPlus size={27} />
-          </ModalWizard>
+export default function Threads() {
+  const { data: threads } = api.threads.getAll.useQuery();
+  const currentThread = useSelector((state: State) => state.currentThread);
+
+  return (
+    <>
+      <div className="card flex-col justify-center p-4 ">
+        <div className="card-content">
+          <GlobalThreads />
         </div>
-        <div className="card-content">{userThreadList}</div>
+        <div className="card-content">
+          <UserThreads />
+        </div>
       </div>
     </>
   );
