@@ -5,7 +5,7 @@ import { useUser } from "@supabase/auth-helpers-react";
 import { toast } from "react-hot-toast";
 import { BsPlus } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { DEFAULT_THREAD_ID, State } from "~/utils/store";
+import { GLOBAL_THREAD_ID, State } from "~/utils/store";
 import ModalWizard from "./ModalWizard";
 import { ThreadLink } from "./ThreadLink";
 import ThreadWizard from "./ThreadWizard";
@@ -15,12 +15,14 @@ export function GlobalThreads() {
   const globalThreads = threads?.filter((thread) => thread.authorId === null);
 
   const globalThreadList = globalThreads?.map((thread) => {
+    if (!thread.name) return null;
+
     return (
       <div
         key={thread.id}
         className="flex flex-row place-items-center gap-2 px-4 py-2"
       >
-        <ThreadLink id={thread.id} text={thread.title} />
+        <ThreadLink name={thread.name} text={thread.title} />
       </div>
     );
   });
@@ -45,7 +47,7 @@ export function UserThreads() {
       ctx.posts.invalidate();
       setCurrentThread({
         type: "SET_CURRENT_THREAD",
-        payload: DEFAULT_THREAD_ID,
+        payload: GLOBAL_THREAD_ID,
       });
       toast.success("Thread deleted!");
     },
@@ -55,12 +57,14 @@ export function UserThreads() {
   });
 
   const userThreadList = userThreads?.map((thread) => {
+    if (!thread.name) return null;
+
     return (
       <div
         key={thread.id}
         className="flex flex-row place-items-center gap-2 px-4 py-2"
       >
-        <ThreadLink id={thread.id} text={thread.title} />
+        <ThreadLink name={thread.name} text={thread.title} />
 
         <span className="text-xs text-base-content">
           (@{thread.author?.username})
@@ -94,7 +98,7 @@ export function UserThreads() {
 
 export default function Threads() {
   const { data: threads } = api.threads.getAll.useQuery();
-  const currentThread = useSelector((state: State) => state.currentThread);
+  const currentThread = useSelector((state: State) => state.currentThreadId);
 
   return (
     <>

@@ -1,5 +1,3 @@
-import { Flair } from "@prisma/client";
-import { useUser } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { RouterOutputs, api } from "~/utils/api";
@@ -14,7 +12,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
   const [avatar_url, setAvatarUrl] = useState(profile.avatar_url);
   const [flairs, setFlairs] = useState(profile.flairs);
 
-  const {mutate: updateProfile} = api.profiles.update.useMutation({
+  const { mutate: updateProfile } = api.profiles.update.useMutation({
     onSuccess() {
       toast.success("Profile updated!");
       setLoading(false);
@@ -91,7 +89,13 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
             <label className="label inline-block" htmlFor="username">
               Flairs:
             </label>
-            <div className="inline-block">{flairList}</div>
+            <div className="inline-block">
+              {flairList.length > 0 ? (
+                flairList
+              ) : (
+                <div className="badge-ghost badge-outline badge">None</div>
+              )}
+            </div>
           </div>
         </div>
 

@@ -6,7 +6,7 @@ import { api } from "~/utils/api";
 import { State } from "../utils/store";
 
 const HomePage = () => {
-  const currentThreadId = useSelector((state: State) => state.currentThread);
+  const currentThreadId = useSelector((state: State) => state.currentThreadId);
   const posts = api.posts.getAllByThreadId.useQuery(currentThreadId);
 
   return (

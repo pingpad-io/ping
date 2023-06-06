@@ -40,6 +40,27 @@ export const threadsRouter = createTRPCRouter({
       return thread;
     }),
 
+  getByName: publicProcedure
+    .input(z.string().nullable())
+    .query(async ({ ctx, input }) => {
+      if (!input) return null;
+
+      let thread = await ctx.prisma.thread.findUnique({
+        where: { name: input },
+        include: { posts: true, author: true },
+      });
+
+      if (!thread) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Thread with name ${input} was not found.`,
+        });
+      }
+
+      return thread;
+    }),
+
+
   delete: privateProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {

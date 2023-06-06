@@ -34,11 +34,8 @@ function Twotter({
             <meta name="description" content="an anonymised twitter" />
             <link rel="icon" ref="/favicon.ico" />
           </Head>
-
           <Toaster position="top-center" />
-
           <Analytics />
-
           <main className="flex min-h-screen flex-row place-content-center text-base-content">
             <Component {...pageProps} />
           </main>
