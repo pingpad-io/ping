@@ -1,8 +1,11 @@
-import { useDispatch } from "react-redux";
-import { api } from "~/utils/api";
+import { useRouter } from 'next/router';
+import { PropsWithChildren } from 'react';
+import { useDispatch } from 'react-redux';
+import { api } from '~/utils/api';
 
-export const ThreadLink = (props: { name: string; text?: string | null }) => {
+export const ThreadLink = (props: PropsWithChildren & { name: string; text?: string | null }) => {
   const setCurrentThread = useDispatch();
+  const router = useRouter();
   const {
     data: thread,
     isLoading,
@@ -13,19 +16,33 @@ export const ThreadLink = (props: { name: string; text?: string | null }) => {
     refetchInterval: Infinity,
   });
 
-  if (isLoading || isError || !thread) return null;
+  const ready = !isLoading && !isError && thread;
 
   return (
-    <button
-      onClick={() =>
-        setCurrentThread({
-          type: "SET_CURRENT_THREAD",
-          payload: { id: thread.id, name: thread.name },
-        })
-      }
-      className="hover:underline"
-    >
-      {props.text}
-    </button>
+    <>
+      {ready ? (
+        <button
+          onClick={() => {
+            setCurrentThread({
+              type: 'SET_CURRENT_THREAD',
+
+              payload: {
+                id: thread?.id,
+                name: thread?.name,
+              },
+            });
+            router.push('/');
+          }}
+        >
+          {props.text}
+          {props.children}
+        </button>
+      ) : (
+        <>
+          {props.text}
+          {props.children}
+        </>
+      )}
+    </>
   );
 };

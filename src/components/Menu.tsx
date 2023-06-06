@@ -19,6 +19,7 @@ import ModalWizard from "./ModalWizard";
 import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
 import { SignedOut } from "./Signed";
+import { ThreadLink } from "./ThreadLink";
 
 export const CollapsedContext = createContext(false);
 
@@ -36,25 +37,22 @@ export default function Menu() {
   return (
     <CollapsedContext.Provider value={isCollapsed}>
       <div
-        className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 px-2 text-2xl lg:w-56`}
+        className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between px-2 py-4 text-2xl lg:w-56`}
       >
         <div className="flex flex-col items-end gap-2">
           <div className="flex flex-row gap-2">
-            {/* <div className="hidden lg:block">
+            <ThreadLink name="global">
               <MenuItem
-                onClick={() => setCollapsed(!isCollapsed)}
-                icon={isCollapsed ? <AiOutlineLeft /> : <AiOutlineRight />}
+                text={"Twotter"}
+                className="font-bold"
+                icon={<OtterIcon />}
               />
-            </div> */}
-            <MenuItem
-              href="/"
-              text={"Twotter"}
-              className="font-bold"
-              icon={<OtterIcon />}
-            />
+            </ThreadLink>
           </div>
 
-          <MenuItem href={"/"} text={"Home"} icon={<FiHome />} />
+          <ThreadLink name="global">
+            <MenuItem text={"Home"} icon={<FiHome />} />
+          </ThreadLink>
 
           {user && <MenuAuthed userId={user.id} />}
 
@@ -73,7 +71,7 @@ export default function Menu() {
           <SignedOut>
             <ModalWizard wizardChildren={<LoginWizard />}>
               <MenuItem
-                className="dropdown-right dropdown-hover dropdown"
+                className="dropdown dropdown-right dropdown-hover"
                 text={"Sign In"}
                 icon={<FiLogIn />}
               ></MenuItem>
@@ -97,7 +95,6 @@ export default function Menu() {
 }
 
 export const MenuAuthed = ({ userId }: { userId: string }) => {
-
   let { data: profile, isLoading } = api.profiles.getProfileById.useQuery({
     id: userId,
   });
