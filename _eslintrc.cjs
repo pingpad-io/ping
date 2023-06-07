@@ -5,12 +5,7 @@ const path = require("path");
 const config = {
   overrides: [
     {
-      extends: [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-         "prettier" 
-      ],
+      extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking", "prettier"],
       files: ["*.ts", "*.tsx"],
       parserOptions: {
         project: path.join(__dirname, "tsconfig.json"),
@@ -24,8 +19,6 @@ const config = {
   plugins: ["@typescript-eslint", "prettier"],
   extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   rules: {
-    "prettier/prettier": "error",
-    "react/prop-types": 0,
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {

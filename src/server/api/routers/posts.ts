@@ -17,11 +17,15 @@ const postingRatelimit = new Ratelimit({
   analytics: true,
 });
 
-import { Post } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { prisma, supabase } from "~/server/db";
+import { RouterOutputs } from "~/utils/api";
+import { Post, Profile, Thread } from "@prisma/client";
 
-const addAuthorDataToPosts = async (posts: Post[]) => {
+const addAuthorDataToPosts = async (posts: (Post & {
+    thread: Thread;
+    likers: Profile[];
+})[]) => {
   const authors = posts.map((post) => post.authorId);
 
   const profiles = await prisma.profile.findMany({
