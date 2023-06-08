@@ -103,11 +103,13 @@ const PostInfo = ({ data }: { data: Post }) => {
 
 const AuthorFlair = ({ author }: { author: Post["author"] }) => {
   return (
-    author.flairs.length > 0 && (
-      <span className="h-min">
-        <FlairView flair={author.flairs.at(0)} size="xs" />
-      </span>
-    )
+    <>
+      {author.flairs.length > 0 && (
+        <span className="h-min">
+          <FlairView flair={author.flairs.at(0)} size="xs" />
+        </span>
+      )}
+    </>
   );
 };
 
@@ -143,7 +145,7 @@ const PostMenu = ({ data }: { data: Post }) => {
 
   return (
     <SignedIn>
-      <div className="dropdown-right dropdown pt-2 font-normal">
+      <div className="dropdown dropdown-right pt-2 font-normal">
         <button>
           <FiMoreHorizontal strokeWidth={1.5} size={15} />
         </button>
