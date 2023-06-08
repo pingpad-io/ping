@@ -4,6 +4,7 @@ import { FiGlobe, FiSearch } from "react-icons/fi";
 import { CollapsedContext } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import Threads from "./Threads";
+import { ThreadLink } from "./ThreadLink";
 
 const Links = () => {
   return (
@@ -27,15 +28,12 @@ const Links = () => {
 const SearchBar = () => {
   return (
     <>
-      <div className="md:flex xl:hidden">
-        <MenuItem href="/search" icon={<FiSearch size={24} />} />
-      </div>
       <div className="hidden w-full xl:flex">
-        <input
-          type="text"
-          className="input-bordered input input-md w-full"
-          placeholder="Search Twotter?.."
-        />
+        <input type="text" className="input-bordered input input-md w-full" placeholder="Search Twotter?.." />
+      </div>
+
+      <div className="xl:hidden">
+        <MenuItem href="/search" icon={<FiSearch size={24} />} />
       </div>
     </>
   );
@@ -44,13 +42,15 @@ const SearchBar = () => {
 const ThreadsBar = () => {
   return (
     <>
-      <div className="flex-col gap-2 md:flex xl:hidden">
-        <MenuItem href="/threads" icon={<BiMessageSquareDetail size={24} />} />
-        <MenuItem icon={<FiGlobe size={24} />} />
+      <div className="hidden rounded-xl bg-base-300 xl:flex">
+        <Threads />
       </div>
 
-      <div className="hidden bg-base-300 xl:flex rounded-xl">
-        <Threads />
+      <div className="flex flex-col gap-2 xl:hidden">
+        <MenuItem href="/threads" icon={<BiMessageSquareDetail size={24} />} />
+        <ThreadLink name="global">
+          <MenuItem icon={<FiGlobe size={24} />} />
+        </ThreadLink>
       </div>
     </>
   );
@@ -68,8 +68,10 @@ export const SidebarButtons = () => {
 
 export default function Sidebar() {
   return (
-    <div className="sticky top-0 hidden h-screen w-max max-w-xs shrink flex-col gap-2 py-4 px-2 sm:flex xl:gap-4">
-      <SidebarButtons />
-    </div>
+    <>
+      <div className="sticky top-0 hidden h-screen w-max max-w-xs shrink flex-col gap-2 px-2 py-4 md:flex xl:gap-4">
+        <SidebarButtons />
+      </div>
+    </>
   );
 }

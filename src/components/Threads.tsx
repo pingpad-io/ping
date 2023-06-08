@@ -9,6 +9,7 @@ import { GLOBAL_THREAD_ID, State } from "~/utils/store";
 import ModalWizard from "./ModalWizard";
 import { ThreadLink } from "./ThreadLink";
 import ThreadWizard from "./ThreadWizard";
+import Link from "next/link";
 
 export function GlobalThreads() {
   const { data: threads } = api.threads.getAll.useQuery();
@@ -18,10 +19,7 @@ export function GlobalThreads() {
     if (!thread.name) return null;
 
     return (
-      <div
-        key={thread.id}
-        className="flex flex-row place-items-center gap-2 px-4 py-2"
-      >
+      <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline">
         <ThreadLink name={thread.name} text={thread.title} />
       </div>
     );
@@ -29,7 +27,9 @@ export function GlobalThreads() {
 
   return (
     <div className="card-content">
-      <div className="card-title">Threads</div>
+      <Link href={"/threads"} className="card-title">
+        Threads
+      </Link>
       {globalThreadList}
     </div>
   );
@@ -60,15 +60,10 @@ export function UserThreads() {
     if (!thread.name) return null;
 
     return (
-      <div
-        key={thread.id}
-        className="flex flex-row place-items-center gap-2 px-4 py-2"
-      >
+      <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline">
         <ThreadLink name={thread.name} text={thread.title} />
 
-        <span className="text-xs text-base-content">
-          (@{thread.author?.username})
-        </span>
+        <span className="text-xs text-base-content">(@{thread.author?.username})</span>
 
         {user?.id === thread.authorId && (
           <button
@@ -97,9 +92,6 @@ export function UserThreads() {
 }
 
 export default function Threads() {
-  const { data: threads } = api.threads.getAll.useQuery();
-  const currentThread = useSelector((state: State) => state.currentThreadId);
-
   return (
     <>
       <div className="card flex-col justify-center p-4 ">

@@ -1,15 +1,7 @@
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { createContext, useState } from "react";
 import { toast } from "react-hot-toast";
-import {
-  FiBell,
-  FiHome,
-  FiLogIn,
-  FiLogOut,
-  FiMail,
-  FiSettings,
-  FiUser,
-} from "react-icons/fi";
+import { FiBell, FiHome, FiLogIn, FiLogOut, FiMail, FiSettings, FiUser } from "react-icons/fi";
 import { RiQuillPenLine } from "react-icons/ri";
 import { api } from "~/utils/api";
 import { OtterIcon } from "./Icons";
@@ -42,11 +34,7 @@ export default function Menu() {
         <div className="flex flex-col items-end gap-2">
           <div className="flex flex-row gap-2">
             <ThreadLink name="global">
-              <MenuItem
-                text={"Twotter"}
-                className="font-bold"
-                icon={<OtterIcon />}
-              />
+              <MenuItem text={"Twotter"} className="font-bold" icon={<OtterIcon />} />
             </ThreadLink>
           </div>
 
@@ -54,18 +42,15 @@ export default function Menu() {
             <MenuItem text={"Home"} icon={<FiHome />} />
           </ThreadLink>
 
-          {user && <MenuAuthed userId={user.id} />}
-
-          <div className="flex flex-col sm:hidden">
+          <div className="flex flex-col md:hidden">
             <SidebarButtons />
           </div>
 
           {user && (
-            <MenuItem
-              onClick={() => signOut()}
-              text={"Sign out"}
-              icon={<FiLogOut />}
-            />
+            <>
+              <MenuAuthed userId={user.id} />
+              <MenuItem onClick={() => signOut()} text={"Sign out"} icon={<FiLogOut />} />
+            </>
           )}
 
           <SignedOut>
@@ -104,17 +89,8 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
   return (
     <>
       <MenuItem onClick={todo} href={"/"} text={"Messages"} icon={<FiMail />} />
-      <MenuItem
-        onClick={todo}
-        href={"/"}
-        text={"Notifications"}
-        icon={<FiBell />}
-      />
-      <MenuItem
-        href={profile?.username ? `/${profile.username}` : undefined}
-        text={"Profile"}
-        icon={<FiUser />}
-      />
+      <MenuItem onClick={todo} href={"/"} text={"Notifications"} icon={<FiBell />} />
+      <MenuItem href={profile?.username ? `/${profile.username}` : undefined} text={"Profile"} icon={<FiUser />} />
       <MenuItem href="/settings" text={"Settings"} icon={<FiSettings />} />
     </>
   );
