@@ -1,16 +1,17 @@
-import { useRouter } from 'next/router';
-import { PropsWithChildren } from 'react';
-import { useDispatch } from 'react-redux';
-import { api } from '~/utils/api';
+import { useRouter } from "next/router";
+import { PropsWithChildren } from "react";
+import { useDispatch } from "react-redux";
+import { api } from "~/utils/api";
 
-export const ThreadLink = (props: PropsWithChildren & { name: string; text?: string | null }) => {
+export const ThreadLink = (props: PropsWithChildren & { threadName: string; text?: string | null }) => {
   const setCurrentThread = useDispatch();
   const router = useRouter();
+
   const {
     data: thread,
     isLoading,
     isError,
-  } = api.threads.getByName.useQuery(props.name, {
+  } = api.threads.getByName.useQuery(props.threadName, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchInterval: Infinity,
@@ -24,14 +25,14 @@ export const ThreadLink = (props: PropsWithChildren & { name: string; text?: str
         <button
           onClick={() => {
             setCurrentThread({
-              type: 'SET_CURRENT_THREAD',
+              type: "SET_CURRENT_THREAD",
 
               payload: {
                 id: thread?.id,
                 name: thread?.name,
               },
             });
-            router.push('/');
+            router.push("/");
           }}
         >
           {props.text}

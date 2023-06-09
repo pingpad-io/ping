@@ -3,8 +3,8 @@ import { BiMessageSquareDetail } from "react-icons/bi";
 import { FiGlobe, FiSearch } from "react-icons/fi";
 import { CollapsedContext } from "./Menu";
 import { MenuItem } from "./MenuItem";
-import Threads from "./Threads";
 import { ThreadLink } from "./ThreadLink";
+import Threads from "./Threads";
 
 const Links = () => {
   return (
@@ -42,13 +42,13 @@ const SearchBar = () => {
 const ThreadsBar = () => {
   return (
     <>
-      <div className="hidden rounded-xl bg-base-300 xl:flex">
+      <div className="hidden rounded-xl bg-base-200 xl:flex">
         <Threads />
       </div>
 
       <div className="flex flex-col gap-2 xl:hidden">
         <MenuItem href="/threads" icon={<BiMessageSquareDetail size={24} />} />
-        <ThreadLink name="global">
+        <ThreadLink threadName="global">
           <MenuItem icon={<FiGlobe size={24} />} />
         </ThreadLink>
       </div>

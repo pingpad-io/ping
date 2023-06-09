@@ -22,13 +22,15 @@ export const PostView = ({ data }: { data: Post }) => {
   const expandable = post.content.length > 65;
 
   return (
-    <div className="flex h-min max-w-2xl shrink flex-col rounded-xl border border-base-300 p-4 pb-2">
+    <div className={`flex h-min max-w-2xl shrink flex-col rounded-xl border border-base-300 p-4 ` + (expandable && "pb-2")}>
       <div className="flex flex-row gap-4">
         <UserAvatar profile={author} />
 
         <div className="flex max-w-lg grow flex-col">
-          <PostInfo data={data} />
-          <PostContent post={post} collapsed={collapsed} />
+          <Link href={`/post/${post.id}`}>
+            <PostInfo data={data} />
+            <PostContent post={post} collapsed={collapsed} />
+          </Link>
         </div>
         <LikeButton post={post} />
       </div>
@@ -38,7 +40,7 @@ export const PostView = ({ data }: { data: Post }) => {
   );
 };
 
-const PostExtensionButton = ({
+export const PostExtensionButton = ({
   expandable,
   collapsed,
   setCollapsed,
@@ -63,20 +65,16 @@ const PostExtensionButton = ({
   );
 };
 
-const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed: boolean }) => {
+export const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed: boolean }) => {
   const lineHeight = 1.5;
   const maxHeight = 3 * lineHeight * 16; // Assumes font size of 16px
   const needsTruncation = post.content.length * lineHeight > maxHeight;
   const truncatedMessage = needsTruncation ? post.content.slice(0, (maxHeight / lineHeight) * 4) + "..." : post.content;
 
-  return (
-    <Link className="" href={`/post/${post.id}`}>
-      <p className="truncate whitespace-pre-wrap break-words">{collapsed ? truncatedMessage : post.content}</p>
-    </Link>
-  );
+  return <p className="truncate whitespace-pre-wrap break-words">{collapsed ? truncatedMessage : post.content}</p>;
 };
 
-const PostInfo = ({ data }: { data: Post }) => {
+export const PostInfo = ({ data }: { data: Post }) => {
   const post = data.post;
   const author = data.author;
   const username = author.username;
@@ -101,7 +99,7 @@ const PostInfo = ({ data }: { data: Post }) => {
   );
 };
 
-const AuthorFlair = ({ author }: { author: Post["author"] }) => {
+export const AuthorFlair = ({ author }: { author: Post["author"] }) => {
   return (
     <>
       {author.flairs.length > 0 && (
@@ -113,7 +111,7 @@ const AuthorFlair = ({ author }: { author: Post["author"] }) => {
   );
 };
 
-const PostMenu = ({ data }: { data: Post }) => {
+export const PostMenu = ({ data }: { data: Post }) => {
   const user = useUser();
   const ctx = api.useContext();
 
@@ -145,7 +143,7 @@ const PostMenu = ({ data }: { data: Post }) => {
 
   return (
     <SignedIn>
-      <div className="dropdown dropdown-right pt-2 font-normal">
+      <div className="dropdown-right dropdown pt-2 font-normal">
         <button>
           <FiMoreHorizontal strokeWidth={1.5} size={15} />
         </button>
@@ -179,7 +177,7 @@ const PostMenu = ({ data }: { data: Post }) => {
   );
 };
 
-const LikeButton = ({ post }: { post: Post["post"] }) => {
+export const LikeButton = ({ post }: { post: Post["post"] }) => {
   const user = useUser();
   const ctx = api.useContext();
   const wasLiked = post.likers.find((liker) => liker.id === user?.id) !== undefined;
@@ -212,10 +210,7 @@ const LikeButton = ({ post }: { post: Post["post"] }) => {
   const like_text_color = liked ? "text-base-100" : "text-secondary-content";
   const likes = (
     <div className="flex h-full w-full items-center justify-center">
-      <button
-        className="btn-secondary btn-square btn relative border-0 bg-base-100 hover:bg-base-100"
-        onClick={() => like()}
-      >
+      <button className="btn-secondary btn-square btn relative border-0 bg-base-100 hover:bg-base-100" onClick={() => like()}>
         <span className={`text-md z-10 flex items-center justify-center font-bold ` + like_text_color}>
           {likesAmount > 0 ? likes_text : ""}
         </span>

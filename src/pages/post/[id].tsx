@@ -1,11 +1,15 @@
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
+import { useSelector } from "react-redux";
 import ErrorPage from "~/components/ErrorPage";
 import { PageLayout } from "~/components/Layout";
-import { PostView } from "~/components/PostView";
+import { LikeButton, PostContent, PostInfo } from "~/components/PostView";
+import PostWizard from "~/components/PostWizard";
+import { ThreadLink } from "~/components/ThreadLink";
+import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
+import { State } from "~/utils/store";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
   const { data, isError, error } = api.posts.getById.useQuery(id, {
@@ -15,11 +19,12 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
     retry: false,
   });
 
-  if (isError) return <ErrorPage title={error?.message} />;
+  if (isError) return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
   if (!data) return <ErrorPage title={"Post not found qwq"} />;
 
   const post = data.post;
   const author = data.author;
+  const currentThreadName = useSelector((state: State) => state.currentThreadName);
 
   return (
     <>
@@ -30,14 +35,22 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
       </Head>
 
       <PageLayout>
-        <div className="p-10">
-          <PostView data={data} />
-        </div>
-
-        <div className="flex items-center justify-center">
-          <div className="btn-ghost btn-wide btn m-4">
-            <Link href={"/"}>{`< Home`}</Link>
+        <div className=" flex w-full flex-col items-center justify-center p-4">
+          <div className="flex h-fit flex-row gap-4 rounded-3xl border border-b-0 border-base-200 border-primary p-4">
+            <UserAvatar profile={author} />
+            <div className="flex max-w-lg grow flex-col">
+              <PostInfo data={data} />
+              <PostContent post={post} collapsed={false} />
+            </div>
+            <LikeButton post={post} />
           </div>
+
+          <div className="flex w-11/12 w-full flex-row">
+            <PostWizard placeholder="reply..." />
+          </div>
+          <ThreadLink threadName={currentThreadName}>
+            <div className="  btn-primary btn-ghost btn border">{`< Back`}</div>
+          </ThreadLink>
         </div>
       </PageLayout>
     </>

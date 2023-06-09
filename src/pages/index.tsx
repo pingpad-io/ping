@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import PostWizard from "~/components/PostWizard";
+import PostWizard, { ThreadDivider } from "~/components/PostWizard";
 import { api } from "~/utils/api";
 import { State } from "../utils/store";
 
@@ -11,7 +11,10 @@ const HomePage = () => {
 
   return (
     <PageLayout>
-      <PostWizard />
+      <div className="sticky top-0 z-10 flex w-full flex-col">
+        <PostWizard placeholder="write a new twot..." />
+        <ThreadDivider />
+      </div>
       <Feed {...posts} />
     </PageLayout>
   );

@@ -28,17 +28,15 @@ export default function Menu() {
 
   return (
     <CollapsedContext.Provider value={isCollapsed}>
-      <div
-        className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between px-2 py-4 text-2xl lg:w-56`}
-      >
+      <div className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between px-2 py-4 text-2xl lg:w-56`}>
         <div className="flex flex-col items-end gap-2">
           <div className="flex flex-row gap-2">
-            <ThreadLink name="global">
+            <ThreadLink threadName="global">
               <MenuItem text={"Twotter"} className="font-bold" icon={<OtterIcon />} />
             </ThreadLink>
           </div>
 
-          <ThreadLink name="global">
+          <ThreadLink threadName="global">
             <MenuItem text={"Home"} icon={<FiHome />} />
           </ThreadLink>
 
@@ -55,11 +53,7 @@ export default function Menu() {
 
           <SignedOut>
             <ModalWizard wizardChildren={<LoginWizard />}>
-              <MenuItem
-                className="dropdown dropdown-right dropdown-hover"
-                text={"Sign In"}
-                icon={<FiLogIn />}
-              ></MenuItem>
+              <MenuItem className="dropdown-right dropdown dropdown-hover" text={"Sign In"} icon={<FiLogIn />}></MenuItem>
             </ModalWizard>
           </SignedOut>
 

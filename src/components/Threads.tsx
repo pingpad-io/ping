@@ -2,14 +2,14 @@ import { FiX } from "react-icons/fi";
 import { api } from "~/utils/api";
 
 import { useUser } from "@supabase/auth-helpers-react";
+import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { BsPlus } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
-import { GLOBAL_THREAD_ID, State } from "~/utils/store";
+import { useDispatch } from "react-redux";
+import { GLOBAL_THREAD_ID } from "~/utils/store";
 import ModalWizard from "./ModalWizard";
 import { ThreadLink } from "./ThreadLink";
 import ThreadWizard from "./ThreadWizard";
-import Link from "next/link";
 
 export function GlobalThreads() {
   const { data: threads } = api.threads.getAll.useQuery();
@@ -20,7 +20,7 @@ export function GlobalThreads() {
 
     return (
       <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline">
-        <ThreadLink name={thread.name} text={thread.title} />
+        <ThreadLink threadName={thread.name} text={thread.title} />
       </div>
     );
   });
@@ -61,7 +61,7 @@ export function UserThreads() {
 
     return (
       <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline">
-        <ThreadLink name={thread.name} text={thread.title} />
+        <ThreadLink threadName={thread.name} text={thread.title} />
 
         <span className="text-xs text-base-content">(@{thread.author?.username})</span>
 

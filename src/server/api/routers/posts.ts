@@ -1,10 +1,6 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  privateProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
@@ -22,10 +18,12 @@ import { prisma, supabase } from "~/server/db";
 import { RouterOutputs } from "~/utils/api";
 import { Post, Profile, Thread } from "@prisma/client";
 
-const addAuthorDataToPosts = async (posts: (Post & {
+const addAuthorDataToPosts = async (
+  posts: (Post & {
     thread: Thread;
     likers: Profile[];
-})[]) => {
+  })[]
+) => {
   const authors = posts.map((post) => post.authorId);
 
   const profiles = await prisma.profile.findMany({
@@ -69,20 +67,18 @@ export const postsRouter = createTRPCRouter({
     return addAuthorDataToPosts(posts);
   }),
 
-  getAllByThreadId: publicProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      let posts = await ctx.prisma.post.findMany({
-        take: 100,
-        orderBy: [{ createdAt: "desc" }],
-        include: { likers: true, thread: true },
-        where: { threadId: input, status: "Posted" },
-      });
+  getAllByThreadId: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    let posts = await ctx.prisma.post.findMany({
+      take: 100,
+      orderBy: [{ createdAt: "desc" }],
+      include: { likers: true, thread: true },
+      where: { threadId: input, status: "Posted" },
+    });
 
-      return addAuthorDataToPosts(posts);
-    }),
+    return addAuthorDataToPosts(posts);
+  }),
 
-  getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+  getById: publicProcedure.input(z.string().uuid()).query(async ({ ctx, input }) => {
     let post = await ctx.prisma.post.findUnique({
       where: { id: input },
       include: { likers: true, thread: true },
@@ -121,89 +117,83 @@ export const postsRouter = createTRPCRouter({
     });
   }),
 
-  getAllByAuthorId: publicProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      let posts = await ctx.prisma.post.findMany({
-        where: { authorId: input },
-        include: { likers: true, thread: true },
-        take: 100,
-        orderBy: [{ createdAt: "desc" }],
+  getAllByAuthorId: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    let posts = await ctx.prisma.post.findMany({
+      where: { authorId: input },
+      include: { likers: true, thread: true },
+      take: 100,
+      orderBy: [{ createdAt: "desc" }],
+    });
+    return addAuthorDataToPosts(posts);
+  }),
+
+  deleteById: privateProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const post = await ctx.prisma.post.findUnique({
+      where: { id: input },
+    });
+
+    if (!post) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `Post with id ${input} was not found.`,
       });
-      return addAuthorDataToPosts(posts);
-    }),
+    }
 
-  deleteById: privateProcedure
-    .input(z.string())
-    .mutation(async ({ ctx, input }) => {
-      const post = await ctx.prisma.post.findUnique({
-        where: { id: input },
+    if (post.authorId !== ctx.userId) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: `You are not allowed to delete this post.`,
       });
+    }
 
-      if (!post) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `Post with id ${input} was not found.`,
-        });
-      }
+    await ctx.prisma.post.update({
+      where: { id: input },
+      data: { status: "UserDeleted" },
+    });
+  }),
 
-      if (post.authorId !== ctx.userId) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: `You are not allowed to delete this post.`,
-        });
-      }
+  likeById: privateProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const post = await ctx.prisma.post.findUnique({
+      where: { id: input },
+      select: {
+        likers: {
+          select: { id: true },
+        },
+      },
+    });
 
+    const profile = await ctx.prisma.profile.findUnique({
+      where: { id: ctx.userId },
+      select: { id: true },
+    });
+
+    if (!profile || !post) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Post or Profile not found.`,
+      });
+    }
+
+    const isLiked = post.likers.find((liker) => liker.id === profile.id);
+
+    if (isLiked) {
       await ctx.prisma.post.update({
         where: { id: input },
-        data: { status: "UserDeleted" },
+        data: {
+          likers: { disconnect: { id: profile.id } },
+        },
       });
-    }),
-
-  likeById: privateProcedure
-    .input(z.string())
-    .mutation(async ({ ctx, input }) => {
-      const post = await ctx.prisma.post.findUnique({
+    } else {
+      await ctx.prisma.post.update({
         where: { id: input },
-        select: {
+        data: {
           likers: {
-            select: { id: true },
+            connect: [{ id: profile.id }],
           },
         },
       });
-
-      const profile = await ctx.prisma.profile.findUnique({
-        where: { id: ctx.userId },
-        select: { id: true },
-      });
-
-      if (!profile || !post) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Post or Profile not found.`,
-        });
-      }
-
-      const isLiked = post.likers.find((liker) => liker.id === profile.id);
-
-      if (isLiked) {
-        await ctx.prisma.post.update({
-          where: { id: input },
-          data: {
-            likers: { disconnect: { id: profile.id } },
-          },
-        });
-      } else {
-        await ctx.prisma.post.update({
-          where: { id: input },
-          data: {
-            likers: {
-              connect: [{ id: profile.id }],
-            },
-          },
-        });
-      }
-    }),
+    }
+  }),
 
   create: privateProcedure
     .input(
