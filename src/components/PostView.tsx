@@ -14,19 +14,22 @@ import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 
 export type Post = RouterOutputs["posts"]["getAll"][number];
+export const lineHeight = 1.5;
+export const maxHeight = 6 * lineHeight * 16; // Assumes font size of 16px
+export const maxLength = 45 * 3 - 3;
 
 export const PostView = ({ data }: { data: Post }) => {
   const post = data.post;
   const author = data.author;
   const [collapsed, setCollapsed] = useState(true);
-  const expandable = post.content.length > 65;
+  const expandable = post.content.length > maxLength;
 
   return (
     <div className={`flex h-min max-w-2xl shrink flex-col rounded-xl border border-base-300 p-4 ` + (expandable && "pb-2")}>
       <div className="flex flex-row gap-4">
         <UserAvatar profile={author} />
 
-        <div className="flex max-w-lg grow flex-col">
+        <div className="w-9/12 grow flex-col">
           <Link href={`/post/${post.id}`}>
             <PostInfo data={data} />
             <PostContent post={post} collapsed={collapsed} />
@@ -66,10 +69,8 @@ export const PostExtensionButton = ({
 };
 
 export const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed: boolean }) => {
-  const lineHeight = 1.5;
-  const maxHeight = 3 * lineHeight * 16; // Assumes font size of 16px
-  const needsTruncation = post.content.length * lineHeight > maxHeight;
-  const truncatedMessage = needsTruncation ? post.content.slice(0, (maxHeight / lineHeight) * 4) + "..." : post.content;
+  const needsTruncation = post.content.length > maxLength;
+  const truncatedMessage = needsTruncation ? post.content.slice(0, maxLength) + "..." : post.content;
 
   return <p className="truncate whitespace-pre-wrap break-words">{collapsed ? truncatedMessage : post.content}</p>;
 };
@@ -208,18 +209,18 @@ export const LikeButton = ({ post }: { post: Post["post"] }) => {
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const likes_text = formatter.format(likesAmount);
   const like_text_color = liked ? "text-base-100" : "text-secondary-content";
-  const likes = (
-    <div className="flex h-full w-full items-center justify-center">
+
+  return (
+    <div className="h-12 w-12 items-center justify-center">
       <button className="btn-secondary btn-square btn relative border-0 bg-base-100 hover:bg-base-100" onClick={() => like()}>
-        <span className={`text-md z-10 flex items-center justify-center font-bold ` + like_text_color}>
+        <span className={`text-md absolute z-10 flex items-center justify-center font-bold ` + like_text_color}>
           {likesAmount > 0 ? likes_text : ""}
         </span>
+
         <span className="absolute flex items-center justify-center">
           {liked ? <AiFillHeart size={35} /> : <AiOutlineHeart size={35} />}
         </span>
       </button>
     </div>
   );
-
-  return <div className="h-12 w-12 ">{likes}</div>;
 };
