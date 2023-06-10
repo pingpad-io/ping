@@ -36,7 +36,7 @@ export default function PostWizard({ placeholder }: { placeholder: string }) {
           break;
       }
       toast.error(error);
-    },
+    }
   });
 
   const onSubmit = (e: React.FormEvent) => {
@@ -89,7 +89,7 @@ export const ThreadDivider = () => {
 
 export const PostWizardAuthed = ({ userId }: { userId: string }) => {
   const { data: profile } = api.profiles.getProfileById.useQuery({
-    id: userId,
+    id: userId
   });
 
   return <UserAvatar profile={profile} online={true} />;

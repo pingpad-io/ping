@@ -26,5 +26,5 @@ export const themes = [
   "lemonade",
   "night",
   "coffee",
-  "winter",
+  "winter"
 ];

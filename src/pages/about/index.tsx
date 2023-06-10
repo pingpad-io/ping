@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import Head from "next/head";
 import { PageLayout } from "~/components/Layout";
 
@@ -18,17 +19,13 @@ const AboutPage = () => {
             <div className="card m-4 bg-base-200 p-4">
               <b>what?</b>
               <div className="text-left">
-                this website is an experiment of combining two of the most
-                controversial places on the internet: <b>twitter.com</b> and{" "}
+                this website is an experiment of combining two of the most controversial places on the internet: <b>twitter.com</b> and{" "}
                 <b>4chan.org</b>
               </div>
             </div>
             <div className="card m-4 bg-base-200 p-4">
               <b>why?</b>
-              <div className="text-left">
-                it's an attempt to find out what happens when an unstoppable
-                force meets an immovable object.
-              </div>
+              <div className="text-left">it's an attempt to find out what happens when an unstoppable force meets an immovable object.</div>
             </div>
             <div className="card m-4 bg-base-200 p-4">
               <b>who?</b>

@@ -4,9 +4,7 @@ import { MenuItem } from "./MenuItem";
 export default function Footer() {
   return (
     <>
-      <div>
-        {/* TODO */}
-      </div>
+      <div>{/* TODO */}</div>
     </>
   );
 }

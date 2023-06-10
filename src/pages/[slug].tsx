@@ -17,7 +17,7 @@ import { getSSGHelper } from "~/utils/getSSGHelper";
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const user = useUser();
   const { data: profile } = api.profiles.getProfileByUsername.useQuery({
-    username,
+    username
   });
   if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
 
@@ -59,11 +59,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
           {isUserProfile && (
             <CollapsedContext.Provider value={true}>
-              <MenuItem
-                href="/settings"
-                icon={<FiEdit2 />}
-                text="Edit Profile"
-              />
+              <MenuItem href="/settings" icon={<FiEdit2 />} text="Edit Profile" />
             </CollapsedContext.Provider>
           )}
         </div>
@@ -87,8 +83,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      username,
-    },
+      username
+    }
   };
 };
 

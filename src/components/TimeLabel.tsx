@@ -19,18 +19,18 @@ dayjs.updateLocale("en", {
     M: "month",
     MM: "%d months",
     y: "a year",
-    yy: "%d years",
-  },
+    yy: "%d years"
+  }
 });
 
 export const TimeElapsedSince = ({ date }: { date: Date }) => {
-  let timeSince = dayjs(date).fromNow();
+  const timeSince = dayjs(date).fromNow();
 
   return <span>{timeSince}</span>;
 };
 
 export const TimeSince = ({ date }: { date: Date }) => {
-  let timeSince = dayjs(date).format("MMM YYYY");
+  const timeSince = dayjs(date).format("MMM YYYY");
 
   return <span>{timeSince}</span>;
 };

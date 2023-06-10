@@ -4,7 +4,7 @@ import Link from "next/link";
 export function UserAvatar({
   profile,
   size = 48,
-  online = false,
+  online = false
 }: {
   profile?: { avatar_url: string | null; username: string | null };
   size?: number;
@@ -19,15 +19,9 @@ export function UserAvatar({
 
   return (
     <div className={"avatar " + (online ? "online" : "")}>
-      <div className="h-12 w-12 rounded-full shrink-0 grow-0">
+      <div className="h-12 w-12 shrink-0 grow-0 rounded-full">
         <Link href={"/" + profile.username}>
-          <Image
-            src={profile.avatar_url}
-            alt={profile.username + "'s profile image"}
-            width={size}
-            height={size}
-            placeholder="empty"
-          />
+          <Image src={profile.avatar_url} alt={profile.username + "'s profile image"} width={size} height={size} placeholder="empty" />
         </Link>
       </div>
     </div>

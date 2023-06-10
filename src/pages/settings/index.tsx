@@ -2,12 +2,7 @@ import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import {
-  GetServerSidePropsContext,
-  NextApiRequest,
-  NextApiResponse,
-  NextPage,
-} from "next";
+import { GetServerSidePropsContext, NextApiRequest, NextApiResponse, NextPage } from "next";
 import { useTheme } from "next-themes";
 import { Theme } from "react-daisyui";
 import { BsCircleFill } from "react-icons/bs";
@@ -18,29 +13,25 @@ import { themes } from "~/styles/themes";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
-export const getServerSideProps = async (
-  context:
-    | GetServerSidePropsContext
-    | { req: NextApiRequest; res: NextApiResponse }
-) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext | { req: NextApiRequest; res: NextApiResponse }) => {
   const ssg = getSSGHelper();
-  let supabase = createServerSupabaseClient(context);
+  const supabase = createServerSupabaseClient(context);
 
-  let {
-    data: { user },
+  const {
+    data: { user }
   } = await supabase.auth.getUser();
 
   if (!user) return;
 
   await ssg.profiles.getProfileById.prefetch({
-    id: user.id,
+    id: user.id
   });
 
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      id: user.id,
-    },
+      id: user.id
+    }
   };
 };
 
@@ -66,22 +57,14 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
   }
   if (!profile) return null;
 
-  let cycleTheme = () => {
-    let theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
+  const cycleTheme = () => {
+    const theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
     setTheme(theme);
   };
 
-  let themeButtons = themes.map((theme) => (
-    <Theme
-      dataTheme={theme}
-      key={theme}
-      className="inline-block w-min bg-transparent p-1"
-    >
-      <button
-        key={theme}
-        className="btn-outline btn-sm btn bg-base-100"
-        onClick={() => setTheme(theme)}
-      >
+  const themeButtons = themes.map((theme) => (
+    <Theme dataTheme={theme} key={theme} className="inline-block w-min bg-transparent p-1">
+      <button key={theme} className="btn-outline btn-sm btn bg-base-100" onClick={() => setTheme(theme)}>
         <div className="flex flex-row gap-1">
           {theme}
           <BsCircleFill className="text-primary" />
@@ -104,19 +87,14 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
 
         <div className="form-control card m-4 gap-4 rounded-3xl border-2 border-error bg-base-300 p-8">
           <h2 className="text-xl text-error">Danger Zone</h2>
-          <button
-            className="btn-error btn-wide btn-sm btn mt-4"
-            onClick={() => supabase.auth.signOut()}
-          >
+          <button className="btn-error btn-wide btn-sm btn mt-4" onClick={() => supabase.auth.signOut()}>
             Sign Out
           </button>
         </div>
       </SignedIn>
 
       <SignedOut>
-        <h1 className="m-8 flex flex-row items-center justify-center p-8 text-xl">
-          Sign in to view this page
-        </h1>
+        <h1 className="m-8 flex flex-row items-center justify-center p-8 text-xl">Sign in to view this page</h1>
       </SignedOut>
     </PageLayout>
   );

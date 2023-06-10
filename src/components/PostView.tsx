@@ -46,7 +46,7 @@ export const PostView = ({ data }: { data: Post }) => {
 export const PostExtensionButton = ({
   expandable,
   collapsed,
-  setCollapsed,
+  setCollapsed
 }: {
   expandable: boolean;
   collapsed: boolean;
@@ -121,14 +121,16 @@ export const PostMenu = ({ data }: { data: Post }) => {
 
   const postIdText = "#" + post.id.substring(post.id.length - 8).toLowerCase();
 
-  const todo = () => {};
+  const todo = () => {
+    Function.prototype();
+  };
   const { mutate: deletePost } = api.posts.deleteById.useMutation({
     onSuccess: async () => {
       await ctx.posts.invalidate();
     },
     onError: (error) => {
       toast.error("Error deleting post " + error.message);
-    },
+    }
   });
 
   const copyLink = () => {
@@ -191,7 +193,7 @@ export const LikeButton = ({ post }: { post: Post["post"] }) => {
     },
     onError: (error) => {
       toast.error("Error liking post " + error.message);
-    },
+    }
   });
 
   const like = () => {

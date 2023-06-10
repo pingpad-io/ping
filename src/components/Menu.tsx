@@ -16,12 +16,12 @@ import { ThreadLink } from "./ThreadLink";
 export const CollapsedContext = createContext(false);
 
 export default function Menu() {
-  let [isCollapsed, setCollapsed] = useState(false);
-  let supabase = useSupabaseClient();
-  let ctx = api.useContext();
-  let user = useUser();
+  const [isCollapsed, setCollapsed] = useState(false);
+  const supabase = useSupabaseClient();
+  const ctx = api.useContext();
+  const user = useUser();
 
-  let signOut = () => {
+  const signOut = () => {
     ctx.invalidate();
     supabase.auth.signOut();
   };
@@ -57,7 +57,7 @@ export default function Menu() {
             </ModalWizard>
           </SignedOut>
 
-          <ModalWizard wizardChildren={<PostWizard />}>
+          <ModalWizard wizardChildren={<PostWizard placeholder="write a new twot..." />}>
             <MenuItem
               className={
                 `my-2 border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
@@ -74,11 +74,11 @@ export default function Menu() {
 }
 
 export const MenuAuthed = ({ userId }: { userId: string }) => {
-  let { data: profile, isLoading } = api.profiles.getProfileById.useQuery({
-    id: userId,
+  const { data: profile, isLoading } = api.profiles.getProfileById.useQuery({
+    id: userId
   });
 
-  let todo = () => toast.error("Not implemented yet");
+  const todo = () => toast.error("Not implemented yet");
 
   return (
     <>

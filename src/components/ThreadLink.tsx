@@ -10,11 +10,11 @@ export const ThreadLink = (props: PropsWithChildren & { threadName: string; text
   const {
     data: thread,
     isLoading,
-    isError,
+    isError
   } = api.threads.getByName.useQuery(props.threadName, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    refetchInterval: Infinity,
+    refetchInterval: Infinity
   });
 
   const ready = !isLoading && !isError && thread;
@@ -29,8 +29,8 @@ export const ThreadLink = (props: PropsWithChildren & { threadName: string; text
 
               payload: {
                 id: thread?.id,
-                name: thread?.name,
-              },
+                name: thread?.name
+              }
             });
             router.push("/");
           }}

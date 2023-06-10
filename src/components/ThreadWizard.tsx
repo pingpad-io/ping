@@ -27,7 +27,7 @@ export default function ThreadWizard() {
           break;
       }
       toast.error(error);
-    },
+    }
   });
 
   const onSubmit = (e: React.FormEvent) => {

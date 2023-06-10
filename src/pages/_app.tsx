@@ -1,7 +1,5 @@
-import {
-  Session,
-  createBrowserSupabaseClient,
-} from "@supabase/auth-helpers-nextjs";
+/* eslint-disable react/no-string-refs */
+import { Session, createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "next-themes";
@@ -16,7 +14,7 @@ import { store } from "../utils/store";
 
 function Twotter({
   Component,
-  pageProps,
+  pageProps
 }: AppProps<{
   initialSession: Session;
 }>) {
@@ -24,10 +22,7 @@ function Twotter({
 
   return (
     <Provider store={store}>
-      <SessionContextProvider
-        supabaseClient={supabaseClient}
-        initialSession={pageProps.initialSession}
-      >
+      <SessionContextProvider supabaseClient={supabaseClient} initialSession={pageProps.initialSession}>
         <ThemeProvider>
           <Head>
             <title>Twotter</title>

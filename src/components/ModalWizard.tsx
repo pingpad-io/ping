@@ -1,11 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode, useState } from "react";
 
-export default function ModalWizard(props: {
-  children?: ReactNode;
-  wizardChildren?: ReactNode;
-}) {
-  let [isOpen, setIsOpen] = useState(false);
+export default function ModalWizard(props: { children?: ReactNode; wizardChildren?: ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
     setIsOpen(false);

@@ -39,21 +39,22 @@ export function UserThreads() {
   const { data: threads } = api.threads.getAll.useQuery();
   const user = useUser();
   const userThreads = threads?.filter((thread) => thread.authorId !== null);
+  const setCurrentThread = useDispatch();
+
   const deleteThread = api.threads.delete.useMutation({
     onSuccess: () => {
       const ctx = api.useContext();
-      const setCurrentThread = useDispatch();
       ctx.threads.invalidate();
       ctx.posts.invalidate();
       setCurrentThread({
         type: "SET_CURRENT_THREAD",
-        payload: GLOBAL_THREAD_ID,
+        payload: GLOBAL_THREAD_ID
       });
       toast.success("Thread deleted!");
     },
     onError: (error) => {
       toast.error(error.message);
-    },
+    }
   });
 
   const userThreadList = userThreads?.map((thread) => {

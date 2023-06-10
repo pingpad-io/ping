@@ -16,15 +16,15 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    retry: false,
+    retry: false
   });
+  const currentThreadName = useSelector((state: State) => state.currentThreadName);
 
   if (isError) return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
   if (!data) return <ErrorPage title={"Post not found qwq"} />;
 
   const post = data.post;
   const author = data.author;
-  const currentThreadName = useSelector((state: State) => state.currentThreadName);
 
   return (
     <>
@@ -68,8 +68,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      id: id,
-    },
+      id: id
+    }
   };
 };
 

@@ -16,7 +16,7 @@ export const GLOBAL_THREAD_ID = "5cfda833-5000-439c-ad21-bf0dc05c88a0";
 
 const initialState: State = {
   currentThreadId: GLOBAL_THREAD_ID,
-  currentThreadName: "global",
+  currentThreadName: "global"
 };
 
 const reducer = (state = initialState, action: ActionTypes): State => {
@@ -25,7 +25,7 @@ const reducer = (state = initialState, action: ActionTypes): State => {
       return {
         ...state,
         currentThreadName: action.payload.name,
-        currentThreadId: action.payload.id,
+        currentThreadId: action.payload.id
       };
     default:
       return state;
@@ -33,5 +33,5 @@ const reducer = (state = initialState, action: ActionTypes): State => {
 };
 
 export const store = configureStore({
-  reducer,
+  reducer
 });

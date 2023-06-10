@@ -4,10 +4,10 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { OtterIcon } from "./Icons";
 
 const LoginWizard = () => {
-  let supabase = useSupabaseClient();
+  const supabase = useSupabaseClient();
 
   return (
-    <div className="w-72 bg-base-100 px-4 pt-4 pb-2">
+    <div className="w-72 bg-base-100 px-4 pb-2 pt-4">
       <div className="flex flex-row items-center justify-center gap-2 text-lg font-semibold">
         <h3>Sign in to </h3>
         <OtterIcon size={25} />

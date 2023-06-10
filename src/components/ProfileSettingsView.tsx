@@ -20,7 +20,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
     onError(error) {
       toast.error("Error updating the data!");
       console.log(error);
-    },
+    }
   });
 
   const commitUpdates = async () => {
@@ -30,7 +30,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
       full_name,
       avatar_url,
       updated_at: new Date(),
-      created_at: profile?.created_at ?? null,
+      created_at: profile?.created_at ?? null
     };
 
     updateProfile({ updates });
@@ -48,13 +48,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
           <label className="label inline-block" htmlFor="id">
             Your ID:
           </label>
-          <input
-            className="input-bordered input input-sm w-[295px]"
-            id="id"
-            type="text"
-            value={profile.id}
-            disabled
-          />
+          <input className="input-bordered input input-sm w-[295px]" id="id" type="text" value={profile.id} disabled />
         </div>
         <div>
           <label className="label inline-block" htmlFor="name">
@@ -90,21 +84,13 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
               Flairs:
             </label>
             <div className="inline-block">
-              {flairList.length > 0 ? (
-                flairList
-              ) : (
-                <div className="badge-ghost badge-outline badge">None</div>
-              )}
+              {flairList.length > 0 ? flairList : <div className="badge badge-ghost badge-outline">None</div>}
             </div>
           </div>
         </div>
 
         <div>
-          <button
-            className="btn-outline btn-primary btn-wide btn mt-4"
-            onClick={() => commitUpdates()}
-            disabled={false}
-          >
+          <button className="btn-outline btn-primary btn-wide btn mt-4" onClick={() => commitUpdates()} disabled={false}>
             {loading ? "Updating..." : "Update"}
           </button>
         </div>

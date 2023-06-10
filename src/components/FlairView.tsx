@@ -1,12 +1,6 @@
 import { Flair } from "@prisma/client";
 
-export const FlairView = ({
-  flair,
-  size = "md",
-}: {
-  flair: Flair | undefined;
-  size: "xs" | "sm" | "md" | "lg";
-}) => {
+export const FlairView = ({ flair, size = "md" }: { flair: Flair | undefined; size: "xs" | "sm" | "md" | "lg" }) => {
   if (!flair) return null;
 
   let flairColor = "";
@@ -57,12 +51,7 @@ export const FlairView = ({
   }
 
   return (
-    <div
-      key={flair.id}
-      className={
-        "badge-outline badge h-min w-fit " + flairColor + " " + flairSize
-      }
-    >
+    <div key={flair.id} className={"badge-outline badge h-min w-fit " + flairColor + " " + flairSize}>
       {flair.title}
     </div>
   );
