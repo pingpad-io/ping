@@ -7,8 +7,8 @@ export default function ThreadWizard() {
   const [input, setInput] = useState("");
 
   const { mutate, isLoading } = api.threads.create.useMutation({
-    onSuccess: () => {
-      ctx.threads.invalidate();
+    onSuccess: async () => {
+      await ctx.threads.invalidate();
     },
     onError: (e) => {
       let error = "Something went wrong";
@@ -27,7 +27,7 @@ export default function ThreadWizard() {
           break;
       }
       toast.error(error);
-    }
+    },
   });
 
   const onSubmit = (e: React.FormEvent) => {

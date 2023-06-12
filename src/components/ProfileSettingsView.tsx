@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { RouterOutputs, api } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 import { FlairView } from "./FlairView";
 
 type Profile = RouterOutputs["profiles"]["getProfileById"];
@@ -19,17 +19,17 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
     },
     onError(error) {
       toast.error("Error updating the data! " + error.message);
-    }
+    },
   });
 
-  const commitUpdates = async () => {
+  const commitUpdates = () => {
     const updates = {
       id: profile.id,
       username,
       full_name,
       avatar_url,
       updated_at: new Date(),
-      created_at: profile?.created_at ?? null
+      created_at: profile?.created_at ?? null,
     };
 
     updateProfile({ updates });
@@ -83,7 +83,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
               Flairs:
             </label>
             <div className="inline-block">
-              {flairList.length > 0 ? flairList : <div className="badge badge-ghost badge-outline">None</div>}
+              {flairList.length > 0 ? flairList : <div className="badge-ghost badge-outline badge">None</div>}
             </div>
           </div>
         </div>

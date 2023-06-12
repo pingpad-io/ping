@@ -83,7 +83,11 @@ export const threadsRouter = createTRPCRouter({
   create: privateProcedure
     .input(z.object({ title: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const name = input.title.replace(/[^a-z\d\s]+/gi, "").toLowerCase();
+      const name = input.title
+        .replace(/[^a-z\d\s]+/gi, "")
+        .replace(/\s/g, "-")
+        .toLowerCase();
+
       const post = await ctx.prisma.thread.create({
         data: {
           id: randomUUID(),

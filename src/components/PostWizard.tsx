@@ -3,7 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { api } from "~/utils/api";
-import { State } from "~/utils/store";
+import { type State } from "~/utils/store";
 import { UserAvatar } from "./UserAvatar";
 
 export default function PostWizard({ placeholder }: { placeholder: string }) {
@@ -11,33 +11,34 @@ export default function PostWizard({ placeholder }: { placeholder: string }) {
   const ctx = api.useContext();
   const user = useUser();
   const currentThreadId = useSelector((state: State) => state.currentThreadId);
-  const { mutate: createPost, isLoading: isPosting } = api.posts.create.useMutation({
-    onSuccess: () => {
-      setInput("");
-      ctx.posts.invalidate();
-    },
-    onError: (e) => {
-      let error = "Something went wrong";
-      switch (e.data?.code) {
-        case "UNAUTHORIZED":
-          error = "You must be logged in to post";
-          break;
-        case "FORBIDDEN":
-          error = "You are not allowed to post";
-          break;
-        case "TOO_MANY_REQUESTS":
-          error = "Slow down! You are posting too fast";
-          break;
-        case "BAD_REQUEST":
-          error = "Invalid request";
-          break;
-        case "PAYLOAD_TOO_LARGE":
-          error = "Your message is too big";
-          break;
-      }
-      toast.error(error);
-    }
-  });
+  const { mutate: createPost, isLoading: isPosting } =
+    api.posts.create.useMutation({
+      onSuccess: async () => {
+        setInput("");
+        await ctx.posts.invalidate();
+      },
+      onError: (e) => {
+        let error = "Something went wrong";
+        switch (e.data?.code) {
+          case "UNAUTHORIZED":
+            error = "You must be logged in to post";
+            break;
+          case "FORBIDDEN":
+            error = "You are not allowed to post";
+            break;
+          case "TOO_MANY_REQUESTS":
+            error = "Slow down! You are posting too fast";
+            break;
+          case "BAD_REQUEST":
+            error = "Invalid request";
+            break;
+          case "PAYLOAD_TOO_LARGE":
+            error = "Your message is too big";
+            break;
+        }
+        toast.error(error);
+      },
+    });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,14 +83,14 @@ export const ThreadDivider = () => {
                   before:h-0 before:border-b before:border-base-300 before:bg-base-300 
                   after:h-0 after:border-b after:border-base-300 after:bg-base-300"
     >
-      {currentThread?.title}
+      {currentThread?.name}
     </div>
   );
 };
 
 export const PostWizardAuthed = ({ userId }: { userId: string }) => {
   const { data: profile } = api.profiles.getProfileById.useQuery({
-    id: userId
+    id: userId,
   });
 
   return <UserAvatar profile={profile} online={true} />;
