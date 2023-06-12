@@ -16,7 +16,7 @@ import { ThreadLink } from "./ThreadLink";
 export const CollapsedContext = createContext(false);
 
 export default function Menu() {
-  const [isCollapsed, setCollapsed] = useState(false);
+  const [isCollapsed] = useState(false);
   const supabase = useSupabaseClient();
   const ctx = api.useContext();
   const user = useUser();
@@ -74,7 +74,7 @@ export default function Menu() {
 }
 
 export const MenuAuthed = ({ userId }: { userId: string }) => {
-  const { data: profile, isLoading } = api.profiles.getProfileById.useQuery({
+  const { data: profile } = api.profiles.getProfileById.useQuery({
     id: userId
   });
 

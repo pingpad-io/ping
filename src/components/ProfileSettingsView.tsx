@@ -18,8 +18,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
       setLoading(false);
     },
     onError(error) {
-      toast.error("Error updating the data!");
-      console.log(error);
+      toast.error("Error updating the data! " + error.message);
     }
   });
 
