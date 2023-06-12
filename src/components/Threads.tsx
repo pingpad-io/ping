@@ -1,5 +1,5 @@
 import { FiMessageSquare, FiX } from "react-icons/fi";
-import { RouterOutputs, api } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 
 import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
@@ -57,27 +57,30 @@ export type Thread = RouterOutputs["threads"]["getById"];
 const ThreadEntry = ({ thread }: { thread: Thread }) => {
   const setCurrentThread = useDispatch();
   const user = useUser();
+  const ctx = api.useContext();
 
   if (!thread || !thread.name) return null;
 
   const deleteThread = api.threads.delete.useMutation({
-    onSuccess: () => {
-      const ctx = api.useContext();
-      ctx.threads.invalidate();
-      ctx.posts.invalidate();
+    onSuccess: async () => {
+      await ctx.threads.invalidate();
+      await ctx.posts.invalidate();
       setCurrentThread({
         type: "SET_CURRENT_THREAD",
-        payload: GLOBAL_THREAD_ID
+        payload: { id: GLOBAL_THREAD_ID, name: "global" },
       });
       toast.success("Thread deleted!");
     },
     onError: (error) => {
       toast.error(error.message);
-    }
+    },
   });
 
   return (
-    <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline">
+    <div
+      key={thread.id}
+      className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline"
+    >
       <ThreadLink threadName={thread.name} text={thread.title} />
       <div className="flex flex-row items-center gap-2">
         <span className={`text-sm`}>{thread.posts.length}</span>
