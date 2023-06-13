@@ -1,12 +1,12 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BsReply, BsTrash } from "react-icons/bs";
 import { FiEdit2, FiMoreHorizontal } from "react-icons/fi";
 import { RiArrowDownSLine, RiArrowUpSLine, RiHashtag } from "react-icons/ri";
-import { RouterOutputs, api } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 import { FlairView } from "./FlairView";
 import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
@@ -25,7 +25,7 @@ export const PostView = ({ data }: { data: Post }) => {
   const expandable = post.content.length > maxLength;
 
   return (
-    <div className={`flex h-min max-w-2xl shrink flex-col rounded-xl border border-base-300 p-4 ` + (expandable && "pb-2")}>
+    <div className={`flex h-min max-w-2xl shrink flex-col rounded-xl border border-base-300 p-4 ${expandable ? "pb-2" : ""}`}>
       <div className="flex flex-row gap-4">
         <UserAvatar profile={author} />
 
@@ -46,7 +46,7 @@ export const PostView = ({ data }: { data: Post }) => {
 export const PostExtensionButton = ({
   expandable,
   collapsed,
-  setCollapsed
+  setCollapsed,
 }: {
   expandable: boolean;
   collapsed: boolean;
@@ -78,7 +78,7 @@ export const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed
 export const PostInfo = ({ data }: { data: Post }) => {
   const post = data.post;
   const author = data.author;
-  const username = author.username;
+  const username = author.username ?? "";
 
   return (
     <div className="flex flex-row place-items-center gap-2 text-sm font-light text-base-content ">
@@ -130,7 +130,7 @@ export const PostMenu = ({ data }: { data: Post }) => {
     },
     onError: (error) => {
       toast.error("Error deleting post " + error.message);
-    }
+    },
   });
 
   const copyLink = () => {
@@ -138,8 +138,8 @@ export const PostMenu = ({ data }: { data: Post }) => {
       function () {
         toast.success("Copied link to clipboard");
       },
-      function (err) {
-        toast.error("Error copying link to clipboard " + err);
+      function () {
+        toast.error("Error copying link to clipboard!");
       }
     );
   };
@@ -193,7 +193,7 @@ export const LikeButton = ({ post }: { post: Post["post"] }) => {
     },
     onError: (error) => {
       toast.error("Error liking post " + error.message);
-    }
+    },
   });
 
   const like = () => {

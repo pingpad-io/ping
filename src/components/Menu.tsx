@@ -22,8 +22,8 @@ export default function Menu() {
   const user = useUser();
 
   const signOut = () => {
-    ctx.invalidate();
-    supabase.auth.signOut();
+    void ctx.invalidate();
+    void supabase.auth.signOut();
   };
 
   return (
@@ -75,7 +75,7 @@ export default function Menu() {
 
 export const MenuAuthed = ({ userId }: { userId: string }) => {
   const { data: profile } = api.profiles.getProfileById.useQuery({
-    id: userId
+    id: userId,
   });
 
   const todo = () => toast.error("Not implemented yet");

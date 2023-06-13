@@ -1,5 +1,5 @@
 import { useUser } from "@supabase/auth-helpers-react";
-import { GetStaticProps, type NextPage } from "next";
+import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { FiEdit2 } from "react-icons/fi";
@@ -17,13 +17,14 @@ import { getSSGHelper } from "~/utils/getSSGHelper";
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const user = useUser();
   const { data: profile } = api.profiles.getProfileByUsername.useQuery({
-    username
+    username,
   });
   if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
 
   const isUserProfile = profile?.id === user?.id;
   const posts = api.posts.getAllByAuthorId.useQuery(profile.id);
-  const title = `Twotter (@${profile.username})`;
+  const usernameText = profile.username ?? "";
+  const title = `Twotter (@${usernameText})`;
 
   const flair = profile.flairs.length > 0 && (
     <span className="h-min">
@@ -41,7 +42,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="m-4 flex flex-row items-center gap-4 rounded-3xl border border-base-300 p-4">
           <UserAvatar profile={profile} />
 
-          <Link className="grow" href={`/${profile.username}`}>
+          <Link className="grow" href={`/${usernameText}`}>
             <div className="flex flex-row gap-2">
               <div className="text-lg font-bold">{profile.full_name}</div>
               {flair}
@@ -83,8 +84,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      username
-    }
+      username,
+    },
   };
 };
 

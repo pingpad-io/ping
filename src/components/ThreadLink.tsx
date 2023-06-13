@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 import { useDispatch } from "react-redux";
 import { api } from "~/utils/api";
 
@@ -10,11 +10,11 @@ export const ThreadLink = (props: PropsWithChildren & { threadName: string; text
   const {
     data: thread,
     isLoading,
-    isError
+    isError,
   } = api.threads.getByName.useQuery(props.threadName, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    refetchInterval: Infinity
+    refetchInterval: Infinity,
   });
 
   const ready = !isLoading && !isError && thread;
@@ -29,10 +29,10 @@ export const ThreadLink = (props: PropsWithChildren & { threadName: string; text
 
               payload: {
                 id: thread?.id,
-                name: thread?.name
-              }
+                name: thread?.name,
+              },
             });
-            router.push("/");
+            void router.push("/");
           }}
         >
           {props.text}
