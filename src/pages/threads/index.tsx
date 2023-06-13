@@ -14,10 +14,10 @@ const ThreadsPage = () => {
         <CollapsedContext.Provider value={false}>
           <div className="flex items-center justify-center">
             <div className="m-8 flex flex-col">
-              <div className="m-8 rounded-xl bg-base-300 p-4">
+              <div className="rounded-box m-8 bg-base-300 p-4">
                 <GlobalThreads />
               </div>
-              <div className="m-8 rounded-xl bg-base-300 p-4">
+              <div className="rounded-box m-8 bg-base-300 p-4">
                 <UserThreads />
               </div>
             </div>

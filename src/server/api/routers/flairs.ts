@@ -10,7 +10,7 @@ export const flairsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const flairs = await ctx.prisma.flair.findMany({
       take: 100,
-      orderBy: { color: "asc" }
+      orderBy: { color: "asc" },
     });
 
     return flairs;
@@ -20,13 +20,13 @@ export const flairsRouter = createTRPCRouter({
     if (!input) return null;
 
     const flair = await ctx.prisma.flair.findUnique({
-      where: { id: input }
+      where: { id: input },
     });
 
     if (!flair) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Flair not found"
+        message: "Flair not found",
       });
     }
 
@@ -35,7 +35,7 @@ export const flairsRouter = createTRPCRouter({
 
   delete: privateProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
     await ctx.prisma.flair.delete({
-      where: { id: input.id }
+      where: { id: input.id },
     });
   }),
 
@@ -44,10 +44,10 @@ export const flairsRouter = createTRPCRouter({
       data: {
         id: randomUUID(),
         title: input.title,
-        color: input.color
-      }
+        color: input.color,
+      },
     });
 
     return flair;
-  })
+  }),
 });

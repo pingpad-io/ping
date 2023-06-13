@@ -14,7 +14,7 @@ import { store } from "../utils/store";
 
 function Twotter({
   Component,
-  pageProps
+  pageProps,
 }: AppProps<{
   initialSession: Session;
 }>) {

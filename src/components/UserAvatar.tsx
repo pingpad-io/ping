@@ -4,7 +4,7 @@ import Link from "next/link";
 export function UserAvatar({
   profile,
   size = 48,
-  online = false
+  online = false,
 }: {
   profile?: { avatar_url: string | null; username: string | null };
   size?: number;

@@ -25,7 +25,7 @@ export const PostView = ({ data }: { data: Post }) => {
   const expandable = post.content.length > maxLength;
 
   return (
-    <div className={`flex h-min max-w-2xl shrink flex-col rounded-xl border border-base-300 p-4 ${expandable ? "pb-2" : ""}`}>
+    <div className={`rounded-box flex h-min max-w-2xl shrink flex-col border border-base-300 p-4 ${expandable ? "pb-2" : ""}`}>
       <div className="flex flex-row gap-4">
         <UserAvatar profile={author} />
 

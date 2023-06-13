@@ -7,13 +7,13 @@ export const profileRouter = createTRPCRouter({
   getProfileByUsername: publicProcedure.input(z.object({ username: z.string() })).query(async ({ ctx, input }) => {
     const profile = await ctx.prisma.profile.findUnique({
       where: { username: input.username },
-      include: { flairs: true, liked_posts: true, owned_threads: true }
+      include: { flairs: true, liked_posts: true, owned_threads: true },
     });
 
     if (!profile) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Profile not found"
+        message: "Profile not found",
       });
     }
 
@@ -23,13 +23,13 @@ export const profileRouter = createTRPCRouter({
   getProfileById: publicProcedure.input(z.object({ id: z.string().uuid() })).query(async ({ ctx, input }) => {
     const profile = await ctx.prisma.profile.findUnique({
       where: { id: input.id },
-      include: { flairs: true, liked_posts: true, owned_threads: true }
+      include: { flairs: true, liked_posts: true, owned_threads: true },
     });
 
     if (!profile) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Profile not found"
+        message: "Profile not found",
       });
     }
 
@@ -40,22 +40,22 @@ export const profileRouter = createTRPCRouter({
     if (input.updates.id !== ctx.userId) {
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "You cannot update this profile"
+        message: "You cannot update this profile",
       });
     }
 
     const profile = await ctx.prisma.profile.update({
       where: { id: input.updates.id },
-      data: input.updates
+      data: input.updates,
     });
 
     if (!profile) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Profile not found"
+        message: "Profile not found",
       });
     }
 
     return profile;
-  })
+  }),
 });

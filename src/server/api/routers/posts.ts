@@ -10,7 +10,7 @@ import { Redis } from "@upstash/redis";
 const postingRatelimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(2, "1 m"),
-  analytics: true
+  analytics: true,
 });
 
 import { randomUUID } from "crypto";
@@ -33,8 +33,8 @@ const addAuthorDataToPosts = async (
       id: true,
       avatar_url: true,
       full_name: true,
-      flairs: true
-    }
+      flairs: true,
+    },
   });
 
   return posts.map((post) => {
@@ -44,13 +44,13 @@ const addAuthorDataToPosts = async (
       console.error("AUTHOR NOT FOUND", post);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `Author for post not found. POST ID: ${post.id}, USER ID: ${post.authorId}`
+        message: `Author for post not found. POST ID: ${post.id}, USER ID: ${post.authorId}`,
       });
     }
 
     return {
       post,
-      author
+      author,
     };
   });
 };
@@ -61,7 +61,7 @@ export const postsRouter = createTRPCRouter({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
       include: { likers: true, thread: true },
-      where: { status: "Posted" }
+      where: { status: "Posted" },
     });
 
     return addAuthorDataToPosts(posts);
@@ -72,7 +72,7 @@ export const postsRouter = createTRPCRouter({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
       include: { likers: true, thread: true },
-      where: { threadId: input, status: "Posted" }
+      where: { threadId: input, status: "Posted" },
     });
 
     return addAuthorDataToPosts(posts);
@@ -81,13 +81,13 @@ export const postsRouter = createTRPCRouter({
   getById: publicProcedure.input(z.string().uuid()).query(async ({ ctx, input }) => {
     const post = await ctx.prisma.post.findUnique({
       where: { id: input },
-      include: { likers: true, thread: true }
+      include: { likers: true, thread: true },
     });
 
     if (!post) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: `Post with id ${input} was not found.`
+        message: `Post with id ${input} was not found.`,
       });
     }
 
@@ -95,7 +95,7 @@ export const postsRouter = createTRPCRouter({
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `This twot was deleted by the user.`,
-        cause: "the user"
+        cause: "the user",
       });
     }
 
@@ -103,7 +103,7 @@ export const postsRouter = createTRPCRouter({
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `This twot was deleted by the moderation team.`,
-        cause: "the moderation team"
+        cause: "the moderation team",
       });
     }
 
@@ -113,7 +113,7 @@ export const postsRouter = createTRPCRouter({
 
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "Something went wrong"
+      message: "Something went wrong",
     });
   }),
 
@@ -122,33 +122,33 @@ export const postsRouter = createTRPCRouter({
       where: { authorId: input },
       include: { likers: true, thread: true },
       take: 100,
-      orderBy: [{ createdAt: "desc" }]
+      orderBy: [{ createdAt: "desc" }],
     });
     return addAuthorDataToPosts(posts);
   }),
 
   deleteById: privateProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
     const post = await ctx.prisma.post.findUnique({
-      where: { id: input }
+      where: { id: input },
     });
 
     if (!post) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: `Post with id ${input} was not found.`
+        message: `Post with id ${input} was not found.`,
       });
     }
 
     if (post.authorId !== ctx.userId) {
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: `You are not allowed to delete this post.`
+        message: `You are not allowed to delete this post.`,
       });
     }
 
     await ctx.prisma.post.update({
       where: { id: input },
-      data: { status: "UserDeleted" }
+      data: { status: "UserDeleted" },
     });
   }),
 
@@ -157,20 +157,20 @@ export const postsRouter = createTRPCRouter({
       where: { id: input },
       select: {
         likers: {
-          select: { id: true }
-        }
-      }
+          select: { id: true },
+        },
+      },
     });
 
     const profile = await ctx.prisma.profile.findUnique({
       where: { id: ctx.userId },
-      select: { id: true }
+      select: { id: true },
     });
 
     if (!profile || !post) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `Post or Profile not found.`
+        message: `Post or Profile not found.`,
       });
     }
 
@@ -180,17 +180,17 @@ export const postsRouter = createTRPCRouter({
       await ctx.prisma.post.update({
         where: { id: input },
         data: {
-          likers: { disconnect: { id: profile.id } }
-        }
+          likers: { disconnect: { id: profile.id } },
+        },
       });
     } else {
       await ctx.prisma.post.update({
         where: { id: input },
         data: {
           likers: {
-            connect: [{ id: profile.id }]
-          }
-        }
+            connect: [{ id: profile.id }],
+          },
+        },
       });
     }
   }),
@@ -199,7 +199,7 @@ export const postsRouter = createTRPCRouter({
     .input(
       z.object({
         content: z.string().min(1, "Your twot must be longer").max(300, "Your twot must be less than 300 characters long"),
-        threadId: z.string().uuid().optional()
+        threadId: z.string().uuid().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -216,10 +216,10 @@ export const postsRouter = createTRPCRouter({
           authorId,
           threadId: input.threadId,
           content: input.content,
-          updatedAt: new Date().toISOString()
-        }
+          updatedAt: new Date().toISOString(),
+        },
       });
 
       return post;
-    })
+    }),
 });

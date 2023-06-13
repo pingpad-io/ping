@@ -7,6 +7,6 @@ export const getSSGHelper = () => {
   return createServerSideHelpers({
     router: appRouter,
     ctx: { prisma, userId: "" },
-    transformer: superjson
+    transformer: superjson,
   });
 };

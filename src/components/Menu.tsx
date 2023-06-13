@@ -53,7 +53,7 @@ export default function Menu() {
 
           <SignedOut>
             <ModalWizard wizardChildren={<LoginWizard />}>
-              <MenuItem className="dropdown-right dropdown dropdown-hover" text={"Sign In"} icon={<FiLogIn />}></MenuItem>
+              <MenuItem className="dropdown dropdown-right dropdown-hover" text={"Sign In"} icon={<FiLogIn />}></MenuItem>
             </ModalWizard>
           </SignedOut>
 

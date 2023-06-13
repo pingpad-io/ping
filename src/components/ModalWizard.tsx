@@ -43,7 +43,7 @@ export default function ModalWizard(props: { children?: ReactNode; wizardChildre
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" max-w-lg transform overflow-hidden rounded-2xl text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className=" rounded-box max-w-lg transform overflow-hidden text-left align-middle shadow-xl transition-all">
                   <div onSubmit={closeModal}>{props.wizardChildren}</div>
                 </Dialog.Panel>
               </Transition.Child>

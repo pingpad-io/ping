@@ -6,8 +6,16 @@ module.exports = {
     "pages/**/*.{ts,tsx}",
     "components/**/*.{ts,tsx}",
     "node_modules/daisyui/dist/**/*.js",
-    "node_modules/react-daisyui/dist/**/*.js"
+    "node_modules/react-daisyui/dist/**/*.js",
   ],
+  theme: {
+    extend: {
+      colors: {
+        "rounded-btn": "var(--rounded-btn)",
+        "rounded-box": "var(--rounded-box)",
+      },
+    },
+  },
   // safelist: [...[...Array(50).keys()].flatMap((i) => [`max-w-[${i * 10}px]`])],
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
@@ -40,7 +48,7 @@ module.exports = {
       "lemonade",
       "night",
       "coffee",
-      "winter"
-    ]
-  }
+      "winter",
+    ],
+  },
 };

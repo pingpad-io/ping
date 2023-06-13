@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ReactNode, useContext } from "react";
+import { useContext, type ReactNode } from "react";
 import { CollapsedContext } from "./Menu";
 
 export const MenuItem = (props: {
@@ -13,7 +13,7 @@ export const MenuItem = (props: {
 }) => {
   const collapsed = useContext(CollapsedContext);
   const text = !collapsed && props.text && <div className="hidden lg:block">{props.text}</div>;
-  const style = `flex w-fit flex-row place-content-end gap-4 rounded-3xl hover:bg-base-200 p-3 ` + (props.className ?? "");
+  const style = `flex w-fit flex-row place-content-end gap-4 rounded-btn hover:bg-base-200 p-3 ` + (props.className ?? "");
 
   const content = (
     <>
@@ -51,8 +51,7 @@ export const CompactMenuItem = (props: {
   children?: ReactNode;
 }) => {
   const text = <div>{props.text}</div>;
-
-  const style = (props.className ?? "") + ` flex h-min flex-row w-full pr-3 rounded-3xl place-items-center hover:bg-base-300`;
+  const style = (props.className ?? "") + ` flex h-min flex-row w-full pr-3 rounded-btn place-items-center hover:bg-base-300`;
 
   const content = (
     <>

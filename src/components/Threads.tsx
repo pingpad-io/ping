@@ -77,10 +77,7 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
   });
 
   return (
-    <div
-      key={thread.id}
-      className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline"
-    >
+    <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline">
       <ThreadLink threadName={thread.name} text={thread.title} />
       <div className="flex flex-row items-center gap-2">
         <span className={`text-sm`}>{thread.posts.length}</span>

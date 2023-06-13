@@ -42,7 +42,7 @@ const SearchBar = () => {
 const ThreadsBar = () => {
   return (
     <>
-      <div className="hidden rounded-xl bg-base-200 xl:flex">
+      <div className="rounded-box hidden bg-base-200 xl:flex">
         <Threads />
       </div>
 

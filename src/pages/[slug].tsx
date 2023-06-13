@@ -39,7 +39,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </Head>
 
       <PageLayout>
-        <div className="m-4 flex flex-row items-center gap-4 rounded-3xl border border-base-300 p-4">
+        <div className="rounded-box m-4 flex flex-row items-center gap-4 border border-base-300 p-4">
           <UserAvatar profile={profile} />
 
           <Link className="grow" href={`/${usernameText}`}>

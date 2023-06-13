@@ -16,7 +16,7 @@ export const SuspensePostView = () => {
   const likes = <AiFillHeart size={35} className="h-12 w-12 animate-pulse text-base-300" />;
 
   return (
-    <div className="flex max-w-2xl flex-row gap-4 rounded-xl border border-base-300 p-4 ">
+    <div className="rounded-box flex max-w-2xl flex-row gap-4 border border-base-300 p-4 ">
       {avatar}
       <div className="h-12 w-full grow">{content}</div>
       {likes}

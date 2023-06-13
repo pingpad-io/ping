@@ -11,34 +11,33 @@ export default function PostWizard({ placeholder }: { placeholder: string }) {
   const ctx = api.useContext();
   const user = useUser();
   const currentThreadId = useSelector((state: State) => state.currentThreadId);
-  const { mutate: createPost, isLoading: isPosting } =
-    api.posts.create.useMutation({
-      onSuccess: async () => {
-        setInput("");
-        await ctx.posts.invalidate();
-      },
-      onError: (e) => {
-        let error = "Something went wrong";
-        switch (e.data?.code) {
-          case "UNAUTHORIZED":
-            error = "You must be logged in to post";
-            break;
-          case "FORBIDDEN":
-            error = "You are not allowed to post";
-            break;
-          case "TOO_MANY_REQUESTS":
-            error = "Slow down! You are posting too fast";
-            break;
-          case "BAD_REQUEST":
-            error = "Invalid request";
-            break;
-          case "PAYLOAD_TOO_LARGE":
-            error = "Your message is too big";
-            break;
-        }
-        toast.error(error);
-      },
-    });
+  const { mutate: createPost, isLoading: isPosting } = api.posts.create.useMutation({
+    onSuccess: async () => {
+      setInput("");
+      await ctx.posts.invalidate();
+    },
+    onError: (e) => {
+      let error = "Something went wrong";
+      switch (e.data?.code) {
+        case "UNAUTHORIZED":
+          error = "You must be logged in to post";
+          break;
+        case "FORBIDDEN":
+          error = "You are not allowed to post";
+          break;
+        case "TOO_MANY_REQUESTS":
+          error = "Slow down! You are posting too fast";
+          break;
+        case "BAD_REQUEST":
+          error = "Invalid request";
+          break;
+        case "PAYLOAD_TOO_LARGE":
+          error = "Your message is too big";
+          break;
+      }
+      toast.error(error);
+    },
+  });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();

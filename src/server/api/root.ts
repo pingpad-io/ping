@@ -6,7 +6,7 @@ import { threadsRouter } from "./routers/threads";
 export const appRouter = createTRPCRouter({
   posts: postsRouter,
   profiles: profileRouter,
-  threads: threadsRouter
+  threads: threadsRouter,
 });
 
 // export type definition of API

@@ -41,7 +41,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 
   return (
     <>
-      <div className="text-md form-control card m-4 gap-2 rounded-3xl border-2 border-base-300 p-8">
+      <div className="text-md form-control card rounded-box m-4 gap-2 border-2 border-base-300 p-8">
         <h2 className="text-xl">Account Settings</h2>
         <div className="w-full">
           <label className="label inline-block" htmlFor="id">

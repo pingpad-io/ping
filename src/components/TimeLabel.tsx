@@ -19,8 +19,8 @@ dayjs.updateLocale("en", {
     M: "month",
     MM: "%d months",
     y: "a year",
-    yy: "%d years"
-  }
+    yy: "%d years",
+  },
 });
 
 export const TimeElapsedSince = ({ date }: { date: Date }) => {

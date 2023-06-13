@@ -1,4 +1,4 @@
-import { GetStaticProps, type NextPage } from "next";
+import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { useSelector } from "react-redux";
 import ErrorPage from "~/components/ErrorPage";
@@ -9,14 +9,14 @@ import { ThreadLink } from "~/components/ThreadLink";
 import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
-import { State } from "~/utils/store";
+import { type State } from "~/utils/store";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
   const { data, isError, error } = api.posts.getById.useQuery(id, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    retry: false
+    retry: false,
   });
   const currentThreadName = useSelector((state: State) => state.currentThreadName);
 
@@ -36,7 +36,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 
       <PageLayout>
         <div className=" flex w-full flex-col items-center justify-center p-4">
-          <div className="flex h-fit flex-row gap-4 rounded-3xl border border-b-0 border-base-200 border-primary p-4">
+          <div className="rounded-box flex h-fit flex-row gap-4 border border-b-0 border-base-200 border-primary p-4">
             <UserAvatar profile={author} />
             <div className="flex max-w-lg grow flex-col">
               <PostInfo data={data} />
@@ -68,8 +68,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      id: id
-    }
+      id: id,
+    },
   };
 };
 

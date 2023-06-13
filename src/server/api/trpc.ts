@@ -19,20 +19,20 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   const {
     data: { user },
-    error
+    error,
   } = await supabase.auth.getUser();
 
   if (user && error) {
     console.log(user, error);
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: error.message
+      message: error.message,
     });
   }
 
   return {
     prisma,
-    userId: user?.id
+    userId: user?.id,
   };
 };
 
@@ -51,10 +51,10 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
       ...shape,
       data: {
         ...shape.data,
-        zodError: error.cause instanceof ZodError ? error.cause.flatten() : null
-      }
+        zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
     };
-  }
+  },
 });
 
 /**
@@ -72,8 +72,8 @@ const userIsAuthed = t.middleware(async ({ ctx, next }) => {
 
   return next({
     ctx: {
-      userId: ctx.userId
-    }
+      userId: ctx.userId,
+    },
   });
 });
 
