@@ -29,12 +29,11 @@ export const PostView = ({ data }: { data: Post }) => {
       <div className="flex flex-row gap-4">
         <UserAvatar profile={author} />
 
-        <div className="w-9/12 grow flex-col">
-          <Link href={`/post/${post.id}`}>
-            <PostInfo data={data} />
-            <PostContent post={post} collapsed={collapsed} />
-          </Link>
+        <div className="grow flex-col">
+          <PostInfo data={data} />
+          <PostContent post={post} collapsed={collapsed} />
         </div>
+
         <LikeButton post={post} />
       </div>
 
@@ -72,7 +71,11 @@ export const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed
   const needsTruncation = post.content.length > maxLength;
   const truncatedMessage = needsTruncation ? post.content.slice(0, maxLength) + "..." : post.content;
 
-  return <p className="truncate whitespace-pre-wrap break-words">{collapsed ? truncatedMessage : post.content}</p>;
+  return (
+    <Link className="w-9/12 grow flex-col" href={`/post/${post.id}`}>
+      <p className="truncate whitespace-pre-wrap break-words">{collapsed ? truncatedMessage : post.content}</p>
+    </Link>
+  );
 };
 
 export const PostInfo = ({ data }: { data: Post }) => {
@@ -88,10 +91,8 @@ export const PostInfo = ({ data }: { data: Post }) => {
 
         <span className="">{`@${username}`}</span>
       </Link>
-
-      <span className="">{`·`}</span>
-
-      <span className="">
+      <span>{`·`}</span>
+      <span>
         <TimeElapsedSince date={post.createdAt} />
       </span>
 

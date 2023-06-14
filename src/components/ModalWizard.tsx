@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, ReactNode, useState } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 
 export default function ModalWizard(props: { children?: ReactNode; wizardChildren?: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
