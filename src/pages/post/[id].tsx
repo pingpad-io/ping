@@ -36,7 +36,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 
       <PageLayout>
         <div className=" flex w-full flex-col items-center justify-center p-4">
-          <div className="rounded-box flex h-fit flex-row gap-4 border border-b-0 border-base-200 border-primary p-4">
+          <div className="rounded-box flex h-fit w-full grow flex-row gap-4 border border-b-0 border-base-200 border-primary p-4">
             <UserAvatar profile={author} />
             <div className="flex max-w-lg grow flex-col">
               <PostInfo data={data} />

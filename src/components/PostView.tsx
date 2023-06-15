@@ -84,7 +84,7 @@ export const PostInfo = ({ data }: { data: Post }) => {
   const username = author.username ?? "";
 
   return (
-    <div className="flex flex-row place-items-center gap-2 text-sm font-light text-base-content ">
+    <div className=" group flex flex-row place-items-center gap-2 text-sm font-light text-base-content ">
       <Link className="flex gap-2" href={`/${username}`}>
         <span className="font-bold ">{author.full_name}</span>
         <AuthorFlair author={author} />
@@ -96,7 +96,9 @@ export const PostInfo = ({ data }: { data: Post }) => {
         <TimeElapsedSince date={post.createdAt} />
       </span>
 
-      <PostMenu data={data} />
+      <span className="hidden group-hover:flex">
+        <PostMenu data={data} />
+      </span>
     </div>
   );
 };
@@ -147,7 +149,7 @@ export const PostMenu = ({ data }: { data: Post }) => {
 
   return (
     <SignedIn>
-      <div className="dropdown-right dropdown pt-2 font-normal">
+      <div className="dropdown-right dropdown -mb-1 mt-1 font-normal">
         <button>
           <FiMoreHorizontal strokeWidth={1.5} size={15} />
         </button>
