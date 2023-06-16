@@ -121,12 +121,13 @@ export const PostMenu = ({ data }: { data: Post }) => {
 
   const author = data.author;
   const post = data.post;
-
-  const postIdText = "#" + post.id.substring(post.id.length - 8).toLowerCase();
+  const origin = typeof window !== "undefined" && window.location.origin ? window.location.origin : "";
+  const postLink = origin + "/post/" + post.id;
 
   const todo = () => {
     Function.prototype();
   };
+
   const { mutate: deletePost } = api.posts.deleteById.useMutation({
     onSuccess: async () => {
       await ctx.posts.invalidate();
@@ -137,7 +138,7 @@ export const PostMenu = ({ data }: { data: Post }) => {
   });
 
   const copyLink = () => {
-    navigator.clipboard.writeText(postIdText).then(
+    navigator.clipboard.writeText(postLink).then(
       function () {
         toast.success("Copied link to clipboard");
       },
