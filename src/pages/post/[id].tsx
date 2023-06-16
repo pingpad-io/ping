@@ -52,7 +52,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
             <Divider horizontal className="ml-8 mr-2 shrink pb-10 pt-2" />
             <div className="place-end my-1 flex grow flex-col pl-4">
               <Feed {...replies} />
-              <PostWizard placeholder="reply..." />
+              <PostWizard replyingTo={id} placeholder="reply..." />
             </div>
           </div>
 

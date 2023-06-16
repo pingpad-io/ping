@@ -3,7 +3,7 @@ import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import PostWizard, { ThreadDivider } from "~/components/PostWizard";
 import { api } from "~/utils/api";
-import { State } from "../utils/store";
+import type { State } from "../utils/store";
 
 const HomePage = () => {
   const currentThreadId = useSelector((state: State) => state.currentThreadId);

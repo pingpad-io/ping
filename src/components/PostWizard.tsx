@@ -6,7 +6,7 @@ import { api } from "~/utils/api";
 import { type State } from "~/utils/store";
 import { UserAvatar } from "./UserAvatar";
 
-export default function PostWizard({ placeholder }: { placeholder: string }) {
+export default function PostWizard({ placeholder, replyingTo }: { placeholder: string; replyingTo?: string | undefined }) {
   const [input, setInput] = useState("");
   const ctx = api.useContext();
   const user = useUser();
@@ -41,7 +41,7 @@ export default function PostWizard({ placeholder }: { placeholder: string }) {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createPost({ content: input, threadId: currentThreadId });
+    createPost({ content: input, threadId: currentThreadId, repliedToId: replyingTo });
   };
 
   const postButton = isPosting ? (

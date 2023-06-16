@@ -119,7 +119,7 @@ export const postsRouter = createTRPCRouter({
   getRepliesById: publicProcedure.input(z.string().uuid()).query(async ({ ctx, input }) => {
     const replies = await ctx.prisma.post.findMany({
       take: 100,
-      orderBy: [{ createdAt: "desc" }],
+      orderBy: [{ createdAt: "asc" }],
       include: { likers: true, thread: true },
       where: { repliedToId: input, status: "Posted" },
     });
