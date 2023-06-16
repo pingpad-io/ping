@@ -45,7 +45,7 @@ export default function PostWizard({ placeholder, replyingTo }: { placeholder: s
   };
 
   const postButton = isPosting ? (
-    <div className="btn-outline loading btn w-16"></div>
+    <div className="btn-outline loading btn-circle btn"></div>
   ) : (
     input !== "" && (
       <button className="btn-outline btn-primary btn w-16" type="submit">
