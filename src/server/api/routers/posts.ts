@@ -13,10 +13,9 @@ const postingRatelimit = new Ratelimit({
   analytics: true,
 });
 
+import type { Post, Profile, Thread } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { prisma, supabase } from "~/server/db";
-import { RouterOutputs } from "~/utils/api";
-import { Post, Profile, Thread } from "@prisma/client";
+import { prisma } from "~/server/db";
 
 const addAuthorDataToPosts = async (
   posts: (Post & {
@@ -117,6 +116,24 @@ export const postsRouter = createTRPCRouter({
     });
   }),
 
+  getRepliesById: publicProcedure.input(z.string().uuid()).query(async ({ ctx, input }) => {
+    const replies = await ctx.prisma.post.findMany({
+      take: 100,
+      orderBy: [{ createdAt: "desc" }],
+      include: { likers: true, thread: true },
+      where: { repliedToId: input, status: "Posted" },
+    });
+
+    if (!replies) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `Replies for post ${input} were not found`,
+      });
+    }
+
+    return addAuthorDataToPosts(replies);
+  }),
+
   getAllByAuthorId: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     const posts = await ctx.prisma.post.findMany({
       where: { authorId: input },
@@ -199,26 +216,45 @@ export const postsRouter = createTRPCRouter({
     .input(
       z.object({
         content: z.string().min(1, "Your twot must be longer").max(300, "Your twot must be less than 300 characters long"),
-        threadId: z.string().uuid().optional(),
+        threadId: z.string().uuid(),
+        repliedToId: z.string().uuid().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
       const { success } = await postingRatelimit.limit(authorId ?? "");
+
       if (!success) {
         throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
       }
 
+      const id = randomUUID();
+      const repliedToId = "d3bf908d-f198-4a19-9910-76d49727e6b9";
+
       const post = await ctx.prisma.post.create({
         data: {
-          id: randomUUID(),
+          id,
           authorId,
           threadId: input.threadId,
           content: input.content,
           updatedAt: new Date().toISOString(),
+          repliedToId: repliedToId,
         },
       });
+
+      if (true) {
+        await ctx.prisma.post.update({
+          where: {
+            id: repliedToId,
+          },
+          data: {
+            replies: {
+              connect: { id },
+            },
+          },
+        });
+      }
 
       return post;
     }),

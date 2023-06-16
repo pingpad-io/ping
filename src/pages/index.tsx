@@ -15,7 +15,9 @@ const HomePage = () => {
         <PostWizard placeholder="write a new twot..." />
         <ThreadDivider />
       </div>
-      <Feed {...posts} />
+      <div className="px-2">
+        <Feed {...posts} />
+      </div>
     </PageLayout>
   );
 };

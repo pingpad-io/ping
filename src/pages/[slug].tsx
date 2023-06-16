@@ -67,7 +67,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
         <div className="divider"></div>
 
-        <Feed {...posts} />
+        <div className="px-4">
+          <Feed {...posts} />
+        </div>
       </PageLayout>
     </>
   );

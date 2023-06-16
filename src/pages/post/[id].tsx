@@ -1,7 +1,9 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
+import { Divider } from "react-daisyui";
 import { useSelector } from "react-redux";
 import ErrorPage from "~/components/ErrorPage";
+import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import { LikeButton, PostContent, PostInfo } from "~/components/PostView";
 import PostWizard from "~/components/PostWizard";
@@ -25,6 +27,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 
   const post = data.post;
   const author = data.author;
+  const replies = api.posts.getRepliesById.useQuery(id);
 
   return (
     <>
@@ -35,7 +38,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
       </Head>
 
       <PageLayout>
-        <div className=" flex w-full flex-col items-center justify-center p-4">
+        <div className=" flex w-full flex-col items-center justify-center p-2">
           <div className="rounded-box flex h-fit w-full grow flex-row gap-4 border border-b-0 border-base-200 border-primary p-4">
             <UserAvatar profile={author} />
             <div className="flex max-w-lg grow flex-col">
@@ -45,11 +48,16 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
             <LikeButton post={post} />
           </div>
 
-          <div className="flex w-11/12 w-full flex-row">
-            <PostWizard placeholder="reply..." />
+          <div className="flex w-full flex-row ">
+            <Divider horizontal className="ml-8 mr-2 shrink pb-10 pt-2" />
+            <div className="place-end my-1 flex grow flex-col pl-4">
+              <Feed {...replies} />
+              <PostWizard placeholder="reply..." />
+            </div>
           </div>
+
           <ThreadLink threadName={currentThreadName}>
-            <div className="  btn-primary btn-ghost btn border">{`< Back`}</div>
+            <div className="  btn-primary btn-ghost btn border">{`< Back to ${currentThreadName}`}</div>
           </ThreadLink>
         </div>
       </PageLayout>
