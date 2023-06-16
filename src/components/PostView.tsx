@@ -29,7 +29,7 @@ export const PostView = ({ data }: { data: Post }) => {
       <div className="flex flex-row gap-4">
         <UserAvatar profile={author} />
 
-        <div className="grow flex-col">
+        <div className="w-3/4 grow flex-col">
           <PostInfo data={data} />
           <PostContent post={post} collapsed={collapsed} />
         </div>
@@ -72,7 +72,7 @@ export const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed
   const truncatedMessage = needsTruncation ? post.content.slice(0, maxLength) + "..." : post.content;
 
   return (
-    <Link className="w-9/12 grow flex-col" href={`/post/${post.id}`}>
+    <Link className=" grow flex-col" href={`/post/${post.id}`}>
       <p className="truncate whitespace-pre-wrap break-words">{collapsed ? truncatedMessage : post.content}</p>
     </Link>
   );
@@ -84,7 +84,7 @@ export const PostInfo = ({ data }: { data: Post }) => {
   const username = author.username ?? "";
 
   return (
-    <div className=" group flex flex-row place-items-center gap-2 text-sm font-light text-base-content ">
+    <div className="group flex flex-row place-items-center gap-2 text-sm font-light text-base-content ">
       <Link className="flex gap-2" href={`/${username}`}>
         <span className="font-bold ">{author.full_name}</span>
         <AuthorFlair author={author} />

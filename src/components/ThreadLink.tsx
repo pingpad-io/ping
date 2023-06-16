@@ -3,7 +3,7 @@ import { type PropsWithChildren } from "react";
 import { useDispatch } from "react-redux";
 import { api } from "~/utils/api";
 
-export const ThreadLink = (props: PropsWithChildren & { threadName: string; text?: string | null }) => {
+export const ThreadLink = (props: PropsWithChildren & { threadName: string }) => {
   const setCurrentThread = useDispatch();
   const router = useRouter();
 
@@ -35,14 +35,10 @@ export const ThreadLink = (props: PropsWithChildren & { threadName: string; text
             void router.push("/");
           }}
         >
-          {props.text}
           {props.children}
         </button>
       ) : (
-        <>
-          {props.text}
-          {props.children}
-        </>
+        <>{props.children}</>
       )}
     </>
   );

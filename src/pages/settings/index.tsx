@@ -37,9 +37,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext | { 
 
 const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
   const supabase = useSupabaseClient();
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const { data: profile } = api.profiles.getProfileById.useQuery({ id });
-
   const signOut = () => {
     void supabase.auth.signOut();
   };
@@ -59,12 +58,8 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
       </PageLayout>
     );
   }
-  if (!profile) return null;
 
-  const cycleTheme = () => {
-    const theme = themes[Math.floor(Math.random() * themes.length)] ?? "";
-    setTheme(theme);
-  };
+  if (!profile) return null;
 
   const themeButtons = themes.map((theme) => (
     <Theme dataTheme={theme} key={theme} className="inline-block w-min bg-transparent p-1">

@@ -77,18 +77,16 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
   });
 
   return (
-    <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2 hover:underline">
-      <span className="flex flex-row items-center gap-2">
-        <ThreadLink threadName={thread.name} text={thread.title}></ThreadLink>
-        <span className={`text-sm`}>{thread.posts.length}</span>
-        <FiMessageSquare />
-      </span>
+    <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2">
+      <ThreadLink threadName={thread.name}>
+        <span className="flex flex-row items-center gap-2">
+          <span className=" hover:underline">{thread.title}</span>
+          <span className={`text-sm`}>{thread.posts.length}</span>
+          <FiMessageSquare />
+        </span>
+      </ThreadLink>
       {user?.id === thread.authorId && (
-        <button
-          onClick={() => {
-            deleteThread.mutate({ id: thread.id });
-          }}
-        >
+        <button onClick={() => deleteThread.mutate({ id: thread.id })}>
           <FiX />
         </button>
       )}
