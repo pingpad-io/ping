@@ -14,9 +14,10 @@ import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 
 export type Post = RouterOutputs["posts"]["getAll"][number];
-export const lineHeight = 1.5;
-export const maxHeight = 6 * lineHeight * 16; // Assumes font size of 16px
-export const maxLength = 45 * 3 - 3;
+
+const lineHeight = 1.5;
+const maxHeight = 6 * lineHeight * 16; // Assumes font size of 16px
+const maxLength = 45 * 3 - 3;
 
 export const PostView = ({ data }: { data: Post }) => {
   const post = data.post;
@@ -30,6 +31,7 @@ export const PostView = ({ data }: { data: Post }) => {
         <UserAvatar profile={author} />
 
         <div className="w-3/4 grow flex-col">
+          <ReplyInfo data={data} />
           <PostInfo data={data} />
           <PostContent post={post} collapsed={collapsed} />
         </div>
@@ -77,6 +79,22 @@ export const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed
     </Link>
   );
 };
+import { CgMailReply } from "react-icons/cg";
+
+export const ReplyInfo = ({ data }: { data: Post }) => {
+  const post = data.post;
+  if (!post.repliedToId) return null;
+
+  const { data: reply, isLoading } = api.posts.getById.useQuery(post.repliedToId);
+
+  return (
+    <div className="flex flex-row items-center gap-1 text-xs">
+      <CgMailReply className="text-sm scale-x-[-1] transform" />
+      <span className="flex items-center leading-3 pb-0.5">replying to</span>
+      <span className="pb-0.5 leading-3">@{reply?.author.username}</span>
+    </div>
+  );
+};
 
 export const PostInfo = ({ data }: { data: Post }) => {
   const post = data.post;
@@ -84,7 +102,7 @@ export const PostInfo = ({ data }: { data: Post }) => {
   const username = author.username ?? "";
 
   return (
-    <div className="group flex flex-row place-items-center gap-2 text-sm font-light text-base-content ">
+    <div className="group flex flex-row leading-4 place-items-center gap-2 text-sm font-light text-base-content ">
       <Link className="flex gap-2" href={`/${username}`}>
         <span className="font-bold ">{author.full_name}</span>
         <AuthorFlair author={author} />
@@ -150,7 +168,7 @@ export const PostMenu = ({ data }: { data: Post }) => {
 
   return (
     <SignedIn>
-      <div className="dropdown-right dropdown -mb-1 mt-1 font-normal">
+      <div className="dropdown-right dropdown  leading-4 font-normal">
         <button>
           <FiMoreHorizontal strokeWidth={1.5} size={15} />
         </button>
