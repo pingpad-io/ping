@@ -230,7 +230,6 @@ export const postsRouter = createTRPCRouter({
       }
 
       const id = randomUUID();
-      const repliedToId = "d3bf908d-f198-4a19-9910-76d49727e6b9";
 
       const post = await ctx.prisma.post.create({
         data: {
@@ -239,14 +238,14 @@ export const postsRouter = createTRPCRouter({
           threadId: input.threadId,
           content: input.content,
           updatedAt: new Date().toISOString(),
-          repliedToId: repliedToId,
+          repliedToId: input.repliedToId,
         },
       });
 
       if (true) {
         await ctx.prisma.post.update({
           where: {
-            id: repliedToId,
+            id: input.repliedToId,
           },
           data: {
             replies: {
