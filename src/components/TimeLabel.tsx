@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
+import duration from 'dayjs/plugin/duration';
 
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
+dayjs.extend(duration)
 
 dayjs.updateLocale("en", {
   relativeTime: {
@@ -16,7 +18,7 @@ dayjs.updateLocale("en", {
     hh: "%dh",
     d: "1d",
     dd: "%dd",
-    M: "month",
+    M: "1 month",
     MM: "%d months",
     y: "a year",
     yy: "%d years",
@@ -24,9 +26,16 @@ dayjs.updateLocale("en", {
 });
 
 export const TimeElapsedSince = ({ date }: { date: Date }) => {
-  const timeSince = dayjs(date).fromNow();
+  const fullDate = dayjs(date)
+  const timeSince = fullDate.fromNow();
+  const diff = dayjs().diff(fullDate);
 
-  return <span>{timeSince}</span>;
+  if (diff > dayjs.duration(3, "weeks").asMilliseconds()) {
+    return <span>{fullDate.format("MMM DD")}</span>;
+  } else {
+    return <span>{timeSince}</span>;
+  }
+
 };
 
 export const TimeSince = ({ date }: { date: Date }) => {

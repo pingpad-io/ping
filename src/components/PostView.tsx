@@ -94,12 +94,12 @@ export const ReplyInfo = ({ data }: { data: Post }) => {
   const content = reply?.post.content.substring(0, 40) + (reply.post.content.length > 40 ? "..." : "");
 
   return (
-    <div className="flex flex-row items-center gap-1 text-xs font-light">
+    <Link href={"/post/" + reply.post.id} className="flex flex-row items-center gap-1 text-xs font-light">
       <LuReply className="scale-x-[-1] transform text-sm" strokeWidth={1.2} />
       <span className="flex items-center pb-0.5 leading-3">replying to</span>
       <span className="pb-0.5 leading-3">@{username}:</span>
       <span className="pb-0.5 leading-3">{content}</span>
-    </div>
+    </Link>
   );
 };
 
