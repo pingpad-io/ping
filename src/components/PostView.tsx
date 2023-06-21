@@ -79,7 +79,7 @@ export const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed
     </Link>
   );
 };
-import { CgMailReply } from "react-icons/cg";
+import { LuReply } from "react-icons/lu";
 
 export const ReplyInfo = ({ data }: { data: Post }) => {
   const post = data.post;
@@ -87,11 +87,18 @@ export const ReplyInfo = ({ data }: { data: Post }) => {
 
   const { data: reply, isLoading } = api.posts.getById.useQuery(post.repliedToId);
 
+  if (!reply || !reply.post || isLoading) return null;
+
+  const author = reply?.author;
+  const username = author.username;
+  const content = reply?.post.content.substring(0, 40) + (reply.post.content.length > 40 ? "..." : "");
+
   return (
-    <div className="flex flex-row items-center gap-1 text-xs">
-      <CgMailReply className="text-sm scale-x-[-1] transform" />
-      <span className="flex items-center leading-3 pb-0.5">replying to</span>
-      <span className="pb-0.5 leading-3">@{reply?.author.username}</span>
+    <div className="flex flex-row items-center gap-1 text-xs font-light">
+      <LuReply className="scale-x-[-1] transform text-sm" strokeWidth={1.2} />
+      <span className="flex items-center pb-0.5 leading-3">replying to</span>
+      <span className="pb-0.5 leading-3">@{username}:</span>
+      <span className="pb-0.5 leading-3">{content}</span>
     </div>
   );
 };
@@ -102,7 +109,7 @@ export const PostInfo = ({ data }: { data: Post }) => {
   const username = author.username ?? "";
 
   return (
-    <div className="group flex flex-row leading-4 items-center gap-2 text-sm font-light text-base-content">
+    <div className="group flex flex-row items-center gap-2 text-sm font-light leading-4 text-base-content">
       <Link className="flex gap-2" href={`/${username}`}>
         <span className="font-bold">{author.full_name}</span>
         <AuthorFlair author={author} />
