@@ -1,6 +1,5 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import { Divider } from "react-daisyui";
 import { useSelector } from "react-redux";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";

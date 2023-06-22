@@ -21,6 +21,13 @@ const addAuthorDataToPosts = async (
   posts: (Post & {
     thread: Thread;
     likers: Profile[];
+    repliedTo: {
+      id: string;
+      content: string;
+      author: {
+        username: string | null;
+      };
+    } | null;
   })[]
 ) => {
   const authors = posts.map((post) => post.authorId);
@@ -59,7 +66,17 @@ export const postsRouter = createTRPCRouter({
     const posts = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
-      include: { likers: true, thread: true },
+      include: {
+        likers: true,
+        thread: true,
+        repliedTo: {
+          select: {
+            id: true,
+            content: true,
+            author: { select: { username: true } },
+          },
+        },
+      },
       where: { status: "Posted" },
     });
 
@@ -70,7 +87,17 @@ export const postsRouter = createTRPCRouter({
     const posts = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
-      include: { likers: true, thread: true },
+      include: {
+        likers: true,
+        thread: true,
+        repliedTo: {
+          select: {
+            id: true,
+            content: true,
+            author: { select: { username: true } },
+          },
+        },
+      },
       where: { threadId: input, status: "Posted" },
     });
 
@@ -80,7 +107,17 @@ export const postsRouter = createTRPCRouter({
   getById: publicProcedure.input(z.string().uuid()).query(async ({ ctx, input }) => {
     const post = await ctx.prisma.post.findUnique({
       where: { id: input },
-      include: { likers: true, thread: true },
+      include: {
+        likers: true,
+        thread: true,
+        repliedTo: {
+          select: {
+            id: true,
+            content: true,
+            author: { select: { username: true } },
+          },
+        },
+      },
     });
 
     if (!post) {
@@ -120,7 +157,17 @@ export const postsRouter = createTRPCRouter({
     const replies = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [{ createdAt: "asc" }],
-      include: { likers: true, thread: true },
+      include: {
+        likers: true,
+        thread: true,
+        repliedTo: {
+          select: {
+            id: true,
+            content: true,
+            author: { select: { username: true } },
+          },
+        },
+      },
       where: { repliedToId: input, status: "Posted" },
     });
 
@@ -137,7 +184,17 @@ export const postsRouter = createTRPCRouter({
   getAllByAuthorId: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     const posts = await ctx.prisma.post.findMany({
       where: { authorId: input },
-      include: { likers: true, thread: true },
+      include: {
+        likers: true,
+        thread: true,
+        repliedTo: {
+          select: {
+            id: true,
+            content: true,
+            author: { select: { username: true } },
+          },
+        },
+      },
       take: 100,
       orderBy: [{ createdAt: "desc" }],
     });

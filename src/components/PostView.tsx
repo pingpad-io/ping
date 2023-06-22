@@ -88,16 +88,12 @@ export const ReplyInfo = ({ data }: { data: Post }) => {
 
   if (!post.repliedToId) return empty_space;
 
-  const { data: reply, isLoading } = api.posts.getById.useQuery(post.repliedToId);
-
-  if (!reply || !reply.post || isLoading) return empty_space;
-
-  const author = reply?.author;
-  const username = author.username;
-  const content = reply?.post.content.substring(0, 100);
+  const username = data.post.repliedTo?.author.username;
+  const content = data.post.repliedTo?.content.substring(0, 100);
+  const id = data.post.repliedTo?.id;
 
   return (
-    <Link href={"/post/" + reply.post.id} className="flex flex-row items-center gap-1 px-16 pt-[2px] text-xs font-light leading-3">
+    <Link href={"/post/" + (id ?? "")} className="flex flex-row items-center gap-1 px-16 pt-[2px] text-xs font-light leading-3">
       <LuReply className="shrink-0 scale-x-[-1] transform" strokeWidth={1.5} />
       <span className="pb-0.5">@{username}:</span>
       <span className="truncate pb-0.5 ">{content}</span>
