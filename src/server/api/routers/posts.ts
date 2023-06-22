@@ -242,7 +242,7 @@ export const postsRouter = createTRPCRouter({
         },
       });
 
-      if (true) {
+      if (input.repliedToId) {
         await ctx.prisma.post.update({
           where: {
             id: input.repliedToId,

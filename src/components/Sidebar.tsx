@@ -19,7 +19,7 @@ const Links = () => {
         <Link className=" hover:underline" href={"/about"}>
           About
         </Link>
-        <p className="select-none">© 2023 K.U Corp.</p>
+        <a href="https://kualta.dev/" className="select-none">© 2023 K.U Corp.</a>
       </div>
     </>
   );

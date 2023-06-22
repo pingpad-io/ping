@@ -1,4 +1,4 @@
-import { Flair } from "@prisma/client";
+import { type Flair } from "@prisma/client";
 
 export const FlairView = ({ flair, size = "md" }: { flair: Flair | undefined; size: "xs" | "sm" | "md" | "lg" }) => {
   if (!flair) return null;
