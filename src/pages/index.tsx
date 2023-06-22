@@ -4,9 +4,9 @@ import { PageLayout } from "~/components/Layout";
 import PostWizard, { ThreadDivider } from "~/components/PostWizard";
 import { api } from "~/utils/api";
 import { GLOBAL_THREAD_ID, type State } from "../utils/store";
-import { GetServerSideProps } from "next";
+import { type GetServerSideProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
-import { PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 
 const HomePage = (props: PropsWithChildren) => {
   const currentThreadId = useSelector((state: State) => state.currentThreadId);
