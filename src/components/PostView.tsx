@@ -238,7 +238,7 @@ export const LikeButton = ({ post }: { post: Post["post"] }) => {
   return (
     <div className="h-12 w-12 items-center justify-center">
       <button className="btn-secondary btn-square btn relative border-0 bg-base-100 hover:bg-base-100" onClick={() => like()}>
-        <span className={`text-md absolute z-10 flex items-center justify-center font-bold ` + like_text_color}>
+        <span className={`text-md absolute z-[9] flex items-center justify-center font-bold ` + like_text_color}>
           {likesAmount > 0 ? likes_text : ""}
         </span>
 

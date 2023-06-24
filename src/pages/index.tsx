@@ -6,9 +6,8 @@ import { api } from "~/utils/api";
 import { GLOBAL_THREAD_ID, type State } from "../utils/store";
 import { type GetServerSideProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
-import { type PropsWithChildren } from "react";
 
-const HomePage = (props: PropsWithChildren) => {
+const HomePage = () => {
   const currentThreadId = useSelector((state: State) => state.currentThreadId);
   const posts = api.posts.getAllByThreadId.useQuery(currentThreadId);
 
@@ -25,7 +24,7 @@ const HomePage = (props: PropsWithChildren) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const ssg = getSSGHelper();
 
   await ssg.posts.getAllByThreadId.prefetch(GLOBAL_THREAD_ID);

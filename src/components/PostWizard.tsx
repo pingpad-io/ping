@@ -55,7 +55,7 @@ export default function PostWizard({ placeholder, replyingTo }: { placeholder: s
   );
 
   return (
-    <div className="z-10 flex w-full flex-row gap-4 bg-base-100 p-4">
+    <div className="z-20 flex w-full flex-row gap-4 bg-base-100/30 p-4 backdrop-blur-sm">
       {user && <PostWizardAuthed userId={user.id} />}
       <form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
         <input
@@ -77,11 +77,7 @@ export const ThreadDivider = () => {
   const { data: currentThread } = api.threads.getById.useQuery(currentThreadId);
 
   return (
-    <div
-      className="divider m-0 mb-2 bg-base-100/[.5] 
-                  before:h-0 before:border-b before:border-base-300 before:bg-base-300 
-                  after:h-0 after:border-b after:border-base-300 after:bg-base-300"
-    >
+    <div className="divider z-20 m-0 -mt-2 before:h-0 before:border-b before:border-base-300 after:h-0 after:border-b after:border-base-300">
       {currentThread?.name}
     </div>
   );
