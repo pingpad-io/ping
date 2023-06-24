@@ -19,7 +19,9 @@ const Links = () => {
         <Link className=" hover:underline" href={"/about"}>
           About
         </Link>
-        <a href="https://kualta.dev/" className="select-none">© 2023 K.U Corp.</a>
+        <a href="https://kualta.dev/" className="select-none">
+          © 2023 K.U Corp.
+        </a>
       </div>
     </>
   );
@@ -69,7 +71,7 @@ export const SidebarButtons = () => {
 export default function Sidebar() {
   return (
     <>
-      <div className="sticky top-0 hidden h-screen w-max max-w-xs shrink flex-col gap-2 px-2 py-4 md:flex xl:gap-4">
+      <div className="sticky top-0 hidden h-screen w-max max-w-xs shrink flex-col gap-2 py-4 sm:px-2 md:flex xl:gap-4">
         <SidebarButtons />
       </div>
     </>

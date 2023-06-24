@@ -77,7 +77,7 @@ export const ThreadDivider = () => {
   const { data: currentThread } = api.threads.getById.useQuery(currentThreadId);
 
   return (
-    <div className="divider z-20 m-0 -mt-2 before:h-0 before:border-b before:border-base-300 after:h-0 after:border-b after:border-base-300">
+    <div className="divider z-20 mx-2 -mt-2 mb-2 before:h-0 before:border-b before:border-base-300 after:h-0 after:border-b after:border-base-300">
       {currentThread?.name}
     </div>
   );

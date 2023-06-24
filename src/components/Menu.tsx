@@ -28,7 +28,7 @@ export default function Menu() {
 
   return (
     <CollapsedContext.Provider value={isCollapsed}>
-      <div className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between px-2 py-4 text-2xl lg:w-56`}>
+      <div className={`sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 text-2xl sm:px-2 lg:w-56`}>
         <div className="flex flex-col items-end gap-2">
           <div className="flex flex-row gap-2">
             <ThreadLink threadName="global">
@@ -53,7 +53,7 @@ export default function Menu() {
 
           <SignedOut>
             <ModalWizard wizardChildren={<LoginWizard />}>
-              <MenuItem className="dropdown dropdown-right dropdown-hover" text={"Sign In"} icon={<FiLogIn />}></MenuItem>
+              <MenuItem className="dropdown-right dropdown dropdown-hover" text={"Sign In"} icon={<FiLogIn />}></MenuItem>
             </ModalWizard>
           </SignedOut>
 
@@ -61,7 +61,7 @@ export default function Menu() {
             <MenuItem
               className={
                 `my-2 border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ` +
-                (isCollapsed ? `` : `pl-3 lg:pl-10`)
+                (isCollapsed ? `` : `pl-2 sm:pl-3 lg:pl-10`)
               }
               text={"Twot"}
               icon={<RiQuillPenLine size={24} />}

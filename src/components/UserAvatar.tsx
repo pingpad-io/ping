@@ -13,13 +13,13 @@ export function UserAvatar({
   if (!profile || !profile.avatar_url || !profile.username)
     return (
       <div className={`${online ? "online" : ""} avatar`}>
-        <div className="h-12 w-12 shrink-0 grow-0 rounded-full "></div>
+        <div className="h-10 w-10 shrink-0 grow-0 rounded-full sm:h-12 sm:w-12"></div>
       </div>
     );
 
   return (
     <div className={"avatar " + (online ? "online" : "")}>
-      <div className="h-12 w-12 shrink-0 grow-0 rounded-full">
+      <div className="h-10 w-10 shrink-0 grow-0 rounded-full sm:h-12 sm:w-12">
         <Link href={"/" + profile.username}>
           <Image src={profile.avatar_url} alt={profile.username + "'s profile image"} width={size} height={size} placeholder="empty" />
         </Link>

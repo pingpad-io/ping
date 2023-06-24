@@ -26,7 +26,7 @@ export const PostView = ({ data }: { data: Post }) => {
   const expandable = post.content.length > maxLength;
 
   return (
-    <div className={`rounded-box flex h-min max-w-2xl shrink flex-col border border-base-300 px-4`}>
+    <div className={`rounded-box flex h-min max-w-2xl shrink flex-col border border-base-300 px-2 sm:px-4`}>
       <ReplyInfo data={data} />
 
       <div className="flex flex-row gap-4">
@@ -54,7 +54,8 @@ export const PostExtensionButton = ({
   collapsed: boolean;
   setCollapsed: Dispatch<SetStateAction<boolean>>;
 }) => {
-  if (!expandable) return <div className="h-4"></div>;
+  if (!expandable) return <div className="h-2 sm:h-4"></div>;
+
   return (
     <div className={`flex flex-row justify-center pb-2`}>
       {collapsed ? (
@@ -76,7 +77,7 @@ export const PostContent = ({ post, collapsed }: { post: Post["post"]; collapsed
 
   return (
     <Link href={`/post/${post.id}`}>
-      <p className="truncate whitespace-pre-wrap break-words">{collapsed ? truncatedMessage : post.content}</p>
+      <p className="truncate whitespace-pre-wrap break-words text-sm sm:text-base">{collapsed ? truncatedMessage : post.content}</p>
     </Link>
   );
 };
@@ -84,7 +85,7 @@ import { LuReply } from "react-icons/lu";
 
 export const ReplyInfo = ({ data }: { data: Post }) => {
   const post = data.post;
-  const empty_space = <div className="h-4"></div>;
+  const empty_space = <div className="h-2 sm:h-4"></div>;
 
   if (!post.repliedToId) return empty_space;
 
@@ -107,7 +108,7 @@ export const PostInfo = ({ data }: { data: Post }) => {
   const username = author.username ?? "";
 
   return (
-    <div className="group flex flex-row items-center gap-2 text-sm font-light leading-4 text-base-content">
+    <div className="group flex flex-row items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
       <Link className="flex gap-2" href={`/${username}`}>
         <span className="w-fit truncate font-bold">{author.full_name}</span>
         <AuthorFlair author={author} />
@@ -236,7 +237,7 @@ export const LikeButton = ({ post }: { post: Post["post"] }) => {
   const like_text_color = liked ? "text-base-100" : "text-secondary-content";
 
   return (
-    <div className="h-12 w-12 items-center justify-center">
+    <div className="h-10 w-10 items-center justify-center sm:h-12 sm:w-12">
       <button className="btn-secondary btn-square btn relative border-0 bg-base-100 hover:bg-base-100" onClick={() => like()}>
         <span className={`text-md absolute z-[9] flex items-center justify-center font-bold ` + like_text_color}>
           {likesAmount > 0 ? likes_text : ""}
