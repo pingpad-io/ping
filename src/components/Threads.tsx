@@ -1,6 +1,6 @@
 import { FiMessageSquare, FiX } from "react-icons/fi";
 import { api, type RouterOutputs } from "~/utils/api";
-
+import { BiLabel } from "react-icons/bi";
 import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
@@ -21,14 +21,7 @@ export function GlobalThreads() {
     return <ThreadEntry key={thread.id} thread={thread} />;
   });
 
-  return (
-    <div className="card-content">
-      <Link href={"/threads"} className="card-title">
-        Threads
-      </Link>
-      {globalThreadList}
-    </div>
-  );
+  return <div className="card-content">{globalThreadList}</div>;
 }
 
 export function UserThreads() {
@@ -39,17 +32,7 @@ export function UserThreads() {
     return <ThreadEntry thread={thread} key={thread.id} />;
   });
 
-  return (
-    <div className="card-content">
-      <div className="flex gap-4">
-        <div className="card-title">User Threads</div>
-        <ModalWizard wizardChildren={<ThreadWizard />}>
-          <BsPlus size={27} />
-        </ModalWizard>
-      </div>
-      {userThreadList}
-    </div>
-  );
+  return <div className="card-content">{userThreadList}</div>;
 }
 
 export type Thread = RouterOutputs["threads"]["getById"];
@@ -61,6 +44,7 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 
   if (!thread || !thread.name) return null;
 
+  const isGlobal = thread.authorId === null;
   const deleteThread = api.threads.delete.useMutation({
     onSuccess: async () => {
       await ctx.threads.invalidate();
@@ -80,11 +64,13 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
     <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2">
       <ThreadLink threadName={thread.name}>
         <span className="flex flex-row items-center gap-2">
-          <span className=" hover:underline">{thread.title}</span>
+          {isGlobal && <BiLabel />}
+          <span className="hover:underline">{thread.title}</span>
           <span className={`text-sm`}>{thread.posts.length}</span>
           <FiMessageSquare />
         </span>
       </ThreadLink>
+
       {user?.id === thread.authorId && (
         <button onClick={() => deleteThread.mutate({ id: thread.id })}>
           <FiX />
@@ -96,15 +82,21 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 
 export default function Threads() {
   return (
-    <>
-      <div className="card flex-col justify-center p-4 ">
-        <div className="card-content">
-          <GlobalThreads />
-        </div>
-        <div className="card-content">
-          <UserThreads />
-        </div>
+    <div className="card flex-col justify-center p-4 ">
+      <div className="flex gap-4">
+        <Link href={"/threads"} className="card-title">
+          Threads
+        </Link>
+        <ModalWizard wizardChildren={<ThreadWizard />}>
+          <BsPlus size={27} />
+        </ModalWizard>
       </div>
-    </>
+      <div className="card-content">
+        <GlobalThreads />
+      </div>
+      <div className="card-content">
+        <UserThreads />
+      </div>
+    </div>
   );
 }

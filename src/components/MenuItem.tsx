@@ -51,7 +51,7 @@ export const CompactMenuItem = (props: {
   children?: ReactNode;
 }) => {
   const text = <div>{props.text}</div>;
-  const style = (props.className ?? "") + ` flex flex-row rounded-btn place-items-center hover:bg-base-300`;
+  const style = (props.className ?? "") + ` flex pr-3 flex-row rounded-btn place-items-center hover:bg-base-300`;
 
   const content = (
     <>
