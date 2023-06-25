@@ -5,6 +5,7 @@ import { CollapsedContext } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import { ThreadLink } from "./ThreadLink";
 import Threads from "./Threads";
+import { SearchBar } from "~/pages/search";
 
 const Links = () => {
   return (
@@ -22,20 +23,6 @@ const Links = () => {
         <a href="https://kualta.dev/" className="select-none">
           © 2023 K.U Corp.
         </a>
-      </div>
-    </>
-  );
-};
-
-const SearchBar = () => {
-  return (
-    <>
-      <div className="hidden w-full xl:flex">
-        <input type="text" className="input-bordered input input-md w-full" placeholder="Search Twotter?.." />
-      </div>
-
-      <div className="xl:hidden">
-        <MenuItem href="/search" icon={<FiSearch size={24} />} />
       </div>
     </>
   );
