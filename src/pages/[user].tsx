@@ -40,7 +40,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 			</Head>
 
 			<PageLayout>
-				<div className="sticky top-0 z-10 border-b ">
+				<div className="sticky top-0 z-10 border-b border-base-300 ">
 					<GlassBar>
 						<UserAvatar profile={profile} />
 
@@ -53,10 +53,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 								<div className="text-sm text-base-content font-light">
 									@{profile.username}
 								</div>
-								<div className="text-sm text-base-content ">
-									{profile.description}
-								</div>
 							</Link>
+							<div className="text-sm text-base-content pt-2 ">
+								{profile.description}
+							</div>
 						</div>
 
 						<div className="flex flex-col place-content-between gap-1">
