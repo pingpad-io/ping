@@ -6,61 +6,63 @@ import { MenuItem } from "./MenuItem";
 import { ThreadLink } from "./ThreadLink";
 import Threads from "./Threads";
 import { SearchBar } from "~/pages/search";
+import { useRouter } from "next/router";
 
 const Links = () => {
-  return (
-    <>
-      <div className="hidden h-fit w-fit flex-row flex-wrap gap-2 overflow-auto text-sm text-base-content xl:flex">
-        <Link className=" hover:underline" href={"/policy"}>
-          Privacy Policy
-        </Link>
-        <Link className=" hover:underline" href={"/conditions"}>
-          Terms of Service
-        </Link>
-        <Link className=" hover:underline" href={"/about"}>
-          About
-        </Link>
-        <a href="https://kualta.dev/" className="select-none">
-          © 2023 K.U Corp.
-        </a>
-      </div>
-    </>
-  );
+	return (
+		<>
+			<div className="hidden h-fit w-fit flex-row flex-wrap gap-2 overflow-auto text-sm text-base-content xl:flex">
+				<Link className=" hover:underline" href={"/policy"}>
+					Privacy Policy
+				</Link>
+				<Link className=" hover:underline" href={"/conditions"}>
+					Terms of Service
+				</Link>
+				<Link className=" hover:underline" href={"/about"}>
+					About
+				</Link>
+				<a href="https://kualta.dev/" className="select-none">
+					© 2023 K.U Corp.
+				</a>
+			</div>
+		</>
+	);
 };
 
 const ThreadsBar = () => {
-  return (
-    <>
-      <div className="rounded-box hidden bg-base-200 xl:flex">
-        <Threads />
-      </div>
+	return (
+		<>
+			<div className="rounded-box hidden bg-base-200 xl:flex">
+				<Threads />
+			</div>
 
-      <div className="flex flex-col gap-2 xl:hidden">
-        <MenuItem href="/threads" icon={<BiMessageSquareDetail size={24} />} />
-        <ThreadLink threadName="global">
-          <MenuItem icon={<FiGlobe size={24} />} />
-        </ThreadLink>
-      </div>
-    </>
-  );
+			<div className="flex flex-col gap-2 xl:hidden">
+				<MenuItem href="/threads" icon={<BiMessageSquareDetail size={24} />} />
+				<ThreadLink threadName="global">
+					<MenuItem icon={<FiGlobe size={24} />} />
+				</ThreadLink>
+			</div>
+		</>
+	);
 };
 
 export const SidebarButtons = () => {
-  return (
-    <CollapsedContext.Provider value={true}>
-      <SearchBar />
-      <ThreadsBar />
-      <Links />
-    </CollapsedContext.Provider>
-  );
+	const router = useRouter();
+	const pathname = router.pathname;
+
+	return (
+		<CollapsedContext.Provider value={true}>
+			{pathname !== "/search" && <SearchBar defaultText="" />}
+			<ThreadsBar />
+			<Links />
+		</CollapsedContext.Provider>
+	);
 };
 
 export default function Sidebar() {
-  return (
-    <>
-      <div className="sticky top-0 hidden h-screen w-max max-w-xs shrink flex-col gap-2 py-4 sm:px-2 md:flex xl:gap-4">
-        <SidebarButtons />
-      </div>
-    </>
-  );
+	return (
+		<div className="sticky top-0 hidden h-screen w-max max-w-xs shrink flex-col gap-2 py-4 sm:px-2 md:flex xl:gap-4">
+			<SidebarButtons />
+		</div>
+	);
 }

@@ -10,74 +10,90 @@ import ErrorPage from "~/components/ErrorPage";
 import Link from "next/link";
 
 export default function SearchPage() {
-  const router = useRouter();
-  const { q: query } = router.query;
+	const router = useRouter();
+	const { q: query } = router.query;
 
-  if (!query || typeof query !== "string")
-    return (
-      <PageLayout>
-        <ErrorPage title="Not found" />
-      </PageLayout>
-    );
+	if (!query || typeof query !== "string")
+		return (
+			<PageLayout>
+				<SearchBar defaultText="" />
+			</PageLayout>
+		);
 
-  const posts = api.posts.find.useQuery(query, {
-    onError: (e) => {
-      let error = "Something went wrong";
-      switch (e.data?.code) {
-        case "TOO_MANY_REQUESTS":
-          error = "Slow down! You are posting too fast";
-          break;
-        case "BAD_REQUEST":
-          error = "Invalid request";
-          break;
-        case "PAYLOAD_TOO_LARGE":
-          error = "Your message is too big";
-          break;
-      }
-      toast.error(error);
-    },
-  });
+	const posts = api.posts.find.useQuery(query, {
+		onError: (e) => {
+			let error = "Something went wrong";
+			switch (e.data?.code) {
+				case "TOO_MANY_REQUESTS":
+					error = "Slow down! You are posting too fast";
+					break;
+				case "BAD_REQUEST":
+					error = "Invalid request";
+					break;
+				case "PAYLOAD_TOO_LARGE":
+					error = "Your message is too big";
+					break;
+			}
+			toast.error(error);
+		},
+	});
 
-  return (
-    <PageLayout>
-      <div className="flex flex-col justify-center  px-2 py-4 ">
-        <div className="flex w-full justify-center p-4 text-2xl font-bold">Search Results</div>
-        <Feed {...posts} />
-        <Link className="btn-ghost btn" href={"/"}>{`< Home`}</Link>
-      </div>
-    </PageLayout>
-  );
+	return (
+		<PageLayout>
+			<div className="flex flex-col justify-center px-2">
+				<div className="rounded-box sticky top-0 z-20 flex w-full flex-row justify-center border bg-base-100/30 p-4 backdrop-blur-sm ">
+					<SearchBar defaultText={query} />
+				</div>
+				<Feed {...posts} />
+				<Link className="btn-ghost btn" href={"/"}>
+					{"< Home"}
+				</Link>
+			</div>
+		</PageLayout>
+	);
 }
 
-export const SearchBar = () => {
-  const [input, setInput] = useState("");
-  const router = useRouter();
+export const SearchBar = ({ defaultText }: { defaultText: string }) => {
+	const [input, setInput] = useState(defaultText);
+	const router = useRouter();
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.push(`/search?q=${input}`).catch(console.error);
-  };
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
+	const onSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
 
-  return (
-    <>
-      <div className="hidden w-full xl:flex">
-        <form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
-          <input
-            type="text"
-            className="input-bordered input input-md w-full"
-            placeholder={"Search Twotter..."}
-            value={input}
-            onChange={onChange}
-          />
-        </form>
-      </div>
+		if (!input) return;
+		router.push(`/search?q=${input}`).catch(console.error);
+	};
+	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setInput(e.target.value);
+	};
 
-      <div className="xl:hidden">
-        <MenuItem href="/search" icon={<FiSearch size={24} />} />
-      </div>
-    </>
-  );
+	return (
+		<>
+			<div className="hidden w-full xl:flex">
+				<form
+					className="relative flex w-full flex-row justify-center gap-4"
+					onSubmit={onSubmit}
+				>
+					<input
+						type="text"
+						className="input-bordered input input-md w-full"
+						placeholder={"Search Twotter..."}
+						value={input}
+						onChange={onChange}
+					/>
+
+					<button
+						className="btn-ghost btn-sm btn absolute w-8 h-8 inset-y-2 right-2 p-0"
+						type="submit"
+					>
+						<FiSearch size={20} />
+					</button>
+				</form>
+			</div>
+
+			<div className="xl:hidden">
+				<MenuItem href="/search" icon={<FiSearch size={24} />} />
+			</div>
+		</>
+	);
 };
