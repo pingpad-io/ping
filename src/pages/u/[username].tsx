@@ -1,5 +1,5 @@
 import { useUser } from "@supabase/auth-helpers-react";
-import { type GetStaticProps, type NextPage } from "next";
+import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { FiEdit2 } from "react-icons/fi";
@@ -19,12 +19,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 	const { data: profile } = api.profiles.getProfileByUsername.useQuery({
 		username,
 	});
+	const posts = api.posts.getAllByAuthorUsername.useQuery(username);
+
 	if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
 
 	const isUserProfile = profile?.id === user?.id;
-	const posts = api.posts.getAllByAuthorId.useQuery(profile.id);
-	const usernameText = profile.username ?? "";
-	const title = `Twotter (@${usernameText})`;
+	const title = `Twotter (@${profile.username ?? ""})`;
 
 	const flair = profile.flairs.length > 0 && (
 		<span className="h-min">
@@ -42,7 +42,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 				<div className="rounded-box m-4 flex flex-row items-center gap-4 border border-base-300 p-4">
 					<UserAvatar profile={profile} />
 
-					<Link className="grow" href={`/${usernameText}`}>
+					<Link className="grow" href={`/${profile.username ?? ""}`}>
 						<div className="flex flex-row gap-2">
 							<div className="text-lg font-bold">{profile.full_name}</div>
 							{flair}
@@ -79,13 +79,14 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 	);
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
 	const ssg = getSSGHelper();
-	const username = context.params?.slug;
+	const username = context.params?.username;
 
 	if (typeof username !== "string") throw new Error("Bad URL slug");
 
 	await ssg.profiles.getProfileByUsername.prefetch({ username });
+	await ssg.posts.getAllByAuthorUsername.prefetch(username);
 
 	return {
 		props: {
@@ -93,10 +94,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 			username,
 		},
 	};
-};
-
-export const getStaticPaths = () => {
-	return { paths: [], fallback: "blocking" };
 };
 
 export default ProfilePage;

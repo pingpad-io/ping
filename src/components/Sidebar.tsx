@@ -5,8 +5,8 @@ import { CollapsedContext } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import { ThreadLink } from "./ThreadLink";
 import Threads from "./Threads";
-import { SearchBar } from "~/pages/search";
 import { useRouter } from "next/router";
+import { SearchBar } from "./SearchBar";
 
 const Links = () => {
 	return (
@@ -52,7 +52,16 @@ export const SidebarButtons = () => {
 
 	return (
 		<CollapsedContext.Provider value={true}>
-			{pathname !== "/search" && <SearchBar defaultText="" />}
+			{pathname !== "/search" && (
+				<>
+					<div className="hidden xl:flex">
+						<SearchBar defaultText="" />
+					</div>
+					<div className="xl:hidden">
+						<MenuItem href="/search" icon={<FiSearch size={24} />} />
+					</div>
+				</>
+			)}
 			<ThreadsBar />
 			<Links />
 		</CollapsedContext.Provider>
