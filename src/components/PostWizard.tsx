@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import { type State } from "~/utils/store";
 import { UserAvatar } from "./UserAvatar";
 import { GlassBar } from "./GlassBar";
+import { useRouter } from "next/router";
 
 export default function PostWizard({
 	placeholder,
@@ -82,12 +83,12 @@ export default function PostWizard({
 }
 
 export const ThreadDivider = () => {
-	const currentThreadId = useSelector((state: State) => state.currentThreadId);
-	const { data: currentThread } = api.threads.getById.useQuery(currentThreadId);
+	const router = useRouter();
+	const thread = router.asPath.split("/")[2];
 
 	return (
 		<div className="divider z-20 mx-2 -mt-2 mb-2 before:h-0 before:border-b before:border-base-300 after:h-0 after:border-b after:border-base-300">
-			{currentThread?.name}
+			{thread}
 		</div>
 	);
 };

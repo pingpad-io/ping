@@ -37,8 +37,8 @@ const ThreadsBar = () => {
 			</div>
 
 			<div className="flex flex-col gap-2 xl:hidden">
-				<MenuItem href="/threads" icon={<BiMessageSquareDetail size={24} />} />
-				<ThreadLink threadName="global">
+				<MenuItem href="/t" icon={<BiMessageSquareDetail size={24} />} />
+				<ThreadLink thread="global">
 					<MenuItem icon={<FiGlobe size={24} />} />
 				</ThreadLink>
 			</div>

@@ -12,4 +12,4 @@ it's an attempt to find out what happens when an unstoppable force meets an immo
 
 **how?**
 
-written using `NextJS` & `React` on the frontend, `PlanetScale`, `Prisma` & `tRPC` on the backend + `Upstash` for rate limiting
+written using `NextJS` & `React` on the frontend, `Supabase`, `Prisma` & `tRPC` on the backend + `Upstash` for rate limiting

@@ -89,7 +89,7 @@ export const PostContent = ({
 		: post.content;
 
 	return (
-		<Link href={`/post/${post.id}`}>
+		<Link href={`/p/${post.id}`}>
 			<p className="truncate whitespace-pre-wrap break-words text-sm sm:text-base">
 				{collapsed ? truncatedMessage : post.content}
 			</p>
@@ -110,7 +110,7 @@ export const ReplyInfo = ({ data }: { data: Post }) => {
 
 	return (
 		<Link
-			href={`/post/${id ?? ""}`}
+			href={`/p/${id ?? ""}`}
 			className="flex flex-row items-center gap-1 px-16 pt-[2px] text-xs font-light leading-3"
 		>
 			<LuReply className="shrink-0 scale-x-[-1] transform" strokeWidth={1.5} />
@@ -163,7 +163,7 @@ export const PostMenu = ({ data }: { data: Post }) => {
 		typeof window !== "undefined" && window.location.origin
 			? window.location.origin
 			: "";
-	const postLink = `${origin}/post/${post.id}`;
+	const postLink = `${origin}/p/${post.id}`;
 
 	const todo = () => {
 		Function.prototype();

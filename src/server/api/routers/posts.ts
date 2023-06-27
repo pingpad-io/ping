@@ -108,6 +108,32 @@ export const postsRouter = createTRPCRouter({
 		return addAuthorDataToPosts(posts);
 	}),
 
+	getAllInThread: publicProcedure
+		.input(z.string())
+		.query(async ({ ctx, input }) => {
+			const posts = await ctx.prisma.post.findMany({
+				take: 100,
+				orderBy: [{ createdAt: "desc" }],
+				include: {
+					likers: true,
+					thread: true,
+					repliedTo: {
+						select: {
+							id: true,
+							content: true,
+							author: { select: { username: true } },
+						},
+					},
+				},
+				where: {
+					thread: { name: input },
+					status: "Posted",
+				},
+			});
+
+			return addAuthorDataToPosts(posts);
+		}),
+
 	getAllByThreadId: publicProcedure
 		.input(z.string())
 		.query(async ({ ctx, input }) => {
