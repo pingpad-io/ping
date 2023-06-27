@@ -143,12 +143,14 @@ export const PostInfo = ({ post }: { post: Post }) => {
 
 export const ReplyCount = ({ post }: { post: Post }) => {
 	return (
-		post.replies.length > 0 && (
-			<span className="flex flex-row gap-1 leading-3 badge badge-outline">
-				{post.replies.length}
-				<BiCommentDetail strokeWidth={0.1} />
-			</span>
-		)
+		<>
+			{post.replies.length > 0 && (
+				<span className="flex flex-row gap-1 leading-3 badge badge-outline">
+					{post.replies.length}
+					<BiCommentDetail strokeWidth={0.1} />
+				</span>
+			)}
+		</>
 	);
 };
 
