@@ -17,52 +17,34 @@ const postingRatelimit = new Ratelimit({
 	analytics: true,
 });
 
-import type { Post, Profile, Thread } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { prisma } from "~/server/db";
 
-const addAuthorDataToPosts = async (
-	posts: (Post & {
-		thread: Thread;
-		likers: Profile[];
-		repliedTo: {
-			id: string;
-			content: string;
-			author: {
-				username: string | null;
-			};
-		} | null;
-	})[],
-) => {
-	const authors = posts.map((post) => post.authorId);
-
-	const profiles = await prisma.profile.findMany({
-		where: { id: { in: authors } },
+const postPublicData = {
+	likers: true,
+	thread: true,
+	author: {
+		include: { flairs: true },
+	},
+	replies: {
 		select: {
-			username: true,
-			id: true,
-			avatar_url: true,
-			full_name: true,
-			flairs: true,
+			_count: true,
 		},
-	});
-
-	return posts.map((post) => {
-		const author = profiles?.find((author) => author.id === post.authorId);
-
-		if (!author) {
-			console.error("AUTHOR NOT FOUND", post);
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: `Author for post not found. POST ID: ${post.id}, USER ID: ${post.authorId}`,
-			});
-		}
-
-		return {
-			post,
-			author,
-		};
-	});
+	},
+	repliedTo: {
+		select: {
+			id: true,
+			content: true,
+			author: {
+				select: {
+					username: true,
+					avatar_url: true,
+					flairs: true,
+					full_name: true,
+					id: true,
+				},
+			},
+		},
+	},
 };
 
 export const postsRouter = createTRPCRouter({
@@ -70,42 +52,22 @@ export const postsRouter = createTRPCRouter({
 		const posts = await ctx.prisma.post.findMany({
 			take: 100,
 			orderBy: [{ createdAt: "desc" }],
-			include: {
-				likers: true,
-				thread: true,
-				repliedTo: {
-					select: {
-						id: true,
-						content: true,
-						author: { select: { username: true } },
-					},
-				},
-			},
+			include: postPublicData,
 			where: { status: "Posted" },
 		});
 
-		return addAuthorDataToPosts(posts);
+		return posts;
 	}),
 
 	find: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
 		const posts = await ctx.prisma.post.findMany({
 			take: 100,
 			orderBy: [{ createdAt: "desc" }],
-			include: {
-				likers: true,
-				thread: true,
-				repliedTo: {
-					select: {
-						id: true,
-						content: true,
-						author: { select: { username: true } },
-					},
-				},
-			},
+			include: postPublicData,
 			where: { content: { contains: input } },
 		});
 
-		return addAuthorDataToPosts(posts);
+		return posts;
 	}),
 
 	getAllInThread: publicProcedure
@@ -114,24 +76,14 @@ export const postsRouter = createTRPCRouter({
 			const posts = await ctx.prisma.post.findMany({
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
-				include: {
-					likers: true,
-					thread: true,
-					repliedTo: {
-						select: {
-							id: true,
-							content: true,
-							author: { select: { username: true } },
-						},
-					},
-				},
+				include: postPublicData,
 				where: {
 					thread: { name: input },
 					status: "Posted",
 				},
 			});
 
-			return addAuthorDataToPosts(posts);
+			return posts;
 		}),
 
 	getAllByThreadId: publicProcedure
@@ -140,21 +92,11 @@ export const postsRouter = createTRPCRouter({
 			const posts = await ctx.prisma.post.findMany({
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
-				include: {
-					likers: true,
-					thread: true,
-					repliedTo: {
-						select: {
-							id: true,
-							content: true,
-							author: { select: { username: true } },
-						},
-					},
-				},
+				include: postPublicData,
 				where: { threadId: input, status: "Posted" },
 			});
 
-			return addAuthorDataToPosts(posts);
+			return posts;
 		}),
 
 	getById: publicProcedure
@@ -162,17 +104,7 @@ export const postsRouter = createTRPCRouter({
 		.query(async ({ ctx, input }) => {
 			const post = await ctx.prisma.post.findUnique({
 				where: { id: input },
-				include: {
-					likers: true,
-					thread: true,
-					repliedTo: {
-						select: {
-							id: true,
-							content: true,
-							author: { select: { username: true } },
-						},
-					},
-				},
+				include: postPublicData,
 			});
 
 			if (!post) {
@@ -199,7 +131,7 @@ export const postsRouter = createTRPCRouter({
 			}
 
 			if (post.status === "Posted") {
-				return (await addAuthorDataToPosts([post])).at(0);
+				return post;
 			}
 
 			throw new TRPCError({
@@ -214,17 +146,7 @@ export const postsRouter = createTRPCRouter({
 			const replies = await ctx.prisma.post.findMany({
 				take: 100,
 				orderBy: [{ createdAt: "asc" }],
-				include: {
-					likers: true,
-					thread: true,
-					repliedTo: {
-						select: {
-							id: true,
-							content: true,
-							author: { select: { username: true } },
-						},
-					},
-				},
+				include: postPublicData,
 				where: { repliedToId: input, status: "Posted" },
 			});
 
@@ -235,7 +157,7 @@ export const postsRouter = createTRPCRouter({
 				});
 			}
 
-			return addAuthorDataToPosts(replies);
+			return replies;
 		}),
 
 	getAllByAuthorId: publicProcedure
@@ -243,21 +165,11 @@ export const postsRouter = createTRPCRouter({
 		.query(async ({ ctx, input }) => {
 			const posts = await ctx.prisma.post.findMany({
 				where: { authorId: input },
-				include: {
-					likers: true,
-					thread: true,
-					repliedTo: {
-						select: {
-							id: true,
-							content: true,
-							author: { select: { username: true } },
-						},
-					},
-				},
+				include: postPublicData,
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
 			});
-			return addAuthorDataToPosts(posts);
+			return posts;
 		}),
 
 	getAllByAuthorUsername: publicProcedure
@@ -265,21 +177,11 @@ export const postsRouter = createTRPCRouter({
 		.query(async ({ ctx, input }) => {
 			const posts = await ctx.prisma.post.findMany({
 				where: { author: { username: input } },
-				include: {
-					likers: true,
-					thread: true,
-					repliedTo: {
-						select: {
-							id: true,
-							content: true,
-							author: { select: { username: true } },
-						},
-					},
-				},
+				include: postPublicData,
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
 			});
-			return addAuthorDataToPosts(posts);
+			return posts;
 		}),
 
 	deleteById: privateProcedure

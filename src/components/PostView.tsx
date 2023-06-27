@@ -17,9 +17,8 @@ const maxLength = 45 * 3 - 3;
 
 export type Post = RouterOutputs["posts"]["getAll"][number];
 
-export const PostView = ({ data }: { data: Post }) => {
-	const post = data.post;
-	const author = data.author;
+export const PostView = ({ post }: { post: Post }) => {
+	const author = post.author;
 	const [collapsed, setCollapsed] = useState(true);
 	const expandable = post.content.length > maxLength;
 
@@ -29,7 +28,7 @@ export const PostView = ({ data }: { data: Post }) => {
 				"rounded-box flex h-min max-w-2xl shrink flex-col border border-base-300 px-2 sm:px-4"
 			}
 		>
-			<ReplyInfo data={data} />
+			<ReplyInfo post={post} />
 
 			<div className="flex flex-row gap-4">
 				<div className="w-8 h-8 shrink-0 grow-0 sm:w-12 sm:h-12">
@@ -37,8 +36,9 @@ export const PostView = ({ data }: { data: Post }) => {
 				</div>
 
 				<div className="flex w-3/4 grow flex-col">
-					<PostInfo data={data} />
+					<PostInfo post={post} />
 					<PostContent post={post} collapsed={collapsed} />
+					<ReplyCount post={post} />
 				</div>
 
 				<LikeButton post={post} />
@@ -82,31 +82,30 @@ export const PostExtensionButton = ({
 export const PostContent = ({
 	post,
 	collapsed,
-}: { post: Post["post"]; collapsed: boolean }) => {
-	const needsTruncation = post.content.length > maxLength;
-	const truncatedMessage = needsTruncation
-		? `${post.content.slice(0, maxLength)}...`
-		: post.content;
-
+}: { post: Post; collapsed: boolean }) => {
 	return (
 		<Link href={`/p/${post.id}`}>
-			<p className="truncate whitespace-pre-wrap break-words text-sm sm:text-base">
-				{collapsed ? truncatedMessage : post.content}
+			<p
+				className={`truncate whitespace-pre-wrap break-words text-sm sm:text-base h-min ${
+					collapsed ? "line-clamp-2" : "line-clamp-none"
+				}`}
+			>
+				{post.content}
 			</p>
 		</Link>
 	);
 };
 import { LuReply } from "react-icons/lu";
+import { BiCommentDetail } from "react-icons/bi";
 
-export const ReplyInfo = ({ data }: { data: Post }) => {
-	const post = data.post;
+export const ReplyInfo = ({ post }: { post: Post }) => {
 	const empty_space = <div className="h-2 sm:h-4" />;
 
 	if (!post.repliedToId) return empty_space;
 
-	const username = data.post.repliedTo?.author.username;
-	const content = data.post.repliedTo?.content.substring(0, 100);
-	const id = data.post.repliedTo?.id;
+	const username = post.repliedTo?.author.username;
+	const content = post.repliedTo?.content.substring(0, 100);
+	const id = post.repliedTo?.id;
 
 	return (
 		<Link
@@ -120,24 +119,36 @@ export const ReplyInfo = ({ data }: { data: Post }) => {
 	);
 };
 
-export const PostInfo = ({ data }: { data: Post }) => {
-	const post = data.post;
-	const author = data.author;
+export const PostInfo = ({ post }: { post: Post }) => {
+	const author = post.author;
 	const username = author.username ?? "";
 
 	return (
-		<div className="group flex flex-row items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
+		<div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
 			<Link className="flex gap-2" href={`/${username}`}>
 				<span className="w-fit truncate font-bold">{author.full_name}</span>
-				<AuthorFlair author={author} />
+				<span className="pt-1">
+					<AuthorFlair author={author} />
+				</span>
 				<span className="">{`@${username}`}</span>
 			</Link>
 			<span>{"·"}</span>
 			<TimeElapsedSince date={post.createdAt} />
 			<span className="hidden group-hover:flex">
-				<PostMenu data={data} />
+				<PostMenu post={post} />
 			</span>
 		</div>
+	);
+};
+
+export const ReplyCount = ({ post }: { post: Post }) => {
+	return (
+		post.replies.length > 0 && (
+			<span className="flex flex-row gap-1 leading-3 badge badge-outline">
+				{post.replies.length}
+				<BiCommentDetail strokeWidth={0.1} />
+			</span>
+		)
 	);
 };
 
@@ -153,12 +164,11 @@ export const AuthorFlair = ({ author }: { author: Post["author"] }) => {
 	);
 };
 
-export const PostMenu = ({ data }: { data: Post }) => {
+export const PostMenu = ({ post }: { post: Post }) => {
 	const user = useUser();
 	const ctx = api.useContext();
 
-	const author = data.author;
-	const post = data.post;
+	const author = post.author;
 	const origin =
 		typeof window !== "undefined" && window.location.origin
 			? window.location.origin
@@ -235,7 +245,7 @@ export const PostMenu = ({ data }: { data: Post }) => {
 	);
 };
 
-export const LikeButton = ({ post }: { post: Post["post"] }) => {
+export const LikeButton = ({ post }: { post: Post }) => {
 	const user = useUser();
 	const ctx = api.useContext();
 	const wasLiked =

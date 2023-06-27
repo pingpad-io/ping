@@ -1,20 +1,21 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import { LikeButton, PostContent, PostInfo } from "~/components/PostView";
 import PostWizard from "~/components/PostWizard";
-import { ThreadLink } from "~/components/ThreadLink";
 import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
-import { type State } from "~/utils/store";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
-	const { data, isError, error } = api.posts.getById.useQuery(id, {
+	const {
+		data: post,
+		isError,
+		error,
+	} = api.posts.getById.useQuery(id, {
 		refetchOnMount: false,
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: false,
@@ -24,10 +25,9 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 
 	if (isError)
 		return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
-	if (!data) return <ErrorPage title={"Post not found qwq"} />;
+	if (!post) return <ErrorPage title={"Post not found qwq"} />;
 
-	const post = data.post;
-	const author = data.author;
+	const author = post.author;
 	const replies = api.posts.getRepliesById.useQuery(id);
 
 	return (
@@ -46,7 +46,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 						</div>
 
 						<div className="flex max-w-lg grow flex-col">
-							<PostInfo data={data} />
+							<PostInfo post={post} />
 							<PostContent post={post} collapsed={false} />
 						</div>
 						<LikeButton post={post} />
