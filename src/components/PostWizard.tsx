@@ -97,5 +97,9 @@ export const PostWizardAuthed = ({ userId }: { userId: string }) => {
 		id: userId,
 	});
 
-	return <UserAvatar profile={profile} online={true} />;
+	return (
+		<div className="w-12 h-12 shrink-0 grow-0">
+			<UserAvatar profile={profile} online={true} />
+		</div>
+	);
 };

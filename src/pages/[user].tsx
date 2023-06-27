@@ -2,14 +2,15 @@ import { useUser } from "@supabase/auth-helpers-react";
 import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { FiEdit2 } from "react-icons/fi";
+import { BiCalendar } from "react-icons/bi";
+import { FiCalendar, FiEdit2 } from "react-icons/fi";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { FlairView } from "~/components/FlairView";
 import { GlassBar } from "~/components/GlassBar";
 import { PageLayout } from "~/components/Layout";
 import { CollapsedContext } from "~/components/Menu";
-import { MenuItem } from "~/components/MenuItem";
+import { CompactMenuItem, MenuItem } from "~/components/MenuItem";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
@@ -40,42 +41,42 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 			</Head>
 
 			<PageLayout>
-				<div className="sticky top-0 z-10 border-b border-base-300 ">
+				<div className="sticky top-0 z-10 border-b border-base-300 bg-base-200/30 ">
 					<GlassBar>
-						<UserAvatar profile={profile} />
+						<div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 ring rounded-full ring-base-200 ring-offset-1">
+							<UserAvatar size={100} profile={profile} />
+						</div>
 
-						<div className="flex flex-col grow">
-							<div className="flex flex-row gap-2">
-								<div className="text-lg font-bold">{profile.full_name}</div>
-								{flair}
+						<div className="flex flex-col grow place-content-around">
+							<div className="flex flex-row gap-2 place-items-center h-6">
+								<div className="text-lg font-bold w-fit truncate">
+									{profile.full_name}
+								</div>
+								<div className="hidden sm:flex">{flair}</div>
+								{isUserProfile && (
+									<Link
+										className="btn btn-square btn-sm btn-ghost "
+										href="/settings"
+									>
+										<FiEdit2 />
+									</Link>
+								)}
 							</div>
 							<Link className="grow" href={`/${profile.username ?? ""}`}>
 								<div className="text-sm text-base-content font-light">
 									@{profile.username}
 								</div>
 							</Link>
-							<div className="text-sm text-base-content pt-2 ">
+							<div className="text-sm text-base-content grow">
 								{profile.description}
 							</div>
-						</div>
-
-						<div className="flex flex-col place-content-between gap-1">
 							{profile.created_at && (
-								<div className="text-sm text-base-content">
+								<div className="text-sm text-base-content flex flex-row gap-1 place-items-center">
+									<FiCalendar />
 									Joined <TimeSince date={profile.created_at} />
 								</div>
 							)}
 						</div>
-
-						{isUserProfile && (
-							<CollapsedContext.Provider value={true}>
-								<MenuItem
-									href="/settings"
-									icon={<FiEdit2 />}
-									text="Edit Profile"
-								/>
-							</CollapsedContext.Provider>
-						)}
 					</GlassBar>
 				</div>
 
