@@ -23,32 +23,22 @@ export const PostView = ({ post }: { post: Post }) => {
 	const expandable = post.content.length > maxLength;
 
 	return (
-		<div
-			className={
-				"rounded-box flex h-min max-w-2xl shrink flex-col border border-base-300 px-2 sm:px-4"
-			}
-		>
-			<ReplyInfo post={post} />
-
-			<div className="flex flex-row gap-4">
-				<div className="w-8 h-8 shrink-0 grow-0 sm:w-12 sm:h-12">
-					<UserAvatar profile={author} />
-				</div>
-
-				<div className="flex w-3/4 grow flex-col">
-					<PostInfo post={post} />
-					<PostContent post={post} collapsed={collapsed} />
-					<ReplyCount post={post} />
-				</div>
-
-				<LikeButton post={post} />
+		<div className="flex flex-row gap-4 rounded-box h-min max-w-2xl border border-base-300 p-2 sm:p-4">
+			<div className="w-8 h-8 shrink-0 grow-0 sm:w-12 sm:h-12 ">
+				<UserAvatar profile={author} />
 			</div>
-
-			<PostExtensionButton
-				collapsed={collapsed}
-				setCollapsed={setCollapsed}
-				expandable={expandable}
-			/>
+			<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
+				<ReplyInfo post={post} />
+				<PostInfo post={post} />
+				<PostContent post={post} collapsed={collapsed} />
+				<MetaInfo post={post} />
+				<PostExtensionButton
+					collapsed={collapsed}
+					setCollapsed={setCollapsed}
+					expandable={expandable}
+				/>
+			</div>
+			<LikeButton post={post} />
 		</div>
 	);
 };
@@ -62,10 +52,10 @@ export const PostExtensionButton = ({
 	collapsed: boolean;
 	setCollapsed: Dispatch<SetStateAction<boolean>>;
 }) => {
-	if (!expandable) return <div className="h-2 sm:h-4" />;
+	if (!expandable) return <div />;
 
 	return (
-		<div className={"flex flex-row justify-center pb-2"}>
+		<div className={"flex flex-row justify-center -mb-2 "}>
 			{collapsed ? (
 				<button type="button" onClick={() => setCollapsed(false)}>
 					<RiArrowDownSLine />
@@ -86,7 +76,7 @@ export const PostContent = ({
 	return (
 		<Link href={`/p/${post.id}`}>
 			<p
-				className={`truncate whitespace-pre-wrap break-words text-sm sm:text-base h-min ${
+				className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-min ${
 					collapsed ? "line-clamp-2" : "line-clamp-none"
 				}`}
 			>
@@ -99,7 +89,7 @@ import { LuReply } from "react-icons/lu";
 import { BiCommentDetail } from "react-icons/bi";
 
 export const ReplyInfo = ({ post }: { post: Post }) => {
-	const empty_space = <div className="h-2 sm:h-4" />;
+	const empty_space = <div className="" />;
 
 	if (!post.repliedToId) return empty_space;
 
@@ -110,7 +100,7 @@ export const ReplyInfo = ({ post }: { post: Post }) => {
 	return (
 		<Link
 			href={`/p/${id ?? ""}`}
-			className="flex flex-row items-center gap-1 px-16 pt-[2px] text-xs font-light leading-3"
+			className="flex flex-row items-center gap-1 -mt-2 text-xs font-light leading-3"
 		>
 			<LuReply className="shrink-0 scale-x-[-1] transform" strokeWidth={1.5} />
 			<span className="pb-0.5">@{username}:</span>
@@ -127,9 +117,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
 		<div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
 			<Link className="flex gap-2" href={`/${username}`}>
 				<span className="w-fit truncate font-bold">{author.full_name}</span>
-				<span className="pt-1">
-					<AuthorFlair author={author} />
-				</span>
+				<AuthorFlair author={author} />
 				<span className="">{`@${username}`}</span>
 			</Link>
 			<span>{"·"}</span>
@@ -141,13 +129,21 @@ export const PostInfo = ({ post }: { post: Post }) => {
 	);
 };
 
+export const MetaInfo = ({ post }: { post: Post }) => {
+	return (
+		<div className="flex flex-row gap-2 leading-3 pt-2 -mb-1">
+			<ReplyCount post={post} />
+		</div>
+	);
+};
+
 export const ReplyCount = ({ post }: { post: Post }) => {
 	return (
 		<>
 			{post.replies.length > 0 && (
-				<span className="flex flex-row gap-1 leading-3 badge badge-outline">
+				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
 					{post.replies.length}
-					<BiCommentDetail strokeWidth={0.1} />
+					<LuReply className="shrink-0 scale-x-[-1] transform" />
 				</span>
 			)}
 		</>
@@ -158,7 +154,7 @@ export const AuthorFlair = ({ author }: { author: Post["author"] }) => {
 	return (
 		<>
 			{author.flairs.length > 0 && (
-				<span className="hidden leading-4 sm:flex">
+				<span className="hidden sm:flex py-0.5">
 					<FlairView flair={author.flairs.at(0)} size="xs" />
 				</span>
 			)}
