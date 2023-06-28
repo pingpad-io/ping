@@ -24,7 +24,7 @@ export const PostView = ({ post }: { post: Post }) => {
 
 	return (
 		<div className="flex flex-row gap-4 rounded-box h-min max-w-2xl border border-base-300 p-2 sm:p-4">
-			<div className="w-8 h-8 shrink-0 grow-0 sm:w-12 sm:h-12 ">
+			<div className="w-8 h-8 shrink-0 grow-0 sm:w-12 sm:h-12 ring rounded-full ring-1 ring-base-300">
 				<UserAvatar profile={author} />
 			</div>
 			<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
@@ -86,7 +86,7 @@ export const PostContent = ({
 	);
 };
 import { LuReply } from "react-icons/lu";
-import { BiCommentDetail } from "react-icons/bi";
+import { BiRepost } from "react-icons/bi";
 
 export const ReplyInfo = ({ post }: { post: Post }) => {
 	const empty_space = <div className="" />;
@@ -131,9 +131,38 @@ export const PostInfo = ({ post }: { post: Post }) => {
 
 export const MetaInfo = ({ post }: { post: Post }) => {
 	return (
-		<div className="flex flex-row gap-2 leading-3 pt-2 -mb-1">
+		<div className="flex flex-row gap-2 leading-3 pt-2 -mb-1 text-secondary-content/50 ">
+			{/* <LikeCount post={post} /> */}
 			<ReplyCount post={post} />
+			<RepostCount post={post} />
+			<EditedIndicator post={post} />
 		</div>
+	);
+};
+
+export const EditedIndicator = ({ post }: { post: Post }) => {
+	return (
+		<>
+			{post.createdAt.toUTCString() !== post.updatedAt.toUTCString() && (
+				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
+					<FiEdit2 className="shrink-0 scale-x-[-1] transform" />
+					edited
+				</span>
+			)}
+		</>
+	);
+};
+
+export const LikeCount = ({ post }: { post: Post }) => {
+	return (
+		<>
+			{post.likers.length > 0 && (
+				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
+					{post.likers.length}
+					<AiOutlineHeart className="shrink-0 scale-x-[-1] transform" />
+				</span>
+			)}
+		</>
 	);
 };
 
@@ -144,6 +173,19 @@ export const ReplyCount = ({ post }: { post: Post }) => {
 				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
 					{post.replies.length}
 					<LuReply className="shrink-0 scale-x-[-1] transform" />
+				</span>
+			)}
+		</>
+	);
+};
+
+export const RepostCount = ({ post }: { post: Post }) => {
+	return (
+		<>
+			{post.replies.length > 0 && (
+				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
+					{post.replies.length}
+					<BiRepost />
 				</span>
 			)}
 		</>

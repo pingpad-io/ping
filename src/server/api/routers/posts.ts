@@ -277,6 +277,7 @@ export const postsRouter = createTRPCRouter({
 			}
 
 			const id = randomUUID();
+			const currentTime = new Date().toISOString();
 
 			const post = await ctx.prisma.post.create({
 				data: {
@@ -284,7 +285,8 @@ export const postsRouter = createTRPCRouter({
 					authorId,
 					threadId: input.threadId,
 					content: input.content,
-					updatedAt: new Date().toISOString(),
+					createdAt: currentTime,
+					updatedAt: currentTime,
 					repliedToId: input.repliedToId,
 				},
 			});
