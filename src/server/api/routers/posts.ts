@@ -263,7 +263,7 @@ export const postsRouter = createTRPCRouter({
 					.string()
 					.min(1, "Your twot must be longer")
 					.max(300, "Your twot must be less than 300 characters long"),
-				threadId: z.string().uuid(),
+				threadName: z.string(),
 				repliedToId: z.string().uuid().optional(),
 			}),
 		)
@@ -278,12 +278,22 @@ export const postsRouter = createTRPCRouter({
 
 			const id = randomUUID();
 			const currentTime = new Date().toISOString();
+			const thread = await ctx.prisma.thread.findUnique({
+				where: { name: input.threadName },
+			});
+
+			if (!thread) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `Thread with name ${input.threadName} was not found.`,
+				});
+			}
 
 			const post = await ctx.prisma.post.create({
 				data: {
 					id,
 					authorId,
-					threadId: input.threadId,
+					threadId: thread?.id,
 					content: input.content,
 					createdAt: currentTime,
 					updatedAt: currentTime,

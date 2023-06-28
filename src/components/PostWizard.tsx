@@ -15,7 +15,9 @@ export default function PostWizard({
 	const [input, setInput] = useState("");
 	const ctx = api.useContext();
 	const user = useUser();
-	const currentThreadId = useSelector((state: State) => state.currentThreadId);
+	const router = useRouter();
+	const currentThread = router.asPath.split("/")[2];
+
 	const { mutate: createPost, isLoading: isPosting } =
 		api.posts.create.useMutation({
 			onSuccess: async () => {
@@ -49,7 +51,7 @@ export default function PostWizard({
 		e.preventDefault();
 		createPost({
 			content: input,
-			threadId: currentThreadId,
+			threadName: currentThread ?? "",
 			repliedToId: replyingTo,
 		});
 	};
