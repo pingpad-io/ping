@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import { LikeButton, PostContent, PostInfo } from "~/components/PostView";
+import { PostContent, PostInfo } from "~/components/PostView";
 import PostWizard from "~/components/PostWizard";
 import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
@@ -49,7 +49,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 							<PostInfo post={post} />
 							<PostContent post={post} collapsed={false} />
 						</div>
-						<LikeButton post={post} />
+						{/* <LikeButton post={post} /> */}
 					</div>
 
 					<div className="flex w-full flex-row ">
