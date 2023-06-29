@@ -19,9 +19,18 @@ const postingRatelimit = new Ratelimit({
 
 import { randomUUID } from "crypto";
 
-const postPublicData = {
-	likers: true,
+const publicPostData = {
 	thread: true,
+	reactions: {
+		select: {
+			reaction: true,
+			profile: {
+				select: {
+					username: true,
+				},
+			},
+		},
+	},
 	author: {
 		include: { flairs: true },
 	},
@@ -52,7 +61,7 @@ export const postsRouter = createTRPCRouter({
 		const posts = await ctx.prisma.post.findMany({
 			take: 100,
 			orderBy: [{ createdAt: "desc" }],
-			include: postPublicData,
+			include: publicPostData,
 			where: { status: "Posted" },
 		});
 
@@ -63,7 +72,7 @@ export const postsRouter = createTRPCRouter({
 		const posts = await ctx.prisma.post.findMany({
 			take: 100,
 			orderBy: [{ createdAt: "desc" }],
-			include: postPublicData,
+			include: publicPostData,
 			where: { content: { contains: input } },
 		});
 
@@ -76,7 +85,7 @@ export const postsRouter = createTRPCRouter({
 			const posts = await ctx.prisma.post.findMany({
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
-				include: postPublicData,
+				include: publicPostData,
 				where: {
 					thread: { name: input },
 					status: "Posted",
@@ -92,7 +101,7 @@ export const postsRouter = createTRPCRouter({
 			const posts = await ctx.prisma.post.findMany({
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
-				include: postPublicData,
+				include: publicPostData,
 				where: { threadId: input, status: "Posted" },
 			});
 
@@ -104,7 +113,7 @@ export const postsRouter = createTRPCRouter({
 		.query(async ({ ctx, input }) => {
 			const post = await ctx.prisma.post.findUnique({
 				where: { id: input },
-				include: postPublicData,
+				include: publicPostData,
 			});
 
 			if (!post) {
@@ -146,7 +155,7 @@ export const postsRouter = createTRPCRouter({
 			const replies = await ctx.prisma.post.findMany({
 				take: 100,
 				orderBy: [{ createdAt: "asc" }],
-				include: postPublicData,
+				include: publicPostData,
 				where: { repliedToId: input, status: "Posted" },
 			});
 
@@ -165,7 +174,7 @@ export const postsRouter = createTRPCRouter({
 		.query(async ({ ctx, input }) => {
 			const posts = await ctx.prisma.post.findMany({
 				where: { authorId: input },
-				include: postPublicData,
+				include: publicPostData,
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
 			});
@@ -177,7 +186,7 @@ export const postsRouter = createTRPCRouter({
 		.query(async ({ ctx, input }) => {
 			const posts = await ctx.prisma.post.findMany({
 				where: { author: { username: input } },
-				include: postPublicData,
+				include: publicPostData,
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
 			});
@@ -211,50 +220,45 @@ export const postsRouter = createTRPCRouter({
 			});
 		}),
 
-	likeById: privateProcedure
-		.input(z.string())
-		.mutation(async ({ ctx, input }) => {
-			const post = await ctx.prisma.post.findUnique({
-				where: { id: input },
-				select: {
-					likers: {
-						select: { id: true },
-					},
-				},
-			});
+	// likeById: privateProcedure
+	// 	.input(z.string())
+	// 	.mutation(async ({ ctx, input }) => {
+	// 		const post = await ctx.prisma.post.findUnique({
+	// 			where: { id: input },
+	// 		});
 
-			const profile = await ctx.prisma.profile.findUnique({
-				where: { id: ctx.userId },
-				select: { id: true },
-			});
+	// 		const profile = await ctx.prisma.profile.findUnique({
+	// 			where: { id: ctx.userId },
+	// 			select: { id: true },
+	// 		});
 
-			if (!profile || !post) {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "Post or Profile not found.",
-				});
-			}
+	// 		if (!profile || !post) {
+	// 			throw new TRPCError({
+	// 				code: "INTERNAL_SERVER_ERROR",
+	// 				message: "Post or Profile not found.",
+	// 			});
+	// 		}
 
-			const isLiked = post.likers.find((liker) => liker.id === profile.id);
+	// 		const isLiked = post.likers.find((liker) => liker.id === profile.id);
 
-			if (isLiked) {
-				await ctx.prisma.post.update({
-					where: { id: input },
-					data: {
-						likers: { disconnect: { id: profile.id } },
-					},
-				});
-			} else {
-				await ctx.prisma.post.update({
-					where: { id: input },
-					data: {
-						likers: {
-							connect: [{ id: profile.id }],
-						},
-					},
-				});
-			}
-		}),
+	// 		if (isLiked) {
+	// 			await ctx.prisma.post.update({
+	// 				where: { id: input },
+	// 				data: {
+	// 					likers: { disconnect: { id: profile.id } },
+	// 				},
+	// 			});
+	// 		} else {
+	// 			await ctx.prisma.post.update({
+	// 				where: { id: input },
+	// 				data: {
+	// 					likers: {
+	// 						connect: [{ id: profile.id }],
+	// 					},
+	// 				},
+	// 			});
+	// 		}
+	// 	}),
 
 	create: privateProcedure
 		.input(

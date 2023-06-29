@@ -2,10 +2,15 @@ import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import toast from "react-hot-toast";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { BsReply, BsTrash } from "react-icons/bs";
+import { AiFillHeart, AiOutlineBulb, AiOutlineHeart } from "react-icons/ai";
+import { BsExclamation, BsQuestion, BsReply, BsTrash } from "react-icons/bs";
 import { FiEdit2, FiMoreHorizontal } from "react-icons/fi";
-import { RiArrowDownSLine, RiArrowUpSLine, RiHashtag } from "react-icons/ri";
+import {
+	RiArrowDownSLine,
+	RiArrowUpSLine,
+	RiEmotionNormalLine,
+	RiHashtag,
+} from "react-icons/ri";
 import { api, type RouterOutputs } from "~/utils/api";
 import { FlairView } from "./FlairView";
 import { CompactMenuItem } from "./MenuItem";
@@ -38,7 +43,7 @@ export const PostView = ({ post }: { post: Post }) => {
 					expandable={expandable}
 				/>
 			</div>
-			<LikeButton post={post} />
+			{/* <LikeButton post={post} /> */}
 		</div>
 	);
 };
@@ -87,6 +92,7 @@ export const PostContent = ({
 };
 import { LuReply } from "react-icons/lu";
 import { BiRepost } from "react-icons/bi";
+import { Reaction } from "@prisma/client";
 
 export const ReplyInfo = ({ post }: { post: Post }) => {
 	const empty_space = <div className="" />;
@@ -132,9 +138,8 @@ export const PostInfo = ({ post }: { post: Post }) => {
 export const MetaInfo = ({ post }: { post: Post }) => {
 	return (
 		<div className="flex flex-row gap-2 leading-3 pt-2 -mb-1 text-secondary-content/50 ">
-			{/* <LikeCount post={post} /> */}
+			<ReactionList post={post} />
 			<ReplyCount post={post} />
-			<RepostCount post={post} />
 			<EditedIndicator post={post} />
 		</div>
 	);
@@ -153,17 +158,58 @@ export const EditedIndicator = ({ post }: { post: Post }) => {
 	);
 };
 
-export const LikeCount = ({ post }: { post: Post }) => {
-	return (
-		<>
-			{post.likers.length > 0 && (
-				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
-					{post.likers.length}
-					<AiOutlineHeart className="shrink-0 scale-x-[-1] transform" />
+export const ReactionList = ({ post }: { post: Post }) => {
+	const reactions = Object.values(Reaction);
+
+	const list = reactions.map((reaction) => {
+		const count = post.reactions.filter(
+			(post) => post.reaction.toString() === reaction,
+		).length;
+
+		if (count > 0) {
+			return (
+				<span
+					key={reaction}
+					className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline "
+				>
+					{count}
+					<ReactionToIcon reaction={reaction} />
 				</span>
-			)}
-		</>
-	);
+			);
+		}
+	});
+
+	return <>{list}</>;
+};
+
+import { GiCheckMark, GiCrossMark } from "react-icons/gi";
+import { RiEmotionLaughLine } from "react-icons/ri";
+import { TbConfetti } from "react-icons/tb";
+import { ImWondering } from "react-icons/im";
+
+export const ReactionToIcon = ({ reaction }: { reaction: Reaction }) => {
+	switch (reaction) {
+		case Reaction.Like:
+			return <AiOutlineHeart />;
+		case Reaction.Agree:
+			return <GiCheckMark />;
+		case Reaction.Disagree:
+			return <GiCrossMark />;
+		case Reaction.Funny:
+			return <RiEmotionLaughLine />;
+		case Reaction.Exciting:
+			return <TbConfetti />;
+		case Reaction.Important:
+			return <BsExclamation />;
+		case Reaction.Question:
+			return <BsQuestion />;
+		case Reaction.Neutral:
+			return <RiEmotionNormalLine />;
+		case Reaction.Thinking:
+			return <ImWondering />;
+		case Reaction.Insightful:
+			return <AiOutlineBulb />;
+	}
 };
 
 export const ReplyCount = ({ post }: { post: Post }) => {
@@ -173,19 +219,6 @@ export const ReplyCount = ({ post }: { post: Post }) => {
 				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
 					{post.replies.length}
 					<LuReply className="shrink-0 scale-x-[-1] transform" />
-				</span>
-			)}
-		</>
-	);
-};
-
-export const RepostCount = ({ post }: { post: Post }) => {
-	return (
-		<>
-			{post.replies.length > 0 && (
-				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
-					{post.replies.length}
-					<BiRepost />
 				</span>
 			)}
 		</>
@@ -285,58 +318,58 @@ export const PostMenu = ({ post }: { post: Post }) => {
 	);
 };
 
-export const LikeButton = ({ post }: { post: Post }) => {
-	const user = useUser();
-	const ctx = api.useContext();
-	const wasLiked =
-		post.likers.find((liker) => liker.id === user?.id) !== undefined;
-	const [liked, setLiked] = useState(wasLiked);
-	const [likesAmount, setLikesAmount] = useState(
-		post.likers.length > 0 ? post.likers.length : 0,
-	);
+// export const LikeButton = ({ post }: { post: Post }) => {
+// 	const user = useUser();
+// 	const ctx = api.useContext();
+// 	const wasLiked =
+// 		post.likers.find((liker) => liker.id === user?.id) !== undefined;
+// 	const [liked, setLiked] = useState(wasLiked);
+// 	const [likesAmount, setLikesAmount] = useState(
+// 		post.likers.length > 0 ? post.likers.length : 0,
+// 	);
 
-	const { mutate: sendLike } = api.posts.likeById.useMutation({
-		onSuccess: async () => {
-			await ctx.posts.invalidate();
-		},
-		onError: (error) => {
-			toast.error(`Error liking post ${error.message}`);
-		},
-	});
+// 	const { mutate: sendLike } = api.posts.likeById.useMutation({
+// 		onSuccess: async () => {
+// 			await ctx.posts.invalidate();
+// 		},
+// 		onError: (error) => {
+// 			toast.error(`Error liking post ${error.message}`);
+// 		},
+// 	});
 
-	const like = () => {
-		setLiked(!liked);
-		liked ? setLikesAmount(likesAmount - 1) : setLikesAmount(likesAmount + 1);
-		sendLike(post.id);
-	};
+// 	const like = () => {
+// 		setLiked(!liked);
+// 		liked ? setLikesAmount(likesAmount - 1) : setLikesAmount(likesAmount + 1);
+// 		sendLike(post.id);
+// 	};
 
-	useEffect(() => {
-		if (!user) {
-			setLiked(false);
-		}
-	}, [user]);
+// 	useEffect(() => {
+// 		if (!user) {
+// 			setLiked(false);
+// 		}
+// 	}, [user]);
 
-	const formatter = Intl.NumberFormat("en", { notation: "compact" });
-	const likes_text = formatter.format(likesAmount);
-	const like_text_color = liked ? "text-base-100" : "text-secondary-content";
+// 	const formatter = Intl.NumberFormat("en", { notation: "compact" });
+// 	const likes_text = formatter.format(likesAmount);
+// 	const like_text_color = liked ? "text-base-100" : "text-secondary-content";
 
-	return (
-		<div className="h-10 w-10 items-center justify-center sm:h-12 sm:w-12">
-			<button
-				type="submit"
-				className="btn-secondary btn-square btn relative border-0 bg-base-100 hover:bg-base-100"
-				onClick={() => like()}
-			>
-				<span
-					className={`text-md absolute z-[9] flex items-center justify-center font-bold ${like_text_color}`}
-				>
-					{likesAmount > 0 ? likes_text : ""}
-				</span>
+// 	return (
+// 		<div className="h-10 w-10 items-center justify-center sm:h-12 sm:w-12">
+// 			<button
+// 				type="submit"
+// 				className="btn-secondary btn-square btn relative border-0 bg-base-100 hover:bg-base-100"
+// 				onClick={() => like()}
+// 			>
+// 				<span
+// 					className={`text-md absolute z-[9] flex items-center justify-center font-bold ${like_text_color}`}
+// 				>
+// 					{likesAmount > 0 ? likes_text : ""}
+// 				</span>
 
-				<span className="absolute flex items-center justify-center">
-					{liked ? <AiFillHeart size={35} /> : <AiOutlineHeart size={35} />}
-				</span>
-			</button>
-		</div>
-	);
-};
+// 				<span className="absolute flex items-center justify-center">
+// 					{liked ? <AiFillHeart size={35} /> : <AiOutlineHeart size={35} />}
+// 				</span>
+// 			</button>
+// 		</div>
+// 	);
+// };

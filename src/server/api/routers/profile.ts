@@ -7,7 +7,7 @@ export const profileRouter = createTRPCRouter({
   getProfileByUsername: publicProcedure.input(z.object({ username: z.string() })).query(async ({ ctx, input }) => {
     const profile = await ctx.prisma.profile.findUnique({
       where: { username: input.username },
-      include: { flairs: true, liked_posts: true, owned_threads: true },
+      include: { flairs: true, owned_threads: true },
     });
 
     if (!profile) {
@@ -23,7 +23,7 @@ export const profileRouter = createTRPCRouter({
   getProfileById: publicProcedure.input(z.object({ id: z.string().uuid() })).query(async ({ ctx, input }) => {
     const profile = await ctx.prisma.profile.findUnique({
       where: { id: input.id },
-      include: { flairs: true, liked_posts: true, owned_threads: true },
+      include: { flairs: true, owned_threads: true },
     });
 
     if (!profile) {

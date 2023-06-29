@@ -4,7 +4,7 @@ import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/ap
 
 import { TRPCError } from "@trpc/server";
 import { randomUUID } from "crypto";
-import { Color } from "@prisma/client";
+import { type Color } from "@prisma/client";
 
 export const flairsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
