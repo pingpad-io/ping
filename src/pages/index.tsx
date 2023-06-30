@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import PostWizard, { ThreadDivider } from "~/components/PostWizard";
