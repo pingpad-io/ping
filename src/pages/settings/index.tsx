@@ -9,7 +9,6 @@ import {
 	type NextPage,
 } from "next";
 import { useTheme } from "next-themes";
-import { Theme } from "react-daisyui";
 import { BsCircleFill } from "react-icons/bs";
 import { PageLayout } from "~/components/Layout";
 import ProfileSettingsView from "~/components/ProfileSettingsView";
@@ -71,8 +70,8 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
 	if (!profile) return null;
 
 	const themeButtons = themes.map((theme) => (
-		<Theme
-			dataTheme={theme}
+		<div
+			data-theme={theme}
 			key={theme}
 			className="inline-block w-min bg-transparent p-1"
 		>
@@ -89,7 +88,7 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
 					<BsCircleFill className="text-accent" />
 				</div>
 			</button>
-		</Theme>
+		</div>
 	));
 
 	return (

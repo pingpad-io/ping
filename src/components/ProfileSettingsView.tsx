@@ -51,7 +51,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 						Your ID:
 					</label>
 					<input
-						className="input-bordered input input-sm w-[295px]"
+						className="input-bordered border-base-300 input input-sm w-[295px]"
 						id="id"
 						type="text"
 						value={profile.id}
@@ -63,7 +63,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 						Full Name:
 					</label>
 					<input
-						className="input-bordered input input-sm"
+						className="input-bordered border-base-300 input input-sm"
 						id="name"
 						type="text"
 						value={full_name ?? ""}
@@ -90,7 +90,7 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 						<label className="input-group">
 							<span className="px-2">@</span>
 							<input
-								className="input-bordered input input-sm"
+								className="input-bordered border-base-300 input input-sm"
 								id="username"
 								type="text"
 								value={username ?? ""}

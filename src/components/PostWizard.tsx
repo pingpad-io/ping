@@ -72,7 +72,7 @@ export default function PostWizard({
 			<form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
 				<input
 					type="text"
-					className="input-bordered input-ghost input shrink grow"
+					className="input-bordered border-base-300 input-ghost input shrink grow"
 					placeholder={placeholder}
 					value={input}
 					onChange={(e) => setInput(e.target.value)}

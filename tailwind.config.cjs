@@ -6,7 +6,6 @@ module.exports = {
 		"pages/**/*.{ts,tsx}",
 		"components/**/*.{ts,tsx}",
 		"node_modules/daisyui/dist/**/*.js",
-		"node_modules/react-daisyui/dist/**/*.js",
 	],
 	theme: {
 		extend: {

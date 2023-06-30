@@ -26,7 +26,7 @@ export const SearchBar = ({ defaultText }: { defaultText: string }) => {
 				>
 					<input
 						type="text"
-						className="input-bordered input input-md w-full"
+						className="input-bordered border-base-300 input input-md w-full"
 						placeholder={"Search Twotter..."}
 						value={input}
 						onChange={onChange}
