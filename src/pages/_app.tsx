@@ -7,16 +7,13 @@ import { type AppProps } from "next/app";
 import Head from "next/head";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { Provider } from "react-redux";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
-import { store } from "../utils/store";
 
 function Twotter({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 
   return (
-    <Provider store={store}>
       <SessionContextProvider supabaseClient={supabaseClient} initialSession={pageProps.initialSession}>
         <ThemeProvider defaultTheme="cupcake">
           <Head>
@@ -31,7 +28,6 @@ function Twotter({ Component, pageProps }: AppProps<{ initialSession: Session }>
           </main>
         </ThemeProvider>
       </SessionContextProvider>
-    </Provider>
   );
 }
 

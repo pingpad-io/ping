@@ -1,9 +1,7 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { api } from "~/utils/api";
-import { type State } from "~/utils/store";
 import { UserAvatar } from "./UserAvatar";
 import { GlassBar } from "./GlassBar";
 import { useRouter } from "next/router";
@@ -11,12 +9,12 @@ import { useRouter } from "next/router";
 export default function PostWizard({
 	placeholder,
 	replyingTo,
-}: { placeholder: string; replyingTo?: string | undefined }) {
+}: { placeholder: string; replyingTo?: string }) {
 	const [input, setInput] = useState("");
 	const ctx = api.useContext();
 	const user = useUser();
 	const router = useRouter();
-	const currentThread = router.asPath.split("/")[2];
+	const currentThread = replyingTo ? undefined : router.asPath.split("/")[2];
 
 	const { mutate: createPost, isLoading: isPosting } =
 		api.posts.create.useMutation({
@@ -49,9 +47,11 @@ export default function PostWizard({
 
 	const onSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+		console.log(currentThread);
+		console.log(replyingTo);
 		createPost({
 			content: input,
-			threadName: currentThread ?? "",
+			threadName: currentThread,
 			repliedToId: replyingTo,
 		});
 	};

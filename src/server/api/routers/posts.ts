@@ -95,14 +95,25 @@ export const postsRouter = createTRPCRouter({
 			return posts;
 		}),
 
-	getAllByThreadId: publicProcedure
+	getAllByThreadName: publicProcedure
 		.input(z.string())
 		.query(async ({ ctx, input }) => {
+			const thread = await ctx.prisma.thread.findUnique({
+				where: { name: input },
+			});
+
+			if (!thread) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `Thread with name ${input} was not found.`,
+				});
+			}
+
 			const posts = await ctx.prisma.post.findMany({
 				take: 100,
 				orderBy: [{ createdAt: "desc" }],
 				include: publicPostData,
-				where: { threadId: input, status: "Posted" },
+				where: { threadId: thread.id, status: "Posted" },
 			});
 
 			return posts;
@@ -220,46 +231,6 @@ export const postsRouter = createTRPCRouter({
 			});
 		}),
 
-	// likeById: privateProcedure
-	// 	.input(z.string())
-	// 	.mutation(async ({ ctx, input }) => {
-	// 		const post = await ctx.prisma.post.findUnique({
-	// 			where: { id: input },
-	// 		});
-
-	// 		const profile = await ctx.prisma.profile.findUnique({
-	// 			where: { id: ctx.userId },
-	// 			select: { id: true },
-	// 		});
-
-	// 		if (!profile || !post) {
-	// 			throw new TRPCError({
-	// 				code: "INTERNAL_SERVER_ERROR",
-	// 				message: "Post or Profile not found.",
-	// 			});
-	// 		}
-
-	// 		const isLiked = post.likers.find((liker) => liker.id === profile.id);
-
-	// 		if (isLiked) {
-	// 			await ctx.prisma.post.update({
-	// 				where: { id: input },
-	// 				data: {
-	// 					likers: { disconnect: { id: profile.id } },
-	// 				},
-	// 			});
-	// 		} else {
-	// 			await ctx.prisma.post.update({
-	// 				where: { id: input },
-	// 				data: {
-	// 					likers: {
-	// 						connect: [{ id: profile.id }],
-	// 					},
-	// 				},
-	// 			});
-	// 		}
-	// 	}),
-
 	create: privateProcedure
 		.input(
 			z.object({
@@ -267,29 +238,53 @@ export const postsRouter = createTRPCRouter({
 					.string()
 					.min(1, "Your twot must be longer")
 					.max(300, "Your twot must be less than 300 characters long"),
-				threadName: z.string(),
+				threadName: z.string().optional(),
 				repliedToId: z.string().uuid().optional(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
 			const authorId = ctx.userId;
 
-			const { success } = await postingRatelimit.limit(authorId ?? "");
+			if (!input.threadName && !input.repliedToId) {
+				throw new TRPCError({
+					code: "BAD_REQUEST",
+					message: "Thread name or Reply id are required.",
+				});
+			}
 
+			const { success } = await postingRatelimit.limit(authorId ?? "");
 			if (!success) {
 				throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 			}
 
 			const id = randomUUID();
 			const currentTime = new Date().toISOString();
-			const thread = await ctx.prisma.thread.findUnique({
-				where: { name: input.threadName },
-			});
+
+			let thread;
+			if (input.threadName !== undefined) {
+				thread = await ctx.prisma.thread.findUnique({
+					where: { name: input.threadName },
+				});
+			} else {
+				const reply = await ctx.prisma.post.findUnique({
+					where: { id: input.repliedToId },
+					select: { thread: true },
+				});
+				if (!reply || !reply.thread.name) {
+					throw new TRPCError({
+						code: "BAD_REQUEST",
+						message: "Reply was not found",
+					});
+				}
+				thread = await ctx.prisma.thread.findUnique({
+					where: { name: reply.thread.name },
+				});
+			}
 
 			if (!thread) {
 				throw new TRPCError({
 					code: "NOT_FOUND",
-					message: `Thread with name ${input.threadName} was not found.`,
+					message: "Thread was not found.",
 				});
 			}
 
@@ -297,7 +292,7 @@ export const postsRouter = createTRPCRouter({
 				data: {
 					id,
 					authorId,
-					threadId: thread?.id,
+					threadId: thread.id,
 					content: input.content,
 					createdAt: currentTime,
 					updatedAt: currentTime,

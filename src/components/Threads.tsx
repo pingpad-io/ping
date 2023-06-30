@@ -5,8 +5,6 @@ import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { BsPlus } from "react-icons/bs";
-import { useDispatch } from "react-redux";
-import { GLOBAL_THREAD_ID } from "~/utils/store";
 import ModalWizard from "./ModalWizard";
 import { ThreadLink } from "./ThreadLink";
 import ThreadWizard from "./ThreadWizard";
@@ -38,7 +36,6 @@ export function UserThreads() {
 export type Thread = RouterOutputs["threads"]["getById"];
 
 const ThreadEntry = ({ thread }: { thread: Thread }) => {
-	const setCurrentThread = useDispatch();
 	const user = useUser();
 	const ctx = api.useContext();
 
@@ -49,10 +46,6 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 		onSuccess: async () => {
 			await ctx.threads.invalidate();
 			await ctx.posts.invalidate();
-			setCurrentThread({
-				type: "SET_CURRENT_THREAD",
-				payload: { id: GLOBAL_THREAD_ID, name: "global" },
-			});
 			toast.success("Thread deleted!");
 		},
 		onError: (error) => {
@@ -77,7 +70,7 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 			{user?.id === thread.authorId && (
 				<button
 					type="submit"
-					onClick={() => deleteThread.mutate({ id: thread.id })}
+					onClick={() => deleteThread.mutate({ name: thread.name ?? "" })}
 				>
 					<FiX />
 				</button>
