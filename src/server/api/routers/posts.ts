@@ -18,17 +18,12 @@ const postingRatelimit = new Ratelimit({
 });
 
 import { randomUUID } from "crypto";
+import { Post } from "@prisma/client";
 
 const publicPostData = {
-	thread: true,
 	reactions: {
-		select: {
-			reaction: true,
-			profile: {
-				select: {
-					username: true,
-				},
-			},
+		include: {
+			_count: true,
 		},
 	},
 	author: {
@@ -39,6 +34,7 @@ const publicPostData = {
 			_count: true,
 		},
 	},
+	thread: true,
 	repliedTo: {
 		select: {
 			id: true,
@@ -58,12 +54,42 @@ const publicPostData = {
 
 export const postsRouter = createTRPCRouter({
 	getAll: publicProcedure.query(async ({ ctx }) => {
-		const posts = await ctx.prisma.post.findMany({
-			take: 100,
-			orderBy: [{ createdAt: "desc" }],
-			include: publicPostData,
-			where: { status: "Posted" },
-		});
+		const posts = await ctx.prisma.post
+			.findMany({
+				take: 100,
+				orderBy: [{ createdAt: "desc" }],
+				include: publicPostData,
+				where: { status: "Posted" },
+			})
+			.then(async (posts) => {
+				const reactionCounts = await ctx.prisma.reaction.groupBy({
+					by: ["name"],
+					where: {
+						posts: { every: { id: { in: posts.map((post) => post.id) } } },
+					},
+					_count: {
+						name: true,
+					},
+				});
+
+				const reactionCountsMap: Record<string, number> = reactionCounts.reduce(
+					(map, { name, _count }) => {
+						map[name] = _count;
+						return map;
+					},
+					{},
+				);
+
+				const postsWithReactions = posts.map((post) => ({
+					...post,
+					reactions: post.reactions.map((reaction) => ({
+						...reaction,
+						count: reactionCountsMap[reaction.name] || 0,
+					})),
+				}));
+
+				return postsWithReactions;
+			});
 
 		return posts;
 	}),
@@ -79,42 +105,43 @@ export const postsRouter = createTRPCRouter({
 		return posts;
 	}),
 
-	getAllInThread: publicProcedure
+	getAllByThread: publicProcedure
 		.input(z.string())
 		.query(async ({ ctx, input }) => {
-			const posts = await ctx.prisma.post.findMany({
-				take: 100,
-				orderBy: [{ createdAt: "desc" }],
-				include: publicPostData,
-				where: {
-					thread: { name: input },
-					status: "Posted",
-				},
-			});
+			const posts = await ctx.prisma.post
+				.findMany({
+					take: 100,
+					orderBy: [{ createdAt: "desc" }],
+					include: publicPostData,
+					where: { thread: { name: input }, status: "Posted" },
+				})
+				.then(async (posts) => {
+					const reactionCounts = await ctx.prisma.reaction.groupBy({
+						by: ["name"],
+						where: {
+							posts: { every: { id: { in: posts.map((post) => post.id) } } },
+						},
+						_count: {
+							name: true,
+						},
+					});
 
-			return posts;
-		}),
+					const reactionCountsMap: Record<string, number> =
+						reactionCounts.reduce((map, { name, _count }) => {
+							map[name] = _count;
+							return map;
+						}, {});
 
-	getAllByThreadName: publicProcedure
-		.input(z.string())
-		.query(async ({ ctx, input }) => {
-			const thread = await ctx.prisma.thread.findUnique({
-				where: { name: input },
-			});
+					const postsWithReactions = posts.map((post) => ({
+						...post,
+						reactions: post.reactions.map((reaction) => ({
+							...reaction,
+							count: reactionCountsMap[reaction.name] || 0,
+						})),
+					}));
 
-			if (!thread) {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: `Thread with name ${input} was not found.`,
+					return postsWithReactions;
 				});
-			}
-
-			const posts = await ctx.prisma.post.findMany({
-				take: 100,
-				orderBy: [{ createdAt: "desc" }],
-				include: publicPostData,
-				where: { threadId: thread.id, status: "Posted" },
-			});
 
 			return posts;
 		}),
@@ -122,42 +149,16 @@ export const postsRouter = createTRPCRouter({
 	getById: publicProcedure
 		.input(z.string().uuid())
 		.query(async ({ ctx, input }) => {
-			const post = await ctx.prisma.post.findUnique({
-				where: { id: input },
-				include: publicPostData,
-			});
-
-			if (!post) {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: `Post with id ${input} was not found.`,
+			const post = await ctx.prisma.post
+				.findUnique({
+					where: { id: input },
+					include: publicPostData,
+				})
+				.then((post) => {
+					return assertPostStatus(post);
 				});
-			}
 
-			if (post.status === "UserDeleted") {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: "This twot was deleted by the user.",
-					cause: "the user",
-				});
-			}
-
-			if (post.status === "AdminDeleted") {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: "This twot was deleted by the moderation team.",
-					cause: "the moderation team",
-				});
-			}
-
-			if (post.status === "Posted") {
-				return post;
-			}
-
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Something went wrong",
-			});
+			return post;
 		}),
 
 	getRepliesById: publicProcedure
@@ -316,3 +317,37 @@ export const postsRouter = createTRPCRouter({
 			return post;
 		}),
 });
+
+function assertPostStatus(post: Post | null | undefined) {
+	if (!post) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "Post was not found.",
+		});
+	}
+
+	if (post.status === "UserDeleted") {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "This twot was deleted by the user.",
+			cause: "the user",
+		});
+	}
+
+	if (post.status === "AdminDeleted") {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "This twot was deleted by the moderation team.",
+			cause: "the moderation team",
+		});
+	}
+
+	if (post.status === "Posted") {
+		return post;
+	}
+
+	throw new TRPCError({
+		code: "INTERNAL_SERVER_ERROR",
+		message: "Invalid post status. Something went wrong.",
+	});
+}

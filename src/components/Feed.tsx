@@ -23,5 +23,7 @@ export default function Feed(props: {
 
 	const feed = props.data.map((post) => <PostView key={post.id} post={post} />);
 
+	console.log(props.data);
+
 	return <div className="flex flex-col gap-1">{feed}</div>;
 }

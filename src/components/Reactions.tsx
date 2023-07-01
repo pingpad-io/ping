@@ -7,42 +7,26 @@ import { ImWondering } from "react-icons/im";
 import { RiEmotionNormalLine } from "react-icons/ri";
 import { Reaction } from "@prisma/client";
 
-export const ReactionBadge = ({
-	reaction,
-	count,
-}: { reaction: Reaction; count: number }) => {
+export const ReactionBadge = ({ reaction }: { reaction: Reaction }) => {
 	return (
-		<span
-			key={reaction}
-			className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline "
-		>
-			{count}
-			<ReactionToIcon reaction={reaction} />
+		<span className="tooltip tooltip-bottom" data-tip={reaction.description}>
+			<span
+				key={reaction.id}
+				className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline "
+			>
+				{reaction.id}
+				<ReactionToIcon reaction={reaction} />
+			</span>
 		</span>
 	);
 };
 
 export const ReactionToIcon = ({ reaction }: { reaction: Reaction }) => {
-	switch (reaction) {
-		case Reaction.Like:
-			return <AiOutlineHeart />;
-		case Reaction.Agree:
-			return <GiCheckMark />;
-		case Reaction.Disagree:
-			return <GiCrossMark />;
-		case Reaction.Funny:
-			return <RiEmotionLaughLine />;
-		case Reaction.Exciting:
-			return <TbConfetti />;
-		case Reaction.Important:
-			return <BsExclamation />;
-		case Reaction.Question:
-			return <BsQuestion />;
-		case Reaction.Neutral:
-			return <RiEmotionNormalLine />;
-		case Reaction.Thinking:
-			return <ImWondering />;
-		case Reaction.Insightful:
-			return <AiOutlineBulb />;
+	/// TODO
+	switch (reaction.name) {
+		case "Like":
+			return <>Like</>;
+		default:
+			return <></>;
 	}
 };

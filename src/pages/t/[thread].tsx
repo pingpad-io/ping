@@ -7,8 +7,7 @@ import { type GetServerSideProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ThreadPage = ({ thread }: { thread: string }) => {
-	// const currentThreadId = useSelector((state: State) => state.currentThreadId);
-	const posts = api.posts.getAllInThread.useQuery(thread);
+	const posts = api.posts.getAllByThread.useQuery(thread);
 
 	return (
 		<PageLayout>
@@ -29,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	if (typeof thread !== "string") throw new Error("Bad URL");
 
-	await ssg.posts.getAllInThread.prefetch(thread);
+	await ssg.posts.getAllByThread.prefetch(thread);
 	await ssg.threads.getAll.prefetch();
 
 	return {

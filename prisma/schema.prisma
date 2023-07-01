@@ -266,40 +266,8 @@ model User {
   @@schema("auth")
 }
 
-model Post {
-  id          String          @id @db.Uuid @unique @default(dbgenerated("gen_random_uuid()"))
-  authorId    String          @db.Uuid
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime
-  content     String          @db.VarChar(300)
-  threadId    String          @db.Uuid
-  status      PostStatus      @default(Posted)
-  repliedToId String?         @db.Uuid
-  reactions   PostReactions[] 
-  author      Profile         @relation("AuthorToPost", fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  repliedTo   Post?           @relation("PostReply", fields: [repliedToId], references: [id])
-  replies     Post[]          @relation("PostReply")
-  thread      Thread          @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([authorId], map: "Post_authorId_idx")
-  @@map("posts")
-  @@schema("public")
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model PostReactions {
-  id        String   @db.Uuid @unique @id @default(dbgenerated("gen_random_uuid()"))
-  postId    String   @db.Uuid
-  profileId String   @db.Uuid
-  reaction  Reaction
-  post      Post     @relation(fields: [postId], references: [id], onUpdate: NoAction)
-  profile   Profile  @relation("ReactionToProfile", fields: [profileId], references: [id])
-
-  @@schema("public")
-}
-
 model Thread {
-  id         String    @id @db.Uuid @unique @default(dbgenerated("gen_random_uuid()"))
+  id         String    @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   updated_at DateTime? @db.Timestamptz(6)
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   title      String?
@@ -315,18 +283,18 @@ model Thread {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Profile {
-  id            String          @id @db.Uuid
-  updated_at    DateTime?       @db.Timestamptz(6)
-  username      String?         @unique @default(dbgenerated("gen_random_uuid()"))
+  id            String     @id @db.Uuid
+  updated_at    DateTime?  @db.Timestamptz(6)
+  username      String?    @unique @default(dbgenerated("gen_random_uuid()"))
   full_name     String?
   avatar_url    String?
-  created_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  created_at    DateTime?  @default(now()) @db.Timestamptz(6)
   description   String?
-  reactions     PostReactions[] @relation("ReactionToProfile") 
-  posts         Post[]          @relation("AuthorToPost")
-  user          User            @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  posts         Post[]     @relation("AuthorToPost")
+  user          User       @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   owned_threads Thread[]
-  flairs        Flair[]         @relation("FlairToProfile")
+  flairs        Flair[]    @relation("FlairToProfile")
+  reactions     Reaction[]
 
   @@map("profiles")
   @@schema("public")
@@ -342,20 +310,46 @@ model Flair {
   @@schema("public")
 }
 
-enum Reaction {
-  Like
-  Agree
-  Disagree
-  Neutral
-  Funny
-  Question
-  Important
-  Insightful
-  Thinking
-  Exciting
+model Post {
+  id          String     @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId    String     @db.Uuid
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime
+  content     String     @db.VarChar(300)
+  threadId    String     @db.Uuid
+  status      PostStatus @default(Posted)
+  repliedToId String?    @db.Uuid
+  author      Profile    @relation("AuthorToPost", fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repliedTo   Post?      @relation("PostReply", fields: [repliedToId], references: [id])
+  replies     Post[]     @relation("PostReply")
+  thread      Thread     @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  reactions   Reaction[]
+
+  @@index([authorId], map: "Post_authorId_idx")
+  @@map("posts")
+  @@schema("public")
+}
+
+model Reaction {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  profiles    Profile[]
+  posts       Post[]
 
   @@schema("public")
 }
+
+// Like
+// Agree
+// Disagree
+// Neutral
+// Funny
+// Question
+// Important
+// Insightful
+// Thinking
+// Exciting
 
 enum Color {
   primary

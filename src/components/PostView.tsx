@@ -10,7 +10,6 @@ import { FlairView } from "./FlairView";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { ReactionBadge } from "./Reactions";
-import { Reaction } from "@prisma/client";
 
 const maxLength = 45 * 3 - 3;
 
@@ -148,16 +147,14 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 };
 
 export const ReactionList = ({ post }: { post: Post }) => {
-	const reactions = Object.values(Reaction);
+	const reactions = post.reactions;
 
 	const list = reactions.map((reaction) => {
-		const count = post.reactions.filter(
-			(post) => post.reaction.toString() === reaction,
-		).length;
-
-		if (count > 0) {
-			return <ReactionBadge count={count} reaction={reaction} key={reaction} />;
-		}
+		console.log(reaction)
+		return  <ReactionBadge
+			reaction={reaction}
+			key={reaction.id}
+		/>
 	});
 
 	return <>{list}</>;
