@@ -20,6 +20,7 @@ import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
 import { SignedOut } from "./Signed";
 import { ThreadLink } from "./ThreadLink";
+import Link from "next/link";
 
 export const CollapsedContext = createContext(false);
 
@@ -43,18 +44,18 @@ export default function Menu() {
 			>
 				<div className="flex flex-col items-end gap-2">
 					<div className="flex flex-row gap-2">
-						<ThreadLink thread="global">
+						<Link href="/">
 							<MenuItem
 								text={"Twotter"}
 								className="font-bold"
 								icon={<OtterIcon />}
 							/>
-						</ThreadLink>
+						</Link>
 					</div>
 
-					<ThreadLink thread="global">
+					<Link href="/">
 						<MenuItem text={"Home"} icon={<FiHome />} />
-					</ThreadLink>
+					</Link>
 
 					<div className="flex flex-col md:hidden">
 						<SidebarButtons />
