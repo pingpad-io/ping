@@ -82,9 +82,9 @@ export const postsRouter = createTRPCRouter({
 						},
 					});
 
-					const reactionCountsMap: Record<string, number> =
-						reactionCounts.reduce((map, { name, _count }) => {
-							map[name] = _count;
+					const reactionCountsMap =
+						reactionCounts.reduce((map: Record<string, number>, { name, _count }) => {
+							map[name] = _count.name;
 							return map;
 						}, {});
 

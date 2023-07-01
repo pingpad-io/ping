@@ -6,7 +6,7 @@ import { RiHashtag } from "react-icons/ri";
 import { api } from "~/utils/api";
 import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
-import { Post } from "./PostView";
+import { Post } from "~/server/api/routers/posts";
 
 export const PostMenu = ({ post }: { post: Post }) => {
 	const user = useUser();

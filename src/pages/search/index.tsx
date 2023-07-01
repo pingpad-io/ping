@@ -13,7 +13,7 @@ export default function SearchPage() {
 	const { q } = router.query;
 	const query = q ? q.toString() : "";
 
-	const posts = api.posts.find.useQuery(query, {
+	const posts = api.posts.get.useQuery({contains: query}, {
 		onError: (e) => {
 			let error = "Something went wrong";
 			switch (e.data?.code) {
