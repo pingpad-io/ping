@@ -14,7 +14,9 @@ export default function PostWizard({
 	const ctx = api.useContext();
 	const user = useUser();
 	const router = useRouter();
-	const currentThread = replyingTo ? undefined : router.asPath.split("/")[2];
+	const thread = replyingTo
+		? undefined
+		: router.asPath.split("/")[2] ?? "global";
 
 	const { mutate: createPost, isLoading: isPosting } =
 		api.posts.create.useMutation({
@@ -49,7 +51,7 @@ export default function PostWizard({
 		e.preventDefault();
 		createPost({
 			content: input,
-			threadName: currentThread,
+			threadName: thread,
 			repliedToId: replyingTo,
 		});
 	};

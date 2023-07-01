@@ -33,7 +33,7 @@ export const postsRouter = createTRPCRouter({
 				authorUsername: z.string().optional(),
 				authorId: z.string().optional(),
 				repliedToPostId: z.string().optional(),
-				orderBy: z.enum(["desc", "asc"]).default("desc").optional(),
+				orderBy: z.enum(["desc", "asc"]).default("desc"),
 			}),
 		)
 		.query(async ({ ctx, input }) => {
