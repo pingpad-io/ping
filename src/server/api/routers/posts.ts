@@ -9,6 +9,10 @@ import {
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { randomUUID } from "crypto";
+import { RouterOutputs } from "~/utils/api";
+
+export type Post = RouterOutputs["posts"]["get"][number];
 
 // Create a ratelimiter that allows to post 2 requests per 1 minute
 const postingRatelimit = new Ratelimit({
@@ -17,103 +21,55 @@ const postingRatelimit = new Ratelimit({
 	analytics: true,
 });
 
-import { randomUUID } from "crypto";
-import { Post } from "@prisma/client";
-
-const publicPostData = {
-	reactions: {
-		include: {
-			_count: true,
-		},
-	},
-	author: {
-		include: { flairs: true },
-	},
-	replies: {
-		select: {
-			_count: true,
-		},
-	},
-	thread: true,
-	repliedTo: {
-		select: {
-			id: true,
-			content: true,
-			author: {
-				select: {
-					username: true,
-					avatar_url: true,
-					flairs: true,
-					full_name: true,
-					id: true,
-				},
-			},
-		},
-	},
-};
 
 export const postsRouter = createTRPCRouter({
-	getAll: publicProcedure.query(async ({ ctx }) => {
-		const posts = await ctx.prisma.post
-			.findMany({
-				take: 100,
-				orderBy: [{ createdAt: "desc" }],
-				include: publicPostData,
-				where: { status: "Posted" },
-			})
-			.then(async (posts) => {
-				const reactionCounts = await ctx.prisma.reaction.groupBy({
-					by: ["name"],
-					where: {
-						posts: { every: { id: { in: posts.map((post) => post.id) } } },
-					},
-					_count: {
-						name: true,
-					},
-				});
-
-				const reactionCountsMap: Record<string, number> = reactionCounts.reduce(
-					(map, { name, _count }) => {
-						map[name] = _count;
-						return map;
-					},
-					{},
-				);
-
-				const postsWithReactions = posts.map((post) => ({
-					...post,
-					reactions: post.reactions.map((reaction) => ({
-						...reaction,
-						count: reactionCountsMap[reaction.name] || 0,
-					})),
-				}));
-
-				return postsWithReactions;
-			});
-
-		return posts;
-	}),
-
-	find: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
-		const posts = await ctx.prisma.post.findMany({
-			take: 100,
-			orderBy: [{ createdAt: "desc" }],
-			include: publicPostData,
-			where: { content: { contains: input } },
-		});
-
-		return posts;
-	}),
-
-	getAllByThread: publicProcedure
-		.input(z.string())
+	get: publicProcedure
+		.input(
+			z.object({
+				take: z.number().max(300).default(100),
+				thread: z.string().optional(),
+				contains: z.string().optional(),
+				postId: z.string().optional(),
+				authorUsername: z.string().optional(),
+				authorId: z.string().optional(),
+				repliedToPostId: z.string().optional(),
+				orderBy: z.enum(["desc", "asc"]).default("desc").optional(),
+			}),
+		)
 		.query(async ({ ctx, input }) => {
 			const posts = await ctx.prisma.post
 				.findMany({
-					take: 100,
-					orderBy: [{ createdAt: "desc" }],
-					include: publicPostData,
-					where: { thread: { name: input }, status: "Posted" },
+					include: {
+						reactions: true,
+						thread: true,
+						author: { include: { flairs: true } },
+						replies: { select: { _count: true } },
+						repliedTo: {
+							select: {
+								id: true,
+								content: true,
+								author: {
+									select: {
+										username: true,
+										avatar_url: true,
+										flairs: true,
+										full_name: true,
+										id: true,
+									},
+								},
+							},
+						},
+					},
+					take: input.take,
+					orderBy: { createdAt: input.orderBy },
+					where: {
+						status: "Posted",
+						id: input.postId,
+						repliedToId: input.repliedToPostId,
+						thread: { name: input.thread },
+						content: { contains: input.contains },
+						author: { username: input.authorUsername, id: input.authorId },
+					},
 				})
 				.then(async (posts) => {
 					const reactionCounts = await ctx.prisma.reaction.groupBy({
@@ -143,65 +99,6 @@ export const postsRouter = createTRPCRouter({
 					return postsWithReactions;
 				});
 
-			return posts;
-		}),
-
-	getById: publicProcedure
-		.input(z.string().uuid())
-		.query(async ({ ctx, input }) => {
-			const post = await ctx.prisma.post
-				.findUnique({
-					where: { id: input },
-					include: publicPostData,
-				})
-				.then((post) => {
-					return assertPostStatus(post);
-				});
-
-			return post;
-		}),
-
-	getRepliesById: publicProcedure
-		.input(z.string().uuid())
-		.query(async ({ ctx, input }) => {
-			const replies = await ctx.prisma.post.findMany({
-				take: 100,
-				orderBy: [{ createdAt: "asc" }],
-				include: publicPostData,
-				where: { repliedToId: input, status: "Posted" },
-			});
-
-			if (!replies) {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: `Replies for post ${input} were not found`,
-				});
-			}
-
-			return replies;
-		}),
-
-	getAllByAuthorId: publicProcedure
-		.input(z.string())
-		.query(async ({ ctx, input }) => {
-			const posts = await ctx.prisma.post.findMany({
-				where: { authorId: input },
-				include: publicPostData,
-				take: 100,
-				orderBy: [{ createdAt: "desc" }],
-			});
-			return posts;
-		}),
-
-	getAllByAuthorUsername: publicProcedure
-		.input(z.string())
-		.query(async ({ ctx, input }) => {
-			const posts = await ctx.prisma.post.findMany({
-				where: { author: { username: input } },
-				include: publicPostData,
-				take: 100,
-				orderBy: [{ createdAt: "desc" }],
-			});
 			return posts;
 		}),
 

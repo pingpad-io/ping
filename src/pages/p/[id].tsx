@@ -12,10 +12,10 @@ import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
 	const {
-		data: post,
+		data,
 		isError,
 		error,
-	} = api.posts.getById.useQuery(id, {
+	} = api.posts.get.useQuery({postId: id}, {
 		refetchOnMount: false,
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: false,
@@ -23,12 +23,14 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 	});
 	const router = useRouter();
 
-	if (isError)
-		return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
+	if (isError) return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
+	if (data?.length !== 1) return <ErrorPage title={"Something went wrong..."} />;
+
+	const post = data[0]
 	if (!post) return <ErrorPage title={"Post not found qwq"} />;
 
 	const author = post.author;
-	const replies = api.posts.getRepliesById.useQuery(id);
+	const replies = api.posts.get.useQuery({repliedToPostId: id});
 
 	return (
 		<>
@@ -78,7 +80,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 	if (typeof id !== "string") throw new Error("Bad post id");
 
-	await ssg.posts.getById.prefetch(id);
+	await ssg.posts.get.prefetch({postId: id});
 
 	return {
 		props: {

@@ -10,10 +10,9 @@ import { FlairView } from "./FlairView";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { ReactionBadge } from "./Reactions";
+import { Post } from "~/server/api/routers/posts";
 
 const maxLength = 45 * 3 - 3;
-
-export type Post = RouterOutputs["posts"]["getAll"][number];
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -150,7 +149,6 @@ export const ReactionList = ({ post }: { post: Post }) => {
 	const reactions = post.reactions;
 
 	const list = reactions.map((reaction) => {
-		console.log(reaction)
 		return  <ReactionBadge
 			reaction={reaction}
 			key={reaction.id}

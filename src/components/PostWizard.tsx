@@ -47,8 +47,6 @@ export default function PostWizard({
 
 	const onSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log(currentThread);
-		console.log(replyingTo);
 		createPost({
 			content: input,
 			threadName: currentThread,

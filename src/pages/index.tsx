@@ -6,7 +6,7 @@ import { type GetServerSideProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const HomePage = () => {
-	const posts = api.posts.getAll.useQuery();
+	const posts = api.posts.get.useQuery({});
 
 	return (
 		<PageLayout>
@@ -24,7 +24,7 @@ const HomePage = () => {
 export const getServerSideProps: GetServerSideProps = async () => {
 	const ssg = getSSGHelper();
 
-	await ssg.posts.getAll.prefetch();
+	await ssg.posts.get.prefetch({});
 	await ssg.threads.getAll.prefetch();
 
 	return {
