@@ -1,5 +1,5 @@
 import { FiMessageSquare, FiX } from "react-icons/fi";
-import { api, type RouterOutputs } from "~/utils/api";
+import { api } from "~/utils/api";
 import { BiLabel } from "react-icons/bi";
 import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
@@ -8,9 +8,10 @@ import { BsPlus } from "react-icons/bs";
 import ModalWizard from "./ModalWizard";
 import { ThreadLink } from "./ThreadLink";
 import ThreadWizard from "./ThreadWizard";
+import { Thread } from "~/server/api/routers/threads";
 
 export function GlobalThreads() {
-	const { data: threads } = api.threads.getAll.useQuery();
+	const { data: threads } = api.threads.get.useQuery({});
 	const globalThreads = threads?.filter((thread) => thread.authorId === null);
 
 	const globalThreadList = globalThreads?.map((thread) => {
@@ -23,7 +24,7 @@ export function GlobalThreads() {
 }
 
 export function UserThreads() {
-	const { data: threads } = api.threads.getAll.useQuery();
+	const { data: threads } = api.threads.get.useQuery({});
 	const userThreads = threads?.filter((thread) => thread.authorId !== null);
 
 	const userThreadList = userThreads?.map((thread) => {
@@ -32,8 +33,6 @@ export function UserThreads() {
 
 	return <div className="card-content">{userThreadList}</div>;
 }
-
-export type Thread = RouterOutputs["threads"]["getById"];
 
 const ThreadEntry = ({ thread }: { thread: Thread }) => {
 	const user = useUser();

@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	if (typeof thread !== "string") throw new Error("Bad URL");
 
 	await ssg.posts.get.prefetch({ thread });
-	await ssg.threads.getAll.prefetch();
+	await ssg.threads.get.prefetch({});
 
 	return {
 		props: {

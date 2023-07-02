@@ -31,7 +31,7 @@ export const getServerSideProps = async (
 
 	if (!user) return;
 
-	await ssg.profiles.getProfileById.prefetch({
+	await ssg.profiles.get.prefetch({
 		id: user.id,
 	});
 
@@ -46,7 +46,7 @@ export const getServerSideProps = async (
 const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
 	const supabase = useSupabaseClient();
 	const { setTheme } = useTheme();
-	const { data: profile } = api.profiles.getProfileById.useQuery({ id });
+	const { data: profile } = api.profiles.get.useQuery({ id });
 	const signOut = () => {
 		void supabase.auth.signOut();
 	};

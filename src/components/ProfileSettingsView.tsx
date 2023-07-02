@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { api, type RouterOutputs } from "~/utils/api";
 import { FlairView } from "./FlairView";
 
-type Profile = RouterOutputs["profiles"]["getProfileById"];
+type Profile = RouterOutputs["profiles"]["get"];
 
 export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 	const [loading, setLoading] = useState(false);

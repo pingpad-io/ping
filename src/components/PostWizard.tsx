@@ -96,7 +96,7 @@ export const ThreadDivider = () => {
 };
 
 export const PostWizardAuthed = ({ userId }: { userId: string }) => {
-	const { data: profile } = api.profiles.getProfileById.useQuery({
+	const { data: profile } = api.profiles.get.useQuery({
 		id: userId,
 	});
 

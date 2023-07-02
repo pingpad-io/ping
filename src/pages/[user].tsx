@@ -15,10 +15,8 @@ import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 	const user = useUser();
-	const { data: profile } = api.profiles.getProfileByUsername.useQuery({
-		username,
-	});
-	const posts = api.posts.get.useQuery({authorUsername: username});
+	const { data: profile } = api.profiles.get.useQuery({ username });
+	const posts = api.posts.get.useQuery({ authorUsername: username });
 
 	if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
 
@@ -91,8 +89,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	if (typeof username !== "string") throw new Error("Bad URL");
 
-	await ssg.profiles.getProfileByUsername.prefetch({ username });
-	await ssg.posts.get.prefetch({authorUsername: username});
+	await ssg.profiles.get.prefetch({ username });
+	await ssg.posts.get.prefetch({ authorUsername: username });
 
 	return {
 		props: {

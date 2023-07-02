@@ -21,7 +21,6 @@ const postingRatelimit = new Ratelimit({
 	analytics: true,
 });
 
-
 export const postsRouter = createTRPCRouter({
 	get: publicProcedure
 		.input(
@@ -82,11 +81,13 @@ export const postsRouter = createTRPCRouter({
 						},
 					});
 
-					const reactionCountsMap =
-						reactionCounts.reduce((map: Record<string, number>, { name, _count }) => {
+					const reactionCountsMap = reactionCounts.reduce(
+						(map: Record<string, number>, { name, _count }) => {
 							map[name] = _count.name;
 							return map;
-						}, {});
+						},
+						{},
+					);
 
 					const postsWithReactions = posts.map((post) => ({
 						...post,
@@ -102,7 +103,7 @@ export const postsRouter = createTRPCRouter({
 			return posts;
 		}),
 
-	deleteById: privateProcedure
+	delete: privateProcedure
 		.input(z.string())
 		.mutation(async ({ ctx, input }) => {
 			const post = await ctx.prisma.post.findUnique({

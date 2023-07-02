@@ -100,7 +100,7 @@ export default function Menu() {
 }
 
 export const MenuAuthed = ({ userId }: { userId: string }) => {
-	const { data: profile } = api.profiles.getProfileById.useQuery({
+	const { data: profile } = api.profiles.get.useQuery({
 		id: userId,
 	});
 

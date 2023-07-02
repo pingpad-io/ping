@@ -146,13 +146,8 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 };
 
 export const ReactionList = ({ post }: { post: Post }) => {
-	const reactions = post.reactions;
-
-	const list = reactions.map((reaction) => {
-		return  <ReactionBadge
-			reaction={reaction}
-			key={reaction.id}
-		/>
+	const list = post.reactions.map((reaction) => {
+		return <ReactionBadge reaction={reaction} key={reaction.id} />;
 	});
 
 	return <>{list}</>;

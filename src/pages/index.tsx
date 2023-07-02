@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 	const ssg = getSSGHelper();
 
 	await ssg.posts.get.prefetch({});
-	await ssg.threads.getAll.prefetch();
+	await ssg.threads.get.prefetch({});
 
 	return {
 		props: {

@@ -23,7 +23,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
 		Function.prototype();
 	};
 
-	const { mutate: deletePost } = api.posts.deleteById.useMutation({
+	const { mutate: deletePost } = api.posts.delete.useMutation({
 		onSuccess: async () => {
 			await ctx.posts.invalidate();
 		},

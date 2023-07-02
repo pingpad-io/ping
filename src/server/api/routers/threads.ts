@@ -8,62 +8,41 @@ import {
 
 import { TRPCError } from "@trpc/server";
 import { randomUUID } from "crypto";
+import { RouterOutputs } from "~/utils/api";
+
+export type Thread = RouterOutputs["threads"]["get"][number];
 
 export const threadsRouter = createTRPCRouter({
-	getAll: publicProcedure.query(async ({ ctx }) => {
-		const threads = await ctx.prisma.thread.findMany({
-			take: 100,
-			include: { author: true, posts: true },
-			orderBy: [{ created_at: "asc" }],
-		});
-
-		return threads;
-	}),
-
-	getById: publicProcedure
-		.input(z.string().nullable())
+	get: publicProcedure
+		.input(
+			z.object({
+				threadId: z.string().uuid().optional(),
+				threadName: z.string().optional(),
+			}),
+		)
 		.query(async ({ ctx, input }) => {
-			if (!input) return null;
-
-			const thread = await ctx.prisma.thread.findUnique({
-				where: { id: input },
-				include: { posts: true, author: true },
+			const threads = await ctx.prisma.thread.findMany({
+				take: 100,
+				include: { author: true, posts: true },
+				orderBy: [{ created_at: "asc" }],
+				where: { id: input.threadId, name: input.threadName },
 			});
 
-			if (!thread) {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: `Thread with id ${input} was not found.`,
-				});
+			if (input.threadId || input.threadName) {
+				if (threads.length !== 1) {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: "Thread was not found.",
+					});
+				}
 			}
 
-			return thread;
-		}),
-
-	getByName: publicProcedure
-		.input(z.string().nullable())
-		.query(async ({ ctx, input }) => {
-			if (!input) return null;
-
-			const thread = await ctx.prisma.thread.findUnique({
-				where: { name: input },
-				include: { posts: true, author: true },
-			});
-
-			if (!thread) {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: `Thread with name ${input} was not found.`,
-				});
-			}
-
-			return thread;
+			return threads;
 		}),
 
 	delete: privateProcedure
 		.input(z.object({ name: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-
 			const thread = await ctx.prisma.thread.findUnique({
 				where: { name: input.name },
 				select: { authorId: true, id: true },
