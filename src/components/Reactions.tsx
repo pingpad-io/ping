@@ -5,19 +5,18 @@ import { RiEmotionLaughLine } from "react-icons/ri";
 import { TbConfetti } from "react-icons/tb";
 import { ImWondering } from "react-icons/im";
 import { RiEmotionNormalLine } from "react-icons/ri";
+import { Post } from "~/server/api/routers/posts";
 
-interface Reaction {
-	count: number;
-	id: number;
-	description: string | null;
-	name: string;
-}
-
-export const ReactionBadge = ({ reaction }: { reaction: Reaction }) => {
+export const ReactionBadge = ({
+	reaction,
+}: { reaction: Post["reactions"][number] }) => {
 	return (
-		<span className="tooltip tooltip-bottom" data-tip={reaction.description}>
+		<span
+			className="tooltip tooltip-bottom"
+			data-tip={reaction.reaction.description}
+		>
 			<span
-				key={reaction.id}
+				key={reaction.reaction.id}
 				className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline "
 			>
 				{reaction.count}
@@ -27,9 +26,10 @@ export const ReactionBadge = ({ reaction }: { reaction: Reaction }) => {
 	);
 };
 
-export const ReactionToIcon = ({ reaction }: { reaction: Reaction }) => {
-	/// TODO
-	switch (reaction.name) {
+export const ReactionToIcon = ({
+	reaction,
+}: { reaction: Post["reactions"][number] }) => {
+	switch (reaction.reaction.name) {
 		case "Like":
 			return <AiOutlineHeart />;
 		case "Agree":

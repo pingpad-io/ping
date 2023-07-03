@@ -39,7 +39,11 @@ export const postsRouter = createTRPCRouter({
 			const posts = await ctx.prisma.post
 				.findMany({
 					include: {
-						reactions: true,
+						reactions: {
+							select: {
+								reaction: true,
+							},
+						},
 						thread: true,
 						author: { include: { flairs: true } },
 						replies: { select: { _count: true } },
@@ -71,19 +75,19 @@ export const postsRouter = createTRPCRouter({
 					},
 				})
 				.then(async (posts) => {
-					const reactionCounts = await ctx.prisma.reaction.groupBy({
-						by: ["name"],
+					const reactionCounts = await ctx.prisma.postReaction.groupBy({
+						by: ["reactionId"],
 						where: {
-							posts: { every: { id: { in: posts.map((post) => post.id) } } },
+							postId: { in: posts.map((post) => post.id) },
 						},
 						_count: {
-							name: true,
+							reactionId: true,
 						},
 					});
 
 					const reactionCountsMap = reactionCounts.reduce(
-						(map: Record<string, number>, { name, _count }) => {
-							map[name] = _count.name;
+						(map: Record<string, number>, { reactionId, _count }) => {
+							map[reactionId] = _count.reactionId;
 							return map;
 						},
 						{},
@@ -93,7 +97,7 @@ export const postsRouter = createTRPCRouter({
 						...post,
 						reactions: post.reactions.map((reaction) => ({
 							...reaction,
-							count: reactionCountsMap[reaction.name] || 0,
+							count: reactionCountsMap[reaction.reaction.id] || 0,
 						})),
 					}));
 
@@ -129,6 +133,49 @@ export const postsRouter = createTRPCRouter({
 				data: { status: "UserDeleted" },
 			});
 		}),
+
+	// likeById: privateProcedure.input(z.object(postId: z.string().uuid(), reaction: z.string())).mutation(async ({ ctx, input }) => {
+	//   const post = await ctx.prisma.post.findUnique({
+	//     where: { id: input },
+	//     select: {
+	//       likers: {
+	//         select: { id: true },
+	//       },
+	//     },
+	//   });
+
+	//   const profile = await ctx.prisma.profile.findUnique({
+	//     where: { id: ctx.userId },
+	//     select: { id: true },
+	//   });
+
+	//   if (!profile || !post) {
+	//     throw new TRPCError({
+	//       code: "INTERNAL_SERVER_ERROR",
+	//       message: `Post or Profile not found.`,
+	//     });
+	//   }
+
+	//   const isLiked = post.likers.find((liker) => liker.id === profile.id);
+
+	//   if (isLiked) {
+	//     await ctx.prisma.post.update({
+	//       where: { id: input },
+	//       data: {
+	//         likers: { disconnect: { id: profile.id } },
+	//       },
+	//     });
+	//   } else {
+	//     await ctx.prisma.post.update({
+	//       where: { id: input },
+	//       data: {
+	//         likers: {
+	//           connect: [{ id: profile.id }],
+	//         },
+	//       },
+	//     });
+	//   }
+	// }),
 
 	create: privateProcedure
 		.input(

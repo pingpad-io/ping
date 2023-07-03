@@ -5,7 +5,7 @@ import { PostMenu } from "./PostMenu";
 import { FiEdit2 } from "react-icons/fi";
 import { LuReply } from "react-icons/lu";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
-import { type RouterOutputs } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 import { FlairView } from "./FlairView";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
@@ -147,10 +147,24 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 
 export const ReactionList = ({ post }: { post: Post }) => {
 	const list = post.reactions.map((reaction) => {
-		return <ReactionBadge reaction={reaction} key={reaction.id} />;
+		return <ReactionBadge reaction={reaction} key={reaction.reaction.id} />;
 	});
+	console.log(post.reactions);
 
-	return <>{list}</>;
+	// const addReaction = () => {
+	// 	api.posts.react.useMutation({
+	// 		id: post.id,
+	// 		reaction: "like",
+	// 	})
+	// }
+
+	return (
+		<>
+			{list}
+			{/* <button onClick={addReaction} type="button" className="btn btn-ghost btn-xs"> */}
+			+{/* </button> */}
+		</>
+	);
 };
 
 export const ReplyCount = ({ post }: { post: Post }) => {
