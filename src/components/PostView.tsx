@@ -137,9 +137,9 @@ export const PostContent = ({
 
 export const MetaInfo = ({ post }: { post: Post }) => {
 	return (
-		<div className="flex flex-row gap-2 leading-3 pt-2 -mb-1 text-secondary-content/50 ">
-			<ReactionList post={post} />
+		<div className="flex flex-row gap-2 leading-3 group -mb-1 mt-2 text-secondary-content/50 ">
 			<ReplyCount post={post} />
+			<ReactionList post={post} />
 			<EditedIndicator post={post} />
 		</div>
 	);
@@ -147,9 +147,8 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 
 export const ReactionList = ({ post }: { post: Post }) => {
 	const list = post.reactions.map((reaction) => {
-		return <ReactionBadge reaction={reaction} key={reaction.reaction.id} />;
+		return <ReactionBadge reaction={reaction} key={post.id+reaction.reaction.id+reaction.count} />;
 	});
-	console.log(post.reactions);
 
 	// const addReaction = () => {
 	// 	api.posts.react.useMutation({
@@ -162,7 +161,8 @@ export const ReactionList = ({ post }: { post: Post }) => {
 		<>
 			{list}
 			{/* <button onClick={addReaction} type="button" className="btn btn-ghost btn-xs"> */}
-			+{/* </button> */}
+			<span className="hidden group-hover:flex">+</span>
+			{/* </button> */}
 		</>
 	);
 };
