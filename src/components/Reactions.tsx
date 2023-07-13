@@ -13,10 +13,10 @@ export const ReactionBadge = ({
 	return (
 		<span
 			className="tooltip tooltip-bottom"
-			data-tip={reaction.reaction.description}
+			data-tip={reaction.description}
 		>
 			<span
-				key={reaction.reaction.id}
+				key={reaction.postId+reaction.reactionId}
 				className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline "
 			>
 				{reaction.count}
@@ -29,7 +29,7 @@ export const ReactionBadge = ({
 export const ReactionToIcon = ({
 	reaction,
 }: { reaction: Post["reactions"][number] }) => {
-	switch (reaction.reaction.name) {
+	switch (reaction.name) {
 		case "Like":
 			return <AiOutlineHeart />;
 		case "Agree":

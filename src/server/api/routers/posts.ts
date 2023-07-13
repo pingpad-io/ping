@@ -14,6 +14,14 @@ import { RouterOutputs } from "~/utils/api";
 
 export type Post = RouterOutputs["posts"]["get"][number];
 
+interface PostReaction {
+	name: string;
+	description: string;
+	postId: string;
+	reactionId: number;
+	count: number;
+}
+
 // Create a ratelimiter that allows to post 2 requests per 1 minute
 const postingRatelimit = new Ratelimit({
 	redis: Redis.fromEnv(),
@@ -41,7 +49,14 @@ export const postsRouter = createTRPCRouter({
 					include: {
 						reactions: {
 							select: {
-								reaction: true,
+								reactionId: true,
+								postId: true,
+								reaction: {
+									select: {
+										description: true,
+										name: true,
+									},
+								},
 							},
 						},
 						thread: true,
@@ -75,31 +90,35 @@ export const postsRouter = createTRPCRouter({
 					},
 				})
 				.then(async (posts) => {
-					const reactionCounts = await ctx.prisma.postReaction.groupBy({
-						by: ["reactionId"],
-						where: {
-							postId: { in: posts.map((post) => post.id) },
-						},
-						_count: {
-							reactionId: true,
-						},
+					const postsWithReactions = posts.map((post) => {
+						const reducedReactions = post.reactions.reduce(
+							(acc: PostReaction[], reaction) => {
+								const existingReaction = acc.find(
+									(r) =>
+										r.reactionId === reaction.reactionId &&
+										r.postId === reaction.postId,
+								);
+								if (existingReaction) {
+									existingReaction.count += 1;
+								} else {
+									acc.push({
+										reactionId: reaction.reactionId,
+										postId: reaction.postId,
+										description: reaction.reaction.description ?? "",
+										name: reaction.reaction.name ?? "",
+										count: 1,
+									});
+								}
+								return acc;
+							},
+							[],
+						);
+
+						return {
+							...post,
+							reactions: reducedReactions,
+						};
 					});
-
-					const reactionCountsMap = reactionCounts.reduce(
-						(map: Record<string, number>, { reactionId, _count }) => {
-							map[reactionId] = _count.reactionId;
-							return map;
-						},
-						{},
-					);
-
-					const postsWithReactions = posts.map((post) => ({
-						...post,
-						reactions: post.reactions.map((reaction) => ({
-							...reaction,
-							count: reactionCountsMap[reaction.reaction.id] || 0,
-						})),
-					}));
 
 					return postsWithReactions;
 				});

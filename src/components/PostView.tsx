@@ -147,7 +147,7 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 
 export const ReactionList = ({ post }: { post: Post }) => {
 	const list = post.reactions.map((reaction) => {
-		return <ReactionBadge reaction={reaction} key={post.id+reaction.reaction.id+reaction.count} />;
+		return <ReactionBadge reaction={reaction} key={post.id+reaction.reactionId+reaction.count} />;
 	});
 
 	// const addReaction = () => {
