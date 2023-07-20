@@ -49,13 +49,13 @@ export const MenuItem = (props: {
 export const CompactMenuItem = (props: {
 	href?: string;
 	onClick?: () => void;
-	text: string;
+	text?: string;
 	icon: JSX.Element;
 	side?: "left" | "right";
 	className?: string;
 	children?: ReactNode;
 }) => {
-	const text = <div>{props.text}</div>;
+	const text = <>{props.text}</>;
 	const style = `${props.className ?? ""} flex pr-3 flex-row rounded-btn place-items-center hover:bg-base-300`;
 
 	const content = (

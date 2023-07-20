@@ -27,16 +27,14 @@ export const ReactionBadge = ({
 				className={`flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ${badgeColor}`}
 			>
 				{reaction.count}
-				<ReactionToIcon reaction={reaction} />
+				<ReactionToIcon reaction={reaction.name} />
 			</span>
 		</span>
 	);
 };
 
-export const ReactionToIcon = ({
-	reaction,
-}: { reaction: Post["reactions"][number] }) => {
-	switch (reaction.name) {
+export const ReactionToIcon = ({ reaction }: { reaction: string }) => {
+	switch (reaction) {
 		case "Like":
 			return <AiOutlineHeart />;
 		case "Agree":
