@@ -151,7 +151,7 @@ export const ReactionList = ({ post }: { post: Post }) => {
 	});
 
 	// const addReaction = () => {
-	// 	api.posts.react.useMutation({
+	// 	api.posts.reaction.useMutation({
 	// 		id: post.id,
 	// 		reaction: "like",
 	// 	})

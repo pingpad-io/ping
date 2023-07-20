@@ -34,6 +34,22 @@ export const ReactionToIcon = ({
 			return <AiOutlineHeart />;
 		case "Agree":
 			return <GiCheckMark />;
+		case "Disagree":
+			return <GiCrossMark />;
+		case "Question":
+			return <BsQuestion  />;
+		case "Important":
+			return <BsExclamation />;
+		case "Thinking":
+			return <ImWondering />;
+		case "Funny":
+			return <RiEmotionLaughLine />;
+		case "Neutral":
+			return <RiEmotionNormalLine  />;
+		case "Exciting":
+			return <TbConfetti  />;
+		case "Isightful":
+			return <AiOutlineBulb  />;
 		default:
 			return <></>;
 	}
