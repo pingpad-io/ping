@@ -19,13 +19,14 @@ interface PostReaction {
 	description: string;
 	postId: string;
 	reactionId: number;
+	profileIds: string[];
 	count: number;
 }
 
 // Create a ratelimiter that allows to post 2 requests per 1 minute
 const postingRatelimit = new Ratelimit({
 	redis: Redis.fromEnv(),
-	limiter: Ratelimit.slidingWindow(2, "1 m"),
+	limiter: Ratelimit.slidingWindow(5, "1 m"),
 	analytics: true,
 });
 
@@ -49,6 +50,7 @@ export const postsRouter = createTRPCRouter({
 					include: {
 						reactions: {
 							select: {
+								profileId: true,
 								reactionId: true,
 								postId: true,
 								reaction: {
@@ -100,8 +102,10 @@ export const postsRouter = createTRPCRouter({
 								);
 								if (existingReaction) {
 									existingReaction.count += 1;
+									existingReaction.profileIds.push(reaction.profileId);
 								} else {
 									acc.push({
+										profileIds: [reaction.profileId],
 										reactionId: reaction.reactionId,
 										postId: reaction.postId,
 										description: reaction.reaction.description ?? "",
