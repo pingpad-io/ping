@@ -1,4 +1,11 @@
-import { AiOutlineBulb, AiOutlineCheck, AiOutlineClose, AiOutlineExclamation, AiOutlineHeart, AiOutlineQuestion } from "react-icons/ai";
+import {
+	AiOutlineBulb,
+	AiOutlineCheck,
+	AiOutlineClose,
+	AiOutlineExclamation,
+	AiOutlineHeart,
+	AiOutlineQuestion,
+} from "react-icons/ai";
 import { BsExclamation, BsQuestion } from "react-icons/bs";
 import { GiCheckMark, GiCrossMark } from "react-icons/gi";
 import { RiEmotionLaughLine } from "react-icons/ri";
@@ -19,17 +26,16 @@ export const ReactionBadge = ({
 	);
 
 	const badgeColor = isUserReacted ? "text-primary" : "";
+	const personText = reaction.count <= 1 ? " person " : " people ";
+	const tooltipText = reaction.count + personText + reaction.description;
 
 	return (
-		<span className="tooltip tooltip-bottom" data-tip={reaction.description}>
+		<span className="tooltip tooltip-bottom" data-tip={tooltipText}>
 			<span
 				key={reaction.postId + reaction.reactionId}
 				className={`flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md hover:bg-base-200 badge-outline ${badgeColor}`}
 			>
 				{reaction.count}
-				<span className="text-xl">
-
-				</span>
 				<ReactionToIcon reaction={reaction.name} />
 			</span>
 		</span>
