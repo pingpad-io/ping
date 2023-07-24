@@ -177,26 +177,26 @@ export const ReactionList = ({ post }: { post: Post }) => {
 };
 
 export const ReplyCount = ({ post }: { post: Post }) => {
-	if (post.replies.length > 0) {
-		return (
-			<Link
-				href={`/p/${post.id}`}
-				className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
-			>
-				{post.replies.length}
-				<LuReply className="shrink-0 scale-x-[-1] transform" />
-			</Link>
-		);
-	}
+	return post.replies.length > 0 ? (
+		<Link
+			href={`/p/${post.id}`}
+			className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
+		>
+			{post.replies.length}
+			<LuReply className="shrink-0 scale-x-[-1] transform" />
+		</Link>
+	) : (
+		<></>
+	);
 };
 
 export const EditedIndicator = ({ post }: { post: Post }) => {
-	if (post.createdAt.toUTCString() !== post.updatedAt.toUTCString()) {
-		return (
-			<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
-				<FiEdit2 className="shrink-0 scale-x-[-1] transform" />
-				edited
-			</span>
-		);
-	}
+	return post.createdAt.toUTCString() !== post.updatedAt.toUTCString() ? (
+		<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
+			<FiEdit2 className="shrink-0 scale-x-[-1] transform" />
+			edited
+		</span>
+	) : (
+		<></>
+	);
 };
