@@ -24,7 +24,7 @@ export const ReactionBadge = ({
 		<span className="tooltip tooltip-bottom" data-tip={reaction.description}>
 			<span
 				key={reaction.postId + reaction.reactionId}
-				className={`flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ${badgeColor}`}
+				className={`flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md hover:bg-base-200 badge-outline ${badgeColor}`}
 			>
 				{reaction.count}
 				<ReactionToIcon reaction={reaction.name} />

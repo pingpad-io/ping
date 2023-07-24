@@ -2,20 +2,17 @@ import Link from "next/link";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { PostMenu } from "./PostMenu";
 
-import { FiArrowRight, FiEdit2 } from "react-icons/fi";
-import { LuArrowRight, LuReply } from "react-icons/lu";
+import { FiEdit2 } from "react-icons/fi";
+import { LuReply } from "react-icons/lu";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
-import { api, type RouterOutputs } from "~/utils/api";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { ReactionBadge } from "./Reactions";
 import { Post } from "~/server/api/routers/posts";
-import { AiOutlinePlus } from "react-icons/ai";
 import { useUser } from "@supabase/auth-helpers-react";
 import { ReactionsMenu } from "./ReactionsMenu";
-import { BsArrowRight } from "react-icons/bs";
-import { ImArrowRight } from "react-icons/im";
-import { TbArrowsRight } from "react-icons/tb";
+import { api } from "~/utils/api";
+import toast from "react-hot-toast";
 
 const maxLength = 45 * 3 - 3;
 
@@ -138,21 +135,36 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 
 export const ReactionList = ({ post }: { post: Post }) => {
 	const user = useUser();
-	if (!user) return null;
+	const ctx = api.useContext();
 
-	const addReaction = () => {
-		// api.posts.reaction.useMutation({
-		// 	id: post.id,
-		// 	reaction: "like",
-		// })
-	};
+	const { mutate: react } = api.reactions.react.useMutation({
+		onError: (e) => {
+			toast.error(e.message);
+		},
+		onSuccess: (reaction) => {
+			ctx.posts.invalidate();
+		},
+	});
+
+	if (!user) return null;
 
 	const list = post.reactions.map((reaction) => {
 		return (
-			<ReactionBadge
-				reaction={reaction}
-				key={post.id + reaction.reactionId + reaction.count}
-			/>
+			<button
+				type="button"
+				onClick={(e) =>
+					react({
+						profileId: user.id,
+						postId: post.id,
+						reactionId: reaction.reactionId,
+					})
+				}
+			>
+				<ReactionBadge
+					reaction={reaction}
+					key={post.id + reaction.reactionId + reaction.count}
+				/>
+			</button>
 		);
 	});
 
@@ -165,27 +177,26 @@ export const ReactionList = ({ post }: { post: Post }) => {
 };
 
 export const ReplyCount = ({ post }: { post: Post }) => {
-	return (
-		<>
-			{post.replies.length > 0 && (
-				<Link href={`/p/${post.id}`} className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
-					{post.replies.length}
-					<LuReply className="shrink-0 scale-x-[-1] transform" />
-				</Link>
-			)}
-		</>
-	);
+	if (post.replies.length > 0) {
+		return (
+			<Link
+				href={`/p/${post.id}`}
+				className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
+			>
+				{post.replies.length}
+				<LuReply className="shrink-0 scale-x-[-1] transform" />
+			</Link>
+		);
+	}
 };
 
 export const EditedIndicator = ({ post }: { post: Post }) => {
-	return (
-		<>
-			{post.createdAt.toUTCString() !== post.updatedAt.toUTCString() && (
-				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
-					<FiEdit2 className="shrink-0 scale-x-[-1] transform" />
-					edited
-				</span>
-			)}
-		</>
-	);
+	if (post.createdAt.toUTCString() !== post.updatedAt.toUTCString()) {
+		return (
+			<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
+				<FiEdit2 className="shrink-0 scale-x-[-1] transform" />
+				edited
+			</span>
+		);
+	}
 };

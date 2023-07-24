@@ -13,15 +13,28 @@ import { ReactionBadge, ReactionToIcon } from "./Reactions";
 export const ReactionsMenu = ({ post }: { post: Post }) => {
 	const user = useUser();
 	const ctx = api.useContext();
-	const addReaction = () => {};
 	const { data: reactions } = api.reactions.get.useQuery({});
-	if (!reactions) return null;
+	const { mutate: react } = api.reactions.react.useMutation({
+		onError: (e) => {
+			toast.error(e.message);
+		},
+		onSuccess: (reaction) => {
+			ctx.posts.invalidate()
+		},
+	});
 
-	const reactionBadges = reactions.map((reaction) => (
+	if (!reactions) return null;
+	if (!user) return null;
+
+	const addReaction = (reactionId: number) => {
+		react({ postId: post.id, profileId: user.id, reactionId: reactionId });
+	};
+
+	const reactButtons = reactions.map((reaction) => (
 		<button
 			type="button"
 			className="btn btn-xs btn-circle"
-			onClick={addReaction}
+			onClick={(_e) => addReaction(reaction.id)}
 			key={reaction.id}
 		>
 			{ReactionToIcon({ reaction: reaction.name })}
@@ -32,7 +45,6 @@ export const ReactionsMenu = ({ post }: { post: Post }) => {
 		<SignedIn>
 			<div className="dropdown-right dropdown font-normal">
 				<button
-					onClick={addReaction}
 					type="button"
 					className="hidden text-xs text-center btn btn-ghost btn-xs group-hover:flex leading-3 btn-circle -my-1"
 				>
@@ -40,7 +52,7 @@ export const ReactionsMenu = ({ post }: { post: Post }) => {
 				</button>
 
 				<div className="dropdown-content dropdown-right dropdown-end flex flex-row rounded-box gap-1 justify-center bg-base-200 p-2 -mt-2 shadow">
-					{reactionBadges}
+					{reactButtons}
 				</div>
 			</div>
 		</SignedIn>

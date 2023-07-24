@@ -6,9 +6,6 @@ import {
 	publicProcedure,
 } from "~/server/api/trpc";
 
-import { TRPCError } from "@trpc/server";
-import { randomUUID } from "crypto";
-
 export const reactionsRouter = createTRPCRouter({
 	get: publicProcedure
 		.input(z.object({ id: z.string().optional() }))
@@ -21,6 +18,43 @@ export const reactionsRouter = createTRPCRouter({
 			return reactions;
 		}),
 
+	react: privateProcedure
+		.input(
+			z.object({
+				postId: z.string(),
+				reactionId: z.number(),
+				profileId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const reaction = await ctx.prisma.postReaction.findFirst({
+				where: { postId: input.postId, profileId: input.profileId },
+			});
+
+			if (reaction) {
+				if (reaction.reactionId === input.reactionId) {
+					return await ctx.prisma.postReaction.delete({
+						where: {
+							id: reaction.id,
+						},
+					});
+				} else {
+					return await ctx.prisma.postReaction.update({
+						where: {id: reaction.id},
+						data: {reactionId: input.reactionId}
+					})
+				}
+			} else {
+				return await ctx.prisma.postReaction.create({
+					data: {
+						postId: input.postId,
+						profileId: input.profileId,
+						reactionId: input.reactionId,
+					},
+				});
+			}
+		}),
+
 	delete: privateProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async ({ ctx, input }) => {
@@ -30,7 +64,7 @@ export const reactionsRouter = createTRPCRouter({
 		}),
 
 	create: privateProcedure
-		.input(z.object({ name: z.string(), description: z.string().optional()  }))
+		.input(z.object({ name: z.string(), description: z.string().optional() }))
 		.mutation(async ({ ctx, input }) => {
 			const result = await ctx.prisma.reaction.create({
 				data: {
