@@ -2,11 +2,10 @@ import Link from "next/link";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { PostMenu } from "./PostMenu";
 
-import { FiEdit2 } from "react-icons/fi";
-import { LuReply } from "react-icons/lu";
+import { FiArrowRight, FiEdit2 } from "react-icons/fi";
+import { LuArrowRight, LuReply } from "react-icons/lu";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { api, type RouterOutputs } from "~/utils/api";
-import { FlairView } from "./FlairView";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { ReactionBadge } from "./Reactions";
@@ -14,6 +13,9 @@ import { Post } from "~/server/api/routers/posts";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useUser } from "@supabase/auth-helpers-react";
 import { ReactionsMenu } from "./ReactionsMenu";
+import { BsArrowRight } from "react-icons/bs";
+import { ImArrowRight } from "react-icons/im";
+import { TbArrowsRight } from "react-icons/tb";
 
 const maxLength = 45 * 3 - 3;
 
@@ -107,18 +109,6 @@ export const PostInfo = ({ post }: { post: Post }) => {
 	);
 };
 
-export const AuthorFlair = ({ author }: { author: Post["author"] }) => {
-	return (
-		<>
-			{author.flairs.length > 0 && (
-				<span className="hidden sm:flex py-0.5">
-					<FlairView flair={author.flairs.at(0)} size="xs" />
-				</span>
-			)}
-		</>
-	);
-};
-
 export const PostContent = ({
 	post,
 	collapsed,
@@ -178,10 +168,10 @@ export const ReplyCount = ({ post }: { post: Post }) => {
 	return (
 		<>
 			{post.replies.length > 0 && (
-				<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
+				<Link href={`/p/${post.id}`} className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
 					{post.replies.length}
 					<LuReply className="shrink-0 scale-x-[-1] transform" />
-				</span>
+				</Link>
 			)}
 		</>
 	);

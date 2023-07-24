@@ -5,7 +5,6 @@ import Link from "next/link";
 import { FiCalendar, FiEdit2 } from "react-icons/fi";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
-import { FlairView } from "~/components/FlairView";
 import { GlassBar } from "~/components/GlassBar";
 import { PageLayout } from "~/components/Layout";
 import { TimeSince } from "~/components/TimeLabel";

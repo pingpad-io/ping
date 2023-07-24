@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { api, type RouterOutputs } from "~/utils/api";
-import { FlairView } from "./FlairView";
 
 type Profile = RouterOutputs["profiles"]["get"];
 
@@ -37,10 +36,6 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 
 		updateProfile({ updates });
 	};
-
-	const flairList = flairs?.map((flair) => {
-		return <FlairView flair={flair} key={flair.id} size="md" />;
-	});
 
 	return (
 		<>
@@ -99,18 +94,6 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 						</label>
 					</div>
 
-					<div>
-						<label className="label inline-block" htmlFor="username">
-							Flairs:
-						</label>
-						<div className="inline-block">
-							{flairList.length > 0 ? (
-								flairList
-							) : (
-								<div className="badge-ghost badge-outline badge">None</div>
-							)}
-						</div>
-					</div>
 				</div>
 
 				<div>
