@@ -62,7 +62,7 @@ export const postsRouter = createTRPCRouter({
 							},
 						},
 						thread: true,
-						author: { include: { flairs: true } },
+						author: true,
 						replies: { select: { _count: true } },
 						repliedTo: {
 							select: {
@@ -72,7 +72,6 @@ export const postsRouter = createTRPCRouter({
 									select: {
 										username: true,
 										avatar_url: true,
-										flairs: true,
 										full_name: true,
 										id: true,
 									},
@@ -156,49 +155,6 @@ export const postsRouter = createTRPCRouter({
 				data: { status: "UserDeleted" },
 			});
 		}),
-
-	// likeById: privateProcedure.input(z.object(postId: z.string().uuid(), reaction: z.string())).mutation(async ({ ctx, input }) => {
-	//   const post = await ctx.prisma.post.findUnique({
-	//     where: { id: input },
-	//     select: {
-	//       likers: {
-	//         select: { id: true },
-	//       },
-	//     },
-	//   });
-
-	//   const profile = await ctx.prisma.profile.findUnique({
-	//     where: { id: ctx.userId },
-	//     select: { id: true },
-	//   });
-
-	//   if (!profile || !post) {
-	//     throw new TRPCError({
-	//       code: "INTERNAL_SERVER_ERROR",
-	//       message: `Post or Profile not found.`,
-	//     });
-	//   }
-
-	//   const isLiked = post.likers.find((liker) => liker.id === profile.id);
-
-	//   if (isLiked) {
-	//     await ctx.prisma.post.update({
-	//       where: { id: input },
-	//       data: {
-	//         likers: { disconnect: { id: profile.id } },
-	//       },
-	//     });
-	//   } else {
-	//     await ctx.prisma.post.update({
-	//       where: { id: input },
-	//       data: {
-	//         likers: {
-	//           connect: [{ id: profile.id }],
-	//         },
-	//       },
-	//     });
-	//   }
-	// }),
 
 	create: privateProcedure
 		.input(

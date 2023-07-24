@@ -8,7 +8,6 @@ import {
 
 import { TRPCError } from "@trpc/server";
 import { randomUUID } from "crypto";
-import { type Color } from "@prisma/client";
 
 export const reactionsRouter = createTRPCRouter({
 	get: publicProcedure

@@ -8,13 +8,17 @@ import {
 } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
-
 	get: publicProcedure
-		.input(z.object({ id: z.string().uuid().optional(), username: z.string().optional() }))
+		.input(
+			z.object({
+				id: z.string().uuid().optional(),
+				username: z.string().optional(),
+			}),
+		)
 		.query(async ({ ctx, input }) => {
 			const profile = await ctx.prisma.profile.findUnique({
 				where: { id: input.id, username: input.username },
-				include: { flairs: true, owned_threads: true },
+				include: { owned_threads: true },
 			});
 
 			if (!profile) {

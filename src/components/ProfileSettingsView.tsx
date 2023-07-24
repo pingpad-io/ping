@@ -11,7 +11,6 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 	const [full_name, setFullName] = useState(profile.full_name);
 	const [description, setDescription] = useState(profile.description);
 	const [avatar_url, setAvatarUrl] = useState(profile.avatar_url);
-	const [flairs, setFlairs] = useState(profile.flairs);
 
 	const { mutate: updateProfile } = api.profiles.update.useMutation({
 		onSuccess() {
