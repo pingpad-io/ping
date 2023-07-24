@@ -29,7 +29,7 @@ export const ReactionsMenu = ({ post }: { post: Post }) => {
 	);
 };
 
-export const ReactionsList  = ({ post }: { post: Post }) => {
+export function ReactionsList  ({ post }: { post: Post }) {
 	const user = useUser();
 	const ctx = api.useContext();
 	const { data: reactions } = api.reactions.get.useQuery({});
@@ -60,5 +60,5 @@ export const ReactionsList  = ({ post }: { post: Post }) => {
 		</button>
 	));
 
-	return reactionsList
+	return <>{reactionsList}</>
 }
