@@ -6,12 +6,7 @@ import {
 	AiOutlineHeart,
 	AiOutlineQuestion,
 } from "react-icons/ai";
-import { BsExclamation, BsQuestion } from "react-icons/bs";
-import { GiCheckMark, GiCrossMark } from "react-icons/gi";
-import { RiEmotionLaughLine } from "react-icons/ri";
 import { TbConfetti } from "react-icons/tb";
-import { ImWondering } from "react-icons/im";
-import { RiEmotionNormalLine } from "react-icons/ri";
 import { Post } from "~/server/api/routers/posts";
 import { useUser } from "@supabase/auth-helpers-react";
 
