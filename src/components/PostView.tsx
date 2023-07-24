@@ -38,7 +38,6 @@ export const PostView = ({ post }: { post: Post }) => {
 					expandable={expandable}
 				/>
 			</div>
-			{/* <LikeButton post={post} /> */}
 		</div>
 	);
 };
@@ -97,7 +96,6 @@ export const PostInfo = ({ post }: { post: Post }) => {
 		<div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
 			<Link className="flex gap-2" href={`/${username}`}>
 				<span className="w-fit truncate font-bold">{author.full_name}</span>
-				<AuthorFlair author={author} />
 				<span className="">{`@${username}`}</span>
 			</Link>
 			<span>{"·"}</span>

@@ -11,26 +11,27 @@ import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
-	const {
-		data,
-		isError,
-		error,
-	} = api.posts.get.useQuery({postId: id}, {
-		refetchOnMount: false,
-		refetchOnWindowFocus: false,
-		refetchOnReconnect: false,
-		retry: false,
-	});
+	const { data, isError, error } = api.posts.get.useQuery(
+		{ postId: id },
+		{
+			refetchOnMount: false,
+			refetchOnWindowFocus: false,
+			refetchOnReconnect: false,
+			retry: false,
+		},
+	);
 	const router = useRouter();
 
-	if (isError) return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
-	if (data?.length !== 1) return <ErrorPage title={"Something went wrong..."} />;
+	if (isError)
+		return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
+	if (data?.length !== 1)
+		return <ErrorPage title={"Something went wrong..."} />;
 
-	const post = data[0]
+	const post = data[0];
 	if (!post) return <ErrorPage title={"Post not found qwq"} />;
 
 	const author = post.author;
-	const replies = api.posts.get.useQuery({repliedToPostId: id});
+	const replies = api.posts.get.useQuery({ repliedToPostId: id });
 
 	return (
 		<>
@@ -51,7 +52,6 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 							<PostInfo post={post} />
 							<PostContent post={post} collapsed={false} />
 						</div>
-						{/* <LikeButton post={post} /> */}
 					</div>
 
 					<div className="flex w-full flex-row ">
@@ -80,7 +80,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 	if (typeof id !== "string") throw new Error("Bad post id");
 
-	await ssg.posts.get.prefetch({postId: id});
+	await ssg.posts.get.prefetch({ postId: id });
 
 	return {
 		props: {
