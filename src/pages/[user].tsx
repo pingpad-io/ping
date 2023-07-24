@@ -23,12 +23,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 	const isUserProfile = profile?.id === user?.id;
 	const title = `Twotter (@${profile.username ?? ""})`;
 
-	const flair = profile.flairs.length > 0 && (
-		<span className="h-min">
-			<FlairView flair={profile.flairs.at(0)} size="md" />
-		</span>
-	);
-
 	return (
 		<>
 			<Head>
@@ -47,7 +41,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 								<div className="text-lg font-bold w-fit truncate">
 									{profile.full_name}
 								</div>
-								<div className="hidden sm:flex">{flair}</div>
 								{isUserProfile && (
 									<Link
 										className="btn btn-square btn-sm btn-ghost "
