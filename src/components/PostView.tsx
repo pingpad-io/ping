@@ -152,7 +152,7 @@ export const ReactionList = ({ post }: { post: Post }) => {
 		return (
 			<button
 				type="button"
-				onClick={(e) =>
+				onClick={(_e) =>
 					react({
 						profileId: user.id,
 						postId: post.id,

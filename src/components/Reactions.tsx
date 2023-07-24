@@ -1,4 +1,4 @@
-import { AiOutlineBulb, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineBulb, AiOutlineCheck, AiOutlineClose, AiOutlineExclamation, AiOutlineHeart, AiOutlineQuestion } from "react-icons/ai";
 import { BsExclamation, BsQuestion } from "react-icons/bs";
 import { GiCheckMark, GiCrossMark } from "react-icons/gi";
 import { RiEmotionLaughLine } from "react-icons/ri";
@@ -27,6 +27,9 @@ export const ReactionBadge = ({
 				className={`flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md hover:bg-base-200 badge-outline ${badgeColor}`}
 			>
 				{reaction.count}
+				<span className="text-xl">
+
+				</span>
 				<ReactionToIcon reaction={reaction.name} />
 			</span>
 		</span>
@@ -38,23 +41,17 @@ export const ReactionToIcon = ({ reaction }: { reaction: string }) => {
 		case "Like":
 			return <AiOutlineHeart />;
 		case "Agree":
-			return <GiCheckMark />;
+			return <AiOutlineCheck />;
 		case "Disagree":
-			return <GiCrossMark />;
+			return <AiOutlineClose />;
 		case "Question":
-			return <BsQuestion />;
+			return <AiOutlineQuestion />;
 		case "Important":
-			return <BsExclamation />;
-		case "Thinking":
-			return <ImWondering />;
-		case "Funny":
-			return <RiEmotionLaughLine />;
-		case "Neutral":
-			return <RiEmotionNormalLine />;
+			return <AiOutlineExclamation />;
+		case "Insightful":
+			return <AiOutlineBulb />;
 		case "Exciting":
 			return <TbConfetti />;
-		case "Isightful":
-			return <AiOutlineBulb />;
 		default:
 			return <></>;
 	}

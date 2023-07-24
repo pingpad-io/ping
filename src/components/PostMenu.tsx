@@ -7,6 +7,7 @@ import { api } from "~/utils/api";
 import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
 import { Post } from "~/server/api/routers/posts";
+import { ReactionsList, ReactionsMenu } from "./ReactionsMenu";
 
 export const PostMenu = ({ post }: { post: Post }) => {
 	const user = useUser();
@@ -20,7 +21,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
 	const postLink = `${origin}/p/${post.id}`;
 
 	const todo = () => {
-		Function.prototype();
+		toast.error("Not	implemented yet");
 	};
 
 	const { mutate: deletePost } = api.posts.delete.useMutation({
@@ -51,6 +52,9 @@ export const PostMenu = ({ post }: { post: Post }) => {
 				</button>
 
 				<div className="dropdown-content rounded-box h-min w-52 gap-4 overflow-visible bg-base-200 p-2 shadow">
+					<span className="pl-1">
+						<ReactionsList post={post} />
+					</span>
 					{user?.id === author.id && (
 						<>
 							<CompactMenuItem

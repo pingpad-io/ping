@@ -12,7 +12,7 @@ export const reactionsRouter = createTRPCRouter({
 		.query(async ({ ctx, input }) => {
 			const reactions = await ctx.prisma.reaction.findMany({
 				take: 100,
-				orderBy: { name: "asc" },
+				orderBy: { id: "asc" },
 			});
 
 			return reactions;
@@ -40,9 +40,9 @@ export const reactionsRouter = createTRPCRouter({
 					});
 				} else {
 					return await ctx.prisma.postReaction.update({
-						where: {id: reaction.id},
-						data: {reactionId: input.reactionId}
-					})
+						where: { id: reaction.id },
+						data: { reactionId: input.reactionId },
+					});
 				}
 			} else {
 				return await ctx.prisma.postReaction.create({
