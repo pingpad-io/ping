@@ -1,6 +1,6 @@
 {
 	"name": "twot",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"private": true,
 	"scripts": {
 		"build": "next build",
@@ -37,8 +37,11 @@
 		"react-dom": "18.2.0",
 		"react-hot-toast": "^2.4.0",
 		"react-icons": "^4.8.0",
+		"react-markdown": "^8.0.7",
 		"react-redux": "^8.0.5",
+		"react-syntax-highlighter": "^15.5.0",
 		"redux": "^4.2.1",
+		"remark-gfm": "^3.0.1",
 		"simple-swizzle": "^0.2.2",
 		"superjson": "1.9.1",
 		"theme-change": "^2.5.0",
@@ -50,6 +53,7 @@
 		"@types/node": "^18.14.0",
 		"@types/react": "^18.0.28",
 		"@types/react-dom": "^18.0.11",
+		"@types/react-syntax-highlighter": "^15.5.7",
 		"@typescript-eslint/eslint-plugin": "^5.53.0",
 		"@typescript-eslint/parser": "^5.59.9",
 		"autoprefixer": "^10.4.7",

@@ -30,6 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	await ssg.posts.get.prefetch({ thread });
 	await ssg.threads.get.prefetch({});
+	await ssg.reactions.get.prefetch({})
 
 	return {
 		props: {

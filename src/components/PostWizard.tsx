@@ -70,9 +70,8 @@ export default function PostWizard({
 		<GlassBar>
 			{user && <PostWizardAuthed userId={user.id} />}
 			<form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
-				<input
-					type="text"
-					className="input-bordered border-base-300 input-ghost input shrink grow"
+				<textarea
+					className="border-base-300 textarea textarea-xs textarea-bordered shrink grow"
 					placeholder={placeholder}
 					value={input}
 					onChange={(e) => setInput(e.target.value)}

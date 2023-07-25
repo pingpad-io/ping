@@ -1,14 +1,10 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import toast from "react-hot-toast";
-import { BsReply, BsTrash } from "react-icons/bs";
-import { FiEdit2, FiMoreHorizontal } from "react-icons/fi";
-import { RiHashtag } from "react-icons/ri";
 import { api } from "~/utils/api";
-import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
 import { Post } from "~/server/api/routers/posts";
 import { AiOutlinePlus } from "react-icons/ai";
-import { ReactionBadge, ReactionToIcon } from "./Reactions";
+import { ReactionToIcon } from "./Reactions";
 
 export const ReactionsMenu = ({ post }: { post: Post }) => {
 	return (

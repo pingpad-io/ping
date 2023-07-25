@@ -13,6 +13,7 @@ import { useUser } from "@supabase/auth-helpers-react";
 import { ReactionsMenu } from "./ReactionsMenu";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
+import Markdown from "./Markdown";
 
 const maxLength = 45 * 3 - 3;
 
@@ -111,15 +112,13 @@ export const PostContent = ({
 	collapsed,
 }: { post: Post; collapsed: boolean }) => {
 	return (
-		<Link href={`/p/${post.id}`}>
-			<p
-				className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-min ${
-					collapsed ? "line-clamp-2" : "line-clamp-none"
-				}`}
-			>
-				{post.content}
-			</p>
-		</Link>
+		<div
+			className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
+				collapsed ? "line-clamp-2" : "line-clamp-none"
+			}`}
+		>
+			<Markdown content={post.content} />
+		</div>
 	);
 };
 
