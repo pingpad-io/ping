@@ -73,8 +73,9 @@ export const PostMenu = ({ post }: { post: Post }) => {
 							/>
 						</>
 					)}
+
 					<CompactMenuItem
-						onClick={todo}
+						href={`/p/${post.id}`}
 						side="left"
 						icon={<BsReply />}
 						text="reply"
