@@ -1,3 +1,4 @@
+// @ts-nocheck
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: [
@@ -13,6 +14,56 @@ module.exports = {
 				"rounded-btn": "var(--rounded-btn)",
 				"rounded-box": "var(--rounded-box)",
 			},
+			lineHeight: {
+        'none': '0',
+      },
+			typography: (theme) => ({
+				DEFAULT: {
+					css: {
+						lineHeight: 0,	
+						h1: {
+							fontSize: theme("fontSize.2xl"),
+							fontWeight: theme("fontWeight.bold"),
+							marginBottom: theme("spacing.4"),
+						},
+						h2: {
+							fontSize: theme("fontSize.2xl"),
+							fontWeight: theme("fontWeight.bold"),
+							marginBottom: theme("spacing.4"),
+						},
+						input: {
+							lineHeight: 1,
+							marginTop: 0,
+							marginBottom: 0,
+						},
+						p: {
+							lineHeight: 1.25,
+							marginTop: 0,
+							marginBottom: 0,
+						},
+						li: {
+							lineHeight: 1,
+							marginTop: 0,
+							marginBottom: 0,
+						},
+						ol: {
+							marginTop: 0,
+							marginBottom: 0,
+							gap: 0,
+						},
+						ul: {
+							lineHeight: 1,
+							marginTop: 0,
+							marginBottom: 0,
+							gap: 0,
+						},
+						table: {
+							marginTop: 0,
+							marginBottom: 0,
+						},
+					},
+				},
+			}),
 		},
 	},
 	// safelist: [...[...Array(50).keys()].flatMap((i) => [`max-w-[${i * 10}px]`])],

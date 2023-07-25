@@ -1,10 +1,11 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { SetStateAction } from "react";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import { PostContent, PostInfo } from "~/components/PostView";
+import { PostContent, PostInfo, PostView } from "~/components/PostView";
 import PostWizard from "~/components/PostWizard";
 import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
@@ -43,16 +44,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 
 			<PageLayout>
 				<div className=" flex w-full flex-col items-center justify-center p-2">
-					<div className="rounded-box flex h-fit w-full grow flex-row gap-4 border border-b-0 border-base-200 border-primary p-4">
-						<div className="shrink-0 grow-0 w-12 h-12">
-							<UserAvatar profile={author} />
-						</div>
-
-						<div className="flex max-w-lg grow flex-col">
-							<PostInfo post={post} />
-							<PostContent post={post} collapsed={false} />
-						</div>
-					</div>
+					<PostView post={post} />
 
 					<div className="flex w-full flex-row ">
 						<div className="place-end my-1 flex grow flex-col px-4">

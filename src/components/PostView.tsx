@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import {
+	useState,
+	type Dispatch,
+	type SetStateAction,
+	useEffect,
+	useRef,
+} from "react";
 import { PostMenu } from "./PostMenu";
 
 import { FiEdit2 } from "react-icons/fi";
@@ -15,12 +21,10 @@ import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import Markdown from "./Markdown";
 
-const maxLength = 45 * 3 - 3;
-
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
 	const [collapsed, setCollapsed] = useState(true);
-	const expandable = post.content.length > maxLength;
+	const [clmaped, setClamped] = useState(false);
 
 	return (
 		<div className="flex flex-row gap-4 rounded-box h-min max-w-2xl border border-base-300 p-2 sm:p-4">
@@ -30,12 +34,16 @@ export const PostView = ({ post }: { post: Post }) => {
 			<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
 				<ReplyInfo post={post} />
 				<PostInfo post={post} />
-				<PostContent post={post} collapsed={collapsed} />
+				<PostContent
+					collapsed={collapsed}
+					setIsClamped={setClamped}
+					post={post}
+				/>
 				<MetaInfo post={post} />
 				<PostExtensionButton
 					collapsed={collapsed}
 					setCollapsed={setCollapsed}
-					expandable={expandable}
+					expandable={clmaped}
 				/>
 			</div>
 		</div>
@@ -110,11 +118,19 @@ export const PostInfo = ({ post }: { post: Post }) => {
 export const PostContent = ({
 	post,
 	collapsed,
-}: { post: Post; collapsed: boolean }) => {
+	setIsClamped,
+}: { post: Post; collapsed: boolean; setIsClamped: Dispatch<SetStateAction<boolean>>}) => {
+	const ref = useRef(null);
+
+	useEffect(() => {
+		if (ref.current) setIsClamped(ref.current["scrollHeight"] > ref.current["clientHeight"]);
+	}, [ref]);
+
 	return (
 		<div
+			ref={ref}
 			className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
-				collapsed ? "line-clamp-2" : "line-clamp-none"
+				collapsed ? " line-clamp-2" : "line-clamp-none"
 			}`}
 		>
 			<Markdown content={post.content} />

@@ -11,9 +11,11 @@ interface MarkdownProps {
 function Markdown({ content }: MarkdownProps) {
 	return (
 		<ReactMarkdown
-			className="h-auto prose"
+			className="prose "
 			remarkPlugins={[remarkGfm]}
+      
 			components={{
+        h1: 'h2',
 				code({ node, inline, className, children, ...props }) {
 					const match = /language-(\w+)/.exec(className || "");
 					return !inline && match ? (
