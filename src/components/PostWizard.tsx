@@ -1,5 +1,5 @@
 import { useUser } from "@supabase/auth-helpers-react";
-import { useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
@@ -46,14 +46,23 @@ export default function PostWizard({
 				toast.error(error);
 			},
 		});
-
-	const onSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
+	const submitPost = () => {
 		createPost({
 			content: input,
 			threadName: thread,
 			repliedToId: replyingTo,
 		});
+	};
+
+	const onSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		submitPost();
+	};
+
+	const onKeyDownTextarea = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+		if (event.key === "Enter" && event.ctrlKey) {
+			submitPost();
+		}
 	};
 
 	const postButton = isPosting ? (
@@ -71,8 +80,9 @@ export default function PostWizard({
 			{user && <PostWizardAuthed userId={user.id} />}
 			<form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
 				<textarea
-					className="border-base-300 textarea textarea-xs textarea-bordered shrink grow"
+					className="border-base-300 textarea textarea-xs text-base h-4 textarea-bordered shrink grow"
 					placeholder={placeholder}
+					onKeyDown={(e) => onKeyDownTextarea(e)}
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
 					disabled={isPosting}
