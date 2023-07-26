@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { PageLayout } from "~/components/Layout";
 import { CollapsedContext } from "~/components/Menu";
-import { GlobalThreads, UserThreads } from "~/components/Threads";
+import { GlobalThreads } from "~/components/Threads";
 
 const ThreadsPage = () => {
 	return (
@@ -19,7 +19,6 @@ const ThreadsPage = () => {
 						</Link>
 						<div className="w-full">
 							<GlobalThreads />
-							<UserThreads />
 						</div>
 					</div>
 				</CollapsedContext.Provider>
