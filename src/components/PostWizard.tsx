@@ -17,9 +17,13 @@ export default function PostWizard({
 	const thread = replyingTo
 		? undefined
 		: router.asPath.split("/")[2] ?? "global";
+	const textarea = useRef<HTMLTextAreaElement>(null);
 
 	const { mutate: createPost, isLoading: isPosting } =
 		api.posts.create.useMutation({
+			onSettled: (e) => {
+				updateHeight();
+			},
 			onSuccess: async () => {
 				setInput("");
 				await ctx.posts.invalidate();
@@ -46,6 +50,7 @@ export default function PostWizard({
 				toast.error(error);
 			},
 		});
+
 	const submitPost = () => {
 		createPost({
 			content: input,
@@ -54,40 +59,51 @@ export default function PostWizard({
 		});
 	};
 
-	const onSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		submitPost();
+	const updateHeight = () => {
+		if (textarea.current) {
+			console.log("here");
+			textarea.current.style.height = "auto";
+			textarea.current.style.height = `${textarea.current.scrollHeight}px`;
+		}
 	};
 
-	const onKeyDownTextarea = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+	const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
 		if (event.key === "Enter" && event.ctrlKey) {
 			submitPost();
 		}
 	};
 
-	const postButton = isPosting ? (
-		<div className="btn-outline loading btn-circle btn" />
-	) : (
-		input !== "" && (
-			<button className="btn-outline btn-primary btn w-16" type="submit">
-				Twot
-			</button>
-		)
-	);
+	const onInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+		setInput(event.target.value);
+		updateHeight();
+	};
 
 	return (
 		<GlassBar>
 			{user && <PostWizardAuthed userId={user.id} />}
-			<form className="flex w-full flex-row gap-4" onSubmit={onSubmit}>
+			<form
+				className="flex w-full flex-row gap-4"
+				onSubmit={(_e) => submitPost()}
+			>
 				<textarea
-					className="border-base-300 textarea textarea-xs text-base h-4 textarea-bordered shrink grow"
+					ref={textarea}
+					className="textarea min-h-2 text-base h-2 overflow-hidden resize-none shrink grow"
+					rows={1}
 					placeholder={placeholder}
-					onKeyDown={(e) => onKeyDownTextarea(e)}
+					onKeyDown={onKeyDown}
+					onChange={onInputChange}
 					value={input}
-					onChange={(e) => setInput(e.target.value)}
 					disabled={isPosting}
 				/>
-				{postButton}
+				{isPosting ? (
+					<div className="btn-outline loading btn-circle btn" />
+				) : (
+					input !== "" && (
+						<button className="btn-outline btn-primary btn w-16" type="submit">
+							Twot
+						</button>
+					)
+				)}
 			</form>
 		</GlassBar>
 	);
