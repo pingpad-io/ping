@@ -19,8 +19,9 @@ import ModalWizard from "./ModalWizard";
 import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
 import { SignedOut } from "./Signed";
-import { ThreadLink } from "./ThreadLink";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { AtSign, HomeIcon } from "lucide-react";
 
 export const CollapsedContext = createContext(false);
 
@@ -45,16 +46,12 @@ export default function Menu() {
 				<div className="flex flex-col items-end gap-2">
 					<div className="flex flex-row gap-2">
 						<Link href="/">
-							<MenuItem
-								text={"Twotter"}
-								className="font-bold"
-								icon={<OtterIcon />}
-							/>
+							<Button variant="ghost" className="text-2xl">ping<AtSign className="ml-2"/></Button>
 						</Link>
 					</div>
 
 					<Link href="/">
-						<MenuItem text={"Home"} icon={<FiHome />} />
+							<Button variant="ghost" className="text-2xl">home<HomeIcon className="ml-2"/></Button>
 					</Link>
 
 					<div className="flex flex-col md:hidden">

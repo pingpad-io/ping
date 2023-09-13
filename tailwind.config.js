@@ -4,8 +4,9 @@ module.exports = {
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    "./src/pages/**/*.{ts,tsx}",
+		"./src/components/**/*.{ts,tsx}",
 	],
   theme: {
     container: {
@@ -16,6 +17,56 @@ module.exports = {
       },
     },
     extend: {
+			typography: (theme) => ({
+				DEFAULT: {
+					css: {
+						lineHeight: 0,	
+						h1: {
+							fontSize: theme("fontSize.2xl"),
+							fontWeight: theme("fontWeight.bold"),
+							marginBottom: theme("spacing.4"),
+						},
+						h2: {
+							fontSize: theme("fontSize.2xl"),
+							fontWeight: theme("fontWeight.bold"),
+							marginBottom: theme("spacing.4"),
+						},
+						input: {
+							lineHeight: 1,
+							marginTop: 0,
+							marginBottom: 0,
+						},
+						p: {
+							lineHeight: 1.25,
+							marginTop: 0,
+							marginBottom: 0,
+						},
+						li: {
+							lineHeight: 1,
+							marginTop: 0,
+							marginBottom: 0,
+						},
+						ol: {
+							marginTop: 0,
+							marginBottom: 0,
+							gap: 0,
+						},
+						ul: {
+							lineHeight: 1,
+							marginTop: 0,
+							marginBottom: 0,
+							gap: 0,
+						},
+						table: {
+							marginTop: 0,
+							marginBottom: 0,
+						},
+					},
+				},
+			}),
+      lineHeight: {
+        none: '0',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -72,5 +123,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 }

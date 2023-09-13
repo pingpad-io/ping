@@ -12,7 +12,10 @@
 	},
 	"dependencies": {
 		"@headlessui/react": "^1.7.14",
+		"@hookform/resolvers": "^3.3.1",
 		"@prisma/client": "^4.14.1",
+		"@radix-ui/react-label": "^2.0.2",
+		"@radix-ui/react-slot": "^1.0.2",
 		"@reduxjs/toolkit": "^1.9.5",
 		"@supabase/auth-helpers-nextjs": "^0.6.1",
 		"@supabase/auth-helpers-react": "^0.3.1",
@@ -37,6 +40,7 @@
 		"next-themes": "^0.2.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
+		"react-hook-form": "^7.46.1",
 		"react-hot-toast": "^2.4.0",
 		"react-icons": "^4.8.0",
 		"react-markdown": "^8.0.7",
@@ -49,7 +53,7 @@
 		"tailwind-merge": "^1.14.0",
 		"tailwindcss-animate": "^1.0.7",
 		"theme-change": "^2.5.0",
-		"zod": "^3.20.6"
+		"zod": "^3.22.2"
 	},
 	"devDependencies": {
 		"@tailwindcss/typography": "^0.5.9",
