@@ -1,4 +1,4 @@
-# Twotter - an anonymised twitter
+# Ping - minimalist microblogging platform 
 
 Available at **[twot.kualta.dev](https://twot.kualta.dev)**
 
