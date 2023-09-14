@@ -6,13 +6,13 @@ const ConditionsPage = () => {
   return (
     <>
       <Head>
-        <title>Twotter TOS</title>
+        <title>Ping TOS</title>
       </Head>
 
       <PageLayout>
         <div className="prose p-8 lg:prose-lg">
           <h2>Terms of Service</h2>
-          <p>By using Twotter, you agree to comply with the following legally binding terms and conditions:</p>
+          <p>By using Ping, you agree to comply with the following legally binding terms and conditions:</p>
 
           <h4>1. Compliance with Laws</h4>
           <p>
@@ -48,7 +48,7 @@ const ConditionsPage = () => {
 
           <p>
             By using our app, you acknowledge and agree to these terms and conditions. If you do not agree to these terms, please refrain
-            from using Twotter.
+            from using Ping.
           </p>
         </div>
       </PageLayout>

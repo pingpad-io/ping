@@ -100,7 +100,7 @@ export default function PostWizard({
 				) : (
 					input !== "" && (
 						<button className="btn-outline btn-primary btn w-16" type="submit">
-							Twot
+							Post
 						</button>
 					)
 				)}

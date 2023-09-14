@@ -10,14 +10,14 @@ import { Toaster } from "react-hot-toast";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
-function Twotter({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
+function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 
   return (
       <SessionContextProvider supabaseClient={supabaseClient} initialSession={pageProps.initialSession}>
         <ThemeProvider defaultTheme="cupcake">
           <Head>
-            <title>Twotter</title>
+            <title>Ping</title>
             <meta name="description" content="an anonymised twitter" />
             <link rel="icon" ref="/favicon.ico" />
           </Head>
@@ -31,4 +31,4 @@ function Twotter({ Component, pageProps }: AppProps<{ initialSession: Session }>
   );
 }
 
-export default api.withTRPC(Twotter);
+export default api.withTRPC(Ping);

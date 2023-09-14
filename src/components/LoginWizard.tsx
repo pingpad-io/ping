@@ -11,7 +11,7 @@ const LoginWizard = () => {
       <div className="flex flex-row items-center justify-center gap-2 text-lg font-semibold">
         <h3>Sign in to </h3>
         <OtterIcon size={25} />
-        <h3>Twotter</h3>
+        <h3>Ping</h3>
       </div>
       <div className="">
         <Auth

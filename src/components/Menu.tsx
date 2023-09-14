@@ -80,13 +80,13 @@ export default function Menu() {
 					</SignedOut>
 
 					<ModalWizard
-						wizardChildren={<PostWizard placeholder="write a new twot..." />}
+						wizardChildren={<PostWizard placeholder="write a new ping..." />}
 					>
 						<MenuItem
 							className={`my-2 border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ${
 								isCollapsed ? "" : "pl-2 sm:pl-3 lg:pl-10"
 							} `}
-							text={"Twot"}
+							text={"Ping"}
 							icon={<RiQuillPenLine size={24} />}
 						/>
 					</ModalWizard>

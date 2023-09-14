@@ -20,7 +20,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 	if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
 
 	const isUserProfile = profile?.id === user?.id;
-	const title = `Twotter (@${profile.username ?? ""})`;
+	const title = `Ping (@${profile.username ?? ""})`;
 
 	return (
 		<>

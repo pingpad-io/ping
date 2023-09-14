@@ -161,8 +161,8 @@ export const postsRouter = createTRPCRouter({
 			z.object({
 				content: z
 					.string()
-					.min(1, "Your twot must be longer")
-					.max(300, "Your twot must be less than 300 characters long"),
+					.min(1, "Your post must be longer")
+					.max(300, "Your post must be less than 300 characters long"),
 				threadName: z.string().optional(),
 				repliedToId: z.string().uuid().optional(),
 			}),
@@ -253,7 +253,7 @@ function assertPostStatus(post: Post | null | undefined) {
 	if (post.status === "UserDeleted") {
 		throw new TRPCError({
 			code: "NOT_FOUND",
-			message: "This twot was deleted by the user.",
+			message: "This post was deleted by the user.",
 			cause: "the user",
 		});
 	}
@@ -261,7 +261,7 @@ function assertPostStatus(post: Post | null | undefined) {
 	if (post.status === "AdminDeleted") {
 		throw new TRPCError({
 			code: "NOT_FOUND",
-			message: "This twot was deleted by the moderation team.",
+			message: "This post was deleted by the moderation team.",
 			cause: "the moderation team",
 		});
 	}

@@ -12,7 +12,7 @@ const ThreadPage = ({ thread }: { thread: string }) => {
 	return (
 		<PageLayout>
 			<div className="sticky top-0 z-10 flex w-full flex-col">
-				<PostWizard placeholder="write a new twot..." />
+				<PostWizard placeholder="write a new post..." />
 				<ThreadDivider />
 			</div>
 			<div className="px-2">
