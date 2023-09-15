@@ -5,11 +5,14 @@ import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { BsPlus, BsStar } from "react-icons/bs";
-import ModalWizard from "./ModalWizard";
 import { ThreadLink } from "./ThreadLink";
 import ThreadWizard from "./ThreadWizard";
 import { Thread } from "~/server/api/routers/threads";
 import { useRouter } from "next/router";
+import { Dialog, DialogTrigger } from "./ui/dialog";
+import { PlusIcon } from "lucide-react";
+import { DialogContent } from "@radix-ui/react-dialog";
+import { Button } from "./ui/button";
 
 export function GlobalThreads() {
 	const { data: threads } = api.threads.get.useQuery({});
@@ -80,9 +83,16 @@ export default function Threads() {
 				<Link href={"/t"} className="card-title">
 					Threads
 				</Link>
-				<ModalWizard wizardChildren={<ThreadWizard />}>
-					<BsPlus size={27} />
-				</ModalWizard>
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button variant="ghost" size="icon">
+							<PlusIcon />
+						</Button>
+					</DialogTrigger>
+					<DialogContent>
+						<ThreadWizard />
+					</DialogContent>
+				</Dialog>
 			</div>
 			<div className="card-content">
 				<GlobalThreads />

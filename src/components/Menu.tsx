@@ -2,6 +2,14 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { createContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/src/components/ui/dialog";
+import {
 	FiBell,
 	FiHome,
 	FiLogIn,
@@ -15,7 +23,6 @@ import { api } from "~/utils/api";
 import { OtterIcon } from "./Icons";
 import LoginWizard from "./LoginWizard";
 import { MenuItem } from "./MenuItem";
-import ModalWizard from "./ModalWizard";
 import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
 import { SignedOut } from "./Signed";
@@ -25,6 +32,7 @@ import {
 	AtSign,
 	BellIcon,
 	HomeIcon,
+	LogInIcon,
 	LogOutIcon,
 	MailIcon,
 	MessagesSquareIcon,
@@ -56,7 +64,7 @@ export default function Menu() {
 				<div className="flex flex-col items-end gap-2">
 					<div className="flex flex-row gap-2">
 						<Link href="/">
-							<Button variant="ghost" >
+							<Button variant="ghost">
 								ping
 								<AtSign className="ml-2" />
 							</Button>
@@ -64,7 +72,7 @@ export default function Menu() {
 					</div>
 
 					<Link href="/">
-						<Button variant="ghost" >
+						<Button variant="ghost">
 							home
 							<HomeIcon className="ml-2" />
 						</Button>
@@ -75,21 +83,33 @@ export default function Menu() {
 					</div>
 
 					{user && <MenuAuthed userId={user.id} />}
-					{!user && 
-						<ModalWizard wizardChildren={<LoginWizard />}>
-							<Button  variant="ghost" >
-								sign in
-								<AtSign className="ml-2" />
-							</Button>
-							<MenuItem
-								className="dropdown-right dropdown dropdown-hover"
-								text={"Sign In"}
-								icon={<FiLogIn />}
-							/>
-						</ModalWizard>
-					} 
+					{
+						!user && (
+							<Dialog>
+								<DialogTrigger asChild>
+									<Button variant="ghost">
+										sign in
+										<LogInIcon className="ml-2" />
+									</Button>
+								</DialogTrigger>
+								<DialogContent>
+									{/* <DialogTitle>
+										<h3 className="text-center">Sign in to Ping </h3>
+									</DialogTitle> */}
+									<LoginWizard />
+								</DialogContent>
+							</Dialog>
+						)
+						// <ModalWizard wizardChildren={<LoginWizard />}>
+						// 	<MenuItem
+						// 		className="dropdown-right dropdown dropdown-hover"
+						// 		text={"Sign In"}
+						// 		icon={<FiLogIn />}
+						// 	/>
+						// </ModalWizard>
+					}
 
-					<ModalWizard
+					{/* <ModalWizard
 						wizardChildren={<PostWizard placeholder="write a new ping..." />}
 					>
 						<MenuItem
@@ -99,7 +119,7 @@ export default function Menu() {
 							text={"Ping"}
 							icon={<RiQuillPenLine size={24} />}
 						/>
-					</ModalWizard>
+					</ModalWizard> */}
 				</div>
 			</div>
 		</CollapsedContext.Provider>
@@ -123,11 +143,11 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 
 	return (
 		<>
-			<Button variant="ghost" >
+			<Button variant="ghost">
 				messages
 				<MailIcon className="ml-2" />
 			</Button>
-			<Button variant="ghost" >
+			<Button variant="ghost">
 				notifications
 				<BellIcon className="ml-2" />
 			</Button>
@@ -137,7 +157,7 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 					<UserIcon className="ml-2" />
 				</Button>
 			</Link>
-			<Button variant="ghost" >
+			<Button variant="ghost">
 				settings
 				<SettingsIcon className="ml-2" />
 			</Button>
