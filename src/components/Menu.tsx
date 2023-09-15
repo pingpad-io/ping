@@ -20,8 +20,18 @@ import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
 import { SignedOut } from "./Signed";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { AtSign, HomeIcon } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import {
+	AtSign,
+	BellIcon,
+	HomeIcon,
+	LogOutIcon,
+	MailIcon,
+	MessagesSquareIcon,
+	SettingsIcon,
+	User2Icon,
+	UserIcon,
+} from "lucide-react";
 
 export const CollapsedContext = createContext(false);
 
@@ -46,38 +56,38 @@ export default function Menu() {
 				<div className="flex flex-col items-end gap-2">
 					<div className="flex flex-row gap-2">
 						<Link href="/">
-							<Button variant="ghost" className="text-2xl">ping<AtSign className="ml-2"/></Button>
+							<Button variant="ghost" >
+								ping
+								<AtSign className="ml-2" />
+							</Button>
 						</Link>
 					</div>
 
 					<Link href="/">
-							<Button variant="ghost" className="text-2xl">home<HomeIcon className="ml-2"/></Button>
+						<Button variant="ghost" >
+							home
+							<HomeIcon className="ml-2" />
+						</Button>
 					</Link>
 
 					<div className="flex flex-col md:hidden">
 						<SidebarButtons />
 					</div>
 
-					{user && (
-						<>
-							<MenuAuthed userId={user.id} />
-							<MenuItem
-								onClick={() => signOut()}
-								text={"Sign out"}
-								icon={<FiLogOut />}
-							/>
-						</>
-					)}
-
-					<SignedOut>
+					{user && <MenuAuthed userId={user.id} />}
+					{!user && 
 						<ModalWizard wizardChildren={<LoginWizard />}>
+							<Button  variant="ghost" >
+								sign in
+								<AtSign className="ml-2" />
+							</Button>
 							<MenuItem
 								className="dropdown-right dropdown dropdown-hover"
 								text={"Sign In"}
 								icon={<FiLogIn />}
 							/>
 						</ModalWizard>
-					</SignedOut>
+					} 
 
 					<ModalWizard
 						wizardChildren={<PostWizard placeholder="write a new ping..." />}
@@ -100,24 +110,42 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 	const { data: profile } = api.profiles.get.useQuery({
 		id: userId,
 	});
+	const supabase = useSupabaseClient();
+	const ctx = api.useContext();
+	const user = useUser();
+
+	const signOut = () => {
+		void ctx.invalidate();
+		void supabase.auth.signOut();
+	};
 
 	const todo = () => toast.error("Not implemented yet");
 
 	return (
 		<>
-			<MenuItem onClick={todo} href={"/"} text={"Messages"} icon={<FiMail />} />
-			<MenuItem
-				onClick={todo}
-				href={"/"}
-				text={"Notifications"}
-				icon={<FiBell />}
-			/>
-			<MenuItem
-				href={profile?.username ? `/${profile.username}` : undefined}
-				text={"Profile"}
-				icon={<FiUser />}
-			/>
-			<MenuItem href="/settings" text={"Settings"} icon={<FiSettings />} />
+			<Button variant="ghost" >
+				messages
+				<MailIcon className="ml-2" />
+			</Button>
+			<Button variant="ghost" >
+				notifications
+				<BellIcon className="ml-2" />
+			</Button>
+			<Link href={`${profile?.username ? `/${profile.username}` : undefined}`}>
+				<Button variant="ghost">
+					profile
+					<UserIcon className="ml-2" />
+				</Button>
+			</Link>
+			<Button variant="ghost" >
+				settings
+				<SettingsIcon className="ml-2" />
+			</Button>
+
+			<Button variant="ghost" onClick={() => signOut()}>
+				sign out
+				<LogOutIcon className="ml-2" />
+			</Button>
 		</>
 	);
 };

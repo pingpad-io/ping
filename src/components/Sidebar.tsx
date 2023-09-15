@@ -7,7 +7,7 @@ import { ThreadLink } from "./ThreadLink";
 import Threads from "./Threads";
 import { useRouter } from "next/router";
 import { SearchBar } from "./SearchBar";
-import { Button } from "@/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { SearchIcon } from "lucide-react";
 
 const Links = () => {
@@ -61,7 +61,10 @@ export const SidebarButtons = () => {
 					</div>
 					<div className="xl:hidden">
 						<Link href={"/search"}>
-							<Button variant="ghost" className="text-2xl">search<SearchIcon className="ml-2"/></Button>
+							<Button variant="ghost" className="text-2xl">
+								search
+								<SearchIcon className="ml-2" />
+							</Button>
 						</Link>
 					</div>
 				</>

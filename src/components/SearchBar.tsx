@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { FiSearch } from "react-icons/fi";
 import { MenuItem } from "~/components/MenuItem";
-import { Input } from "@/components/ui/input";
+import { Input } from "~/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
+import { Button } from "~/components/ui/button";
 
 export const SearchBar = ({ defaultText }: { defaultText: string }) => {
 	const router = useRouter();

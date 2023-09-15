@@ -7,7 +7,7 @@ import ErrorPage from "~/components/ErrorPage";
 import Link from "next/link";
 import { SearchBar } from "../../components/SearchBar";
 import { GlassBar } from "~/components/GlassBar";
-import { Button } from "@/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 
 export default function SearchPage() {
