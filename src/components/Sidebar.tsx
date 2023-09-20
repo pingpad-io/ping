@@ -53,7 +53,7 @@ export const SidebarButtons = () => {
 	const pathname = router.pathname;
 
 	return (
-		<CollapsedContext.Provider value={true}>
+		<div>
 			{pathname !== "/search" && (
 				<>
 					<div className="hidden xl:flex">
@@ -71,7 +71,7 @@ export const SidebarButtons = () => {
 			)}
 			<ThreadsBar />
 			<Links />
-		</CollapsedContext.Provider>
+		</div>
 	);
 };
 

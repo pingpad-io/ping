@@ -21,7 +21,7 @@ import {
 import { RiQuillPenLine } from "react-icons/ri";
 import { api } from "~/utils/api";
 import { OtterIcon } from "./Icons";
-import LoginWizard from "./LoginWizard";
+import PingAuth from "./Auth";
 import { MenuItem } from "./MenuItem";
 import PostWizard from "./PostWizard";
 import { SidebarButtons } from "./Sidebar";
@@ -71,43 +71,27 @@ export default function Menu() {
 						</Link>
 					</div>
 
-					<Link href="/">
-						<Button variant="ghost">
-							home
-							<HomeIcon className="ml-2" />
-						</Button>
-					</Link>
-
 					<div className="flex flex-col md:hidden">
 						<SidebarButtons />
 					</div>
 
 					{user && <MenuAuthed userId={user.id} />}
-					{
-						!user && (
-							<Dialog>
-								<DialogTrigger asChild>
-									<Button variant="ghost">
-										sign in
-										<LogInIcon className="ml-2" />
-									</Button>
-								</DialogTrigger>
-								<DialogContent>
-									{/* <DialogTitle>
-										<h3 className="text-center">Sign in to Ping </h3>
-									</DialogTitle> */}
-									<LoginWizard />
-								</DialogContent>
-							</Dialog>
-						)
-						// <ModalWizard wizardChildren={<LoginWizard />}>
-						// 	<MenuItem
-						// 		className="dropdown-right dropdown dropdown-hover"
-						// 		text={"Sign In"}
-						// 		icon={<FiLogIn />}
-						// 	/>
-						// </ModalWizard>
-					}
+					{!user && (
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button variant="ghost">
+									sign in
+									<LogInIcon className="ml-2" />
+								</Button>
+							</DialogTrigger>
+							<DialogContent className="sm:max-w-[350px]">
+								<DialogTitle>
+									<h3 className="text-center">Sign in to Ping </h3>
+								</DialogTitle>
+								<PingAuth />
+							</DialogContent>
+						</Dialog>
+					)}
 
 					{/* <ModalWizard
 						wizardChildren={<PostWizard placeholder="write a new ping..." />}
