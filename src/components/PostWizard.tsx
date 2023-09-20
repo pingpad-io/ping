@@ -1,10 +1,32 @@
+"use client";
+
 import { useUser } from "@supabase/auth-helpers-react";
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
+import {
+	FormEventHandler,
+	KeyboardEvent,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import toast, { LoaderIcon } from "react-hot-toast";
 import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
 import { GlassBar } from "./GlassBar";
 import { useRouter } from "next/router";
+import { Textarea } from "./ui/textarea";
+import { Button } from "./ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/src/components/ui/form";
 
 export default function PostWizard({
 	placeholder,
@@ -51,61 +73,82 @@ export default function PostWizard({
 			},
 		});
 
-	const submitPost = () => {
-		createPost({
-			content: input,
-			threadName: thread,
-			repliedToId: replyingTo,
-		});
-	};
-
 	const updateHeight = () => {
 		if (textarea.current) {
-			console.log("here");
 			textarea.current.style.height = "auto";
 			textarea.current.style.height = `${textarea.current.scrollHeight}px`;
 		}
 	};
 
-	const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-		if (event.key === "Enter" && event.ctrlKey) {
-			submitPost();
-		}
-	};
+	const FormSchema = z.object({
+		content: z.string().max(3000, {
+			message: "Post must not be longer than 3000 characters.",
+		}),
+	});
 
-	const onInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-		setInput(event.target.value);
+	const form = useForm<z.infer<typeof FormSchema>>({
+		resolver: zodResolver(FormSchema),
+	});
+
+	const content = form.getValues().content;
+
+	function onSubmit(data: z.infer<typeof FormSchema>) {
+		createPost({
+			content: data.content,
+			threadName: thread,
+			repliedToId: replyingTo,
+		});
+	}
+
+	const onChange = () => {
 		updateHeight();
 	};
 
+	const onKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
+		if (event.key === "Enter" && event.ctrlKey) {
+			// FIXME: it doesn't work
+			form.handleSubmit(onSubmit);
+		}
+	};
+
 	return (
-		<GlassBar>
-			{user && <PostWizardAuthed userId={user.id} />}
-			<form
-				className="flex w-full flex-row gap-4"
-				onSubmit={(_e) => submitPost()}
-			>
-				<textarea
-					ref={textarea}
-					className="textarea min-h-2 text-base h-2 overflow-hidden resize-none shrink grow"
-					rows={1}
-					placeholder={placeholder}
+		<div className="w-full">
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					onChange={onChange}
 					onKeyDown={onKeyDown}
-					onChange={onInputChange}
-					value={input}
-					disabled={isPosting}
-				/>
-				{isPosting ? (
-					<div className="btn-outline loading btn-circle btn" />
-				) : (
-					input !== "" && (
-						<button className="btn-outline btn-primary btn w-16" type="submit">
-							Post
-						</button>
-					)
-				)}
-			</form>
-		</GlassBar>
+					className="flex flex-row gap-2 p-4 w-full "
+				>
+					{user && <PostAvatar userId={user.id} />}
+					<FormField
+						control={form.control}
+						name="content"
+						render={({ field }) => (
+							<FormItem className="flex flex-row w-full gap-2">
+								<FormControl>
+									<Textarea
+										{...field}
+										placeholder={placeholder}
+										disabled={isPosting}
+										className="min-h-2 resize-none"
+										ref={textarea}
+										rows={1}
+									/>
+								</FormControl>
+							</FormItem>
+						)}
+					/>
+					{isPosting ? (
+						<Button size="icon">
+							<LoaderIcon />
+						</Button>
+					) : (
+						content && <Button type="submit">Post</Button>
+					)}
+				</form>
+			</Form>
+		</div>
 	);
 }
 
@@ -120,7 +163,7 @@ export const ThreadDivider = () => {
 	);
 };
 
-export const PostWizardAuthed = ({ userId }: { userId: string }) => {
+export const PostAvatar = ({ userId }: { userId: string }) => {
 	const { data: profile } = api.profiles.get.useQuery({
 		id: userId,
 	});

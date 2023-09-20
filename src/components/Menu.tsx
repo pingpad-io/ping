@@ -36,6 +36,7 @@ import {
 	LogOutIcon,
 	MailIcon,
 	MessagesSquareIcon,
+	PenIcon,
 	SettingsIcon,
 	User2Icon,
 	UserIcon,
@@ -55,33 +56,31 @@ export default function Menu() {
 	};
 
 	return (
-		<CollapsedContext.Provider value={isCollapsed}>
 			<div
 				className={
 					"sticky top-0 flex h-screen w-max shrink flex-col place-content-between py-4 text-2xl sm:px-2 lg:w-56"
 				}
 			>
 				<div className="flex flex-col items-end gap-2">
-					<div className="flex flex-row gap-2">
-						<Link href="/">
-							<Button variant="ghost">
-								ping
-								<AtSign className="ml-2" />
-							</Button>
-						</Link>
-					</div>
+					<Link href="/">
+						<Button variant="ghost">
+							<div className="hidden sm:flex">ping</div>
+							<AtSign className="sm:ml-2" />
+						</Button>
+					</Link>
 
 					<div className="flex flex-col md:hidden">
 						<SidebarButtons />
 					</div>
 
-					{user && <MenuAuthed userId={user.id} />}
-					{!user && (
+					{user ? (
+						<MenuAuthed userId={user.id} />
+					) : (
 						<Dialog>
 							<DialogTrigger asChild>
 								<Button variant="ghost">
-									sign in
-									<LogInIcon className="ml-2" />
+									<div className="hidden sm:flex">sign in</div>
+									<LogInIcon className="sm:ml-2" />
 								</Button>
 							</DialogTrigger>
 							<DialogContent className="sm:max-w-[350px]">
@@ -93,20 +92,19 @@ export default function Menu() {
 						</Dialog>
 					)}
 
-					{/* <ModalWizard
-						wizardChildren={<PostWizard placeholder="write a new ping..." />}
-					>
-						<MenuItem
-							className={`my-2 border-2 border-primary font-bold text-primary hover:border-primary-focus hover:text-primary-focus ${
-								isCollapsed ? "" : "pl-2 sm:pl-3 lg:pl-10"
-							} `}
-							text={"Ping"}
-							icon={<RiQuillPenLine size={24} />}
-						/>
-					</ModalWizard> */}
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button variant="ghost">
+									<div className="hidden sm:flex">post</div>
+									<PenIcon className="sm:ml-2" />
+								</Button>
+							</DialogTrigger>
+							<DialogContent className="sm:max-w-[700px]">
+								<PostWizard placeholder="Write a new post..." />
+							</DialogContent>
+						</Dialog>
 				</div>
 			</div>
-		</CollapsedContext.Provider>
 	);
 }
 
@@ -128,27 +126,27 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 	return (
 		<>
 			<Button variant="ghost">
-				messages
-				<MailIcon className="ml-2" />
+				<div className="hidden sm:flex">messages</div>
+				<MailIcon className="sm:ml-2" />
 			</Button>
 			<Button variant="ghost">
-				notifications
-				<BellIcon className="ml-2" />
+				<div className="hidden sm:flex">notifications</div>
+				<BellIcon className="sm:ml-2" />
 			</Button>
 			<Link href={`${profile?.username ? `/${profile.username}` : undefined}`}>
 				<Button variant="ghost">
-					profile
-					<UserIcon className="ml-2" />
+					<div className="hidden sm:flex">profile</div>
+					<UserIcon className="sm:ml-2" />
 				</Button>
 			</Link>
 			<Button variant="ghost">
-				settings
-				<SettingsIcon className="ml-2" />
+				<div className="hidden sm:flex">settings</div>
+				<SettingsIcon className="sm:ml-2" />
 			</Button>
 
 			<Button variant="ghost" onClick={() => signOut()}>
-				sign out
-				<LogOutIcon className="ml-2" />
+				<div className="hidden sm:flex">sign out</div>
+				<LogOutIcon className="sm:ml-2" />
 			</Button>
 		</>
 	);

@@ -12,24 +12,21 @@ export function UserAvatar({
 }) {
 	if (!profile || !profile.avatar_url || !profile.username)
 		return (
-			<div className={`${online ? "online" : ""} avatar`}>
-				<div className="aspect-w-1 aspect-h-1 shrink-0 grow-0 rounded-full" />
-			</div>
+			<div className="aspect-w-1 aspect-h-1 shrink-0 grow-0 rounded-full" />
 		);
 
 	return (
-		<div className={`avatar ${online ? "online" : ""}`}>
-			<div className="aspect-w-1 aspect-h-1 w-full h-full shrink-0 grow-0 rounded-full">
-				<Link href={`/${profile.username}`}>
-					<Image
-						src={profile.avatar_url}
-						alt={`${profile.username}'s profile image`}
-						width={size}
-						height={size}
-						placeholder="empty"
-					/>
-				</Link>
-			</div>
+		<div className="aspect-w-1 aspect-h-1 w-full h-full shrink-0 grow-0">
+			<Link href={`/${profile.username}`}>
+				<Image
+					className="rounded-full"
+					src={profile.avatar_url}
+					alt={`${profile.username}'s profile image`}
+					width={size}
+					height={size}
+					placeholder="empty"
+				/>
+			</Link>
 		</div>
 	);
 }
