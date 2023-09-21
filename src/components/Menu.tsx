@@ -69,7 +69,7 @@ export default function Menu() {
 						</Button>
 					</Link>
 
-					<div className="flex flex-col md:hidden">
+					<div className="flex flex-col items-end gap-2 md:hidden">
 						<SidebarButtons />
 					</div>
 
@@ -125,6 +125,12 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 
 	return (
 		<>
+			<Link href={`${profile?.username ? `/${profile.username}` : undefined}`}>
+				<Button variant="ghost">
+					<div className="hidden sm:flex">profile</div>
+					<UserIcon className="sm:ml-2" />
+				</Button>
+			</Link>
 			<Button variant="ghost">
 				<div className="hidden sm:flex">messages</div>
 				<MailIcon className="sm:ml-2" />
@@ -133,12 +139,6 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 				<div className="hidden sm:flex">notifications</div>
 				<BellIcon className="sm:ml-2" />
 			</Button>
-			<Link href={`${profile?.username ? `/${profile.username}` : undefined}`}>
-				<Button variant="ghost">
-					<div className="hidden sm:flex">profile</div>
-					<UserIcon className="sm:ml-2" />
-				</Button>
-			</Link>
 			<Button variant="ghost">
 				<div className="hidden sm:flex">settings</div>
 				<SettingsIcon className="sm:ml-2" />

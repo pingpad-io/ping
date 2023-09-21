@@ -8,7 +8,7 @@ import Threads from "./Threads";
 import { useRouter } from "next/router";
 import { SearchBar } from "./SearchBar";
 import { Button } from "~/components/ui/button";
-import { SearchIcon } from "lucide-react";
+import { MessagesSquare, SearchIcon } from "lucide-react";
 
 const Links = () => {
 	return (
@@ -34,15 +34,13 @@ const Links = () => {
 const ThreadsBar = () => {
 	return (
 		<>
-			<div className="rounded-box hidden bg-base-200 xl:flex">
-				<Threads />
-			</div>
+			<Button variant="ghost" className="xl:hidden">
+				<div className="hidden sm:flex text-2xl">threads</div>
+				<MessagesSquare className="sm:ml-2" />
+			</Button>
 
-			<div className="flex flex-col gap-2 xl:hidden">
-				<MenuItem href="/t" icon={<BiMessageSquareDetail size={24} />} />
-				<ThreadLink thread="global">
-					<MenuItem icon={<FiGlobe size={24} />} />
-				</ThreadLink>
+			<div className="hidden xl:flex">
+				<Threads />
 			</div>
 		</>
 	);
@@ -53,25 +51,24 @@ export const SidebarButtons = () => {
 	const pathname = router.pathname;
 
 	return (
-		<div>
+		<>
 			{pathname !== "/search" && (
 				<>
+					<Link href={"/search"} className="xl:hidden text-2xl">
+						<Button variant="ghost">
+							search
+							<SearchIcon className="ml-2" />
+						</Button>
+					</Link>
+
 					<div className="hidden xl:flex">
 						<SearchBar defaultText="" />
-					</div>
-					<div className="xl:hidden">
-						<Link href={"/search"}>
-							<Button variant="ghost" className="text-2xl">
-								search
-								<SearchIcon className="ml-2" />
-							</Button>
-						</Link>
 					</div>
 				</>
 			)}
 			<ThreadsBar />
 			<Links />
-		</div>
+		</>
 	);
 };
 
