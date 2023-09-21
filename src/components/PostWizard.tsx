@@ -1,32 +1,23 @@
 "use client";
 
-import { useUser } from "@supabase/auth-helpers-react";
-import {
-	FormEventHandler,
-	KeyboardEvent,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
-import toast, { LoaderIcon } from "react-hot-toast";
-import { api } from "~/utils/api";
-import { UserAvatar } from "./UserAvatar";
-import { GlassBar } from "./GlassBar";
-import { useRouter } from "next/router";
-import { Textarea } from "./ui/textarea";
-import { Button } from "./ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
-	FormLabel,
-	FormMessage,
 } from "@/src/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useUser } from "@supabase/auth-helpers-react";
+import { useRouter } from "next/router";
+import { KeyboardEvent, useRef } from "react";
+import { useForm } from "react-hook-form";
+import toast, { LoaderIcon } from "react-hot-toast";
+import * as z from "zod";
+import { api } from "~/utils/api";
+import { UserAvatar } from "./UserAvatar";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { SendHorizontalIcon } from "lucide-react";
 
 export default function PostWizard({
 	placeholder,
@@ -75,7 +66,7 @@ export default function PostWizard({
 	const updateHeight = () => {
 		if (textarea.current) {
 			textarea.current.style.height = "auto";
-			textarea.current.style.height = `${textarea.current.scrollHeight}px`;
+			textarea.current.style.height = `${textarea.current.scrollHeight+2}px`;
 		}
 	};
 
@@ -88,8 +79,6 @@ export default function PostWizard({
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 	});
-
-	const content = form.getValues().content;
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
 		createPost({
@@ -111,26 +100,26 @@ export default function PostWizard({
 	};
 
 	return (
-		<div className="w-full">
+		<div className="p-4 backdrop-blur-sm">
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					onChange={onChange}
 					onKeyDown={onKeyDown}
-					className="flex flex-row gap-2 p-4 w-full "
+					className="flex flex-row gap-2 w-full h-fit place-items-end"
 				>
 					{user && <PostAvatar userId={user.id} />}
 					<FormField
 						control={form.control}
 						name="content"
 						render={({ field }) => (
-							<FormItem className="flex flex-row w-full gap-2">
+							<FormItem className="grow">
 								<FormControl>
 									<Textarea
 										{...field}
 										placeholder={placeholder}
 										disabled={isPosting}
-										className="min-h-2 resize-none"
+										className="min-h-12 resize-none"
 										ref={textarea}
 										rows={1}
 									/>
@@ -138,13 +127,11 @@ export default function PostWizard({
 							</FormItem>
 						)}
 					/>
-					{isPosting ? (
+					<FormControl>
 						<Button size="icon">
-							<LoaderIcon />
+							{isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
 						</Button>
-					) : (
-						content && <Button type="submit">Post</Button>
-					)}
+					</FormControl>
 				</form>
 			</Form>
 		</div>
@@ -168,7 +155,7 @@ export const PostAvatar = ({ userId }: { userId: string }) => {
 	});
 
 	return (
-		<div className="w-12 h-12 shrink-0 grow-0">
+		<div className="w-10 h-10 shrink-0 grow-0">
 			<UserAvatar profile={profile} />
 		</div>
 	);

@@ -1,48 +1,34 @@
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
-import { createContext, useState } from "react";
-import { toast } from "react-hot-toast";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
-	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
+	DialogTrigger
 } from "@/src/components/ui/dialog";
-import {
-	FiBell,
-	FiHome,
-	FiLogIn,
-	FiLogOut,
-	FiMail,
-	FiSettings,
-	FiUser,
-} from "react-icons/fi";
-import { RiQuillPenLine } from "react-icons/ri";
-import { api } from "~/utils/api";
-import { OtterIcon } from "./Icons";
-import PingAuth from "./Auth";
-import { MenuItem } from "./MenuItem";
-import PostWizard from "./PostWizard";
-import { SignedOut } from "./Signed";
-import Link from "next/link";
-import { Button } from "~/components/ui/button";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import {
 	AtSign,
 	BellIcon,
-	HomeIcon,
 	LogInIcon,
 	LogOutIcon,
+	LucideSendHorizonal,
 	MailIcon,
 	MessagesSquare,
-	MessagesSquareIcon,
 	PenIcon,
 	SearchIcon,
+	SendHorizonalIcon,
+	SendHorizontalIcon,
+	SendIcon,
 	SettingsIcon,
-	User2Icon,
-	UserIcon,
+	UserIcon
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { createContext } from "react";
+import { toast } from "react-hot-toast";
+import { Button } from "~/components/ui/button";
+import { api } from "~/utils/api";
+import PingAuth from "./Auth";
+import PostWizard from "./PostWizard";
 
 export const CollapsedContext = createContext(false);
 
@@ -110,9 +96,9 @@ export default function Menu() {
 
 				<Dialog>
 					<DialogTrigger asChild>
-						<Button variant="ghost">
+						<Button>
 							<div className="hidden sm:flex">post</div>
-							<PenIcon className="sm:ml-2" />
+							<SendIcon className="sm:ml-2" />
 						</Button>
 					</DialogTrigger>
 					<DialogContent className="sm:max-w-[700px]">

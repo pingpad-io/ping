@@ -5,7 +5,6 @@ import Link from "next/link";
 import { FiCalendar, FiEdit2 } from "react-icons/fi";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
-import { GlassBar } from "~/components/GlassBar";
 import { PageLayout } from "~/components/Layout";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/UserAvatar";
@@ -29,42 +28,40 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 			</Head>
 
 			<PageLayout>
-				<div className="sticky top-0 z-10 border-b border-base-300 bg-base-200/30 ">
-					<GlassBar>
-						<div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 ring rounded-full ring-base-200 ring-offset-1">
-							<UserAvatar profile={profile} />
-						</div>
+				<div className="sticky top-0 p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 backdrop-blur-md">
+					<div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
+						<UserAvatar profile={profile} />
+					</div>
 
-						<div className="flex flex-col grow place-content-around">
-							<div className="flex flex-row gap-2 place-items-center h-6">
-								<div className="text-lg font-bold w-fit truncate">
-									{profile.full_name}
-								</div>
-								{isUserProfile && (
-									<Link
-										className="btn btn-square btn-sm btn-ghost "
-										href="/settings"
-									>
-										<FiEdit2 />
-									</Link>
-								)}
+					<div className="flex flex-col grow place-content-around">
+						<div className="flex flex-row gap-2 place-items-center h-6">
+							<div className="text-lg font-bold w-fit truncate">
+								{profile.full_name}
 							</div>
-							<Link className="grow" href={`/${profile.username ?? ""}`}>
-								<div className="text-sm text-base-content font-light">
-									@{profile.username}
-								</div>
-							</Link>
-							<div className="text-sm text-base-content grow">
-								{profile.description}
-							</div>
-							{profile.created_at && (
-								<div className="text-sm text-base-content flex flex-row gap-1 place-items-center">
-									<FiCalendar />
-									Joined <TimeSince date={profile.created_at} />
-								</div>
+							{isUserProfile && (
+								<Link
+									className="btn btn-square btn-sm btn-ghost "
+									href="/settings"
+								>
+									<FiEdit2 />
+								</Link>
 							)}
 						</div>
-					</GlassBar>
+						<Link className="grow" href={`/${profile.username ?? ""}`}>
+							<div className="text-sm text-base-content font-light">
+								@{profile.username}
+							</div>
+						</Link>
+						<div className="text-sm text-base-content grow">
+							{profile.description}
+						</div>
+						{profile.created_at && (
+							<div className="text-sm text-base-content flex flex-row gap-1 place-items-center">
+								<FiCalendar />
+								Joined <TimeSince date={profile.created_at} />
+							</div>
+						)}
+					</div>
 				</div>
 
 				<div className="px-4 mt-2">

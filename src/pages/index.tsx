@@ -11,8 +11,8 @@ const HomePage = () => {
 	return (
 		<PageLayout>
 			<div className="sticky top-0 z-10 flex w-full flex-col">
-				<PostWizard placeholder="write a new post..." />
-				<ThreadDivider />
+					<PostWizard placeholder="write a new post..." />
+					<ThreadDivider />
 			</div>
 			<div className="px-2">
 				<Feed {...posts} />
@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 	await ssg.posts.get.prefetch({});
 	await ssg.threads.get.prefetch({});
-	await ssg.reactions.get.prefetch({})
+	await ssg.reactions.get.prefetch({});
 
 	return {
 		props: {
