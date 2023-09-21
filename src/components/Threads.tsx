@@ -1,18 +1,15 @@
 import { FiMessageSquare, FiX } from "react-icons/fi";
 import { api } from "~/utils/api";
-import { BiLabel } from "react-icons/bi";
 import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import { BsPlus, BsStar } from "react-icons/bs";
 import { ThreadLink } from "./ThreadLink";
-import ThreadWizard from "./ThreadWizard";
 import { Thread } from "~/server/api/routers/threads";
 import { useRouter } from "next/router";
-import { Dialog, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { PlusIcon } from "lucide-react";
-import { DialogContent } from "@radix-ui/react-dialog";
 import { Button } from "./ui/button";
+import ThreadWizard from "./ThreadWizard";
 
 export function GlobalThreads() {
 	const { data: threads } = api.threads.get.useQuery({});
@@ -78,15 +75,14 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 
 export default function Threads() {
 	return (
-		<div className="card flex-col justify-center p-4 ">
-			<div className="flex gap-4">
-				<Link href={"/t"} className="card-title">
-					Threads
-				</Link>
+		<div className="flex flex-col justify-center p-4 ">
+			<div className="flex flex-row place-items-center gap-4">
+				<Link href={"/t"}>Threads</Link>
+
 				<Dialog>
 					<DialogTrigger asChild>
-						<Button variant="ghost" size="icon">
-							<PlusIcon />
+						<Button size="icon" variant="ghost" className="w-8 h-8">
+							<PlusIcon size="20" />
 						</Button>
 					</DialogTrigger>
 					<DialogContent>
@@ -94,9 +90,8 @@ export default function Threads() {
 					</DialogContent>
 				</Dialog>
 			</div>
-			<div className="card-content">
-				<GlobalThreads />
-			</div>
+
+			<GlobalThreads />
 		</div>
 	);
 }
