@@ -32,7 +32,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 				<div className="sticky top-0 z-10 border-b border-base-300 bg-base-200/30 ">
 					<GlassBar>
 						<div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 ring rounded-full ring-base-200 ring-offset-1">
-							<UserAvatar size={100} profile={profile} />
+							<UserAvatar profile={profile} />
 						</div>
 
 						<div className="flex flex-col grow place-content-around">

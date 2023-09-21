@@ -28,7 +28,7 @@ export const PostView = ({ post }: { post: Post }) => {
 
 	return (
 		<div className="flex flex-row gap-4 rounded-box h-min max-w-2xl border border-base-300 p-2 sm:p-4">
-			<div className="w-8 h-8 shrink-0 grow-0 sm:w-12 sm:h-12 ring rounded-full ring-1 ring-base-300">
+			<div className="w-10 h-10 shrink-0 grow-0 rounded-full">
 				<UserAvatar profile={author} />
 			</div>
 			<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
@@ -119,11 +119,17 @@ export const PostContent = ({
 	post,
 	collapsed,
 	setIsClamped,
-}: { post: Post; collapsed: boolean; setIsClamped: Dispatch<SetStateAction<boolean>>}) => {
+}: {
+	post: Post;
+	collapsed: boolean;
+	setIsClamped: Dispatch<SetStateAction<boolean>>;
+}) => {
 	const ref = useRef(null);
 
 	useEffect(() => {
-		if (ref.current) setIsClamped(ref.current["scrollHeight"] > ref.current["clientHeight"]);
+		if (ref.current)
+			// rome-ignore lint/complexity/useLiteralKeys: intended use
+			setIsClamped(ref.current["scrollHeight"] > ref.current["clientHeight"]);
 	}, [ref]);
 
 	return (

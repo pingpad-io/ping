@@ -32,7 +32,6 @@ export default function PostWizard({
 	placeholder,
 	replyingTo,
 }: { placeholder: string; replyingTo?: string }) {
-	const [input, setInput] = useState("");
 	const ctx = api.useContext();
 	const user = useUser();
 	const router = useRouter();
@@ -47,7 +46,7 @@ export default function PostWizard({
 				updateHeight();
 			},
 			onSuccess: async () => {
-				setInput("");
+				form.setValue("content", "");
 				await ctx.posts.invalidate();
 			},
 			onError: (e) => {
@@ -170,7 +169,7 @@ export const PostAvatar = ({ userId }: { userId: string }) => {
 
 	return (
 		<div className="w-12 h-12 shrink-0 grow-0">
-			<UserAvatar profile={profile} online={true} />
+			<UserAvatar profile={profile} />
 		</div>
 	);
 };
