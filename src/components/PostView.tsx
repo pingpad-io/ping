@@ -13,11 +13,19 @@ import { UserAvatar } from "./UserAvatar";
 import { ReactionBadge } from "./Reactions";
 import { Post } from "~/server/api/routers/posts";
 import { useUser } from "@supabase/auth-helpers-react";
-import { ReactionsMenu } from "./ReactionsMenu";
+import { ReactionsList, ReactionsMenu } from "./ReactionsMenu";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import Markdown from "./Markdown";
-import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
+import {
+	ArrowDown,
+	ArrowUp,
+	Edit2Icon,
+	PlusIcon,
+	ReplyIcon,
+} from "lucide-react";
+import { Button } from "./ui/button";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -32,11 +40,18 @@ export const PostView = ({ post }: { post: Post }) => {
 			<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
 				<ReplyInfo post={post} />
 				<PostInfo post={post} />
-				<PostContent
-					collapsed={collapsed}
-					setIsClamped={setClamped}
-					post={post}
-				/>
+				<HoverCard openDelay={150} closeDelay={300}>
+					<HoverCardTrigger>
+						<PostContent
+							collapsed={collapsed}
+							setIsClamped={setClamped}
+							post={post}
+						/>
+					</HoverCardTrigger>
+					<HoverCardContent className="p-1 w-fit" align="start">
+						<ReactionsList post={post} />
+					</HoverCardContent>
+				</HoverCard>
 				<MetaInfo post={post} />
 				<PostExtensionButton
 					collapsed={collapsed}
@@ -87,9 +102,7 @@ export const ReplyInfo = ({ post }: { post: Post }) => {
 			href={`/p/${id ?? ""}`}
 			className="flex flex-row items-center gap-1 -mt-2 text-xs font-light leading-3"
 		>
-			<ReplyIcon size={14}
-				className="shrink-0 scale-x-[-1] transform"
-			/>
+			<ReplyIcon size={14} className="shrink-0 scale-x-[-1] transform" />
 			<span className="pb-0.5">@{username}:</span>
 			<span className="truncate pb-0.5 ">{content}</span>
 		</Link>
@@ -146,7 +159,7 @@ export const PostContent = ({
 
 export const MetaInfo = ({ post }: { post: Post }) => {
 	return (
-		<div className="flex flex-row items-center gap-2 leading-3 group -mb-1 mt-2 text-secondary-content/50 ">
+		<div className="flex flex-row items-center gap-2 leading-3 group -mb-1 mt-2">
 			<ReplyCount post={post} />
 			<ReactionList post={post} />
 			<EditedIndicator post={post} />
@@ -155,44 +168,15 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 };
 
 export const ReactionList = ({ post }: { post: Post }) => {
-	const user = useUser();
-	const ctx = api.useContext();
-
-	const { mutate: react } = api.reactions.react.useMutation({
-		onError: (e) => {
-			toast.error(e.message);
-		},
-		onSuccess: (reaction) => {
-			ctx.posts.invalidate();
-		},
-	});
-
-	if (!user) return null;
-
-	const list = post.reactions.map((reaction) => {
-		return (
-			<button
-				type="button"
-				onClick={(_e) =>
-					react({
-						profileId: user.id,
-						postId: post.id,
-						reactionId: reaction.reactionId,
-					})
-				}
-			>
-				<ReactionBadge
-					reaction={reaction}
-					key={post.id + reaction.reactionId + reaction.count}
-				/>
-			</button>
-		);
-	});
-
 	return (
 		<>
-			{list}
-			<ReactionsMenu post={post} />
+			{post.reactions.map((reaction) => (
+				<ReactionBadge
+					key={post.id + reaction.reactionId}
+					reaction={reaction}
+					post={post}
+				/>
+			))}
 		</>
 	);
 };

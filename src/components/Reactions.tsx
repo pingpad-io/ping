@@ -9,10 +9,20 @@ import {
 	PartyPopperIcon,
 	XIcon,
 } from "lucide-react";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/src/components/ui/tooltip";
+import { Button } from "./ui/button";
+import { api } from "~/utils/api";
+import toast from "react-hot-toast";
 
 export const ReactionBadge = ({
 	reaction,
-}: { reaction: Post["reactions"][number] }) => {
+	post,
+}: { reaction: Post["reactions"][number]; post: Post }) => {
 	const user = useUser();
 	if (!user) return null;
 
@@ -20,20 +30,50 @@ export const ReactionBadge = ({
 		(profileId) => profileId === user.id,
 	);
 
-	const badgeColor = isUserReacted ? "text-primary" : "";
+	const buttonVariant = isUserReacted ? "secondary" : "ghost";
 	const personText = reaction.count <= 1 ? " person " : " people ";
 	const tooltipText = reaction.count + personText + reaction.description;
+	const ctx = api.useContext();
+
+	const { mutate: react } = api.reactions.react.useMutation({
+		onError: (e) => {
+			toast.error(e.message);
+		},
+		onSuccess: () => {
+			ctx.posts.invalidate();
+		},
+	});
+
+	if (!user) return null;
 
 	return (
-		<span className="tooltip tooltip-bottom" data-tip={tooltipText}>
-			<span
-				key={reaction.postId + reaction.reactionId}
-				className={`flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md hover:bg-base-200 badge-outline ${badgeColor}`}
-			>
-				{reaction.count}
-				<ReactionToIcon reaction={reaction.name} />
-			</span>
-		</span>
+		<Button
+			type="button"
+			variant={buttonVariant}
+			size="icon"
+			className="w-10 h-6"
+			onClick={(_e) =>
+				react({
+					profileId: user.id,
+					postId: post.id,
+					reactionId: reaction.reactionId,
+				})
+			}
+		>
+			<TooltipProvider>
+				<Tooltip>
+					<TooltipTrigger>
+						<span className={"flex flex-row gap-1 leading-3 rounded-xl"}>
+							{reaction.count}
+							<ReactionToIcon reaction={reaction.name} />
+						</span>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>{tooltipText}</p>
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
+		</Button>
 	);
 };
 

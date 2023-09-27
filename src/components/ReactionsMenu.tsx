@@ -5,27 +5,19 @@ import { SignedIn } from "./Signed";
 import { Post } from "~/server/api/routers/posts";
 import { ReactionToIcon } from "./Reactions";
 import { PlusIcon } from "lucide-react";
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/src/components/ui/hover-card";
+
+import { Button } from "./ui/button";
 
 export const ReactionsMenu = ({ post }: { post: Post }) => {
-	return (
-		<SignedIn>
-			<div className="dropdown-right dropdown dropdown-hover">
-				<button
-					type="button"
-					className="hidden text-xs text-center btn btn-ghost btn-xs group group-hover:flex leading-3 btn-circle -my-1"
-				>
-					<PlusIcon size={14} />
-				</button>
-
-				<div className="hidden group-hover:flex dropdown-content flex-row rounded-box gap-1 justify-center bg-base-200 p-2 -mt-3 shadow">
-					<ReactionsList post={post} />
-				</div>
-			</div>
-		</SignedIn>
-	);
+	return <SignedIn />;
 };
 
-export function ReactionsList  ({ post }: { post: Post }) {
+export function ReactionsList({ post }: { post: Post }) {
 	const user = useUser();
 	const ctx = api.useContext();
 	const { data: reactions } = api.reactions.get.useQuery({});
@@ -45,16 +37,20 @@ export function ReactionsList  ({ post }: { post: Post }) {
 		react({ postId: post.id, profileId: user.id, reactionId: reactionId });
 	};
 
-	const reactionsList = reactions.map((reaction) => (
-		<button
-			type="button"
-			className="btn btn-xs btn-circle"
-			onClick={(_e) => addReaction(reaction.id)}
-			key={reaction.id}
-		>
-			{ReactionToIcon({ reaction: reaction.name })}
-		</button>
-	));
-
-	return <>{reactionsList}</>
+	return (
+		<div className="w-fit">
+			{reactions.map((reaction) => (
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon"
+					className="w-8 h-8"
+					onClick={(_e) => addReaction(reaction.id)}
+					key={reaction.id}
+				>
+					<ReactionToIcon reaction={reaction.name} />
+				</Button>
+			))}
+		</div>
+	);
 }
