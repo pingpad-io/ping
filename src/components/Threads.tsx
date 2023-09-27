@@ -1,4 +1,3 @@
-import { FiMessageSquare, FiX } from "react-icons/fi";
 import { api } from "~/utils/api";
 import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
@@ -7,7 +6,7 @@ import { ThreadLink } from "./ThreadLink";
 import { Thread } from "~/server/api/routers/threads";
 import { useRouter } from "next/router";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import { PlusIcon } from "lucide-react";
+import { MessageSquareIcon, PlusIcon, XIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import ThreadWizard from "./ThreadWizard";
 
@@ -57,7 +56,7 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 				>
 					<span className={"hover:underline "}>{thread.title}</span>
 					<span className={"text-sm"}>{thread.posts.length}</span>
-					<FiMessageSquare />
+					<MessageSquareIcon size={15} />
 				</span>
 			</ThreadLink>
 
@@ -66,7 +65,7 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 					type="submit"
 					onClick={() => deleteThread.mutate({ name: thread.name ?? "" })}
 				>
-					<FiX />
+					<XIcon size={14} />
 				</button>
 			)}
 		</div>

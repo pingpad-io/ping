@@ -8,9 +8,6 @@ import {
 } from "react";
 import { PostMenu } from "./PostMenu";
 
-import { FiEdit2 } from "react-icons/fi";
-import { LuReply } from "react-icons/lu";
-import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { ReactionBadge } from "./Reactions";
@@ -20,6 +17,7 @@ import { ReactionsMenu } from "./ReactionsMenu";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import Markdown from "./Markdown";
+import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -65,11 +63,11 @@ export const PostExtensionButton = ({
 		<div className={"flex flex-row justify-center -mb-2 "}>
 			{collapsed ? (
 				<button type="button" onClick={() => setCollapsed(false)}>
-					<RiArrowDownSLine />
+					<ArrowDown size={14} />
 				</button>
 			) : (
 				<button type="button" onClick={() => setCollapsed(true)}>
-					<RiArrowUpSLine />
+					<ArrowUp size={14} />
 				</button>
 			)}
 		</div>
@@ -89,7 +87,9 @@ export const ReplyInfo = ({ post }: { post: Post }) => {
 			href={`/p/${id ?? ""}`}
 			className="flex flex-row items-center gap-1 -mt-2 text-xs font-light leading-3"
 		>
-			<LuReply className="shrink-0 scale-x-[-1] transform" strokeWidth={1.5} />
+			<ReplyIcon size={14}
+				className="shrink-0 scale-x-[-1] transform"
+			/>
 			<span className="pb-0.5">@{username}:</span>
 			<span className="truncate pb-0.5 ">{content}</span>
 		</Link>
@@ -204,7 +204,7 @@ export const ReplyCount = ({ post }: { post: Post }) => {
 			className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
 		>
 			{post.replies.length}
-			<LuReply className="shrink-0 scale-x-[-1] transform" />
+			<ReplyIcon size={14} className="shrink-0 scale-x-[-1] transform" />
 		</Link>
 	) : (
 		<></>
@@ -214,7 +214,7 @@ export const ReplyCount = ({ post }: { post: Post }) => {
 export const EditedIndicator = ({ post }: { post: Post }) => {
 	return post.createdAt.toUTCString() !== post.updatedAt.toUTCString() ? (
 		<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
-			<FiEdit2 className="shrink-0 scale-x-[-1] transform" />
+			<Edit2Icon className="shrink-0 scale-x-[-1] transform" />
 			edited
 		</span>
 	) : (

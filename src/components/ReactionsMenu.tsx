@@ -3,8 +3,8 @@ import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 import { SignedIn } from "./Signed";
 import { Post } from "~/server/api/routers/posts";
-import { AiOutlinePlus } from "react-icons/ai";
 import { ReactionToIcon } from "./Reactions";
+import { PlusIcon } from "lucide-react";
 
 export const ReactionsMenu = ({ post }: { post: Post }) => {
 	return (
@@ -14,7 +14,7 @@ export const ReactionsMenu = ({ post }: { post: Post }) => {
 					type="button"
 					className="hidden text-xs text-center btn btn-ghost btn-xs group group-hover:flex leading-3 btn-circle -my-1"
 				>
-					<AiOutlinePlus />
+					<PlusIcon size={14} />
 				</button>
 
 				<div className="hidden group-hover:flex dropdown-content flex-row rounded-box gap-1 justify-center bg-base-200 p-2 -mt-3 shadow">

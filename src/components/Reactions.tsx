@@ -1,14 +1,14 @@
-import {
-	AiOutlineBulb,
-	AiOutlineCheck,
-	AiOutlineClose,
-	AiOutlineExclamation,
-	AiOutlineHeart,
-	AiOutlineQuestion,
-} from "react-icons/ai";
-import { TbConfetti } from "react-icons/tb";
 import { Post } from "~/server/api/routers/posts";
 import { useUser } from "@supabase/auth-helpers-react";
+import {
+	AlertCircleIcon,
+	CheckIcon,
+	HeartIcon,
+	HelpCircleIcon,
+	LightbulbIcon,
+	PartyPopperIcon,
+	XIcon,
+} from "lucide-react";
 
 export const ReactionBadge = ({
 	reaction,
@@ -40,19 +40,19 @@ export const ReactionBadge = ({
 export const ReactionToIcon = ({ reaction }: { reaction: string }) => {
 	switch (reaction) {
 		case "Like":
-			return <AiOutlineHeart />;
+			return <HeartIcon size={14} />;
 		case "Agree":
-			return <AiOutlineCheck />;
+			return <CheckIcon size={14} />;
 		case "Disagree":
-			return <AiOutlineClose />;
+			return <XIcon size={14} />;
 		case "Question":
-			return <AiOutlineQuestion />;
+			return <HelpCircleIcon size={14} />;
 		case "Important":
-			return <AiOutlineExclamation />;
+			return <AlertCircleIcon size={14} />;
 		case "Insightful":
-			return <AiOutlineBulb />;
+			return <LightbulbIcon size={14} />;
 		case "Exciting":
-			return <TbConfetti />;
+			return <PartyPopperIcon size={14} />;
 		default:
 			return <></>;
 	}

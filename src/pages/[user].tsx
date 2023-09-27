@@ -1,8 +1,8 @@
 import { useUser } from "@supabase/auth-helpers-react";
+import { CalendarIcon, EditIcon } from "lucide-react";
 import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { FiCalendar, FiEdit2 } from "react-icons/fi";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
@@ -19,7 +19,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 	if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
 
 	const isUserProfile = profile?.id === user?.id;
-	const title = `Ping (@${profile.username ?? ""})`;
+	const title = `@${profile.username ?? ""} @ping`;
 
 	return (
 		<>
@@ -43,7 +43,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 									className="btn btn-square btn-sm btn-ghost "
 									href="/settings"
 								>
-									<FiEdit2 />
+									<EditIcon size={14} />
 								</Link>
 							)}
 						</div>
@@ -57,7 +57,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 						</div>
 						{profile.created_at && (
 							<div className="text-sm text-base-content flex flex-row gap-1 place-items-center">
-								<FiCalendar />
+								<CalendarIcon size={14} />
 								Joined <TimeSince date={profile.created_at} />
 							</div>
 						)}

@@ -9,7 +9,6 @@ import {
 	type NextPage,
 } from "next";
 import { useTheme } from "next-themes";
-import { BsCircleFill } from "react-icons/bs";
 import { PageLayout } from "~/components/Layout";
 import ProfileSettingsView from "~/components/ProfileSettingsView";
 import { SignedIn, SignedOut } from "~/components/Signed";
@@ -83,9 +82,6 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
 			>
 				<div className="flex flex-row gap-1">
 					{theme}
-					<BsCircleFill className="text-primary" />
-					<BsCircleFill className="text-secondary" />
-					<BsCircleFill className="text-accent" />
 				</div>
 			</button>
 		</div>

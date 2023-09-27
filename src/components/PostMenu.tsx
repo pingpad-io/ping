@@ -1,13 +1,11 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import toast from "react-hot-toast";
-import { BsReply, BsTrash } from "react-icons/bs";
-import { FiEdit2, FiMoreHorizontal } from "react-icons/fi";
-import { RiHashtag } from "react-icons/ri";
 import { api } from "~/utils/api";
 import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
 import { Post } from "~/server/api/routers/posts";
-import { ReactionsList, ReactionsMenu } from "./ReactionsMenu";
+import { ReactionsList } from "./ReactionsMenu";
+import { EditIcon, LinkIcon, MoreHorizontalIcon, ReplyIcon, TrashIcon } from "lucide-react";
 
 export const PostMenu = ({ post }: { post: Post }) => {
 	const user = useUser();
@@ -48,7 +46,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
 		<SignedIn>
 			<div className="dropdown-right dropdown -mb-1 font-normal">
 				<button type="button">
-					<FiMoreHorizontal strokeWidth={1.5} size={15} />
+					<MoreHorizontalIcon size={14} />
 				</button>
 
 				<div className="dropdown-content rounded-box h-min w-52 gap-4 overflow-visible bg-base-200 p-2 shadow">
@@ -60,7 +58,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
 							<CompactMenuItem
 								onClick={todo}
 								side="left"
-								icon={<FiEdit2 />}
+								icon={<EditIcon size={14} />}
 								text="edit post"
 							/>
 							<CompactMenuItem
@@ -68,7 +66,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
 									deletePost(post.id);
 								}}
 								side="left"
-								icon={<BsTrash />}
+								icon={<TrashIcon size={14} />}
 								text="delete post"
 							/>
 						</>
@@ -77,7 +75,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
 					<CompactMenuItem
 						href={`/p/${post.id}`}
 						side="left"
-						icon={<BsReply />}
+						icon={<ReplyIcon size={14} />}
 						text="reply"
 					/>
 					<CompactMenuItem
@@ -85,7 +83,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
 							copyLink();
 						}}
 						side="left"
-						icon={<RiHashtag />}
+						icon={<LinkIcon size={14} />}
 						text="copy link"
 					/>
 				</div>
