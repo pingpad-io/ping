@@ -11,7 +11,7 @@ interface MarkdownProps {
 function Markdown({ content }: MarkdownProps) {
 	return (
 		<ReactMarkdown
-			className="prose "
+			className="prose"
 			remarkPlugins={[remarkGfm]}
       
 			components={{

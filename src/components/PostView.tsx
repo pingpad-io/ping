@@ -3,8 +3,6 @@ import {
 	useState,
 	type Dispatch,
 	type SetStateAction,
-	useEffect,
-	useRef,
 } from "react";
 import { PostMenu } from "./PostMenu";
 
@@ -12,10 +10,7 @@ import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { ReactionBadge } from "./Reactions";
 import { Post } from "~/server/api/routers/posts";
-import { useUser } from "@supabase/auth-helpers-react";
 import { ReactionsList, ReactionsMenu } from "./ReactionsMenu";
-import { api } from "~/utils/api";
-import toast from "react-hot-toast";
 import Markdown from "./Markdown";
 import {
 	ArrowDown,
@@ -24,8 +19,8 @@ import {
 	PlusIcon,
 	ReplyIcon,
 } from "lucide-react";
-import { Button } from "./ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
+import { HoverCardArrow, HoverCardPortal } from "@radix-ui/react-hover-card";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -40,18 +35,22 @@ export const PostView = ({ post }: { post: Post }) => {
 			<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
 				<ReplyInfo post={post} />
 				<PostInfo post={post} />
+
 				<HoverCard openDelay={150} closeDelay={300}>
-					<HoverCardTrigger>
-						<PostContent
-							collapsed={collapsed}
-							setIsClamped={setClamped}
-							post={post}
-						/>
+					<HoverCardTrigger asChild>
+						<span>
+							<PostContent
+								collapsed={collapsed}
+								setIsClamped={setClamped}
+								post={post}
+							/>
+						</span>
 					</HoverCardTrigger>
 					<HoverCardContent className="p-1 w-fit" align="start">
 						<ReactionsList post={post} />
 					</HoverCardContent>
 				</HoverCard>
+
 				<MetaInfo post={post} />
 				<PostExtensionButton
 					collapsed={collapsed}
@@ -121,9 +120,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
 			</Link>
 			<span>{"·"}</span>
 			<TimeElapsedSince date={post.createdAt} />
-			<span className="">
-				<PostMenu post={post} />
-			</span>
+			<PostMenu post={post} />
 		</div>
 	);
 };
@@ -137,19 +134,17 @@ export const PostContent = ({
 	collapsed: boolean;
 	setIsClamped: Dispatch<SetStateAction<boolean>>;
 }) => {
-	const ref = useRef(null);
+	// const ref = useRef(null);
 
-	useEffect(() => {
-		if (ref.current)
-			// rome-ignore lint/complexity/useLiteralKeys: intended use
-			setIsClamped(ref.current["scrollHeight"] > ref.current["clientHeight"]);
-	}, [ref]);
+	// if (ref.current)
+	// 	// rome-ignore lint/complexity/useLiteralKeys: intended use
+	// 	setIsClamped(ref.current["scrollHeight"] > ref.current["clientHeight"]);
 
 	return (
 		<div
-			ref={ref}
+			// ref={ref}
 			className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
-				collapsed ? " line-clamp-2" : "line-clamp-none"
+				collapsed ? "line-clamp-2" : "line-clamp-none"
 			}`}
 		>
 			<Markdown content={post.content} />

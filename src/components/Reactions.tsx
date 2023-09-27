@@ -24,13 +24,7 @@ export const ReactionBadge = ({
 	post,
 }: { reaction: Post["reactions"][number]; post: Post }) => {
 	const user = useUser();
-	if (!user) return null;
 
-	const isUserReacted = reaction.profileIds.find(
-		(profileId) => profileId === user.id,
-	);
-
-	const buttonVariant = isUserReacted ? "secondary" : "ghost";
 	const personText = reaction.count <= 1 ? " person " : " people ";
 	const tooltipText = reaction.count + personText + reaction.description;
 	const ctx = api.useContext();
@@ -46,34 +40,37 @@ export const ReactionBadge = ({
 
 	if (!user) return null;
 
+	const isUserReacted = reaction.profileIds.find(
+		(profileId) => profileId === user.id,
+	);
+
 	return (
-		<Button
-			type="button"
-			variant={buttonVariant}
-			size="icon"
-			className="w-10 h-6"
-			onClick={(_e) =>
-				react({
-					profileId: user.id,
-					postId: post.id,
-					reactionId: reaction.reactionId,
-				})
-			}
-		>
-			<TooltipProvider>
-				<Tooltip>
-					<TooltipTrigger>
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Button
+						variant={isUserReacted ? "secondary" : "ghost"}
+						size="icon"
+						className="w-10 h-6"
+						onClick={(_e) =>
+							react({
+								profileId: user.id,
+								postId: post.id,
+								reactionId: reaction.reactionId,
+							})
+						}
+					>
 						<span className={"flex flex-row gap-1 leading-3 rounded-xl"}>
 							{reaction.count}
 							<ReactionToIcon reaction={reaction.name} />
 						</span>
-					</TooltipTrigger>
-					<TooltipContent>
-						<p>{tooltipText}</p>
-					</TooltipContent>
-				</Tooltip>
-			</TooltipProvider>
-		</Button>
+					</Button>
+				</TooltipTrigger>
+				<TooltipContent>
+					<p>{tooltipText}</p>
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	);
 };
 
