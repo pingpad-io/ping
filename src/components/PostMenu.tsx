@@ -5,7 +5,22 @@ import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
 import { Post } from "~/server/api/routers/posts";
 import { ReactionsList } from "./ReactionsMenu";
-import { EditIcon, LinkIcon, MoreHorizontalIcon, ReplyIcon, TrashIcon } from "lucide-react";
+import {
+	EditIcon,
+	LinkIcon,
+	MoreHorizontalIcon,
+	ReplyIcon,
+	TrashIcon,
+} from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/src/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 export const PostMenu = ({ post }: { post: Post }) => {
 	const user = useUser();
@@ -44,50 +59,60 @@ export const PostMenu = ({ post }: { post: Post }) => {
 
 	return (
 		<SignedIn>
-			<div className="dropdown-right dropdown -mb-1 font-normal">
-				<button type="button">
-					<MoreHorizontalIcon size={14} />
-				</button>
-
-				<div className="dropdown-content rounded-box h-min w-52 gap-4 overflow-visible bg-base-200 p-2 shadow">
-					<span className="pl-1">
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button type="button" size="icon" className="w-6 h-4" variant="ghost">
+						<MoreHorizontalIcon size={14} />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent>
+					<DropdownMenuLabel>
 						<ReactionsList post={post} />
-					</span>
+					</DropdownMenuLabel>
+					<DropdownMenuSeparator />
 					{user?.id === author.id && (
 						<>
-							<CompactMenuItem
-								onClick={todo}
-								side="left"
-								icon={<EditIcon size={14} />}
-								text="edit post"
-							/>
-							<CompactMenuItem
-								onClick={() => {
-									deletePost(post.id);
-								}}
-								side="left"
-								icon={<TrashIcon size={14} />}
-								text="delete post"
-							/>
+							<DropdownMenuItem>
+								<CompactMenuItem
+									onClick={todo}
+									side="left"
+									icon={<EditIcon size={14} />}
+									text="edit post"
+								/>
+							</DropdownMenuItem>
+
+							<DropdownMenuItem>
+								<CompactMenuItem
+									onClick={() => {
+										deletePost(post.id);
+									}}
+									side="left"
+									icon={<TrashIcon size={14} />}
+									text="delete post"
+								/>
+							</DropdownMenuItem>
 						</>
 					)}
-
-					<CompactMenuItem
-						href={`/p/${post.id}`}
-						side="left"
-						icon={<ReplyIcon size={14} />}
-						text="reply"
-					/>
-					<CompactMenuItem
-						onClick={() => {
-							copyLink();
-						}}
-						side="left"
-						icon={<LinkIcon size={14} />}
-						text="copy link"
-					/>
-				</div>
-			</div>
+					<DropdownMenuItem>
+						<CompactMenuItem
+							href={`/p/${post.id}`}
+							side="left"
+							icon={<ReplyIcon size={14} />}
+							text="reply"
+						/>
+					</DropdownMenuItem>
+					<DropdownMenuItem>
+						<CompactMenuItem
+							onClick={() => {
+								copyLink();
+							}}
+							side="left"
+							icon={<LinkIcon size={14} />}
+							text="copy link"
+						/>
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
 		</SignedIn>
 	);
 };

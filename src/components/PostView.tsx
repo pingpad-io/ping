@@ -121,7 +121,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
 			</Link>
 			<span>{"·"}</span>
 			<TimeElapsedSince date={post.createdAt} />
-			<span className="hidden group-hover:flex">
+			<span className="">
 				<PostMenu post={post} />
 			</span>
 		</div>
