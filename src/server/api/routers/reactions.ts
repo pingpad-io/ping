@@ -9,7 +9,7 @@ import {
 export const reactionsRouter = createTRPCRouter({
 	get: publicProcedure
 		.input(z.object({ id: z.string().optional() }))
-		.query(async ({ ctx, input }) => {
+		.query(async ({ ctx }) => {
 			const reactions = await ctx.prisma.reaction.findMany({
 				take: 100,
 				orderBy: { id: "asc" },

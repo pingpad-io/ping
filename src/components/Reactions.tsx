@@ -38,10 +38,8 @@ export const ReactionBadge = ({
 		},
 	});
 
-	if (!user) return null;
-
 	const isUserReacted = reaction.profileIds.find(
-		(profileId) => profileId === user.id,
+		(profileId) => user && profileId === user.id,
 	);
 
 	return (
@@ -49,20 +47,22 @@ export const ReactionBadge = ({
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<Button
-						variant={isUserReacted ? "secondary" : "ghost"}
+						variant={isUserReacted ? "secondary" : "outline"}
 						size="icon"
 						className="w-10 h-6"
-						onClick={(_e) =>
-							react({
-								profileId: user.id,
-								postId: post.id,
-								reactionId: reaction.reactionId,
-							})
+						onClick={() =>
+							user
+								? react({
+										profileId: user.id,
+										postId: post.id,
+										reactionId: reaction.reactionId,
+								  })
+								: () => {}
 						}
 					>
 						<span className={"flex flex-row gap-1 leading-3 rounded-xl"}>
 							{reaction.count}
-							<ReactionToIcon reaction={reaction.name} />
+							<ReactionIcon reaction={reaction.name} />
 						</span>
 					</Button>
 				</TooltipTrigger>
@@ -74,7 +74,7 @@ export const ReactionBadge = ({
 	);
 };
 
-export const ReactionToIcon = ({ reaction }: { reaction: string }) => {
+export const ReactionIcon = ({ reaction }: { reaction: string }) => {
 	switch (reaction) {
 		case "Like":
 			return <HeartIcon size={14} />;

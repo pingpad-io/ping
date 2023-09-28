@@ -1,16 +1,12 @@
 import Link from "next/link";
-import {
-	useState,
-	type Dispatch,
-	type SetStateAction,
-} from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { PostMenu } from "./PostMenu";
 
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { ReactionBadge } from "./Reactions";
 import { Post } from "~/server/api/routers/posts";
-import { ReactionsList, ReactionsMenu } from "./ReactionsMenu";
+import { ReactionsList } from "./ReactionsList";
 import Markdown from "./Markdown";
 import {
 	ArrowDown,
@@ -20,7 +16,7 @@ import {
 	ReplyIcon,
 } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
-import { HoverCardArrow, HoverCardPortal } from "@radix-ui/react-hover-card";
+import { SignedIn, SignedOut } from "./Signed";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -36,20 +32,30 @@ export const PostView = ({ post }: { post: Post }) => {
 				<ReplyInfo post={post} />
 				<PostInfo post={post} />
 
-				<HoverCard openDelay={150} closeDelay={300}>
-					<HoverCardTrigger asChild>
-						<span>
-							<PostContent
-								collapsed={collapsed}
-								setIsClamped={setClamped}
-								post={post}
-							/>
-						</span>
-					</HoverCardTrigger>
-					<HoverCardContent className="p-1 w-fit" align="start">
-						<ReactionsList post={post} />
-					</HoverCardContent>
-				</HoverCard>
+				<SignedIn>
+					<HoverCard openDelay={150} closeDelay={300}>
+						<HoverCardTrigger asChild>
+							<span>
+								<PostContent
+									collapsed={collapsed}
+									setIsClamped={setClamped}
+									post={post}
+								/>
+							</span>
+						</HoverCardTrigger>
+						<HoverCardContent className="p-1 w-fit" align="start">
+							<ReactionsList post={post} />
+						</HoverCardContent>
+					</HoverCard>
+				</SignedIn>
+
+				<SignedOut>
+					<PostContent
+						collapsed={collapsed}
+						setIsClamped={setClamped}
+						post={post}
+					/>
+				</SignedOut>
 
 				<MetaInfo post={post} />
 				<PostExtensionButton
@@ -163,17 +169,13 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 };
 
 export const ReactionList = ({ post }: { post: Post }) => {
-	return (
-		<>
-			{post.reactions.map((reaction) => (
-				<ReactionBadge
-					key={post.id + reaction.reactionId}
-					reaction={reaction}
-					post={post}
-				/>
-			))}
-		</>
-	);
+	return post.reactions.map((reaction) => (
+		<ReactionBadge
+			key={post.id + reaction.reactionId}
+			reaction={reaction}
+			post={post}
+		/>
+	));
 };
 
 export const ReplyCount = ({ post }: { post: Post }) => {

@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 import { CompactMenuItem } from "./MenuItem";
 import { SignedIn } from "./Signed";
 import { Post } from "~/server/api/routers/posts";
-import { ReactionsList } from "./ReactionsMenu";
+import { ReactionsList } from "./ReactionsList";
 import {
 	EditIcon,
 	LinkIcon,
