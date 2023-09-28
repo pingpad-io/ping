@@ -11,7 +11,7 @@ export const content = [
 ];
 export const theme = {
   fontFamily: {
-    sans: ["var(--font-inter)", ...fontFamily.sans],
+    sans: ["var(--font-raleway)", ...fontFamily.sans],
   },
 
   container: {

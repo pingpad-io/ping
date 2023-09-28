@@ -1,25 +1,24 @@
 /* eslint-disable react/no-string-refs */
 import {
-	type Session,
 	createBrowserSupabaseClient,
+	type Session,
 } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "next-themes";
 import { type AppProps } from "next/app";
+import { Raleway } from "next/font/google";
 import Head from "next/head";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
-import { Roboto_Flex } from "next/font/google";
-const inter = Roboto_Flex({
-	weight: ["300", "400", "600"],
+const raleway = Raleway({
+	weight: ["300", "500", "700", "800"],
 	preload: true,
-	style: "normal",
-	subsets: ["latin-ext", "greek", "cyrillic-ext"],
-	variable: "--font-inter",
+	subsets: ["latin-ext"],
+	variable: "--font-raleway",
 });
 
 function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
@@ -39,7 +38,7 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
 				<Toaster position="top-center" />
 				<Analytics />
 				<main
-					className={`flex min-h-screen flex-row place-content-center text-base-content font-sans ${inter.variable}`}
+					className={`flex min-h-screen flex-row place-content-center text-base-content font-sans ${raleway.variable}`}
 				>
 					<Component {...pageProps} />
 				</main>

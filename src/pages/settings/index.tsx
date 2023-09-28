@@ -12,7 +12,6 @@ import { useTheme } from "next-themes";
 import { PageLayout } from "~/components/Layout";
 import ProfileSettingsView from "~/components/ProfileSettingsView";
 import { SignedIn, SignedOut } from "~/components/Signed";
-import { themes } from "~/styles/themes";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
@@ -68,7 +67,7 @@ const SettingsPage: NextPage<{ id: string }> = ({ id }) => {
 
 	if (!profile) return null;
 
-	const themeButtons = themes.map((theme) => (
+	const themeButtons = ["light", "dark"].map((theme) => (
 		<div
 			data-theme={theme}
 			key={theme}
