@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction, useRef, useEffect } from "react";
 import { PostMenu } from "./PostMenu";
 
 import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
@@ -22,8 +22,6 @@ import {
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
-	const [collapsed, setCollapsed] = useState(true);
-	const [clmaped, setClamped] = useState(false);
 
 	return (
 		<Card className="h-min max-w-2xl">
@@ -39,11 +37,7 @@ export const PostView = ({ post }: { post: Post }) => {
 						<HoverCard openDelay={150} closeDelay={300}>
 							<HoverCardTrigger asChild>
 								<span>
-									<PostContent
-										collapsed={collapsed}
-										setIsClamped={setClamped}
-										post={post}
-									/>
+									<PostContent post={post} />
 								</span>
 							</HoverCardTrigger>
 							<HoverCardContent className="p-1 w-fit" align="start">
@@ -53,19 +47,10 @@ export const PostView = ({ post }: { post: Post }) => {
 					</SignedIn>
 
 					<SignedOut>
-						<PostContent
-							collapsed={collapsed}
-							setIsClamped={setClamped}
-							post={post}
-						/>
+						<PostContent post={post} />
 					</SignedOut>
 
 					<PostBadges post={post} />
-					<PostExtensionButton
-						collapsed={collapsed}
-						setCollapsed={setCollapsed}
-						expandable={clmaped}
-					/>
 				</div>
 			</CardContent>
 		</Card>
@@ -135,24 +120,20 @@ export const PostInfo = ({ post }: { post: Post }) => {
 	);
 };
 
-export const PostContent = ({
-	post,
-	collapsed,
-	setIsClamped,
-}: {
-	post: Post;
-	collapsed: boolean;
-	setIsClamped: Dispatch<SetStateAction<boolean>>;
-}) => {
-	// const ref = useRef(null);
+export const PostContent = ({ post }: { post: Post }) => {
+	const [collapsed, setCollapsed] = useState(true)
+	const ref = useRef(null);
 
-	// if (ref.current)
-	// 	// rome-ignore lint/complexity/useLiteralKeys: intended use
-	// 	setIsClamped(ref.current["scrollHeight"] > ref.current["clientHeight"]);
+	// FIXME
+	useEffect(() => {
+	if (ref.current)
+		// rome-ignore lint/complexity/useLiteralKeys: intended use
+		setCollapsed(ref.current["scrollHeight"] > ref.current["clientHeight"]);
+	})
 
 	return (
 		<div
-			// ref={ref}
+			ref={ref}
 			className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
 				collapsed ? "line-clamp-2" : "line-clamp-none"
 			}`}

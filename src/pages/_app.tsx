@@ -13,6 +13,15 @@ import { Toaster } from "react-hot-toast";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
+import { Roboto_Flex } from "next/font/google";
+const inter = Roboto_Flex({
+	weight: ["300", "400", "600"],
+	preload: true,
+	style: "normal",
+	subsets: ["latin-ext", "greek", "cyrillic-ext"],
+	variable: "--font-inter",
+});
+
 function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
 	const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 
@@ -29,7 +38,9 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
 				</Head>
 				<Toaster position="top-center" />
 				<Analytics />
-				<main className="flex min-h-screen flex-row place-content-center text-base-content">
+				<main
+					className={`flex min-h-screen flex-row place-content-center text-base-content font-sans ${inter.variable}`}
+				>
 					<Component {...pageProps} />
 				</main>
 			</ThemeProvider>
