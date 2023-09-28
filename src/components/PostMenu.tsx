@@ -7,6 +7,7 @@ import { Post } from "~/server/api/routers/posts";
 import { ReactionsList } from "./ReactionsList";
 import {
 	EditIcon,
+	HeartIcon,
 	LinkIcon,
 	MoreHorizontalIcon,
 	ReplyIcon,
@@ -17,14 +18,24 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuPortal,
 	DropdownMenuSeparator,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
+import {
+	DropdownMenuArrow,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+} from "@radix-ui/react-dropdown-menu";
+import { useRouter } from "next/router";
+import { Card } from "./ui/card";
 
 export const PostMenu = ({ post }: { post: Post }) => {
 	const user = useUser();
 	const ctx = api.useContext();
+	const router = useRouter();
 
 	const author = post.author;
 	const origin =
@@ -62,55 +73,48 @@ export const PostMenu = ({ post }: { post: Post }) => {
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button type="button" size="icon" className="w-6 h-4" variant="ghost">
-						<MoreHorizontalIcon size={14} />
+						<MoreHorizontalIcon className="w-4 h-4" strokeWidth={1} />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
-					<DropdownMenuLabel>
-						<ReactionsList post={post} />
-					</DropdownMenuLabel>
-					<DropdownMenuSeparator />
+					<DropdownMenuSub>
+						<DropdownMenuSubTrigger>
+							<HeartIcon size={14} className="mr-2 h-4 w-4" />
+							reactions
+						</DropdownMenuSubTrigger>
+						<DropdownMenuPortal>
+							<DropdownMenuSubContent>
+								<Card className="p-1 -mt-1 ml-2">
+									<ReactionsList post={post} />
+								</Card>
+							</DropdownMenuSubContent>
+						</DropdownMenuPortal>
+					</DropdownMenuSub>
+					<DropdownMenuItem onClick={() => router.push(`/p/${post.id}`)}>
+						<ReplyIcon size={14} className="mr-2 h-4 w-4" />
+						reply
+					</DropdownMenuItem>
+					<DropdownMenuItem onClick={copyLink}>
+						<LinkIcon size={14} className="mr-2 h-4 w-4" />
+						copy link
+					</DropdownMenuItem>
 					{user?.id === author.id && (
 						<>
-							<DropdownMenuItem>
-								<CompactMenuItem
-									onClick={todo}
-									side="left"
-									icon={<EditIcon size={14} />}
-									text="edit post"
-								/>
+							<DropdownMenuItem onClick={todo}>
+								<EditIcon size={14} className="mr-2 h-4 w-4" />
+								edit post
 							</DropdownMenuItem>
 
-							<DropdownMenuItem>
-								<CompactMenuItem
-									onClick={() => {
-										deletePost(post.id);
-									}}
-									side="left"
-									icon={<TrashIcon size={14} />}
-									text="delete post"
-								/>
+							<DropdownMenuItem
+								onClick={() => {
+									deletePost(post.id);
+								}}
+							>
+								<TrashIcon size={14} className="mr-2 h-4 w-4" />
+								delete post
 							</DropdownMenuItem>
 						</>
 					)}
-					<DropdownMenuItem>
-						<CompactMenuItem
-							href={`/p/${post.id}`}
-							side="left"
-							icon={<ReplyIcon size={14} />}
-							text="reply"
-						/>
-					</DropdownMenuItem>
-					<DropdownMenuItem>
-						<CompactMenuItem
-							onClick={() => {
-								copyLink();
-							}}
-							side="left"
-							icon={<LinkIcon size={14} />}
-							text="copy link"
-						/>
-					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</SignedIn>
