@@ -2,22 +2,23 @@ import Link from "next/link";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { PostMenu } from "./PostMenu";
 
+import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
+import { Post } from "~/server/api/routers/posts";
+import Markdown from "./Markdown";
+import { ReactionBadge } from "./Reactions";
+import { ReactionsList } from "./ReactionsList";
+import { SignedIn, SignedOut } from "./Signed";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
-import { ReactionBadge } from "./Reactions";
-import { Post } from "~/server/api/routers/posts";
-import { ReactionsList } from "./ReactionsList";
-import Markdown from "./Markdown";
-import {
-	ArrowDown,
-	ArrowUp,
-	Edit2Icon,
-	PlusIcon,
-	ReplyIcon,
-} from "lucide-react";
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
-import { SignedIn, SignedOut } from "./Signed";
-import { Card, CardContent, CardHeader } from "./ui/card";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "./ui/tooltip";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -171,6 +172,39 @@ export const PostBadges = ({ post }: { post: Post }) => {
 	);
 };
 
+export const ReplyCount = ({ post }: { post: Post }) => {
+	const replyCount = post.replies.length;
+	const replyText = replyCount <= 1 ? "reply" : "replies";
+	const tooltipText = `${replyCount} ${replyText}`;
+
+	return post.replies.length > 0 ? (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Link
+						href={`/p/${post.id}`}
+						className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
+					>
+						<Button
+							variant="outline"
+							size="icon"
+							className="w-10 h-6 flex flex-row gap-1 leading-3 "
+						>
+							{post.replies.length}
+							<ReplyIcon size={14} className="" />
+						</Button>
+					</Link>
+				</TooltipTrigger>
+				<TooltipContent>
+					<p>{tooltipText}</p>
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
+	) : (
+		<></>
+	);
+};
+
 export const ReactionList = ({ post }: { post: Post }) => {
 	return (
 		<>
@@ -185,26 +219,28 @@ export const ReactionList = ({ post }: { post: Post }) => {
 	);
 };
 
-export const ReplyCount = ({ post }: { post: Post }) => {
-	return post.replies.length > 0 ? (
-		<Link
-			href={`/p/${post.id}`}
-			className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
-		>
-			{post.replies.length}
-			<ReplyIcon size={14} className="shrink-0 scale-x-[-1] transform" />
-		</Link>
-	) : (
-		<></>
-	);
-};
-
 export const EditedIndicator = ({ post }: { post: Post }) => {
+	const editCount = 1; // TODO: add editCount to schema
+	const lastUpdated = post.updatedAt.toLocaleString();
+	const tooltipText = `last updated at ${lastUpdated}`;
+
 	return post.createdAt.toUTCString() !== post.updatedAt.toUTCString() ? (
-		<span className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline ">
-			<Edit2Icon className="shrink-0 scale-x-[-1] transform" />
-			edited
-		</span>
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Button
+						variant="outline"
+						size="icon"
+						className="w-8 h-6 flex flex-row gap-1 leading-3 "
+					>
+						<Edit2Icon size={14} className="shrink-0 scale-x-[-1] transform" />
+					</Button>
+				</TooltipTrigger>
+				<TooltipContent>
+					<p>{tooltipText}</p>
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	) : (
 		<></>
 	);

@@ -80,6 +80,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	await ssg.profiles.get.prefetch({ username });
 	await ssg.posts.get.prefetch({ authorUsername: username });
+	await ssg.reactions.get.prefetch({});
 
 	return {
 		props: {

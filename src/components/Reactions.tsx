@@ -24,7 +24,6 @@ export const ReactionBadge = ({
 	post,
 }: { reaction: Post["reactions"][number]; post: Post }) => {
 	const user = useUser();
-
 	const personText = reaction.count <= 1 ? " person " : " people ";
 	const tooltipText = reaction.count + personText + reaction.description;
 	const ctx = api.useContext();
@@ -60,7 +59,7 @@ export const ReactionBadge = ({
 								: () => {}
 						}
 					>
-						<span className={"flex flex-row gap-1 leading-3 rounded-xl"}>
+						<span className={"flex flex-row gap-1 leading-3 "}>
 							{reaction.count}
 							<ReactionIcon reaction={reaction.name} />
 						</span>
