@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { SignedIn, SignedOut } from "./Signed";
+import { Card, CardContent, CardHeader } from "./ui/card";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -24,47 +25,49 @@ export const PostView = ({ post }: { post: Post }) => {
 	const [clmaped, setClamped] = useState(false);
 
 	return (
-		<div className="flex flex-row gap-4 rounded-box h-min max-w-2xl border border-base-300 p-2 sm:p-4">
-			<div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-				<UserAvatar profile={author} />
-			</div>
-			<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
-				<ReplyInfo post={post} />
-				<PostInfo post={post} />
+		<Card className="h-min max-w-2xl">
+			<CardContent className="flex flex-row gap-4 p-2 sm:p-4">
+				<div className="w-10 h-10 shrink-0 grow-0 rounded-full">
+					<UserAvatar profile={author} />
+				</div>
+				<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
+					<ReplyInfo post={post} />
+					<PostInfo post={post} />
 
-				<SignedIn>
-					<HoverCard openDelay={150} closeDelay={300}>
-						<HoverCardTrigger asChild>
-							<span>
-								<PostContent
-									collapsed={collapsed}
-									setIsClamped={setClamped}
-									post={post}
-								/>
-							</span>
-						</HoverCardTrigger>
-						<HoverCardContent className="p-1 w-fit" align="start">
-							<ReactionsList post={post} />
-						</HoverCardContent>
-					</HoverCard>
-				</SignedIn>
+					<SignedIn>
+						<HoverCard openDelay={150} closeDelay={300}>
+							<HoverCardTrigger asChild>
+								<span>
+									<PostContent
+										collapsed={collapsed}
+										setIsClamped={setClamped}
+										post={post}
+									/>
+								</span>
+							</HoverCardTrigger>
+							<HoverCardContent className="p-1 w-fit" align="start">
+								<ReactionsList post={post} />
+							</HoverCardContent>
+						</HoverCard>
+					</SignedIn>
 
-				<SignedOut>
-					<PostContent
+					<SignedOut>
+						<PostContent
+							collapsed={collapsed}
+							setIsClamped={setClamped}
+							post={post}
+						/>
+					</SignedOut>
+
+					<PostBadges post={post} />
+					<PostExtensionButton
 						collapsed={collapsed}
-						setIsClamped={setClamped}
-						post={post}
+						setCollapsed={setCollapsed}
+						expandable={clmaped}
 					/>
-				</SignedOut>
-
-				<MetaInfo post={post} />
-				<PostExtensionButton
-					collapsed={collapsed}
-					setCollapsed={setCollapsed}
-					expandable={clmaped}
-				/>
-			</div>
-		</div>
+				</div>
+			</CardContent>
+		</Card>
 	);
 };
 
@@ -158,7 +161,7 @@ export const PostContent = ({
 	);
 };
 
-export const MetaInfo = ({ post }: { post: Post }) => {
+export const PostBadges = ({ post }: { post: Post }) => {
 	return (
 		<div className="flex flex-row items-center gap-2 leading-3 group -mb-1 mt-2">
 			<ReplyCount post={post} />
@@ -169,13 +172,17 @@ export const MetaInfo = ({ post }: { post: Post }) => {
 };
 
 export const ReactionList = ({ post }: { post: Post }) => {
-	return post.reactions.map((reaction) => (
-		<ReactionBadge
-			key={post.id + reaction.reactionId}
-			reaction={reaction}
-			post={post}
-		/>
-	));
+	return (
+		<>
+			{post.reactions.map((reaction) => (
+				<ReactionBadge
+					key={post.id + reaction.reactionId}
+					reaction={reaction}
+					post={post}
+				/>
+			))}
+		</>
+	);
 };
 
 export const ReplyCount = ({ post }: { post: Post }) => {
