@@ -5,7 +5,7 @@ import { SetStateAction } from "react";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import { PostContent, PostInfo, PostView } from "~/components/PostView";
+import { PostContent, PostInfo, PostView } from "~/components/Post";
 import PostWizard from "~/components/PostWizard";
 import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";

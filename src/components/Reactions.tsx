@@ -18,26 +18,35 @@ import {
 import { Button } from "./ui/button";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
+import { Reaction } from "@prisma/client";
+
+type PostReaction = Post["reactions"][number];
 
 export const ReactionBadge = ({
 	reaction,
 	post,
-}: { reaction: Post["reactions"][number]; post: Post }) => {
+}: { reaction: PostReaction | Reaction; post: Post }) => {
 	const user = useUser();
-	const personText = reaction.count <= 1 ? " person " : " people ";
-	const tooltipText = reaction.count + personText + reaction.description;
 	const ctx = api.useContext();
 
+	const count = "count" in reaction ? reaction.count : 0;
+	const id = "id" in reaction ? reaction.id : reaction.reactionId;
+	const profiles = "profileIds" in reaction ? reaction.profileIds : [];
+	const personText =
+		count === 0 ? " I " : count === 1 ? " person " : " people ";
+	const tooltipText =
+		(count > 0 ? count : "") + personText + reaction.description;
+
 	const { mutate: react } = api.reactions.react.useMutation({
-		onError: (e) => {
-			toast.error(e.message);
-		},
 		onSuccess: () => {
 			ctx.posts.invalidate();
 		},
+		onError: (e) => {
+			toast.error(e.message);
+		},
 	});
 
-	const isUserReacted = reaction.profileIds.find(
+	const isUserReacted = profiles.find(
 		(profileId) => user && profileId === user.id,
 	);
 
@@ -48,19 +57,19 @@ export const ReactionBadge = ({
 					<Button
 						variant={isUserReacted ? "secondary" : "outline"}
 						size="icon"
-						className="w-10 h-6"
+						className={`h-6 ${count > 0 ? "w-10" : "w-8"}`}
 						onClick={() =>
 							user
 								? react({
 										profileId: user.id,
 										postId: post.id,
-										reactionId: reaction.reactionId,
+										reactionId: id,
 								  })
 								: () => {}
 						}
 					>
-						<span className={"flex flex-row gap-1 leading-3 "}>
-							{reaction.count}
+						<span className={"flex flex-row gap-1 leading-3"}>
+							{count > 0 ? count : <></>}
 							<ReactionIcon reaction={reaction.name} />
 						</span>
 					</Button>

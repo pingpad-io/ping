@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import ErrorPage from "./ErrorPage";
-import { PostView } from "./PostView";
+import { PostView } from "./Post";
 import { SuspensePostView } from "./SuspensePostView";
 import { Post } from "~/server/api/routers/posts";
 

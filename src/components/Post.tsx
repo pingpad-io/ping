@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { useState, type Dispatch, type SetStateAction, useRef, useEffect } from "react";
+import {
+	useEffect,
+	useRef,
+	useState,
+	type Dispatch,
+	type SetStateAction,
+} from "react";
 import { PostMenu } from "./PostMenu";
 
 import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
@@ -24,7 +30,7 @@ export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
 
 	return (
-		<Card className="h-min max-w-2xl">
+		<Card className="h-min max-w-2xl group">
 			<CardContent className="flex flex-row gap-4 p-2 sm:p-4">
 				<div className="w-10 h-10 shrink-0 grow-0 rounded-full">
 					<UserAvatar profile={author} />
@@ -32,24 +38,7 @@ export const PostView = ({ post }: { post: Post }) => {
 				<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
 					<ReplyInfo post={post} />
 					<PostInfo post={post} />
-
-					<SignedIn>
-						<HoverCard openDelay={150} closeDelay={300}>
-							<HoverCardTrigger asChild>
-								<span>
-									<PostContent post={post} />
-								</span>
-							</HoverCardTrigger>
-							<HoverCardContent className="p-1 w-fit" align="start">
-								<ReactionsList post={post} />
-							</HoverCardContent>
-						</HoverCard>
-					</SignedIn>
-
-					<SignedOut>
-						<PostContent post={post} />
-					</SignedOut>
-
+					<PostContent post={post} />
 					<PostBadges post={post} />
 				</div>
 			</CardContent>
@@ -83,13 +72,11 @@ export const PostExtensionButton = ({
 	);
 };
 export const ReplyInfo = ({ post }: { post: Post }) => {
-	const empty_space = <div className="" />;
-
-	if (!post.repliedToId) return empty_space;
-
 	const username = post.repliedTo?.author.username;
 	const content = post.repliedTo?.content.substring(0, 100);
 	const id = post.repliedTo?.id;
+
+	if (!post.repliedToId) return null;
 
 	return (
 		<Link
@@ -121,15 +108,15 @@ export const PostInfo = ({ post }: { post: Post }) => {
 };
 
 export const PostContent = ({ post }: { post: Post }) => {
-	const [collapsed, setCollapsed] = useState(true)
+	const [collapsed, setCollapsed] = useState(true);
 	const ref = useRef(null);
 
 	// FIXME
 	useEffect(() => {
-	if (ref.current)
-		// rome-ignore lint/complexity/useLiteralKeys: intended use
-		setCollapsed(ref.current["scrollHeight"] > ref.current["clientHeight"]);
-	})
+		if (ref.current)
+			// rome-ignore lint/complexity/useLiteralKeys: intended use
+			setCollapsed(ref.current["scrollHeight"] > ref.current["clientHeight"]);
+	});
 
 	return (
 		<div
@@ -145,10 +132,16 @@ export const PostContent = ({ post }: { post: Post }) => {
 
 export const PostBadges = ({ post }: { post: Post }) => {
 	return (
-		<div className="flex flex-row items-center gap-2 leading-3 group -mb-1 mt-2">
+		<div className="flex grow flex-row items-center gap-2 leading-3 -mb-1 mt-2">
 			<ReplyCount post={post} />
-			<ReactionList post={post} />
 			<EditedIndicator post={post} />
+			<PostReactionList post={post} />
+
+			<SignedIn>
+				<div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
+					<ReactionsList post={post} />
+				</div>
+			</SignedIn>
 		</div>
 	);
 };
@@ -186,7 +179,7 @@ export const ReplyCount = ({ post }: { post: Post }) => {
 	);
 };
 
-export const ReactionList = ({ post }: { post: Post }) => {
+export const PostReactionList = ({ post }: { post: Post }) => {
 	return (
 		<>
 			{post.reactions.map((reaction) => (
