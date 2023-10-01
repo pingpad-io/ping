@@ -1,4 +1,3 @@
-/* eslint-disable react/no-string-refs */
 import {
 	createBrowserSupabaseClient,
 	type Session,
@@ -32,7 +31,7 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
 			<ThemeProvider defaultTheme="cupcake">
 				<Head>
 					<title>Ping</title>
-					<meta name="description" content="an anonymised twitter" />
+					<meta name="description" content="reach your people on Ping!" />
 					<link rel="icon" ref="/favicon.ico" />
 				</Head>
 				<Toaster position="top-center" />
