@@ -8,7 +8,6 @@ export function ReactionsList({ post }: { post: Post }) {
 	let { data: reactions } = api.reactions.get.useQuery({});
 
 	if (!reactions || !user) return null;
-	if (post.reactions.length === 0) return null;
 
 	reactions = reactions.filter(
 		(reaction) =>

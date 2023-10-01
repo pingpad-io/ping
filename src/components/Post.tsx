@@ -138,9 +138,11 @@ export const PostBadges = ({ post }: { post: Post }) => {
 			<PostReactionList post={post} />
 
 			<SignedIn>
-				<div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
-					<ReactionsList post={post} />
-				</div>
+				{post.reactions.length > 0 && (
+					<div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
+						<ReactionsList post={post} />
+					</div>
+				)}
 			</SignedIn>
 		</div>
 	);
