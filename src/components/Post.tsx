@@ -109,18 +109,15 @@ export const PostInfo = ({ post }: { post: Post }) => {
 
 export const PostContent = ({ post }: { post: Post }) => {
 	const [collapsed, setCollapsed] = useState(true);
-	const ref = useRef(null);
 
-	// FIXME
-	useEffect(() => {
-		if (ref.current)
-			// rome-ignore lint/complexity/useLiteralKeys: intended use
-			setCollapsed(ref.current["scrollHeight"] > ref.current["clientHeight"]);
-	});
+	const toggleCollapsed = () => {
+		setCollapsed(!collapsed);
+	};
 
 	return (
 		<div
-			ref={ref}
+			onKeyDown={toggleCollapsed}
+			onClick={toggleCollapsed}
 			className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
 				collapsed ? "line-clamp-2" : "line-clamp-none"
 			}`}
