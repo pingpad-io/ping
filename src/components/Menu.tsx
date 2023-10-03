@@ -2,21 +2,16 @@ import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
-	DialogTrigger
+	DialogTrigger,
 } from "@/src/components/ui/dialog";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import {
 	AtSign,
 	BellIcon,
 	LogInIcon,
-	LogOutIcon,
-	LucideSendHorizonal,
 	MailIcon,
 	MessagesSquare,
-	PenIcon,
 	SearchIcon,
-	SendHorizonalIcon,
-	SendHorizontalIcon,
 	SendIcon,
 	SettingsIcon,
 	UserIcon
@@ -38,11 +33,6 @@ export default function Menu() {
 	const router = useRouter();
 	const pathname = router.pathname;
 	const user = useUser();
-
-	const signOut = () => {
-		void ctx.invalidate();
-		void supabase.auth.signOut();
-	};
 
 	return (
 		<div
@@ -114,41 +104,33 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 	const { data: profile } = api.profiles.get.useQuery({
 		id: userId,
 	});
-	const supabase = useSupabaseClient();
-	const ctx = api.useContext();
-
-	const signOut = () => {
-		void ctx.invalidate();
-		void supabase.auth.signOut();
-	};
 
 	const todo = () => toast.error("Not implemented yet");
 
 	return (
 		<>
-			<Button variant="ghost">
+			<Button variant="ghost" onClick={todo}>
 				<div className="hidden sm:flex">messages</div>
 				<MailIcon className="sm:ml-2" />
 			</Button>
-			<Button variant="ghost">
+			<Button variant="ghost" onClick={todo}>
 				<div className="hidden sm:flex">notifications</div>
 				<BellIcon className="sm:ml-2" />
 			</Button>
+
+			<Link href="/settings">
+				<Button variant="ghost">
+					<div className="hidden sm:flex">settings</div>
+					<SettingsIcon className="sm:ml-2" />
+				</Button>
+			</Link>
+
 			<Link href={`${profile?.username ? `/${profile.username}` : undefined}`}>
 				<Button variant="ghost">
 					<div className="hidden sm:flex">profile</div>
 					<UserIcon className="sm:ml-2" />
 				</Button>
 			</Link>
-			<Button variant="ghost">
-				<div className="hidden sm:flex">settings</div>
-				<SettingsIcon className="sm:ml-2" />
-			</Button>
-
-			<Button variant="ghost" onClick={() => signOut()}>
-				<div className="hidden sm:flex">sign out</div>
-				<LogOutIcon className="sm:ml-2" />
-			</Button>
 		</>
 	);
 };

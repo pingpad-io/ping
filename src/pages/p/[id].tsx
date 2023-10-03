@@ -1,13 +1,12 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { SetStateAction } from "react";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import { PostContent, PostInfo, PostView } from "~/components/Post";
+import { PostView } from "~/components/Post";
 import PostWizard from "~/components/PostWizard";
-import { UserAvatar } from "~/components/UserAvatar";
+import { Button } from "~/components/ui/button";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
@@ -38,12 +37,12 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 		<>
 			<Head>
 				<title>
-					@{author?.username}: {post.content}
+					@{author?.username}: {post.content} / Ping
 				</title>
 			</Head>
 
 			<PageLayout>
-				<div className=" flex w-full flex-col items-center justify-center p-2">
+				<div className="flex flex-col items-center justify-center p-2">
 					<PostView post={post} />
 
 					<div className="flex w-full flex-row ">
@@ -53,13 +52,9 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 						</div>
 					</div>
 
-					<button
-						type="button"
-						className="btn btn-ghost"
-						onClick={() => router.back()}
-					>
+					<Button variant="outline" type="button" onClick={() => router.back()}>
 						{"< Back "}
-					</button>
+					</Button>
 				</div>
 			</PageLayout>
 		</>

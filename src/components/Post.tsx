@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-	useEffect,
-	useRef,
-	useState,
-	type Dispatch,
-	type SetStateAction,
-} from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { PostMenu } from "./PostMenu";
 
 import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
@@ -13,12 +7,11 @@ import { Post } from "~/server/api/routers/posts";
 import Markdown from "./Markdown";
 import { ReactionBadge } from "./Reactions";
 import { ReactionsList } from "./ReactionsList";
-import { SignedIn, SignedOut } from "./Signed";
+import { SignedIn } from "./Signed";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import {
 	Tooltip,
 	TooltipContent,
@@ -30,7 +23,7 @@ export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
 
 	return (
-		<Card className="h-min max-w-2xl group">
+		<Card className="w-full h-min max-w-2xl group">
 			<CardContent className="flex flex-row gap-4 p-2 sm:p-4">
 				<div className="w-10 h-10 shrink-0 grow-0 rounded-full">
 					<UserAvatar profile={author} />
