@@ -9,6 +9,8 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { MessageSquareIcon, PlusIcon, XIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import ThreadWizard from "./ThreadWizard";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { useState } from "react";
 
 export function GlobalThreads() {
 	const { data: threads } = api.threads.get.useQuery({});
@@ -73,24 +75,31 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 };
 
 export default function Threads() {
+	const [open, setOpen] = useState(false);
+
 	return (
-		<div className="flex flex-col justify-center p-4 ">
-			<div className="flex flex-row place-items-center gap-4">
-				<Link href={"/t"}>Threads</Link>
+		<Card>
+			<CardHeader>
+				<CardTitle>
+					<div className="flex flex-row place-items-center gap-4">
+						<Link href={"/t"}>Threads</Link>
 
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button size="icon" variant="ghost" className="w-8 h-8">
-							<PlusIcon size="20" />
-						</Button>
-					</DialogTrigger>
-					<DialogContent>
-						<ThreadWizard />
-					</DialogContent>
-				</Dialog>
-			</div>
-
-			<GlobalThreads />
-		</div>
+						<Dialog open={open} onOpenChange={setOpen} >
+							<DialogTrigger asChild>
+								<Button size="icon" variant="ghost" className="w-8 h-8">
+									<PlusIcon />
+								</Button>
+							</DialogTrigger>
+							<DialogContent>
+								<ThreadWizard setOpen={setOpen} />
+							</DialogContent>
+						</Dialog>
+					</div>
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<GlobalThreads />
+			</CardContent>
+		</Card>
 	);
 }
