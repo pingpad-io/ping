@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { useState } from "react";
-import { toast } from "react-hot-toast";
-import { api, type RouterOutputs } from "~/utils/api";
 import {
 	Form,
 	FormControl,
@@ -11,12 +8,14 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/src/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Profile } from "@prisma/client";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { z } from "zod";
+import { api } from "~/utils/api";
 import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 
@@ -84,13 +83,18 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 						<FormField
 							control={form.control}
+							disabled={isLoading}
 							name="full_name"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Full Name</FormLabel>
 									<FormControl>
 										{/* FIXME: why name can be null? */}
-										<Input placeholder="Full Name" {...field} />
+										<Input
+											placeholder="Full Name"
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormDescription>Your public name</FormDescription>
 									<FormMessage />
@@ -99,13 +103,18 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 						/>
 						<FormField
 							control={form.control}
+							disabled={isLoading}
 							name="username"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Username</FormLabel>
 									<FormControl>
 										{/* FIXME: why username can be null? */}
-										<Input placeholder="Username" {...field} />
+										<Input
+											placeholder="Username"
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormDescription>
 										Your username that comes after `@`
@@ -116,13 +125,18 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 						/>
 						<FormField
 							control={form.control}
+							disabled={isLoading}
 							name="description"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Bio</FormLabel>
 									<FormControl>
 										{/* FIXME: why description can be null? */}
-										<Textarea placeholder="Bio" {...field} />
+										<Textarea
+											placeholder="Bio"
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormDescription>Your profile bio</FormDescription>
 									<FormMessage />
