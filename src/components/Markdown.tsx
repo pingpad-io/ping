@@ -11,11 +11,10 @@ interface MarkdownProps {
 function Markdown({ content }: MarkdownProps) {
 	return (
 		<ReactMarkdown
-			className="prose"
+			className="prose dark:prose-invert"
 			remarkPlugins={[remarkGfm]}
-      
 			components={{
-        h1: 'h2',
+				h1: "h2",
 				code({ node, inline, className, children, ...props }) {
 					const match = /language-(\w+)/.exec(className || "");
 					return !inline && match ? (
