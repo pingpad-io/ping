@@ -1,18 +1,22 @@
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import PostWizard, { ThreadDivider } from "~/components/PostWizard";
+import PostWizard from "~/components/PostWizard";
 import { api } from "~/utils/api";
 import { type GetServerSideProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
+import { Separator } from "~/components/ui/separator";
+import { useRouter } from "next/router";
 
 const HomePage = () => {
+	const router = useRouter();
+	const thread = router.asPath.split("/")[2];
 	const posts = api.posts.get.useQuery({});
 
 	return (
 		<PageLayout>
 			<div className="sticky top-0 z-10 flex w-full flex-col">
-					<PostWizard placeholder="write a new post..." />
-					<ThreadDivider />
+				<PostWizard />
+				<Separator />
 			</div>
 			<div className="px-2">
 				<Feed {...posts} />

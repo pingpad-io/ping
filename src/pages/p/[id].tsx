@@ -48,7 +48,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
 					<div className="flex w-full flex-row ">
 						<div className="place-end my-1 flex grow flex-col px-4">
 							<Feed {...replies} />
-							<PostWizard replyingTo={id} placeholder="reply..." />
+							<PostWizard replyingTo={id} />
 						</div>
 					</div>
 

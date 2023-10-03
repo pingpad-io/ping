@@ -92,7 +92,7 @@ export default function Menu() {
 						</Button>
 					</DialogTrigger>
 					<DialogContent className="sm:max-w-[700px]">
-						<PostWizard placeholder="Write a new post..." />
+						<PostWizard />
 					</DialogContent>
 				</Dialog>
 			</div>

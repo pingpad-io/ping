@@ -1,10 +1,10 @@
-import { useSelector } from "react-redux";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import PostWizard, { ThreadDivider } from "~/components/PostWizard";
+import PostWizard from "~/components/PostWizard";
 import { api } from "~/utils/api";
 import { type GetServerSideProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
+import { Separator } from "~/components/ui/separator";
 
 const ThreadPage = ({ thread }: { thread: string }) => {
 	const posts = api.posts.get.useQuery({ thread });
@@ -12,8 +12,8 @@ const ThreadPage = ({ thread }: { thread: string }) => {
 	return (
 		<PageLayout>
 			<div className="sticky top-0 z-10 flex w-full flex-col">
-				<PostWizard placeholder="write a new post..." />
-				<ThreadDivider />
+				<PostWizard />
+				<Separator />
 			</div>
 			<div className="px-2">
 				<Feed {...posts} />
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	await ssg.posts.get.prefetch({ thread });
 	await ssg.threads.get.prefetch({});
-	await ssg.reactions.get.prefetch({})
+	await ssg.reactions.get.prefetch({});
 
 	return {
 		props: {

@@ -18,11 +18,9 @@ import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { SendHorizontalIcon } from "lucide-react";
+import { Separator } from "./ui/separator";
 
-export default function PostWizard({
-	placeholder,
-	replyingTo,
-}: { placeholder: string; replyingTo?: string }) {
+export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 	const ctx = api.useContext();
 	const user = useUser();
 	const router = useRouter();
@@ -30,6 +28,9 @@ export default function PostWizard({
 		? undefined
 		: router.asPath.split("/")[2] ?? "global";
 	const textarea = useRef<HTMLTextAreaElement>(null);
+	const placeholderText = replyingTo
+		? "write a reply..."
+		: `write a new post in ${thread}...`;
 
 	const { mutate: createPost, isLoading: isPosting } =
 		api.posts.create.useMutation({
@@ -66,7 +67,7 @@ export default function PostWizard({
 	const updateHeight = () => {
 		if (textarea.current) {
 			textarea.current.style.height = "auto";
-			textarea.current.style.height = `${textarea.current.scrollHeight+2}px`;
+			textarea.current.style.height = `${textarea.current.scrollHeight + 2}px`;
 		}
 	};
 
@@ -117,7 +118,7 @@ export default function PostWizard({
 								<FormControl>
 									<Textarea
 										{...field}
-										placeholder={placeholder}
+										placeholder={placeholderText}
 										disabled={isPosting}
 										className="min-h-12 resize-none"
 										ref={textarea}
@@ -137,17 +138,6 @@ export default function PostWizard({
 		</div>
 	);
 }
-
-export const ThreadDivider = () => {
-	const router = useRouter();
-	const thread = router.asPath.split("/")[2];
-
-	return (
-		<div className="divider z-20 mx-2 -mt-2 mb-2 before:h-0 before:border-b before:border-base-300 after:h-0 after:border-b after:border-base-300">
-			{thread}
-		</div>
-	);
-};
 
 export const PostAvatar = ({ userId }: { userId: string }) => {
 	const { data: profile } = api.profiles.get.useQuery({
