@@ -73,7 +73,7 @@
     "autoprefixer": "^10.4.7",
     "eslint": "^8.43.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "postcss": "^8.4.14",
+    "postcss": "^8.4.31",
     "prisma": "^4.14.1",
     "supabase": "^1.59.1",
     "tailwindcss": "^3.2.0",
