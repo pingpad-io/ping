@@ -19,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 
-export default function ProfileSettingsView({ profile }: { profile: Profile }) {
+export default function ProfileSettings({ profile }: { profile: Profile }) {
 	const { mutate: updateProfile, isLoading } = api.profiles.update.useMutation({
 		onSuccess() {
 			toast.success("Profile updated!");
@@ -89,14 +89,12 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 								<FormItem>
 									<FormLabel>Full Name</FormLabel>
 									<FormControl>
-										{/* FIXME: why name can be null? */}
 										<Input
 											placeholder="Full Name"
 											{...field}
 											value={field.value ?? undefined}
 										/>
 									</FormControl>
-									<FormDescription>Your public name</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}
@@ -109,16 +107,12 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 								<FormItem>
 									<FormLabel>Username</FormLabel>
 									<FormControl>
-										{/* FIXME: why username can be null? */}
 										<Input
 											placeholder="Username"
 											{...field}
 											value={field.value ?? undefined}
 										/>
 									</FormControl>
-									<FormDescription>
-										Your username that comes after `@`
-									</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}
@@ -131,14 +125,12 @@ export default function ProfileSettingsView({ profile }: { profile: Profile }) {
 								<FormItem>
 									<FormLabel>Bio</FormLabel>
 									<FormControl>
-										{/* FIXME: why description can be null? */}
 										<Textarea
 											placeholder="Bio"
 											{...field}
 											value={field.value ?? undefined}
 										/>
 									</FormControl>
-									<FormDescription>Your profile bio</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}

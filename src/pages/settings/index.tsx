@@ -9,7 +9,7 @@ import {
 } from "next";
 import { useTheme } from "next-themes";
 import { PageLayout } from "~/components/Layout";
-import ProfileSettingsView from "~/components/ProfileSettingsView";
+import ProfileSettings from "~/components/ProfileSettingsView";
 import { SignedIn, SignedOut } from "~/components/Signed";
 import { Button } from "~/components/ui/button";
 import {
@@ -63,39 +63,41 @@ const SettingsPage = ({ id }: { id: string }) => {
 
 	return (
 		<PageLayout>
-			<SignedIn>
-				<ProfileSettingsView profile={profile} />
+			<div className="p-4 space-y-4">
+				<SignedIn>
+					<ProfileSettings profile={profile} />
 
-				<Card>
-					<CardHeader>
-						<CardTitle>Theme</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<span className="flex gap-2">{themeButtons}</span>
-					</CardContent>
-				</Card>
+					<Card>
+						<CardHeader>
+							<CardTitle>Theme</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<span className="flex gap-2">{themeButtons}</span>
+						</CardContent>
+					</Card>
 
-				<Card>
-					<CardHeader>
-						<CardTitle>Danger Zone</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<Button
-							type="button"
-							variant="destructive"
-							onClick={() => signOut()}
-						>
-							Sign Out
-						</Button>
-					</CardContent>
-				</Card>
-			</SignedIn>
+					<Card>
+						<CardHeader>
+							<CardTitle>Danger Zone</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<Button
+								type="button"
+								variant="destructive"
+								onClick={() => signOut()}
+							>
+								Sign Out
+							</Button>
+						</CardContent>
+					</Card>
+				</SignedIn>
 
-			<SignedOut>
-				<h1 className="m-8 flex flex-row items-center justify-center p-8 text-xl">
-					Sign in to view this page
-				</h1>
-			</SignedOut>
+				<SignedOut>
+					<h1 className="m-8 flex flex-row items-center justify-center p-8 text-xl">
+						Sign in to view this page
+					</h1>
+				</SignedOut>
+			</div>
 		</PageLayout>
 	);
 };
