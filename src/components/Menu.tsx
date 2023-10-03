@@ -105,18 +105,21 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 		id: userId,
 	});
 
-	const todo = () => toast.error("Not implemented yet");
-
 	return (
 		<>
-			<Button variant="ghost" onClick={todo}>
-				<div className="hidden sm:flex">messages</div>
-				<MailIcon className="sm:ml-2" />
-			</Button>
-			<Button variant="ghost" onClick={todo}>
-				<div className="hidden sm:flex">notifications</div>
-				<BellIcon className="sm:ml-2" />
-			</Button>
+			<Link href="/messages">
+				<Button variant="ghost">
+					<div className="hidden sm:flex">messages</div>
+					<MailIcon className="sm:ml-2" />
+				</Button>
+			</Link>
+
+			<Link href="/notifications">
+				<Button variant="ghost">
+					<div className="hidden sm:flex">notifications</div>
+					<BellIcon className="sm:ml-2" />
+				</Button>
+			</Link>
 
 			<Link href="/settings">
 				<Button variant="ghost">
