@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { PageLayout } from "~/components/Layout";
 import { CollapsedContext } from "~/components/Menu";
-import { GlobalThreads } from "~/components/Threads";
+import Threads from "~/components/Threads";
 
 const ThreadsPage = () => {
 	return (
@@ -14,11 +14,8 @@ const ThreadsPage = () => {
 			<PageLayout>
 				<CollapsedContext.Provider value={false}>
 					<div className="rounded-box m-2 flex flex-col flex-wrap place-items-center justify-center p-4 ">
-						<Link href={"/t"} className="text-2xl font-bold">
-							Threads
-						</Link>
 						<div className="w-full">
-							<GlobalThreads />
+							<Threads />
 						</div>
 					</div>
 				</CollapsedContext.Provider>
