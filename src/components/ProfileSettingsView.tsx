@@ -11,124 +11,128 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/src/components/ui/form";
-import { Input } from "@/src/components/ui/input";
-import { Card, CardHeader } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-type Profile = RouterOutputs["profiles"]["get"];
+import { Profile } from "@prisma/client";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 
 export default function ProfileSettingsView({ profile }: { profile: Profile }) {
-	const [loading, setLoading] = useState(false);
-	const [username, setUsername] = useState(profile.username);
-	const [full_name, setFullName] = useState(profile.full_name);
-	const [description, setDescription] = useState(profile.description);
-	const [avatar_url, setAvatarUrl] = useState(profile.avatar_url);
-
-	const { mutate: updateProfile } = api.profiles.update.useMutation({
+	const { mutate: updateProfile, isLoading } = api.profiles.update.useMutation({
 		onSuccess() {
 			toast.success("Profile updated!");
-			setLoading(false);
 		},
 		onError(error) {
 			toast.error(`Error updating the data! ${error.message}`);
 		},
 	});
-	
-function onSubmit(values: z.infer<typeof profile>) {
+
+	function onSubmit(values: Profile) {
 		const updates = {
 			id: profile.id,
-			username,
-			full_name,
-			description,
-			avatar_url,
+			created_at: profile.created_at,
+			username: values.username,
+			full_name: values.full_name,
+			description: values.description,
+			avatar_url: values.avatar_url,
 			updated_at: new Date(),
-			created_at: profile?.created_at ?? null,
 		};
 
 		updateProfile({ updates });
-  }
+	}
 
-	// FIXME
-	// const form = useForm<z.infer<typeof profile>>({
-  //   resolver: zodResolver(formSchema),
-  //   defaultValues: {
-  //     username: "",
-  //   },
-  // })
+	const formSchema = z.object({
+		username: z
+			.string()
+			.min(2, {
+				message: "Username must be at least 2 characters.",
+			})
+			.max(20, {
+				message: "Username must be shorter than 20 characters.",
+			}),
+		full_name: z
+			.string()
+			.min(2, {
+				message: "Name must be at least 2 characters.",
+			})
+			.max(32),
+		description: z.string().max(160, {
+			message: "Description must be shorter than 160 characters",
+		}),
+	});
 
+	const form = useForm<Profile>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			username: profile.username,
+			full_name: profile.full_name,
+			description: profile.description,
+			avatar_url: profile.avatar_url,
+		},
+	});
 
 	return (
 		<Card>
-			<Form {...form}>
-			<h2 className="text-xl">Account Settings</h2>
-			<div className="w-full">
-				<label className="label inline-block" htmlFor="id">
-					Your ID:
-				</label>
-				<Input
-					className="w-[295px]"
-					id="id"
-					type="text"
-					value={profile.id}
-					disabled
-				/>
-			</div>
-			<div>
-				<label className="label inline-block" htmlFor="name">
-					Full Name:
-				</label>
-				<Input
-					className=""
-					id="name"
-					type="text"
-					value={full_name ?? ""}
-					onChange={(e) => setFullName(e.target.value)}
-				/>
-			</div>
-			<div>
-				<label className="label inline-block" htmlFor="description">
-					Bio:
-				</label>
-				<input
-					className="textarea textarea-bordered textarea-wide"
-					id="description"
-					type="text"
-					value={description ?? ""}
-					onChange={(e) => setDescription(e.target.value)}
-				/>
-			</div>
-			<div>
-				<label className="label inline-block" htmlFor="username">
-					Username:
-				</label>
-				<div className="inline-block">
-					<label className="">
-						<span className="px-2">@</span>
-						<Input
-							className=""
-							id="username"
-							type="text"
-							value={username ?? ""}
-							onChange={(e) => setUsername(e.target.value)}
+			<CardHeader>
+				<CardTitle>Profile Settings</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+						<FormField
+							control={form.control}
+							name="full_name"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Full Name</FormLabel>
+									<FormControl>
+										{/* FIXME: why name can be null? */}
+										<Input placeholder="Full Name" {...field} />
+									</FormControl>
+									<FormDescription>Your public name</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
 						/>
-					</label>
-				</div>
-			</div>
-
-			<div>
-				<button
-					type="submit"
-					className="btn-outline btn-primary btn-wide btn mt-4"
-					onClick={() => commitUpdates()}
-					disabled={false}
-				>
-					{loading ? "Updating..." : "Update"}
-				</button>
-			</div>
-
-			</Form>
+						<FormField
+							control={form.control}
+							name="username"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Username</FormLabel>
+									<FormControl>
+										{/* FIXME: why username can be null? */}
+										<Input placeholder="Username" {...field} />
+									</FormControl>
+									<FormDescription>
+										Your username that comes after `@`
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="description"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Bio</FormLabel>
+									<FormControl>
+										{/* FIXME: why description can be null? */}
+										<Textarea placeholder="Bio" {...field} />
+									</FormControl>
+									<FormDescription>Your profile bio</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<Button type="submit">Submit</Button>
+					</form>
+				</Form>
+			</CardContent>
 		</Card>
 	);
 }

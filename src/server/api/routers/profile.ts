@@ -43,7 +43,11 @@ export const profileRouter = createTRPCRouter({
 
 			const profile = await ctx.prisma.profile.update({
 				where: { id: input.updates.id },
-				data: input.updates,
+				data: {
+					...input.updates,
+					id: undefined,
+					created_at: undefined,
+				},
 			});
 
 			if (!profile) {
