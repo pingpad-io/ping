@@ -12,18 +12,6 @@ import ThreadWizard from "./ThreadWizard";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useState } from "react";
 
-export function GlobalThreads() {
-	const { data: threads } = api.threads.get.useQuery({});
-
-	const globalThreadList = threads?.map((thread) => {
-		if (!thread.name) return null;
-
-		return <ThreadEntry key={thread.id} thread={thread} />;
-	});
-
-	return <div className="card-content">{globalThreadList}</div>;
-}
-
 const ThreadEntry = ({ thread }: { thread: Thread }) => {
 	if (!thread || !thread.name) return null;
 
@@ -76,17 +64,22 @@ const ThreadEntry = ({ thread }: { thread: Thread }) => {
 
 export default function Threads() {
 	const [open, setOpen] = useState(false);
+	const { data: threads } = api.threads.get.useQuery({});
+
+	const threadList = threads?.map((thread) => {
+		return <ThreadEntry key={thread.id} thread={thread} />;
+	});
 
 	return (
 		<Card>
-			<CardHeader>
-				<CardTitle>
+			<CardHeader className="py-3">
+				<CardTitle className="text-lg">
 					<div className="flex flex-row place-items-center gap-4">
 						<Link href={"/t"}>Threads</Link>
 
-						<Dialog open={open} onOpenChange={setOpen} >
+						<Dialog open={open} onOpenChange={setOpen}>
 							<DialogTrigger asChild>
-								<Button size="icon" variant="ghost" className="w-8 h-8">
+								<Button size="icon" variant="ghost" className="w-4 h-4">
 									<PlusIcon />
 								</Button>
 							</DialogTrigger>
@@ -98,7 +91,7 @@ export default function Threads() {
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<GlobalThreads />
+			<div className="card-content">{threadList}</div>
 			</CardContent>
 		</Card>
 	);
