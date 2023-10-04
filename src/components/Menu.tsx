@@ -39,7 +39,7 @@ export default function Menu() {
 		>
 			<div className="flex flex-col items-end gap-2">
 				<Link href="/">
-					<Button variant="ghost">
+					<Button variant="ghost" size="sm_icon">
 						<div className="hidden sm:flex">ping</div>
 						<AtSign className="sm:ml-2" />
 					</Button>
@@ -48,14 +48,14 @@ export default function Menu() {
 				<div className="flex flex-col items-end gap-2 lg:hidden">
 					{pathname !== "/search" && (
 						<Link href={"/search"} className="xl:hidden text-2xl">
-							<Button variant="ghost">
+							<Button variant="ghost" size="sm_icon">
 								<div className="hidden sm:flex text-2xl">search</div>
 								<SearchIcon className="sm:ml-2" />
 							</Button>
 						</Link>
 					)}
 					<Link href={"/t"} className="xl:hidden text-2xl">
-						<Button variant="ghost" className="xl:hidden">
+						<Button variant="ghost" size="sm_icon" className="xl:hidden">
 							<div className="hidden sm:flex text-2xl">threads</div>
 							<MessagesSquare className="sm:ml-2" />
 						</Button>
@@ -67,7 +67,7 @@ export default function Menu() {
 				) : (
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button variant="ghost">
+							<Button variant="default" size="sm_icon">
 								<div className="hidden sm:flex">sign in</div>
 								<LogInIcon className="sm:ml-2" />
 							</Button>
@@ -81,17 +81,6 @@ export default function Menu() {
 					</Dialog>
 				)}
 
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button>
-							<div className="hidden sm:flex">post</div>
-							<SendIcon className="sm:ml-2" />
-						</Button>
-					</DialogTrigger>
-					<DialogContent className="sm:max-w-[700px]">
-						<PostWizard />
-					</DialogContent>
-				</Dialog>
 			</div>
 		</div>
 	);
@@ -105,32 +94,44 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 	return (
 		<>
 			<Link href="/messages">
-				<Button variant="ghost">
+				<Button variant="ghost" size="sm_icon">
 					<div className="hidden sm:flex">messages</div>
 					<MailIcon className="sm:ml-2" />
 				</Button>
 			</Link>
 
 			<Link href="/notifications">
-				<Button variant="ghost">
+				<Button variant="ghost" size="sm_icon">
 					<div className="hidden sm:flex">notifications</div>
 					<BellIcon className="sm:ml-2" />
 				</Button>
 			</Link>
 
 			<Link href="/settings">
-				<Button variant="ghost">
+				<Button variant="ghost" size="sm_icon">
 					<div className="hidden sm:flex">settings</div>
 					<SettingsIcon className="sm:ml-2" />
 				</Button>
 			</Link>
 
 			<Link href={`${profile?.username ? `/${profile.username}` : undefined}`}>
-				<Button variant="ghost">
+				<Button variant="ghost" size="sm_icon">
 					<div className="hidden sm:flex">profile</div>
 					<UserIcon className="sm:ml-2" />
 				</Button>
 			</Link>
+
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button>
+							<div className="hidden sm:flex">post</div>
+							<SendIcon className="sm:ml-2" />
+						</Button>
+					</DialogTrigger>
+					<DialogContent className="sm:max-w-[700px]">
+						<PostWizard />
+					</DialogContent>
+				</Dialog>
 		</>
 	);
 };

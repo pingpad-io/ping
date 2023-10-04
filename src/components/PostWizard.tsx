@@ -17,7 +17,7 @@ import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { MenuIcon, SendHorizontalIcon } from "lucide-react";
+import { SendHorizontalIcon } from "lucide-react";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 	const ctx = api.useContext();
@@ -88,7 +88,6 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 		}
 	};
 
-
 	const onChange = () => {
 		updateHeight();
 	};
@@ -98,6 +97,8 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 			onSubmit(form.getValues());
 		}
 	};
+
+	if (!user) return null;
 
 	return (
 		<div className="p-4 backdrop-blur-sm">
@@ -136,14 +137,8 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 	);
 }
 
-export const AvatarMenu = ({ userId }: { userId?: string | null }) => {
-	if (!userId)
-		return (
-			<div>
-				<MenuIcon />
-			</div>
-		);
-
+export const AvatarMenu = ({ userId }: { userId?: string }) => {
+	if (!userId) return null;
 	return (
 		<div className="w-10 h-10 shrink-0 grow-0">
 			<UserAvatar userId={userId} />

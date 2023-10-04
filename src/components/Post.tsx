@@ -6,10 +6,12 @@ import { PostMenu } from "./PostMenu";
 import {
 	ArrowDown,
 	ArrowUp,
+	CrossIcon,
 	Edit2Icon,
 	LoaderIcon,
 	ReplyIcon,
 	SendHorizontalIcon,
+	XIcon,
 } from "lucide-react";
 import { Post } from "~/server/api/routers/posts";
 import Markdown from "./Markdown";
@@ -212,7 +214,7 @@ export const PostEditor = ({ post }: { post: Post }) => {
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
 				onChange={onChange}
-				className="flex flex-row gap-2 w-full h-fit place-items-end"
+				className="flex flex-col gap-2 p-1 w-full h-fit"
 			>
 				<FormField
 					control={form.control}
@@ -233,9 +235,20 @@ export const PostEditor = ({ post }: { post: Post }) => {
 						</FormItem>
 					)}
 				/>
-				<Button size="icon" type="submit">
-					{isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
-				</Button>
+				<div className="flex justify-between">
+					<Button
+						size="default"
+						className="flex gap-2"
+						type="reset"
+						variant={"ghost"}
+						onClick={removeEditingQuery}
+					>
+						Cancel
+					</Button>
+					<Button size="default" className="flex gap-2" type="submit">
+						Update
+					</Button>
+				</div>
 			</form>
 		</Form>
 	);
@@ -350,8 +363,9 @@ export const EditedIndicator = ({ post }: { post: Post }) => {
 					<Button
 						variant="outline"
 						size="icon"
-						className="w-8 h-6 flex flex-row gap-1 leading-3 "
+						className="w-10 h-6 flex flex-row gap-1 leading-3 "
 					>
+						{/* TODO: Add edited count */}
 						<Edit2Icon size={14} className="shrink-0 scale-x-[-1] transform" />
 					</Button>
 				</TooltipTrigger>
