@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { KeyboardEvent, useEffect } from "react";
+import { useState, type Dispatch, type SetStateAction, useRef } from "react";
 import { PostMenu } from "./PostMenu";
 
 import {
@@ -34,6 +35,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { AvatarMenu } from "./PostWizard";
 import { Textarea } from "./ui/textarea";
+import { useUser } from "@supabase/auth-helpers-react";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -119,13 +121,28 @@ export const PostInfo = ({ post }: { post: Post }) => {
 export const PostEditor = ({ post }: { post: Post }) => {
 	const router = useRouter();
 	const ctx = api.useContext();
+	const user = useUser();
+
+	const removeEditingQuery = () => {
+		const { editing, ...routerQuery } = router.query;
+		router.replace({
+			query: { ...routerQuery },
+		});
+	};
+
+	useEffect(() => {
+		if (!user) return;
+
+		if (user.id !== post.authorId) {
+			removeEditingQuery();
+			toast.error("You are not allowed to edit this post");
+		}
+	}, [user]);
+
 	const { mutate: updatePost, isLoading: isPosting } =
 		api.posts.update.useMutation({
 			onSuccess: async () => {
-				const { editing, ...routerQuery } = router.query;
-				router.replace({
-					query: { ...routerQuery },
-				});
+				removeEditingQuery();
 				await ctx.posts.invalidate();
 			},
 			onError: (e) => {
@@ -135,10 +152,10 @@ export const PostEditor = ({ post }: { post: Post }) => {
 						error = "You must be logged in to post";
 						break;
 					case "FORBIDDEN":
-						error = "You are not allowed to post";
+						error = "You are not allowed to edit this post";
 						break;
 					case "TOO_MANY_REQUESTS":
-						error = "Slow down! You are posting too fast";
+						error = "Slow down! You are editing too often";
 						break;
 					case "BAD_REQUEST":
 						error = "Invalid request";
@@ -171,11 +188,30 @@ export const PostEditor = ({ post }: { post: Post }) => {
 		});
 	}
 
+	const updateHeight = () => {
+		if (textarea.current) {
+			textarea.current.style.height = "auto";
+			textarea.current.style.height = `${textarea.current.scrollHeight + 2}px`;
+		}
+	};
+
+	const onChange = () => {
+		updateHeight();
+	};
+
+	const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+		if (event.ctrlKey && event.key === "Enter") {
+			onSubmit(form.getValues());
+		}
+	};
+
+	const textarea = useRef<HTMLTextAreaElement>(null);
+
 	return (
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				// onChange={onChange}
+				onChange={onChange}
 				className="flex flex-row gap-2 w-full h-fit place-items-end"
 			>
 				<FormField
@@ -186,11 +222,11 @@ export const PostEditor = ({ post }: { post: Post }) => {
 							<FormControl>
 								<Textarea
 									{...field}
-									// onKeyDown={onKeyDown}
-									// placeholder={placeholderText}
+									onKeyDown={onKeyDown}
 									disabled={isPosting}
+									placeholder="Update this post..."
 									className="min-h-12 resize-none"
-									// ref={textarea}
+									ref={textarea}
 									rows={1}
 								/>
 							</FormControl>

@@ -9,7 +9,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
-import { KeyboardEvent, KeyboardEventHandler, useRef } from "react";
+import { KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 import toast, { LoaderIcon } from "react-hot-toast";
 import * as z from "zod";
@@ -63,13 +63,6 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 			},
 		});
 
-	const updateHeight = () => {
-		if (textarea.current) {
-			textarea.current.style.height = "auto";
-			textarea.current.style.height = `${textarea.current.scrollHeight + 2}px`;
-		}
-	};
-
 	const FormSchema = z.object({
 		content: z.string().max(3000, {
 			message: "Post must not be longer than 3000 characters.",
@@ -87,6 +80,14 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 			repliedToId: replyingTo,
 		});
 	}
+
+	const updateHeight = () => {
+		if (textarea.current) {
+			textarea.current.style.height = "auto";
+			textarea.current.style.height = `${textarea.current.scrollHeight + 2}px`;
+		}
+	};
+
 
 	const onChange = () => {
 		updateHeight();

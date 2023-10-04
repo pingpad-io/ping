@@ -169,6 +169,24 @@ export const postsRouter = createTRPCRouter({
 		.mutation(async ({ ctx, input }) => {
 			const currentTime = new Date().toISOString();
 
+			const post = await ctx.prisma.post.findUnique({
+				where: { id: input.id },
+			});
+
+			if (!post) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `Post with id ${input} was not found.`,
+				});
+			}
+
+			if (post.authorId !== ctx.userId) {
+				throw new TRPCError({
+					code: "FORBIDDEN",
+					message: "You are not allowed to edit this post.",
+				});
+			}
+
 			await ctx.prisma.post.update({
 				data: {
 					content: input.content,
