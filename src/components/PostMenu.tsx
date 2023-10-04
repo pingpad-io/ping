@@ -1,10 +1,16 @@
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuPortal,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger
+} from "@/src/components/ui/dropdown-menu";
+import {
+	DropdownMenuSub,
+	DropdownMenuSubContent
+} from "@radix-ui/react-dropdown-menu";
 import { useUser } from "@supabase/auth-helpers-react";
-import toast from "react-hot-toast";
-import { api } from "~/utils/api";
-import { CompactMenuItem } from "./MenuItem";
-import { SignedIn } from "./Signed";
-import { Post } from "~/server/api/routers/posts";
-import { ReactionsList } from "./ReactionsList";
 import {
 	EditIcon,
 	HeartIcon,
@@ -13,23 +19,13 @@ import {
 	ReplyIcon,
 	TrashIcon,
 } from "lucide-react";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuPortal,
-	DropdownMenuSeparator,
-	DropdownMenuSubTrigger,
-	DropdownMenuTrigger,
-} from "@/src/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
-import {
-	DropdownMenuArrow,
-	DropdownMenuSub,
-	DropdownMenuSubContent,
-} from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
+import { Post } from "~/server/api/routers/posts";
+import { api } from "~/utils/api";
+import { ReactionsList } from "./ReactionsList";
+import { SignedIn } from "./Signed";
+import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 
 export const PostMenu = ({ post }: { post: Post }) => {
@@ -44,8 +40,10 @@ export const PostMenu = ({ post }: { post: Post }) => {
 			: "";
 	const postLink = `${origin}/p/${post.id}`;
 
-	const todo = () => {
-		toast.error("Not	implemented yet");
+
+	const setEditingQuery = () => {
+		router.query.editing = post.id
+		router.push(router)
 	};
 
 	const { mutate: deletePost } = api.posts.delete.useMutation({
@@ -100,7 +98,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
 					</DropdownMenuItem>
 					{user?.id === author.id && (
 						<>
-							<DropdownMenuItem onClick={todo}>
+							<DropdownMenuItem onClick={setEditingQuery}>
 								<EditIcon size={14} className="mr-2 h-4 w-4" />
 								edit post
 							</DropdownMenuItem>

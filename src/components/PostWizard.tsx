@@ -18,7 +18,6 @@ import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { MenuIcon, SendHorizontalIcon } from "lucide-react";
-import { Separator } from "./ui/separator";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 	const ctx = api.useContext();

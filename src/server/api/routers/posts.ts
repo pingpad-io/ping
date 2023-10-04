@@ -23,7 +23,7 @@ interface PostReaction {
 	count: number;
 }
 
-// Create a ratelimiter that allows to post 2 requests per 1 minute
+// Create a ratelimiter that allows to post 5 requests per 1 minute
 const postingRatelimit = new Ratelimit({
 	redis: Redis.fromEnv(),
 	limiter: Ratelimit.slidingWindow(5, "1 m"),
@@ -130,7 +130,7 @@ export const postsRouter = createTRPCRouter({
 		}),
 
 	delete: privateProcedure
-		.input(z.string())
+		.input(z.string().uuid())
 		.mutation(async ({ ctx, input }) => {
 			const post = await ctx.prisma.post.findUnique({
 				where: { id: input },
@@ -156,13 +156,35 @@ export const postsRouter = createTRPCRouter({
 			});
 		}),
 
+	update: privateProcedure
+		.input(
+			z.object({
+				id: z.string().uuid(),
+				content: z
+					.string()
+					.min(1, "Your post must be longer")
+					.max(3000, "Your post must be less than 3000 characters long"),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const currentTime = new Date().toISOString();
+
+			await ctx.prisma.post.update({
+				data: {
+					content: input.content,
+					updatedAt: currentTime,
+				},
+				where: { id: input.id },
+			});
+		}),
+
 	create: privateProcedure
 		.input(
 			z.object({
 				content: z
 					.string()
 					.min(1, "Your post must be longer")
-					.max(300, "Your post must be less than 300 characters long"),
+					.max(3000, "Your post must be less than 3000 characters long"),
 				threadName: z.string().optional(),
 				repliedToId: z.string().uuid().optional(),
 			}),

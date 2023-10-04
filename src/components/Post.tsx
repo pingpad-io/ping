@@ -2,7 +2,14 @@ import Link from "next/link";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { PostMenu } from "./PostMenu";
 
-import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
+import {
+	ArrowDown,
+	ArrowUp,
+	Edit2Icon,
+	LoaderIcon,
+	ReplyIcon,
+	SendHorizontalIcon,
+} from "lucide-react";
 import { Post } from "~/server/api/routers/posts";
 import Markdown from "./Markdown";
 import { ReactionBadge } from "./Reactions";
@@ -18,6 +25,15 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "./ui/tooltip";
+import { useRouter } from "next/router";
+import { api } from "~/utils/api";
+import { z } from "zod";
+import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem } from "./ui/form";
+import { AvatarMenu } from "./PostWizard";
+import { Textarea } from "./ui/textarea";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -100,14 +116,115 @@ export const PostInfo = ({ post }: { post: Post }) => {
 	);
 };
 
+export const PostEditor = ({ post }: { post: Post }) => {
+	const router = useRouter();
+	const ctx = api.useContext();
+	const { mutate: updatePost, isLoading: isPosting } =
+		api.posts.update.useMutation({
+			onSuccess: async () => {
+				const { editing, ...routerQuery } = router.query;
+				router.replace({
+					query: { ...routerQuery },
+				});
+				await ctx.posts.invalidate();
+			},
+			onError: (e) => {
+				let error = "Something went wrong";
+				switch (e.data?.code) {
+					case "UNAUTHORIZED":
+						error = "You must be logged in to post";
+						break;
+					case "FORBIDDEN":
+						error = "You are not allowed to post";
+						break;
+					case "TOO_MANY_REQUESTS":
+						error = "Slow down! You are posting too fast";
+						break;
+					case "BAD_REQUEST":
+						error = "Invalid request";
+						break;
+					case "PAYLOAD_TOO_LARGE":
+						error = "Your message is too big";
+						break;
+				}
+				toast.error(error);
+			},
+		});
+
+	const FormSchema = z.object({
+		content: z.string().max(3000, {
+			message: "Post must not be longer than 3000 characters.",
+		}),
+	});
+
+	const form = useForm<z.infer<typeof FormSchema>>({
+		resolver: zodResolver(FormSchema),
+		defaultValues: {
+			content: post.content,
+		},
+	});
+
+	function onSubmit(data: z.infer<typeof FormSchema>) {
+		updatePost({
+			content: data.content,
+			id: post.id,
+		});
+	}
+
+	return (
+		<Form {...form}>
+			<form
+				onSubmit={form.handleSubmit(onSubmit)}
+				// onChange={onChange}
+				className="flex flex-row gap-2 w-full h-fit place-items-end"
+			>
+				<FormField
+					control={form.control}
+					name="content"
+					render={({ field }) => (
+						<FormItem className="grow">
+							<FormControl>
+								<Textarea
+									{...field}
+									// onKeyDown={onKeyDown}
+									// placeholder={placeholderText}
+									disabled={isPosting}
+									className="min-h-12 resize-none"
+									// ref={textarea}
+									rows={1}
+								/>
+							</FormControl>
+						</FormItem>
+					)}
+				/>
+				<Button size="icon" type="submit">
+					{isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
+				</Button>
+			</form>
+		</Form>
+	);
+};
+
 export const PostContent = ({ post }: { post: Post }) => {
 	const [collapsed, setCollapsed] = useState(true);
+	const router = useRouter();
+	const editing = router.query.editing === post.id;
 
 	const toggleCollapsed = () => {
 		setCollapsed(!collapsed);
 	};
 
-	return (
+	return editing ? (
+		<>
+			<div
+				className={
+					"truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto line-clamp-none"
+				}
+			>
+				<PostEditor post={post} />
+			</div>
+		</>
+	) : (
 		<div
 			onKeyDown={toggleCollapsed}
 			onClick={toggleCollapsed}
