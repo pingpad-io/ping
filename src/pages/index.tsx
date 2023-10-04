@@ -14,14 +14,14 @@ const HomePage = () => {
 
 	return (
 		<PageLayout>
-			<div className="sticky top-0 z-10 flex w-full flex-col">
+			<div className="fixed sm:sticky inset-x-0 bottom-0 sm:top-0 z-10 flex w-full flex-col">
 				<PostWizard />
 				<div className="px-2">
 					<Separator />
 				</div>
 			</div>
 
-			<div className="px-2">
+			<div className="p-2">
 				<Feed {...posts} />
 			</div>
 		</PageLayout>

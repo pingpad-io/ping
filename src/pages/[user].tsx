@@ -30,7 +30,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 			<PageLayout>
 				<div className="sticky top-0 p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 backdrop-blur-md">
 					<div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
-						<UserAvatar profile={profile} />
+						<UserAvatar userId={profile.id} />
 					</div>
 
 					<div className="flex flex-col grow place-content-around">

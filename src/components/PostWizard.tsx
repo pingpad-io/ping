@@ -9,7 +9,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
-import { KeyboardEvent, useRef } from "react";
+import { KeyboardEvent, KeyboardEventHandler, useRef } from "react";
 import { useForm } from "react-hook-form";
 import toast, { LoaderIcon } from "react-hot-toast";
 import * as z from "zod";
@@ -17,7 +17,7 @@ import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { SendHorizontalIcon } from "lucide-react";
+import { MenuIcon, SendHorizontalIcon } from "lucide-react";
 import { Separator } from "./ui/separator";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
@@ -93,10 +93,9 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 		updateHeight();
 	};
 
-	const onKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
-		if (event.key === "Enter" && event.ctrlKey) {
-			// FIXME: it doesn't work
-			form.handleSubmit(onSubmit);
+	const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+		if (event.ctrlKey && event.key === "Enter") {
+			onSubmit(form.getValues());
 		}
 	};
 
@@ -106,10 +105,9 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					onChange={onChange}
-					onKeyDown={onKeyDown}
 					className="flex flex-row gap-2 w-full h-fit place-items-end"
 				>
-					{user && <PostAvatar userId={user.id} />}
+					<AvatarMenu userId={user?.id} />
 					<FormField
 						control={form.control}
 						name="content"
@@ -118,6 +116,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 								<FormControl>
 									<Textarea
 										{...field}
+										onKeyDown={onKeyDown}
 										placeholder={placeholderText}
 										disabled={isPosting}
 										className="min-h-12 resize-none"
@@ -128,25 +127,26 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 							</FormItem>
 						)}
 					/>
-					<FormControl>
-						<Button size="icon">
-							{isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
-						</Button>
-					</FormControl>
+					<Button size="icon" type="submit">
+						{isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
+					</Button>
 				</form>
 			</Form>
 		</div>
 	);
 }
 
-export const PostAvatar = ({ userId }: { userId: string }) => {
-	const { data: profile } = api.profiles.get.useQuery({
-		id: userId,
-	});
+export const AvatarMenu = ({ userId }: { userId?: string | null }) => {
+	if (!userId)
+		return (
+			<div>
+				<MenuIcon />
+			</div>
+		);
 
 	return (
 		<div className="w-10 h-10 shrink-0 grow-0">
-			<UserAvatar profile={profile} />
+			<UserAvatar userId={userId} />
 		</div>
 	);
 };

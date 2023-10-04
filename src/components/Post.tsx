@@ -26,7 +26,7 @@ export const PostView = ({ post }: { post: Post }) => {
 		<Card className="w-full h-min max-w-2xl group">
 			<CardContent className="flex flex-row gap-4 p-2 sm:p-4">
 				<div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-					<UserAvatar profile={author} />
+					<UserAvatar userId={author.id} />
 				</div>
 				<div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
 					<ReplyInfo post={post} />

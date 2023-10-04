@@ -14,18 +14,15 @@ import {
 	SearchIcon,
 	SendIcon,
 	SettingsIcon,
-	SunIcon,
-	UserIcon,
+	UserIcon
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { createContext } from "react";
-import { toast } from "react-hot-toast";
 import { Button } from "~/components/ui/button";
 import { api } from "~/utils/api";
 import PingAuth from "./Auth";
 import PostWizard from "./PostWizard";
-import { Card } from "./ui/card";
 
 export const CollapsedContext = createContext(false);
 
@@ -37,7 +34,7 @@ export default function Menu() {
 	return (
 		<div
 			className={
-				"sticky top-0 flex h-screen w-max shrink flex-col py-4 text-2xl sm:px-2 lg:w-56"
+				"sticky top-0 hidden sm:flex h-screen w-max shrink flex-col py-4 text-2xl sm:px-2 lg:w-56"
 			}
 		>
 			<div className="flex flex-col items-end gap-2">
