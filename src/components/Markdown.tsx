@@ -16,7 +16,7 @@ function Markdown({ content }: MarkdownProps) {
 			remarkPlugins={[remarkGfm]}
 			components={{
 				h1: "h2",
-				a: ({ node, ...props }) => <LinkPreview content={props.href ?? ""} />,
+				a: ({ node, ...props }) => <LinkPreview url={props.href ?? ""} />,
 				code({ node, inline, className, children, ...props }) {
 					const match = /language-(\w+)/.exec(className || "");
 					return !inline && match ? (
