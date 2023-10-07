@@ -40,7 +40,7 @@ export const postsRouter = createTRPCRouter({
 	get: publicProcedure
 		.input(
 			z.object({
-				take: z.number().max(300).default(100),
+				take: z.number().max(300).default(25),
 				thread: z.string().optional(),
 				contains: z.string().optional(),
 				postId: z.string().optional(),
@@ -132,15 +132,17 @@ export const postsRouter = createTRPCRouter({
 					return postsWithReactions;
 				})
 				.then(async (posts) => {
-					const postsWithMetadata = await Promise.all(posts.map(async (post) => {
-						const links = getURLs(post.content);
-						const metadata = await getMetadata(links?.[0])
+					const postsWithMetadata = await Promise.all(
+						posts.map(async (post) => {
+							const links = getURLs(post.content);
+							const metadata = await getMetadata(links?.[0]);
 
-						return {
-							...post,
-							metadata: metadata,
-						};
-					}));
+							return {
+								...post,
+								metadata: metadata,
+							};
+						}),
+					);
 
 					return postsWithMetadata;
 				});
