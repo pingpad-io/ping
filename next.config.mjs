@@ -6,27 +6,27 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
-  reactStrictMode: true,
+	reactStrictMode: true,
 
-  /**
-   * If you have the "experimental: { appDir: true }" setting enabled, then you
-   * must comment the below `i18n` config out.
-   *
-   * @see https://github.com/vercel/next.js/issues/41980
-   */
-  i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
-  },
-  images: {
-    remotePatterns: [
-      {
-        hostname: "*.googleusercontent.com",
-      },
-      {
-        hostname: "avatars.githubusercontent.com",
-      },
-    ],
-  },
+	/**
+	 * If you have the "experimental: { appDir: true }" setting enabled, then you
+	 * must comment the below `i18n` config out.
+	 *
+	 * @see https://github.com/vercel/next.js/issues/41980
+	 */
+	i18n: {
+		locales: ["en"],
+		defaultLocale: "en",
+	},
+	images: {
+		remotePatterns: [
+			{
+				hostname: "*.googleusercontent.com",
+			},
+			{
+				hostname: "avatars.githubusercontent.com",
+			},
+		],
+	},
 };
 export default config;

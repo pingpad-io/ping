@@ -1,20 +1,8 @@
-import React from "react";
 import { api } from "~/utils/api";
-import { Card } from "./ui/card";
+import { NextPage, type GetServerSideProps } from "next";
+import { getSSGHelper } from "~/utils/getSSGHelper";
 
-interface Metadata {
-	title: string;
-	description: string;
-	image: string;
-}
-
-interface LinkPreviewProps {
-	content: string;
-}
-
-import { type NextPage } from "next";
-
-const LinkPreview: NextPage<{ url: string }> = ({ url }) => {
+const Metadata: NextPage<{ url: string }> = ({ url }) => {
 	const { data: metadata } = api.metadata.get.useQuery({ url });
 
 	if (!metadata) {
@@ -45,23 +33,20 @@ const LinkPreview: NextPage<{ url: string }> = ({ url }) => {
 	);
 };
 
-import { type GetServerSideProps } from "next";
-import { getSSGHelper } from "~/utils/getSSGHelper";
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	const ssg = getSSGHelper();
+	const url = context.params?.url;
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-// 	const ssg = getSSGHelper();
+	if (typeof url !== "string") throw new Error("Invalid URL passed to SSR");
 
-// 	const url = context.params?.url;
-// 	if (typeof url !== "string") throw new Error("Invalid URL passed to SSR");
+	await ssg.metadata.get.prefetch({ url });
 
-// 	await ssg.metadata.get.prefetch({ url });
+	return {
+		props: {
+			trpcState: ssg.dehydrate(),
+			url,
+		},
+	};
+};
 
-// 	return {
-// 		props: {
-// 			trpcState: ssg.dehydrate(),
-// 			context,
-// 		},
-// 	};
-// };
-
-export default LinkPreview;
+export default Metadata;

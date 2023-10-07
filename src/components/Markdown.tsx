@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import LinkPreview from "./LinkPreview";
+import Metadata from "~/pages/metadata/[url]";
 
 interface MarkdownProps {
 	content: string;
@@ -11,12 +11,13 @@ interface MarkdownProps {
 
 function Markdown({ content }: MarkdownProps) {
 	return (
+
 		<ReactMarkdown
 			className="prose dark:prose-invert"
 			remarkPlugins={[remarkGfm]}
 			components={{
 				h1: "h2",
-				a: ({ node, ...props }) => <LinkPreview url={props.href ?? ""} />,
+				a: ({ node, ...props }) => props.href && <Metadata url={props.href} />,
 				code({ node, inline, className, children, ...props }) {
 					const match = /language-(\w+)/.exec(className || "");
 					return !inline && match ? (

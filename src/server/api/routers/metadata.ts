@@ -2,13 +2,13 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-import got from "got";
 import metascraperImage from "metascraper-image";
 import metascraperTitle from "metascraper-title";
 import metascraperPublisher from "metascraper-publisher";
 import metascraperUrl from "metascraper-url";
 import metascraperLogo from "metascraper-logo";
 import createMetascraper from "metascraper";
+import got from "got";
 
 const metascraper = createMetascraper([
 	metascraperTitle(),
@@ -17,6 +17,7 @@ const metascraper = createMetascraper([
 	metascraperUrl(),
 	metascraperLogo(),
 ]);
+
 
 export const metadataRouter = createTRPCRouter({
 	get: publicProcedure
