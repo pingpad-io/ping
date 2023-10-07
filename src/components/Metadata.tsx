@@ -2,7 +2,7 @@ import { Post } from "~/server/api/routers/posts";
 
 const Metadata = ({ metadata }: { metadata: Post["metadata"] }) => {
 	if (!metadata) {
-		return <span>Loading preview...</span>;
+		return <></>;
 	}
 
 	return (
