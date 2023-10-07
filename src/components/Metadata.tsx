@@ -8,7 +8,7 @@ const Metadata = ({ metadata }: { metadata: Post["metadata"] }) => {
 	return (
 		<span className="max-w-sm min-w-0">
 			<span className="rounded-lg border text-card-foreground shadow-sm bg-slate-100 select-none truncate line-clamp-1 dark:bg-slate-900 mt-2 sm:mt-4 p-2 sm:p-4 flex flex-col gap-2">
-				<a href={metadata.url} className="no-underline">
+				<a href={metadata.url} className="no-underline flex flex-col gap-1">
 					{metadata.publisher && <span>{metadata.publisher}</span>}
 					<span className="truncate hover:underline"> {metadata.title} </span>
 				</a>

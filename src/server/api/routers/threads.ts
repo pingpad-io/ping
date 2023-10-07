@@ -23,7 +23,10 @@ export const threadsRouter = createTRPCRouter({
 		.query(async ({ ctx, input }) => {
 			const threads = await ctx.prisma.thread.findMany({
 				take: 100,
-				include: { author: true, posts: true },
+				include: {
+					author: { select: { username: true } },
+					posts: { select: { _count: true } },
+				},
 				orderBy: [{ created_at: "asc" }],
 				where: { id: input.threadId, name: input.threadName },
 			});

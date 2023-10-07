@@ -40,7 +40,7 @@ export const postsRouter = createTRPCRouter({
 	get: publicProcedure
 		.input(
 			z.object({
-				take: z.number().max(300).default(25),
+				take: z.number().max(300).default(4),
 				thread: z.string().optional(),
 				contains: z.string().optional(),
 				postId: z.string().optional(),

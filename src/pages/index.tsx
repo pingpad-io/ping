@@ -8,9 +8,7 @@ import { Separator } from "~/components/ui/separator";
 import { useRouter } from "next/router";
 
 const HomePage = () => {
-	const router = useRouter();
-	const thread = router.asPath.split("/")[2];
-	const posts = api.posts.get.useQuery({});
+	const posts = api.posts.get.useQuery({}, { cacheTime: 30 });
 
 	return (
 		<PageLayout>

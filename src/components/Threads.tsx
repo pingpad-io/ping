@@ -91,7 +91,7 @@ export default function Threads() {
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
-			<div className="card-content">{threadList}</div>
+				<div className="card-content">{threadList}</div>
 			</CardContent>
 		</Card>
 	);

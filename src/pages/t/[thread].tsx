@@ -7,7 +7,7 @@ import { getSSGHelper } from "~/utils/getSSGHelper";
 import { Separator } from "~/components/ui/separator";
 
 const ThreadPage = ({ thread }: { thread: string }) => {
-	const posts = api.posts.get.useQuery({ thread });
+	const posts = api.posts.get.useQuery({ thread});
 
 	return (
 		<PageLayout>
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	if (typeof thread !== "string") throw new Error("Bad URL");
 
-	await ssg.posts.get.prefetch({ thread });
+	await ssg.posts.get.prefetch({ thread});
 	await ssg.threads.get.prefetch({});
 	await ssg.reactions.get.prefetch({});
 
