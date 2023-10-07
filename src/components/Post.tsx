@@ -1,19 +1,23 @@
 import Link from "next/link";
-import { KeyboardEvent, useEffect } from "react";
-import { useState, type Dispatch, type SetStateAction, useRef } from "react";
+import {
+	KeyboardEvent,
+	useEffect,
+	useRef,
+	useState,
+	type Dispatch,
+	type SetStateAction,
+} from "react";
 import { PostMenu } from "./PostMenu";
 
-import {
-	ArrowDown,
-	ArrowUp,
-	CrossIcon,
-	Edit2Icon,
-	LoaderIcon,
-	ReplyIcon,
-	SendHorizontalIcon,
-	XIcon,
-} from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useUser } from "@supabase/auth-helpers-react";
+import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { z } from "zod";
 import { Post } from "~/server/api/routers/posts";
+import { api } from "~/utils/api";
 import Markdown from "./Markdown";
 import { ReactionBadge } from "./Reactions";
 import { ReactionsList } from "./ReactionsList";
@@ -22,22 +26,15 @@ import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
+import { Form, FormControl, FormField, FormItem } from "./ui/form";
+import { Textarea } from "./ui/textarea";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "./ui/tooltip";
-import { useRouter } from "next/router";
-import { api } from "~/utils/api";
-import { z } from "zod";
-import toast from "react-hot-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem } from "./ui/form";
-import { AvatarMenu } from "./PostWizard";
-import { Textarea } from "./ui/textarea";
-import { useUser } from "@supabase/auth-helpers-react";
+import Metadata from "./Metadata";
 
 export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
@@ -282,6 +279,7 @@ export const PostContent = ({ post }: { post: Post }) => {
 			}`}
 		>
 			<Markdown content={post.content} />
+			<Metadata metadata={post.metadata} />
 		</div>
 	);
 };

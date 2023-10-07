@@ -11,6 +11,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { randomUUID } from "crypto";
 import { RouterOutputs } from "~/utils/api";
+import { getMetadata } from "~/utils/getMetadata";
 
 export type Post = RouterOutputs["posts"]["get"][number];
 
@@ -21,6 +22,11 @@ interface PostReaction {
 	reactionId: number;
 	profileIds: string[];
 	count: number;
+}
+
+function getURLs(message: string) {
+	const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+	return message.match(urlRegex);
 }
 
 // Create a ratelimiter that allows to post 5 requests per 1 minute
@@ -124,6 +130,19 @@ export const postsRouter = createTRPCRouter({
 					});
 
 					return postsWithReactions;
+				})
+				.then(async (posts) => {
+					const postsWithMetadata = await Promise.all(posts.map(async (post) => {
+						const links = getURLs(post.content);
+						const metadata = await getMetadata(links?.[0])
+
+						return {
+							...post,
+							metadata: metadata,
+						};
+					}));
+
+					return postsWithMetadata;
 				});
 
 			return posts;

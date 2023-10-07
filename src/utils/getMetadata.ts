@@ -18,14 +18,11 @@ const metascraper = createMetascraper([
 	metascraperLogo(),
 ]);
 
+export const getMetadata = async (url?: string | null) => {
+	if (!url) return null;
 
-export const metadataRouter = createTRPCRouter({
-	get: publicProcedure
-		.input(z.object({ url: z.string().url() }))
-		.query(async ({ input }) => {
-			const { body: html, url } = await got(input.url);
-			const metadata = await metascraper({ html, url });
+	const { body: html, url: gotUrl } = await got(url);
+	const metadata = await metascraper({ html, url: gotUrl });
 
-			return metadata;
-		}),
-});
+	return metadata;
+};
