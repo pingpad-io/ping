@@ -92,6 +92,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 			trpcState: ssg.dehydrate(),
 			username,
 		},
+		revalidate: 1,
 	};
 };
 
