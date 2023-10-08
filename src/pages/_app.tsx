@@ -30,7 +30,7 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
 		>
 			<Head>
 				<title>Ping</title>
-				<meta name="description" content="reach your people on Ping" />
+				<meta name="description" content="reach Your people on Ping" />
 				<link rel="icon" ref="/favicon.ico" />
 			</Head>
 			<Analytics />
