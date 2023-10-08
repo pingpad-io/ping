@@ -262,11 +262,7 @@ export const PostContent = ({ post }: { post: Post }) => {
 
 	return editing ? (
 		<>
-			<div
-				className={
-					"truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto line-clamp-none"
-				}
-			>
+			<div className="truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto line-clamp-none">
 				<PostEditor post={post} />
 			</div>
 		</>
@@ -292,7 +288,7 @@ export const PostBadges = ({ post }: { post: Post }) => {
 			<PostReactionList post={post} />
 
 			<SignedIn>
-				{post.reactions.length > 0 && (
+				{post.reactions.length > 0 || post.replies.length > 0 || post.createdAt.toUTCString() !== post.updatedAt.toUTCString() && (
 					<div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
 						<ReactionsList post={post} />
 					</div>
