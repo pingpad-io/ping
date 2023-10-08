@@ -7,20 +7,24 @@ const Metadata = ({ metadata }: { metadata: Post["metadata"] }) => {
 
 	return (
 		<span
-			className="max-w-md min-w-0 w-max
+			className="max-w-md min-w-0 w-fit
 				rounded-lg border text-card-foreground shadow-sm select-none truncate line-clamp-1 
 				bg-slate-100 dark:bg-slate-900 mt-2 sm:mt-4 p-2 sm:p-4 flex flex-col gap-2 "
 		>
-			<a href={metadata.url} className="select-none truncate">
-				{metadata.publisher && <span>{metadata.publisher}</span>}
-			</a>
-			<a href={metadata.url} className="truncate hover:underline">
+			{metadata.publisher && (
+				<span>
+					<a href={metadata.url} className="select-none truncate font-light">
+						{metadata.publisher}
+					</a>
+				</span>
+			)}
+			<a href={metadata.url} className="truncate hover:underline font-bold">
 				{metadata.title}
 			</a>
 			{metadata.image && (
-				<a href={metadata.url} className="">
+				<a href={metadata.url}>
 					<img
-						className="rounded-lg m-0 mt-4"
+						className="rounded-lg m-0 mt-2"
 						src={metadata.image}
 						alt={`${metadata.title} preview`}
 					/>
