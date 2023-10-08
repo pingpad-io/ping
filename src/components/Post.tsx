@@ -288,7 +288,9 @@ export const PostBadges = ({ post }: { post: Post }) => {
 			<PostReactionList post={post} />
 
 			<SignedIn>
-				{post.reactions.length > 0 || post.replies.length > 0 || post.createdAt.toUTCString() !== post.updatedAt.toUTCString() && (
+				{(post.reactions.length > 0 ||
+					post.replies.length > 0 ||
+					post.createdAt.toUTCString() !== post.updatedAt.toUTCString()) && (
 					<div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
 						<ReactionsList post={post} />
 					</div>
