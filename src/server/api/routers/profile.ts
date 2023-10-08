@@ -31,6 +31,12 @@ export const profileRouter = createTRPCRouter({
 			return profile;
 		}),
 
+	getAll: publicProcedure.input(z.object({})).query(async ({ ctx }) => {
+		const profiles = await ctx.prisma.profile.findMany({});
+
+		return profiles;
+	}),
+
 	update: privateProcedure
 		.input(z.object({ updates: z.custom<Profile>() }))
 		.mutation(async ({ ctx, input }) => {

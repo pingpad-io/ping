@@ -1,4 +1,4 @@
-import { type GetStaticProps, type NextPage } from "next";
+import { GetStaticPaths, type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import ErrorPage from "~/components/ErrorPage";
@@ -77,8 +77,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
 	};
 };
 
-export const getStaticPaths = () => {
-	return { paths: [], fallback: "blocking" };
+export const getStaticPaths: GetStaticPaths = async () => {
+	const ssg = getSSGHelper();
+	const posts = await ssg.posts.get.fetch({ take: 1000 });
+
+	return {
+		paths: posts.map((post) => ({
+			params: {
+				id: post.id,
+			},
+		})),
+		fallback: "blocking",
+	};
 };
 
 export default PostPage;

@@ -2,7 +2,7 @@ import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import PostWizard from "~/components/PostWizard";
 import { api } from "~/utils/api";
-import { type GetServerSideProps } from "next";
+import { GetStaticProps, type GetServerSideProps, GetStaticPaths } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 import { Separator } from "~/components/ui/separator";
 
@@ -24,7 +24,7 @@ const ThreadPage = ({ thread }: { thread: string }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
 	const ssg = getSSGHelper();
 	const thread = context.params?.thread;
 
@@ -39,6 +39,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			trpcState: ssg.dehydrate(),
 			thread,
 		},
+	};
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	const ssg = getSSGHelper();
+	const threads = await ssg.threads.get.fetch({});
+
+	return {
+		paths: threads.map((thread) => ({
+			params: {
+				thread: thread.name ?? ""
+			},
+		})),
+		fallback: "blocking",
 	};
 };
 

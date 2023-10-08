@@ -2,13 +2,12 @@ import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import PostWizard from "~/components/PostWizard";
 import { api } from "~/utils/api";
-import { type GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 import { Separator } from "~/components/ui/separator";
-import { useRouter } from "next/router";
 
 const HomePage = () => {
-	const posts = api.posts.get.useQuery({}, { cacheTime: 30 });
+	const posts = api.posts.get.useQuery({});
 
 	return (
 		<PageLayout>
@@ -26,7 +25,7 @@ const HomePage = () => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
 	const ssg = getSSGHelper();
 
 	await ssg.posts.get.prefetch({});
@@ -36,6 +35,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 		props: {
 			trpcState: ssg.dehydrate(),
 		},
+		revalidate: 1,
 	};
 };
 

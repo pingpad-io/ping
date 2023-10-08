@@ -1,6 +1,11 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import { CalendarIcon, EditIcon } from "lucide-react";
-import { type GetServerSideProps, type NextPage } from "next";
+import {
+	GetStaticProps,
+	type GetServerSideProps,
+	type NextPage,
+	GetStaticPaths,
+} from "next";
 import Head from "next/head";
 import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";
@@ -72,7 +77,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
 	const ssg = getSSGHelper();
 	const username = context.params?.user;
 
@@ -87,6 +92,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			trpcState: ssg.dehydrate(),
 			username,
 		},
+	};
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	const ssg = getSSGHelper();
+	const profiles = await ssg.profiles.getAll.fetch({});
+
+	return {
+		paths: profiles.map((profile) => ({
+			params: {
+				user: profile.username ?? ""
+			},
+		})),
+		fallback: "blocking",
 	};
 };
 
