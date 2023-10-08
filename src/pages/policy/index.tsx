@@ -10,7 +10,7 @@ const PolicyPage = () => {
 			</Head>
 
 			<PageLayout>
-				<div className="prose p-8 lg:prose-lg">
+				<div className="prose dark:prose-invert p-8 lg:prose-lg">
 					<h2>Privacy Policy</h2>
 					<p>
 						Kualta dba "K.U Corp." ("us", "we", or "our") operates

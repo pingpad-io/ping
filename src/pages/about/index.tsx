@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import Head from "next/head";
 import { PageLayout } from "~/components/Layout";
+import { Card } from "~/components/ui/card";
 
 const AboutPage = () => {
 	return (
@@ -16,24 +17,23 @@ const AboutPage = () => {
 						<h2>a focus-first microblogging platform</h2>
 					</div>
 					<div className="mt-10 flex flex-col gap-8 p-8">
-						<div className="card m-4 bg-base-200 p-4">
+						<Card className="m-4 bg-base-200 p-4">
 							<b>what?</b>
 							<div className="text-left">
 								this website is an attempt to create a better decentralized
 								microblogging experience - staying out of your way to reach your
 								people.
 							</div>
-						</div>
-						<div className="card m-4 bg-base-200 p-4">
+						</Card>
+						<Card className="m-4 p-4">
 							<b>who?</b>
-							<div className="text-left">
-								made with ❤ by
+							<div className="text-left space-x-2">
+								made with ❤ by {' '}
 								<a className="underline" href="https://kualta.dev">
-									kualta
+									{"kualta"}
 								</a>
 							</div>
-						</div>
-						<div className="card m-4 bg-base-100 p-4" />
+						</Card>
 					</div>
 				</div>
 			</PageLayout>
