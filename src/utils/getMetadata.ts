@@ -14,8 +14,8 @@ const metascraper = createMetascraper([
 	metascraperTitle(),
 	metascraperImage(),
 	metascraperPublisher(),
-	// metascraperUrl(),
-	// metascraperLogo(),
+	metascraperUrl(),
+	metascraperLogo(),
 ]);
 
 export const getMetadata = async (url?: string | null) => {

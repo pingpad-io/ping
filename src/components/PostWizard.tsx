@@ -101,7 +101,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 	if (!user) return null;
 
 	return (
-		<div className="p-4 backdrop-blur-sm">
+		<div className="p-4 backdrop-blur-2xl">
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
