@@ -128,7 +128,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 							</FormItem>
 						)}
 					/>
-					<Button size="icon" type="submit">
+					<Button disabled={isPosting} size="icon" type="submit">
 						{isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
 					</Button>
 				</form>

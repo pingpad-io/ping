@@ -242,7 +242,13 @@ export const PostEditor = ({ post }: { post: Post }) => {
 					>
 						Cancel
 					</Button>
-					<Button size="default" className="flex gap-2" type="submit">
+
+					<Button
+						disabled={isPosting}
+						size="default"
+						className="flex gap-2"
+						type="submit"
+					>
 						Update
 					</Button>
 				</div>
