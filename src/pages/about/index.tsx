@@ -1,38 +1,50 @@
 /* eslint-disable react/no-unescaped-entities */
 import Head from "next/head";
 import { PageLayout } from "~/components/Layout";
-import { Card } from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
 const AboutPage = () => {
 	return (
 		<>
 			<Head>
-				<title>About</title>
+				<title>About Ping</title>
 			</Head>
 
 			<PageLayout>
-				<div className="flex h-screen w-full flex-col items-center gap-8 p-20 text-center font-mono">
-					<div className="flex flex-col items-center text-2xl">
-						<h1 className="font-bold">About Ping</h1>
-						<h2>a focus-first microblogging platform</h2>
-					</div>
-					<div className="mt-10 flex flex-col gap-8 p-8">
-						<Card className="m-4 bg-base-200 p-4">
-							<b>what?</b>
-							<div className="text-left">
-								this website is an attempt to create a better decentralized
-								microblogging experience - staying out of your way to reach your
-								people.
-							</div>
+				<div className="flex flex-col items-center p-2 sm:p-4 md:p-20 text-center gap-8">
+					<h1 className="font-bold text-4xl">About Ping</h1>
+					<h2 className="text-2xl">a focus-first microblogging platform</h2>
+					<div className="flex flex-col gap-8 p-2 md:p-8">
+						<Card>
+							<CardHeader>
+								<CardTitle>what?</CardTitle>
+							</CardHeader>
+							<CardContent>
+								this project is an attempt to provide a better microblogging
+								experience -{" "}
+								<b>staying out of your way to reach your people.</b>
+							</CardContent>
 						</Card>
-						<Card className="m-4 p-4">
-							<b>who?</b>
-							<div className="text-left space-x-2">
-								made with ❤ by {' '}
+						<Card>
+							<CardHeader>
+								<CardTitle>why?</CardTitle>
+							</CardHeader>
+							<CardContent>
+								providing a place to hold discussions{" "}
+								<b>without being instrumental</b>, made <b>for you </b> and{" "}
+								<b>your community</b>
+							</CardContent>
+						</Card>
+						<Card>
+							<CardHeader>
+								<CardTitle>who?</CardTitle>
+							</CardHeader>
+							<CardContent>
+								made with ❤ by{" "}
 								<a className="underline" href="https://kualta.dev">
 									{"kualta"}
 								</a>
-							</div>
+							</CardContent>
 						</Card>
 					</div>
 				</div>
