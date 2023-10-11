@@ -17,7 +17,7 @@ import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { SendHorizontalIcon } from "lucide-react";
+import { MenuIcon, SendHorizontalIcon } from "lucide-react";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 	const ctx = api.useContext();
@@ -138,7 +138,11 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
 }
 
 export const AvatarMenu = ({ userId }: { userId?: string }) => {
-	if (!userId) return null;
+	if (!userId) return (
+		<div className="w-10 h-10 shrink-0 grow-0">
+			<MenuIcon />
+		</div>
+	);
 	return (
 		<div className="w-10 h-10 shrink-0 grow-0">
 			<UserAvatar userId={userId} />

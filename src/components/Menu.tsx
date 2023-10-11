@@ -32,12 +32,8 @@ export default function Menu() {
 	const user = useUser();
 
 	return (
-		<div
-			className={
-				"sticky top-0 hidden sm:flex h-screen w-max shrink flex-col py-4 text-2xl sm:px-2 lg:w-56"
-			}
-		>
-			<div className="flex flex-col items-end gap-2">
+		<span className="flex h-fit w-full sm:w-max shrink py-4 text-2xl px-4 sm:px-2 lg:w-56">
+			<span className="flex h-fit flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
 				<Link href="/">
 					<Button variant="ghost" size="sm_icon">
 						<div className="hidden sm:flex">ping</div>
@@ -45,7 +41,7 @@ export default function Menu() {
 					</Button>
 				</Link>
 
-				<div className="flex flex-col items-end gap-2 lg:hidden">
+				<div className="flex flex-row sm:flex-col items-end gap-2 lg:hidden">
 					{pathname !== "/search" && (
 						<Link href={"/search"} className="xl:hidden text-2xl">
 							<Button variant="ghost" size="sm_icon">
@@ -80,9 +76,8 @@ export default function Menu() {
 						</DialogContent>
 					</Dialog>
 				)}
-
-			</div>
-		</div>
+			</span>
+		</span>
 	);
 }
 
@@ -121,17 +116,17 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 				</Button>
 			</Link>
 
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button>
-							<div className="hidden sm:flex">post</div>
-							<SendIcon className="sm:ml-2" />
-						</Button>
-					</DialogTrigger>
-					<DialogContent className="sm:max-w-[700px]">
-						<PostWizard />
-					</DialogContent>
-				</Dialog>
+			<Dialog>
+				<DialogTrigger asChild>
+					<Button>
+						<div className="hidden sm:flex">post</div>
+						<SendIcon className="sm:ml-2" />
+					</Button>
+				</DialogTrigger>
+				<DialogContent className="max-w-full sm:max-w-[700px]">
+					<PostWizard />
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 };

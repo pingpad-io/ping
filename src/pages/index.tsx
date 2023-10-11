@@ -11,7 +11,7 @@ const HomePage = () => {
 
 	return (
 		<PageLayout>
-			<div className="sticky inset-x-0 top-0 z-10 flex w-full flex-col">
+			<div className="sticky inset-x-0 top-0 z-10 w-full flex-col hidden sm:flex">
 				<PostWizard />
 				<div className="px-2">
 					<Separator />
