@@ -40,7 +40,7 @@ export const PostView = ({ post }: { post: Post }) => {
 	const author = post.author;
 
 	return (
-		<Card className="w-full h-min max-w-2xl group">
+		<Card className="w-full h-min max-w-2xl group snap-start">
 			<CardContent className="flex flex-row gap-4 p-2 sm:p-4">
 				<div className="w-10 h-10 shrink-0 grow-0 rounded-full">
 					<UserAvatar userId={author.id} />
