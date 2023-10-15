@@ -10,13 +10,11 @@ const HomePage = () => {
 
   return (
     <PageLayout>
-      <div className="z-[30] sticky top-0 w-full flex-col hidden sm:flex flex-none">
+      <div className="z-[30] sticky top-0 flex-col hidden sm:flex flex-none">
         <PostWizard />
       </div>
 
-      <div className="flex flex-col gap-1 items-center justify-center p-2 w-full">
-        <Feed {...posts} />
-      </div>
+      <Feed {...posts} />
     </PageLayout>
   );
 };

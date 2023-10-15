@@ -34,7 +34,10 @@ export const PageLayout = (props: PropsWithChildren) => {
   }, [targetRef]);
 
   return (
-    <div className="flex flex-row w-full" ref={currentRef}>
+    <div
+      className="flex flex-row justify-center shrink grow w-full shrink"
+      ref={currentRef}
+    >
       <div className="hidden sm:flex sticky top-0 h-fit">
         <Menu />
       </div>
@@ -43,7 +46,7 @@ export const PageLayout = (props: PropsWithChildren) => {
         <div className="z-[100] flex sm:hidden h-fit w-full sticky top-0 bg-card rounded-b-lg drop-shadow-xl">
           <Menu />
         </div>
-        <div className="">{props.children}</div>
+        {props.children}
       </div>
 
       <div className="hidden lg:flex sticky top-0 h-fit max-w-xs w-max">
