@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { useEffect, useRef } from "react";
 import ErrorPage from "./ErrorPage";
 import { PostView } from "./Post";
 import { SuspensePostView } from "./SuspensePostView";
@@ -22,10 +23,7 @@ export default function Feed(props: {
   const feed = props.data.map((post) => <PostView key={post.id} post={post} />);
 
   return (
-    <div
-      id="scrollable"
-      className="flex flex-col gap-1 overflow-y-scroll scroll-smooth snap-mandatory h-[91vh] snap-y "
-    >
+    <div className="flex flex-col gap-1 overflow-scroll scroll-smooth snap-proximity no-scrollbar h-[91vh] snap-y scrollable">
       {feed}
     </div>
   );
