@@ -22,7 +22,10 @@ export default function Feed(props: {
   const feed = props.data.map((post) => <PostView key={post.id} post={post} />);
 
   return (
-    <div className="flex flex-col gap-1 snap-y snap-mandatory overflow-y-scroll h-full no-scrollbar">
+    <div
+      id="scrollable"
+      className="flex flex-col gap-1 overflow-y-scroll scroll-smooth snap-mandatory h-[91vh] snap-y "
+    >
       {feed}
     </div>
   );

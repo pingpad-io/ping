@@ -28,24 +28,26 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
       supabaseClient={supabaseClient}
       initialSession={pageProps.initialSession}
     >
-      <Head>
-        <title>Ping</title>
-        <meta name="description" content="reach Your people on Ping" />
-        <link rel="icon" ref="/favicon.ico" />
-      </Head>
-      <Analytics />
       <ThemeProvider
         attribute="class"
         defaultTheme="system"
         enableSystem
         disableTransitionOnChange
       >
-        <Toaster position="top-center" />
+        <Head>
+          <title>Ping</title>
+          <meta name="description" content="reach Your people on Ping" />
+          <link rel="icon" ref="/favicon.ico" />
+        </Head>
+
         <main
           className={`flex flex-row place-content-center scroll-smooth font-sans ${raleway.variable}`}
         >
           <Component {...pageProps} />
         </main>
+
+        <Analytics />
+        <Toaster position="top-center" />
       </ThemeProvider>
     </SessionContextProvider>
   );
