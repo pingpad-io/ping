@@ -45,7 +45,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               </div>
               {isUserProfile && (
                 <Link
-                  className="btn btn-square btn-sm btn-ghost "
+                  className="btn btn-square btn-sm btn-ghost"
                   href="/settings"
                 >
                   <EditIcon size={14} />
@@ -69,9 +69,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           </div>
         </div>
 
-        <div className="p-2 h-[86vh]">
-          <Feed {...posts} />
-        </div>
+        <Feed {...posts} />
       </PageLayout>
     </>
   );

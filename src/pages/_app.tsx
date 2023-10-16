@@ -41,7 +41,7 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
         </Head>
 
         <main
-          className={`scroll-smooth font-sans ${raleway.variable}`}
+          className={`flex flex-col scroll-smooth font-sans ${raleway.variable}`}
         >
           <Component {...pageProps} />
         </main>

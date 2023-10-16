@@ -14,7 +14,7 @@ const ThreadPage = ({ thread }: { thread: string }) => {
       <div className="sticky top-0 z-10 flex w-full flex-col">
         <PostWizard />
       </div>
-      <div className="p-2 h-[92vh]">
+      <div className="p-2">
         <Feed {...posts} />
       </div>
     </PageLayout>
