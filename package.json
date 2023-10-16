@@ -6,8 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "prettier-format": "prettier 'src/**/*.*' --write",
-    "lint": "next lint",
+    "format": "bunx @biomejs/biome check ./src/*",
+    "lint": "bunx @biomejs/biome lint ./src/*",
     "start": "next start"
   },
   "dependencies": {
@@ -75,6 +75,7 @@
     "zod": "^3.22.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.2.2",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.21.1",
     "@types/node": "^18.14.0",
