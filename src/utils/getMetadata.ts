@@ -23,7 +23,7 @@ export const getMetadata = async (url?: string | null) => {
 
   const { body: html, url: gotUrl, errored, statusCode, statusMessage } = await got(url, { throwHttpErrors: false });
   if (statusCode >= 400) {
-    console.error(statusCode, statusMessage);
+    console.info("metadata fetch failed for url:", url, "status:", statusCode, statusMessage);
     return null;
   }
 
