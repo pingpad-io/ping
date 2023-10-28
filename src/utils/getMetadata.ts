@@ -11,18 +11,22 @@ import createMetascraper from "metascraper";
 import got from "got";
 
 const metascraper = createMetascraper([
-	metascraperTitle(),
-	metascraperImage(),
-	metascraperPublisher(),
-	metascraperUrl(),
-	metascraperLogo(),
+  metascraperTitle(),
+  metascraperImage(),
+  metascraperPublisher(),
+  metascraperUrl(),
+  metascraperLogo(),
 ]);
 
 export const getMetadata = async (url?: string | null) => {
-	if (!url) return null;
+  if (!url) return null;
 
-	const { body: html, url: gotUrl } = await got(url);
-	const metadata = await metascraper({ html, url: gotUrl });
+  const { body: html, url: gotUrl, errored, statusCode, statusMessage } = await got(url, { throwHttpErrors: false });
+  if (statusCode >= 400) {
+    console.error(statusCode, statusMessage);
+    return null;
+  }
 
-	return metadata;
+  const metadata = await metascraper({ html, url: gotUrl });
+  return metadata;
 };
