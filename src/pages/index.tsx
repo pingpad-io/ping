@@ -4,17 +4,18 @@ import PostWizard from "~/components/PostWizard";
 import { api } from "~/utils/api";
 import { GetStaticProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
+import { Card } from "~/components/ui/card";
 
 const HomePage = () => {
   const posts = api.posts.get.useQuery({});
 
   return (
     <PageLayout>
-      <div className="z-[30] sticky top-0 flex-col hidden sm:flex flex-none">
+      <Card className="z-[30] sticky top-0 flex-col hidden sm:flex flex-none p-4">
         <PostWizard />
-      </div>
+      </Card>
 
-      <Feed {...posts} />
+        <Feed {...posts} />
     </PageLayout>
   );
 };

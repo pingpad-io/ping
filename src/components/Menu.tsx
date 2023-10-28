@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/src/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/src/components/ui/dialog";
 import { useUser } from "@supabase/auth-helpers-react";
 import {
   AtSign,
@@ -23,6 +18,7 @@ import { Button } from "~/components/ui/button";
 import { api } from "~/utils/api";
 import PingAuth from "./Auth";
 import PostWizard from "./PostWizard";
+import { Card } from "./ui/card";
 
 export const CollapsedContext = createContext(false);
 
@@ -124,7 +120,9 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-full sm:max-w-[700px]">
-          <PostWizard />
+          <div className="p-4">
+            <PostWizard />
+          </div>
         </DialogContent>
       </Dialog>
     </>

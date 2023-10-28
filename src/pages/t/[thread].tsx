@@ -5,18 +5,18 @@ import { api } from "~/utils/api";
 import { GetStaticProps, type GetServerSideProps, GetStaticPaths } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 import { Separator } from "~/components/ui/separator";
+import { Card } from "~/components/ui/card";
 
 const ThreadPage = ({ thread }: { thread: string }) => {
   const posts = api.posts.get.useQuery({ thread });
 
   return (
     <PageLayout>
-      <div className="sticky top-0 z-10 flex w-full flex-col">
+      <Card className="sticky top-0 z-10 flex w-full flex-col p-4">
         <PostWizard />
-      </div>
-      <div className="p-2">
-        <Feed {...posts} />
-      </div>
+      </Card>
+
+      <Feed {...posts} />
     </PageLayout>
   );
 };

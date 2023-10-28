@@ -37,7 +37,7 @@ export default function SearchPage() {
 
 	return (
 		<PageLayout>
-			<div className=" h-16 flex flex-row gap-2 items-center justify-center sticky top-0 z-10 border-b">
+			<div className="h-16 flex flex-row gap-2 items-center justify-center sticky top-0 z-10 border-b">
 				<Link href={"/"}>
 					<Button variant="outline" className="">
 						<ChevronLeft className="w-5 h-5" />
