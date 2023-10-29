@@ -5,19 +5,13 @@ import { getSSGHelper } from "~/utils/getSSGHelper";
 import { raleway } from "~/styles/fonts";
 import Link from "next/link";
 import {
-  ArrowBigDownDash,
-  ArrowDown,
-  ArrowDown01Icon,
-  ArrowDownNarrowWide,
   ArrowRight,
   AtSign,
-  ChevronDown,
   Cookie,
   Github,
   InfoIcon,
   LogInIcon,
   MoonIcon,
-  StarIcon,
   SunIcon,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -28,9 +22,7 @@ import PingAuth from "~/components/Auth";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { useTheme } from "next-themes";
-import { Badge } from "~/components/ui/badge";
 
 const HomePage = () => {
   const supabase = useSupabaseClient();
@@ -54,13 +46,14 @@ const HomePage = () => {
   if (!postsList) return;
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange((event) => {
       if (event === "INITIAL_SESSION") {
         router.push({ pathname: "/home" });
       }
     });
   }, []);
 
+  // TODO: Fix mobile scaling
   return (
     <div className={`flex flex-col mx-auto max-w-5xl min-w-0 w-fit ${raleway.className}`}>
       <div className="h-screen">

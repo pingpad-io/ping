@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { useEffect, useRef } from "react";
 import ErrorPage from "./ErrorPage";
 import { PostView } from "./Post";
 import { SuspensePostView } from "./SuspensePostView";
