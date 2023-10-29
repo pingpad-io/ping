@@ -1,13 +1,13 @@
 {
   "name": "ping",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "format": "bunx @biomejs/biome check ./src/*",
-    "lint": "bunx @biomejs/biome lint ./src/*",
+    "format": "bunx @biomejs/biome format --write ./src/*",
+    "lint": "bunx @biomejs/biome lint --apply ./src/*",
     "start": "next start"
   },
   "dependencies": {

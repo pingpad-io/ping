@@ -22,45 +22,45 @@ import remarkGfm from "remark-gfm";
 // PrismLight.registerLanguage('cpp', cpp);
 
 interface MarkdownProps {
-	content: string;
+  content: string;
 }
 
 function Markdown({ content }: MarkdownProps) {
-	return (
-		<ReactMarkdown
-			className="prose dark:prose-invert"
-			remarkPlugins={[remarkGfm]}
-			components={{
-				h1: "h2",
-				// code({ node, inline, className, children, ...props }) {
-					// const match = /language-(\w+)/.exec(className || "");
-					// return !inline && match ? (
-					// 	<SyntaxHighlighter
-					// 		{...props}
-					// 		children={String(children).replace(/\n$/, "")}
-					// 		style={vscDarkPlus}
-					// 		language={match[1]}
-					// 		PreTag="div"
-					// 		customStyle={{
-					// 			display: undefined,
-					// 			overflowX: undefined,
-					// 			padding: undefined,
-					// 			color: undefined,
-					// 			background: undefined,
-					// 		}}
-					// 	/>
-					// ) : (
+  return (
+    <ReactMarkdown
+      className="prose dark:prose-invert"
+      remarkPlugins={[remarkGfm]}
+      components={{
+        h1: "h2",
+        // code({ node, inline, className, children, ...props }) {
+        // const match = /language-(\w+)/.exec(className || "");
+        // return !inline && match ? (
+        // 	<SyntaxHighlighter
+        // 		{...props}
+        // 		children={String(children).replace(/\n$/, "")}
+        // 		style={vscDarkPlus}
+        // 		language={match[1]}
+        // 		PreTag="div"
+        // 		customStyle={{
+        // 			display: undefined,
+        // 			overflowX: undefined,
+        // 			padding: undefined,
+        // 			color: undefined,
+        // 			background: undefined,
+        // 		}}
+        // 	/>
+        // ) : (
 
-					// <code {...props} className={className}>
-					// 	{children}
-					// </code>;
-					// );
-				// },
-			}}
-		>
-			{content}
-		</ReactMarkdown>
-	);
+        // <code {...props} className={className}>
+        // 	{children}
+        // </code>;
+        // );
+        // },
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
 }
 
 export default Markdown;

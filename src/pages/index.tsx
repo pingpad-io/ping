@@ -25,9 +25,7 @@ const HomePage = () => {
         </Card>
         <div className="grid lg:grid-cols-2 items-center justify-center p-20">
           <div>boop</div>
-          <div
-            className=" duration-300 hover:-skew-x-3 hover:scale-105"
-          >
+          <div className=" duration-300 hover:-skew-x-3 hover:scale-105">
             <Feed {...posts} />
           </div>
         </div>
