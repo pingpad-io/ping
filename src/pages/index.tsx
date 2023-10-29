@@ -4,7 +4,22 @@ import { GetStaticProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 import { raleway } from "~/styles/fonts";
 import Link from "next/link";
-import { ArrowRight, AtSign, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
+import {
+  ArrowBigDownDash,
+  ArrowDown,
+  ArrowDown01Icon,
+  ArrowDownNarrowWide,
+  ArrowRight,
+  AtSign,
+  ChevronDown,
+  Cookie,
+  Github,
+  InfoIcon,
+  LogInIcon,
+  MoonIcon,
+  StarIcon,
+  SunIcon,
+} from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { PostView } from "~/components/Post";
@@ -15,6 +30,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useTheme } from "next-themes";
+import { Badge } from "~/components/ui/badge";
 
 const HomePage = () => {
   const supabase = useSupabaseClient();
@@ -46,11 +62,8 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="w-full h-full">
-      <div className={`flex flex-col mx-auto max-w-5xl min-w-0 ${raleway.className}`}>
-        {/* <div className="-z-1 absolute inset-0 w-screen h-screen">
-        <Image src={grid} alt="background image" fill={true} />
-      </div> */}
+    <div className={`flex flex-col mx-auto max-w-5xl min-w-0 w-fit ${raleway.className}`}>
+      <div className="h-screen">
         <div className="p-4 rounded-t-none flex place-content-between">
           <Link className="flex flex-row gap-4 items-center " href="/">
             <AtSign className="dark:drop-shadow-glow-sm drop-shadow-md" size={35} />
@@ -92,10 +105,10 @@ const HomePage = () => {
             <h1>
               a <b>better </b> microblogging experience
             </h1>
-            <br />
             <div className="hidden md:block">
+              <br />
               <h1>
-                staying <b>out of your way</b>
+                staying <b>out of the way</b>
               </h1>
               <h1>
                 to reach <b>your</b> people
@@ -111,9 +124,26 @@ const HomePage = () => {
 
           <div className="block md:hidden text-3xl p-8 text-center drop-shadow-lg dark:drop-shadow-glow">
             <h1>
-              staying <b>out of your way</b> to reach <b>your</b> people
+              staying <b>out of the way</b> to reach <b>your</b> people.
             </h1>
           </div>
+        </div>
+        <div className="w-full text-4xl p-8 mt-10 md:mt-20 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
+          <h1 className="w-fit min-w-0">
+            A <b>KUALTA</b> PROJECT
+          </h1>
+          {/* <ChevronDown /> */}
+        </div>
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow">
+          <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
+            <Github /> GitHub
+          </Button>
+          <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
+            <InfoIcon /> About
+          </Button>
+          <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
+            <Cookie /> Privacy
+          </Button>
         </div>
       </div>
     </div>
