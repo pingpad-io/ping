@@ -4,7 +4,7 @@ import { GetStaticProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 import { raleway } from "~/styles/fonts";
 import Link from "next/link";
-import { ArrowRight, AtSign, LogInIcon } from "lucide-react";
+import { ArrowRight, AtSign, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { PostView } from "~/components/Post";
@@ -14,17 +14,23 @@ import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useTheme } from "next-themes";
 
 const HomePage = () => {
   const supabase = useSupabaseClient();
   const session = useSession();
   const router = useRouter();
+  const { setTheme, theme } = useTheme();
+
+  const toggleTheme = () => {
+    theme === "dark" ? setTheme("light") : setTheme("dark");
+  };
 
   const posts = api.posts.get.useQuery({ take: 3 });
   const postsList = posts.data?.map((post) => (
     <div
       key={post.id}
-      className="duration-150 hover:-skew-x-3 hover:scale-105 hover:dark:drop-shadow-glow hover:drop-shadow-md"
+      className="duration-150 hover:-skew-x-3 hover:scale-105 hover:dark:drop-shadow-glow-sm hover:drop-shadow-lg"
     >
       <PostView post={post} />
     </div>
@@ -45,52 +51,68 @@ const HomePage = () => {
         {/* <div className="-z-1 absolute inset-0 w-screen h-screen">
         <Image src={grid} alt="background image" fill={true} />
       </div> */}
-        <Card className="p-4 rounded-t-none flex place-content-between">
+        <div className="p-4 rounded-t-none flex place-content-between">
           <Link className="flex flex-row gap-4 items-center " href="/">
-            <AtSign className="sm:ml-2" size={30} strokeWidth={2.5} />
-            <div className="font-bold -mt-1 text-3xl">ping</div>
+            <AtSign className="dark:drop-shadow-glow-sm drop-shadow-md" size={35} />
+            <div className="text-3xl font-bold dark:drop-shadow-glow drop-shadow-md  -mt-1.5 -ml-2">ping</div>
           </Link>
-          {session?.user ? (
-            <Button variant="default" size="sm_icon">
-              <Link href="/home">Home</Link>
-              <ArrowRight />
-            </Button>
-          ) : (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="default" size="sm_icon">
-                  <div className="hidden sm:flex">sign in</div>
-                  <LogInIcon />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[350px]">
-                <DialogTitle>
-                  <h3 className="text-center">Sign in to Ping </h3>
-                </DialogTitle>
-                <PingAuth />
-              </DialogContent>
-            </Dialog>
-          )}
-        </Card>
 
-        <div className="grid lg:grid-cols-2 items-center justify-center p-10">
-          <div className="text-2xl p-8 text-center drop-shadow-md dark:drop-shadow-glow">
+          <div className="flex gap-4 items-center ">
+            <Button variant="outline" size="icon" onClick={toggleTheme}>
+              {theme === "light" ? <SunIcon /> : <MoonIcon />}
+            </Button>
+            <div className="dark:drop-shadow-glow drop-shadow-md ">
+              {session?.user ? (
+                <Button variant="default" size="sm_icon">
+                  <Link href="/home">Home</Link>
+                  <ArrowRight />
+                </Button>
+              ) : (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="default" size="sm_icon">
+                      <div className="hidden  sm:flex mr-2">Sign in</div>
+                      <LogInIcon />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[350px]">
+                    <DialogTitle>
+                      <h3 className="text-center">Sign in to Ping </h3>
+                    </DialogTitle>
+                    <PingAuth />
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 items-center justify-center p-10">
+          <div className="text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
             <h1>
               a <b>better </b> microblogging experience
             </h1>
             <br />
-            <h1>
-              staying <b>out of your way</b>
-            </h1>
-            <h1>
-              to reach <b>your</b> people
-            </h1>
+            <div className="hidden md:block">
+              <h1>
+                staying <b>out of your way</b>
+              </h1>
+              <h1>
+                to reach <b>your</b> people
+              </h1>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4 px-2 w-2/3 md:w-full mx-auto">
             <Card className="h-4" />
-            {postsList}
+            <div className="px-2 flex flex-col gap-4 w-full">{postsList}</div>
             <Card className="h-4" />
+          </div>
+
+          <div className="block md:hidden text-3xl p-8 text-center drop-shadow-lg dark:drop-shadow-glow">
+            <h1>
+              staying <b>out of your way</b> to reach <b>your</b> people
+            </h1>
           </div>
         </div>
       </div>

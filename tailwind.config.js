@@ -114,6 +114,7 @@ export const theme = {
     },
     dropShadow: {
       glow: ["0 0px 20px rgba(255,255, 255, 0.50)", "0 0px 65px rgba(255, 255,255, 0.2)"],
+      "glow-sm": ["0 0px 8px rgba(255,255, 255, 0.50)", "0 0px 25px rgba(255, 255,255, 0.2)"],
     },
     keyframes: {
       "accordion-down": {
