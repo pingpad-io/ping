@@ -4,16 +4,7 @@ import { GetStaticProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 import { raleway } from "~/styles/fonts";
 import Link from "next/link";
-import {
-  ArrowRight,
-  AtSign,
-  Cookie,
-  Github,
-  InfoIcon,
-  LogInIcon,
-  MoonIcon,
-  SunIcon,
-} from "lucide-react";
+import { ArrowRight, AtSign, Cookie, Github, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { PostView } from "~/components/Post";
@@ -123,20 +114,30 @@ const HomePage = () => {
         </div>
         <div className="w-full text-4xl p-8 mt-10 md:mt-20 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
           <h1 className="w-fit min-w-0">
-            A <b>KUALTA</b> PROJECT
+            A{" "}
+            <Link className="hover:underline" href={"https://kualta.dev/"}>
+              <b>KUALTA</b>
+            </Link>{" "}
+            PROJECT
           </h1>
           {/* <ChevronDown /> */}
         </div>
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow">
-          <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-            <Github /> GitHub
-          </Button>
-          <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-            <InfoIcon /> About
-          </Button>
-          <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-            <Cookie /> Privacy
-          </Button>
+          <Link href="https://github.com/kualta/ping">
+            <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
+              <Github /> GitHub
+            </Button>
+          </Link>
+          <Link href="https://ping.kualta.dev/about">
+            <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
+              <InfoIcon /> About
+            </Button>
+          </Link>
+          <Link href="https://ping.kualta.dev/privacy">
+            <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
+              <Cookie /> Privacy
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
