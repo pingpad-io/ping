@@ -1,11 +1,7 @@
 import { PageLayout } from "~/components/Layout";
 
 const NotificationsPage = () => {
-	return (
-		<PageLayout>
-			Notifications
-		</PageLayout>
-	);
+  return <PageLayout>Notifications</PageLayout>;
 };
 
 // export const getServerSideProps = async (

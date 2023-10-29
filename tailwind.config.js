@@ -112,6 +112,10 @@ export const theme = {
       md: "calc(var(--radius) - 2px)",
       sm: "calc(var(--radius) - 4px)",
     },
+    dropShadow: {
+      glow: ["0 0px 20px rgba(255,255, 255, 0.50)", "0 0px 65px rgba(255, 255,255, 0.2)"],
+      "glow-sm": ["0 0px 8px rgba(255,255, 255, 0.50)", "0 0px 25px rgba(255, 255,255, 0.2)"],
+    },
     keyframes: {
       "accordion-down": {
         from: { height: 0 },
@@ -121,8 +125,13 @@ export const theme = {
         from: { height: "var(--radix-accordion-content-height)" },
         to: { height: 0 },
       },
+      "infinite-scroll": {
+        from: { transform: "translateY(0)" },
+        to: { transform: "translateY(-100%)" },
+      },
     },
     animation: {
+      "infinite-scroll": "infinite-scroll 25s linear infinite",
       "accordion-down": "accordion-down 0.2s ease-out",
       "accordion-up": "accordion-up 0.2s ease-out",
     },

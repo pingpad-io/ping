@@ -8,8 +8,7 @@ import { TRPCError, initTRPC } from "@trpc/server";
 import { CreateTRPCNext, createTRPCNext } from "@trpc/next";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { prisma, supabaseKey, supabaseUrl } from "~/server/db";
-import { httpBatchLink } from '@trpc/client';
-
+import { httpBatchLink } from "@trpc/client";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -17,7 +16,6 @@ const getBaseUrl = () => {
 
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
-
 
 /**
  * Context that is used in the router.
@@ -67,9 +65,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
       },
     };
   },
-
-})
-
+});
 
 /**
  * 3. ROUTER & PROCEDURES

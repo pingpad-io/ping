@@ -1,11 +1,6 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import { CalendarIcon, EditIcon } from "lucide-react";
-import {
-  GetStaticProps,
-  type GetServerSideProps,
-  type NextPage,
-  GetStaticPaths,
-} from "next";
+import { GetStaticProps, type GetServerSideProps, type NextPage, GetStaticPaths } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";
@@ -40,26 +35,17 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
           <div className="flex flex-col grow place-content-around">
             <div className="flex flex-row gap-2 place-items-center h-6">
-              <div className="text-lg font-bold w-fit truncate">
-                {profile.full_name}
-              </div>
+              <div className="text-lg font-bold w-fit truncate">{profile.full_name}</div>
               {isUserProfile && (
-                <Link
-                  className="btn btn-square btn-sm btn-ghost"
-                  href="/settings"
-                >
+                <Link className="btn btn-square btn-sm btn-ghost" href="/settings">
                   <EditIcon size={14} />
                 </Link>
               )}
             </div>
             <Link className="grow" href={`/${profile.username ?? ""}`}>
-              <div className="text-sm text-base-content font-light">
-                @{profile.username}
-              </div>
+              <div className="text-sm text-base-content font-light">@{profile.username}</div>
             </Link>
-            <div className="text-sm text-base-content grow">
-              {profile.description}
-            </div>
+            <div className="text-sm text-base-content grow">{profile.description}</div>
             {profile.created_at && (
               <div className="text-sm text-base-content flex flex-row gap-1 place-items-center">
                 <CalendarIcon size={14} />

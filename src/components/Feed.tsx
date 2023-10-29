@@ -11,14 +11,11 @@ export default function Feed(props: {
   isError?: boolean;
 }) {
   if (props.isLoading) {
-    const suspense = [...Array(12)].map((e, i) => (
-      <SuspensePostView key={`${i}`} />
-    ));
+    const suspense = [...Array(12)].map((e, i) => <SuspensePostView key={`${i}`} />);
     return <div className="flex flex-col gap-1">{suspense}</div>;
   }
 
-  if (props.isError || !props.data)
-    return <ErrorPage title="Couldn't fetch posts" />;
+  if (props.isError || !props.data) return <ErrorPage title="Couldn't fetch posts" />;
 
   const feed = props.data.map((post) => <PostView key={post.id} post={post} />);
 
