@@ -4,6 +4,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { type GetServerSidePropsContext, type NextApiRequest, type NextApiResponse } from "next";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/router";
 import { PageLayout } from "~/components/Layout";
 import ProfileSettings from "~/components/ProfileSettingsView";
 import { SignedIn, SignedOut } from "~/components/Signed";
@@ -16,8 +17,11 @@ const SettingsPage = ({ id }: { id: string }) => {
   const supabase = useSupabaseClient();
   const { setTheme } = useTheme();
   const { data: profile } = api.profiles.get.useQuery({ id });
-  const signOut = () => {
-    void supabase.auth.signOut();
+  const router = useRouter();
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    router.push({ pathname: "/" });
   };
 
   if (!id) {

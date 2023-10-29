@@ -1,7 +1,6 @@
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { OtterIcon } from "./Icons";
 
 const PingAuth = () => {
   const supabase = useSupabaseClient();
@@ -14,13 +13,13 @@ const PingAuth = () => {
         appearance={{ theme: ThemeSupa }}
         providers={["google", "github"]}
         theme="light"
-        redirectTo={getURL()}
+        redirectTo={getBaseUrl()}
       />
     </div>
   );
 };
 
-const getURL = () => {
+const getBaseUrl = () => {
   let url =
     process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
     process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
