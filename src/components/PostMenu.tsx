@@ -19,7 +19,6 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 
 export const PostMenu = ({ post }: { post: Post }) => {
-
   return (
     <SignedIn>
       <DropdownMenu>

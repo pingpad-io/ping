@@ -84,18 +84,20 @@ export const ContextMenu = (props: PropsWithChildren & { post: Post }) => {
         });
       }}
     >
-      {clicked && (
-        <div className="z-[10] absolute" style={{ top: `${points.y}px`, left: `${points.x}px` }}>
-          <DropdownMenu open={true}>
-            <DropdownMenuTrigger />
-            <DropdownMenuContent>
-              <Card>
-                <PostMenuContent post={props.post} />
-              </Card>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      )}
+      <SignedIn>
+        {clicked && (
+          <div className="z-[10] absolute" style={{ top: `${points.y}px`, left: `${points.x}px` }}>
+            <DropdownMenu open={true}>
+              <DropdownMenuTrigger />
+              <DropdownMenuContent>
+                <Card>
+                  <PostMenuContent post={props.post} />
+                </Card>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
+      </SignedIn>
 
       {props.children}
     </div>
