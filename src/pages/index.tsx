@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useTheme } from "next-themes";
 
-const HomePage = () => {
+const LandingPage = () => {
   const supabase = useSupabaseClient();
   const session = useSession();
   const router = useRouter();
@@ -45,6 +45,7 @@ const HomePage = () => {
   }, []);
 
   // TODO: Fix mobile scaling
+  // TODO: Update Next to fixed version
   return (
     <div className={`flex flex-col mx-auto max-w-5xl min-w-0 w-fit ${raleway.className}`}>
       <div className="h-screen">
@@ -133,7 +134,7 @@ const HomePage = () => {
               <InfoIcon /> About
             </Button>
           </Link>
-          <Link href="https://ping.kualta.dev/privacy">
+          <Link href="https://ping.kualta.dev/policy">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <Cookie /> Privacy
             </Button>
@@ -157,4 +158,4 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default HomePage;
+export default LandingPage;

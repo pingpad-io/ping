@@ -1,10 +1,18 @@
 import Link from "next/link";
-import { KeyboardEvent, useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
-import { PostMenu } from "./PostMenu";
+import {
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+  PropsWithChildren,
+} from "react";
+import { PostMenu, PostMenuContent } from "./PostMenu";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@supabase/auth-helpers-react";
-import { ArrowDown, ArrowUp, Edit2Icon, ReplyIcon } from "lucide-react";
+import { ArrowDown, ArrowUp, Edit2Icon, MoreHorizontalIcon, ReplyIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -23,24 +31,74 @@ import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { Textarea } from "./ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import Metadata from "./Metadata";
+import Menu from "./Menu";
+import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 export const PostView = ({ post }: { post: Post }) => {
   const author = post.author;
 
   return (
-    <Card className="w-full h-min max-w-2xl group snap-start">
-      <CardContent className="flex flex-row gap-4 p-2 sm:p-4">
-        <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-          <UserAvatar userId={author.id} />
+    <ContextMenu post={post}>
+      <Card>
+        <CardContent className="flex flex-row gap-4 p-2 sm:p-4">
+          <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
+            <UserAvatar userId={author.id} />
+          </div>
+          <div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
+            <ReplyInfo post={post} />
+            <PostInfo post={post} />
+            <PostContent post={post} />
+            <PostBadges post={post} />
+          </div>
+        </CardContent>
+      </Card>
+    </ContextMenu>
+  );
+};
+
+export const ContextMenu = (props: PropsWithChildren & { post: Post }) => {
+  const [clicked, setClicked] = useState(false);
+  const [points, setPoints] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  const handleClick = () => setClicked(false);
+  const handleRightClick = () => {};
+  useEffect(() => {
+    window.addEventListener("click", handleClick);
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
+  }, []);
+
+  return (
+    <div
+      onContextMenu={(e) => {
+        e.preventDefault();
+        setClicked(true);
+        setPoints({
+          x: e.pageX,
+          y: e.pageY,
+        });
+      }}
+    >
+      {clicked && (
+        <div className="z-[10] absolute" style={{ top: `${points.y}px`, left: `${points.x}px` }}>
+          <DropdownMenu open={true}>
+            <DropdownMenuTrigger />
+            <DropdownMenuContent>
+              <Card>
+                <PostMenuContent post={props.post} />
+              </Card>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
-          <ReplyInfo post={post} />
-          <PostInfo post={post} />
-          <PostContent post={post} />
-          <PostBadges post={post} />
-        </div>
-      </CardContent>
-    </Card>
+      )}
+
+      {props.children}
+    </div>
   );
 };
 
@@ -104,7 +162,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
 
 export const PostEditor = ({ post }: { post: Post }) => {
   const router = useRouter();
-  const ctx = api.useContext();
+  const ctx = api.useUtils();
   const user = useUser();
 
   const removeEditingQuery = () => {

@@ -9,9 +9,16 @@ import { ThemeProvider } from "~/components/ThemeProvider";
 import { raleway } from "~/styles/fonts";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
+import { useEffect } from "react";
 
 function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+
+  useEffect(() => {
+    window.addEventListener("contextmenu", function (e) {
+      e.preventDefault();
+    });
+  });
 
   return (
     <SessionContextProvider supabaseClient={supabaseClient} initialSession={pageProps.initialSession}>

@@ -6,7 +6,7 @@ const PingAuth = () => {
   const supabase = useSupabaseClient();
 
   return (
-    <div className="px-4 pb-2 pt-4">
+    <div className="px-4 pb-2 pt-4 dark:drop-shadow-glow drop-shadow-lg">
       <Auth
         supabaseClient={supabase}
         onlyThirdPartyProviders={true}
