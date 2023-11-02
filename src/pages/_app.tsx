@@ -6,7 +6,7 @@ import Head from "next/head";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "~/components/ThemeProvider";
-import { raleway } from "~/styles/fonts";
+import { quicksand } from "~/styles/fonts";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 import { useEffect } from "react";
@@ -29,7 +29,7 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
           <link rel="icon" ref="/favicon.ico" />
         </Head>
 
-        <main className={`flex flex-col scroll-smooth font-sans ${raleway.variable}`}>
+        <main className={`flex flex-col scroll-smooth font-sans ${quicksand.variable}`}>
           <Component {...pageProps} />
         </main>
 

@@ -2,7 +2,7 @@ import Feed from "~/components/Feed";
 import { api } from "~/utils/api";
 import { GetStaticProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
-import { raleway } from "~/styles/fonts";
+import { quicksand } from "~/styles/fonts";
 import Link from "next/link";
 import { ArrowRight, AtSign, Cookie, Github, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -47,7 +47,7 @@ const LandingPage = () => {
   // TODO: Fix mobile scaling
   // TODO: Update Next to fixed version
   return (
-    <div className={`flex flex-col mx-auto max-w-5xl min-w-0 w-fit ${raleway.className}`}>
+    <div className={`flex flex-col mx-auto max-w-5xl min-w-0 w-fit ${quicksand.className}`}>
       <div className="h-screen">
         <div className="p-4 rounded-t-none flex place-content-between">
           <Link className="flex flex-row gap-4 items-center " href="/">

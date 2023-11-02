@@ -1,5 +1,5 @@
 import { Quicksand } from "next/font/google";
-export const raleway = Quicksand({
+export const quicksand = Quicksand({
   weight: ["400", "500", "600", "700"],
   preload: true,
   subsets: ["latin-ext"],
