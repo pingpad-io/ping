@@ -1,6 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -304,7 +305,7 @@ model Post {
   authorId    String         @db.Uuid
   createdAt   DateTime       @default(now())
   updatedAt   DateTime
-  content     String         @db.VarChar(300)
+  content     String         @db.Text
   threadId    String         @db.Uuid
   status      PostStatus     @default(Posted)
   repliedToId String?        @db.Uuid

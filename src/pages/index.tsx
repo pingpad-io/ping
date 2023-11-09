@@ -121,6 +121,9 @@ const LandingPage = () => {
             </Link>{" "}
             PROJECT
           </h1>
+          <p className="text-lg">
+            - a part of <a className="hover:underline"  href="https://net.kualta.dev/">Kunet Global Network</a>
+          </p>
           {/* <ChevronDown /> */}
         </div>
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow">
