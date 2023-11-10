@@ -34,6 +34,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/t
 import Metadata from "./Metadata";
 import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import { DropdownMenuTrigger } from "./ui/dropdown-menu";
+import ReactDOM from "react-dom";
 
 export const PostView = ({ post }: { post: Post }) => {
   const author = post.author;
@@ -287,6 +288,7 @@ export const PostContent = forwardRef<
     </div>
   );
 });
+
 export const PostBadges = ({
   post,
   collapsed,
@@ -298,22 +300,31 @@ export const PostBadges = ({
   setCollapsed: (value: boolean) => void;
   postContentRef: React.RefObject<HTMLDivElement>;
 }) => {
+  const extensionButton = PostExtensionButton({
+    postContentRef,
+    post,
+    collapsed,
+    setCollapsed,
+  });
+  const replyButton = ReplyCount({ post });
+  const editedButton = EditedIndicator({ post });
+  const reactionsButton = PostReactionList({ post });
+
+  const buttons = (
+    <>
+      {extensionButton}
+      {replyButton}
+      {editedButton}
+      {reactionsButton}
+    </>
+  );
+  const hasButtons = extensionButton || replyButton || editedButton || reactionsButton;
+
   return (
     <div className="flex grow flex-row items-center gap-2 leading-3 -mb-1 mt-2">
-      <PostExtensionButton
-        postContentRef={postContentRef}
-        post={post}
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
-      />
-      <ReplyCount post={post} />
-      <EditedIndicator post={post} />
-      <PostReactionList post={post} />
-
+      {buttons}
       <SignedIn>
-        {(post.reactions.length > 0 ||
-          post.replies.length > 0 ||
-          post.createdAt.toUTCString() !== post.updatedAt.toUTCString()) && (
+        {hasButtons && (
           <div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
             <ReactionsList post={post} />
           </div>
@@ -323,12 +334,14 @@ export const PostBadges = ({
   );
 };
 
-export const ReplyCount = ({ post }: { post: Post }) => {
+export function ReplyCount({ post }: { post: Post }) {
   const replyCount = post.replies.length;
   const replyText = replyCount <= 1 ? "reply" : "replies";
   const tooltipText = `${replyCount} ${replyText}`;
 
-  return post.replies.length > 0 ? (
+  if (post.replies.length <= 0) return null;
+
+  return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
@@ -347,11 +360,9 @@ export const ReplyCount = ({ post }: { post: Post }) => {
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  ) : (
-    <></>
   );
-};
-export const PostExtensionButton = ({
+}
+export function PostExtensionButton({
   post,
   collapsed,
   setCollapsed,
@@ -361,7 +372,7 @@ export const PostExtensionButton = ({
   collapsed: boolean;
   setCollapsed: (value: boolean) => void;
   postContentRef: React.RefObject<HTMLDivElement>;
-}) => {
+}): JSX.Element | null {
   const [collapsable, setCollapsable] = useState(false);
 
   useEffect(() => {
@@ -375,7 +386,7 @@ export const PostExtensionButton = ({
     setCollapsed(!collapsed);
   };
 
-  if (!collapsable) return <></>;
+  if (!collapsable) return null;
 
   return (
     <TooltipProvider>
@@ -398,9 +409,11 @@ export const PostExtensionButton = ({
       </Tooltip>
     </TooltipProvider>
   );
-};
+}
 
-export const PostReactionList = ({ post }: { post: Post }) => {
+export function PostReactionList({ post }: { post: Post }) {
+  if (post.reactions.length === 0) return null;
+
   return (
     <>
       {post.reactions.map((reaction) => (
@@ -408,14 +421,16 @@ export const PostReactionList = ({ post }: { post: Post }) => {
       ))}
     </>
   );
-};
+}
 
-export const EditedIndicator = ({ post }: { post: Post }) => {
+export function EditedIndicator({ post }: { post: Post }) {
   const editCount = 1; // TODO: add editCount to schema
   const lastUpdated = post.updatedAt.toLocaleString();
   const tooltipText = `last updated at ${lastUpdated}`;
 
-  return post.createdAt.toUTCString() !== post.updatedAt.toUTCString() ? (
+  if (post.createdAt.toUTCString() === post.updatedAt.toUTCString()) return null;
+
+  return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
@@ -429,7 +444,5 @@ export const EditedIndicator = ({ post }: { post: Post }) => {
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  ) : (
-    <></>
   );
-};
+}
