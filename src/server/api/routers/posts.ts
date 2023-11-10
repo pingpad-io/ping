@@ -92,6 +92,8 @@ export const postsRouter = createTRPCRouter({
             author: { username: input.authorUsername, id: input.authorId },
           },
         })
+
+        // Populate with reactions
         .then(async (posts) => {
           const postsWithReactions = posts.map((post) => {
             const reducedReactions = post.reactions.reduce((acc: PostReaction[], reaction) => {
@@ -122,6 +124,8 @@ export const postsRouter = createTRPCRouter({
 
           return postsWithReactions;
         })
+
+        // Populate with metadata
         .then(async (posts) => {
           const postsWithMetadata = await Promise.all(
             posts.map(async (post) => {

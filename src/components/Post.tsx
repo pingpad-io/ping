@@ -7,16 +7,17 @@ import {
   type Dispatch,
   type SetStateAction,
   PropsWithChildren,
+  forwardRef,
 } from "react";
 import { PostMenu, PostMenuContent } from "./PostMenu";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@supabase/auth-helpers-react";
-import { ArrowDown, ArrowUp, Edit2Icon, MoreHorizontalIcon, ReplyIcon } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, ChevronUp, Edit2Icon, MoreHorizontalIcon, ReplyIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { z } from "zod";
+import { boolean, z } from "zod";
 import { Post } from "~/server/api/routers/posts";
 import { api } from "~/utils/api";
 import Markdown from "./Markdown";
@@ -36,6 +37,8 @@ import { DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 export const PostView = ({ post }: { post: Post }) => {
   const author = post.author;
+  const [collapsed, setCollapsed] = useState(true);
+  const postContentRef = useRef<HTMLDivElement>(null);
 
   return (
     <ContextMenu post={post}>
@@ -44,11 +47,11 @@ export const PostView = ({ post }: { post: Post }) => {
           <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
             <UserAvatar userId={author.id} />
           </div>
-          <div className="flex w-3/4 shrink max-w-2xl grow flex-col place-content-start">
+          <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
             <ReplyInfo post={post} />
             <PostInfo post={post} />
-            <PostContent post={post} />
-            <PostBadges post={post} />
+            <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
+            <PostBadges postContentRef={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
           </div>
         </CardContent>
       </Card>
@@ -64,7 +67,6 @@ export const ContextMenu = (props: PropsWithChildren & { post: Post }) => {
   });
 
   const handleClick = () => setClicked(false);
-  const handleRightClick = () => {};
   useEffect(() => {
     window.addEventListener("click", handleClick);
     return () => {
@@ -103,31 +105,6 @@ export const ContextMenu = (props: PropsWithChildren & { post: Post }) => {
   );
 };
 
-export const PostExtensionButton = ({
-  expandable,
-  collapsed,
-  setCollapsed,
-}: {
-  expandable: boolean;
-  collapsed: boolean;
-  setCollapsed: Dispatch<SetStateAction<boolean>>;
-}) => {
-  if (!expandable) return <div />;
-
-  return (
-    <div className={"flex flex-row justify-center -mb-2 "}>
-      {collapsed ? (
-        <button type="button" onClick={() => setCollapsed(false)}>
-          <ArrowDown size={14} />
-        </button>
-      ) : (
-        <button type="button" onClick={() => setCollapsed(true)}>
-          <ArrowUp size={14} />
-        </button>
-      )}
-    </div>
-  );
-};
 export const ReplyInfo = ({ post }: { post: Post }) => {
   const username = post.repliedTo?.author.username;
   const content = post.repliedTo?.content.substring(0, 100);
@@ -285,14 +262,12 @@ export const PostEditor = ({ post }: { post: Post }) => {
   );
 };
 
-export const PostContent = ({ post }: { post: Post }) => {
-  const [collapsed, setCollapsed] = useState(true);
+export const PostContent = forwardRef<
+  HTMLDivElement,
+  { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
+>(({ post, collapsed, setCollapsed }, ref) => {
   const router = useRouter();
   const editing = router.query.editing === post.id;
-
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
 
   return editing ? (
     <>
@@ -302,8 +277,7 @@ export const PostContent = ({ post }: { post: Post }) => {
     </>
   ) : (
     <div
-      onKeyDown={toggleCollapsed}
-      onClick={toggleCollapsed}
+      ref={ref}
       className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
         collapsed ? "line-clamp-2" : "line-clamp-none"
       }`}
@@ -312,11 +286,26 @@ export const PostContent = ({ post }: { post: Post }) => {
       <Metadata metadata={post.metadata} />
     </div>
   );
-};
-
-export const PostBadges = ({ post }: { post: Post }) => {
+});
+export const PostBadges = ({
+  post,
+  collapsed,
+  setCollapsed,
+  postContentRef,
+}: {
+  post: Post;
+  collapsed: boolean;
+  setCollapsed: (value: boolean) => void;
+  postContentRef: React.RefObject<HTMLDivElement>;
+}) => {
   return (
     <div className="flex grow flex-row items-center gap-2 leading-3 -mb-1 mt-2">
+      <PostExtensionButton
+        postContentRef={postContentRef}
+        post={post}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+      />
       <ReplyCount post={post} />
       <EditedIndicator post={post} />
       <PostReactionList post={post} />
@@ -360,6 +349,54 @@ export const ReplyCount = ({ post }: { post: Post }) => {
     </TooltipProvider>
   ) : (
     <></>
+  );
+};
+export const PostExtensionButton = ({
+  post,
+  collapsed,
+  setCollapsed,
+  postContentRef,
+}: {
+  post: Post;
+  collapsed: boolean;
+  setCollapsed: (value: boolean) => void;
+  postContentRef: React.RefObject<HTMLDivElement>;
+}) => {
+  const [collapsable, setCollapsable] = useState(false);
+
+  useEffect(() => {
+    const postContentElement = postContentRef.current;
+    if (postContentElement) {
+      const hasLineClamp2Effect = postContentElement.scrollHeight > postContentElement.clientHeight;
+      setCollapsable(hasLineClamp2Effect);
+    }
+  }, [post.content]);
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  if (!collapsable) return <></>;
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={() => {
+              toggleCollapsed();
+            }}
+            variant="outline"
+            size="icon"
+            className="w-10 h-6 flex flex-row gap-1 leading-3 "
+          >
+            {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{collapsed ? "show more" : "show less"}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
