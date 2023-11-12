@@ -302,7 +302,6 @@ model Profile {
 
 model Post {
   id          String         @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  idn         Int            @default(autoincrement()) 
   authorId    String         @db.Uuid
   createdAt   DateTime       @default(now())
   updatedAt   DateTime

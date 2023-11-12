@@ -30,7 +30,7 @@ export default function Menu() {
   return (
     <span className="flex h-fit w-full sm:w-max shrink py-4 text-2xl px-4 sm:px-2 lg:w-56">
       <span className="flex h-fit flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
-        <Link href="/">
+        <Link href="/home">
           <Button variant="ghost" size="sm_icon">
             <div className="hidden sm:flex">ping</div>
             <AtSign className="sm:ml-2" />

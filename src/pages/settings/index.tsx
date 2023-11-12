@@ -21,7 +21,7 @@ const SettingsPage = ({ id }: { id: string }) => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    router.push({ pathname: "/" });
+    router.reload();
   };
 
   if (!id) {

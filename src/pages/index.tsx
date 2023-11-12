@@ -31,7 +31,7 @@ const LandingPage = () => {
       key={post.id}
       className="duration-150 hover:-skew-x-3 hover:scale-105 hover:dark:drop-shadow-glow-sm hover:drop-shadow-lg"
     >
-      <PostView post={post} />
+      <PostView showBadges={false} post={post} />
     </div>
   ));
   if (!postsList) return;
@@ -62,7 +62,9 @@ const LandingPage = () => {
             <div className="dark:drop-shadow-glow drop-shadow-md ">
               {session?.user ? (
                 <Button variant="default" size="sm_icon">
-                  <Link href="/home">Home</Link>
+                  <Link className="pr-2" href="/home">
+                    Home
+                  </Link>
                   <ArrowRight />
                 </Button>
               ) : (
@@ -103,7 +105,7 @@ const LandingPage = () => {
 
           <div className="flex flex-col gap-4 px-2 w-2/3 md:w-full mx-auto">
             <Card className="h-4" />
-            <div className="px-2 flex flex-col gap-4 w-full">{postsList}</div>
+            <div className="px-2 h-full flex flex-col gap-4 w-full">{postsList}</div>
             <Card className="h-4" />
           </div>
 
@@ -122,7 +124,10 @@ const LandingPage = () => {
             PROJECT
           </h1>
           <p className="text-lg">
-            - a part of <a className="hover:underline"  href="https://net.kualta.dev/">Kunet Global Network</a>
+            part of{" "}
+            <a className="hover:underline" href="https://net.kualta.dev/">
+              Kunet Global Network
+            </a>
           </p>
           {/* <ChevronDown /> */}
         </div>

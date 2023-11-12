@@ -34,9 +34,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/t
 import Metadata from "./Metadata";
 import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import { DropdownMenuTrigger } from "./ui/dropdown-menu";
-import ReactDOM from "react-dom";
 
-export const PostView = ({ post }: { post: Post }) => {
+export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const author = post.author;
   const [collapsed, setCollapsed] = useState(true);
   const postContentRef = useRef<HTMLDivElement>(null);
@@ -44,7 +43,7 @@ export const PostView = ({ post }: { post: Post }) => {
   return (
     <ContextMenu post={post}>
       <Card>
-        <CardContent className="flex flex-row gap-4 p-2 sm:p-4">
+        <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
           <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
             <UserAvatar userId={author.id} />
           </div>
@@ -52,7 +51,7 @@ export const PostView = ({ post }: { post: Post }) => {
             <ReplyInfo post={post} />
             <PostInfo post={post} />
             <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-            <PostBadges postContentRef={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
+            {showBadges && <PostBadges postContentRef={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />}
           </div>
         </CardContent>
       </Card>
