@@ -45,8 +45,6 @@ const LandingPage = () => {
     });
   }, []);
 
-  // TODO: Fix mobile scaling
-  // TODO: Update Next to fixed version
   return (
     <div className={`flex flex-col mx-auto max-w-5xl min-w-0 w-fit ${quicksand.className}`}>
       <div className="h-screen">
@@ -116,6 +114,7 @@ const LandingPage = () => {
             </h1>
           </div>
         </div>
+
         <div className="w-full text-4xl p-8 mt-10 md:mt-20 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
           <h1 className="w-fit min-w-0">
             A{" "}
@@ -131,7 +130,7 @@ const LandingPage = () => {
             </a>
           </p>
         </div>
-        <Card className="flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4">
+        <Card className="flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4 my-32">
           <CardHeader>
             <CardTitle> FAQ </CardTitle>
           </CardHeader>
