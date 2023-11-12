@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { PageLayout } from "~/components/Layout";
 import { CollapsedContext } from "~/components/Menu";
-import Threads from "~/components/Threads";
+import { PublicThreads } from "~/components/ThreadList";
 
 const ThreadsPage = () => {
   return (
@@ -15,7 +15,7 @@ const ThreadsPage = () => {
         <CollapsedContext.Provider value={false}>
           <div className="rounded-box m-2 flex flex-col flex-wrap place-items-center justify-center p-4 ">
             <div className="w-full">
-              <Threads />
+              <PublicThreads />
             </div>
           </div>
         </CollapsedContext.Provider>

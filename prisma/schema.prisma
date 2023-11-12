@@ -275,7 +275,8 @@ model Thread {
   authorId   String?   @db.Uuid
   name       String?   @unique
   posts      Post[]
-  author     Profile?  @relation(fields: [authorId], references: [id])
+  users      Profile[] @relation(name: "ProfileToThread")
+  public     Boolean   @default(true)
 
   @@map("threads")
   @@schema("public")
@@ -292,8 +293,8 @@ model Profile {
   created_at    DateTime?      @default(now()) @db.Timestamptz(6)
   description   String?
   posts         Post[]         @relation("AuthorToPost")
+  threads       Thread[]       @relation("ProfileToThread")
   user          User           @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  owned_threads Thread[]
   reactions     PostReaction[]
 
   @@map("profiles")

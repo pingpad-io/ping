@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Threads from "./Threads";
 import { SearchBar } from "./SearchBar";
+import { PublicThreads } from "./ThreadList";
 
 const Links = () => {
   return (
@@ -25,7 +25,7 @@ export default function Sidebar() {
   return (
     <div className="flex flex-col gap-6 py-4 sm:px-2">
       <SearchBar defaultText="" />
-      <Threads />
+      <PublicThreads />
       <Links />
     </div>
   );

@@ -14,16 +14,16 @@ export const threadsRouter = createTRPCRouter({
       z.object({
         threadId: z.string().uuid().optional(),
         threadName: z.string().optional(),
+        public: z.boolean().optional().default(true),
       }),
     )
     .query(async ({ ctx, input }) => {
       const threads = await ctx.prisma.thread.findMany({
         include: {
-          author: { select: { username: true } },
           posts: { select: { _count: true } },
         },
         orderBy: [{ created_at: "asc" }],
-        where: { id: input.threadId, name: input.threadName },
+        where: { id: input.threadId, name: input.threadName, public: input.public },
       });
 
       if (input.threadId || input.threadName) {

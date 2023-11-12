@@ -1,33 +1,27 @@
+import Head from "next/head";
+import Link from "next/link";
 import { PageLayout } from "~/components/Layout";
+import { CollapsedContext } from "~/components/Menu";
+import { PrivateThreads } from "~/components/ThreadList";
 
-const NotificationsPage = () => {
-  return <PageLayout>Messages</PageLayout>;
+const ThreadsPage = () => {
+  return (
+    <>
+      <Head>
+        <title>Chats</title>
+      </Head>
+
+      <PageLayout>
+        <CollapsedContext.Provider value={false}>
+          <div className="rounded-box m-2 flex flex-col flex-wrap place-items-center justify-center p-4 ">
+            <div className="w-full">
+              <PrivateThreads />
+            </div>
+          </div>
+        </CollapsedContext.Provider>
+      </PageLayout>
+    </>
+  );
 };
 
-// export const getServerSideProps = async (
-// 	context:
-// 		| GetServerSidePropsContext
-// 		| { req: NextApiRequest; res: NextApiResponse },
-// ) => {
-// 	const ssg = getSSGHelper();
-// 	const supabase = createServerSupabaseClient(context);
-
-// 	const {
-// 		data: { user },
-// 	} = await supabase.auth.getUser();
-
-// 	if (!user) return;
-
-// 	await ssg.profiles.get.prefetch({
-// 		id: user.id,
-// 	});
-
-// 	return {
-// 		props: {
-// 			trpcState: ssg.dehydrate(),
-// 			id: user.id,
-// 		},
-// 	};
-// };
-
-export default NotificationsPage;
+export default ThreadsPage;

@@ -14,7 +14,6 @@ export const profileRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const profile = await ctx.prisma.profile.findUnique({
         where: { id: input.id, username: input.username },
-        include: { owned_threads: true },
       });
 
       if (!profile) {
