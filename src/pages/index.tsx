@@ -4,9 +4,9 @@ import { GetStaticProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 import { quicksand } from "~/styles/fonts";
 import Link from "next/link";
-import { ArrowRight, AtSign, Cookie, Github, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
+import { ArrowRight, AtSign, ChevronDown, Cookie, Github, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { PostView } from "~/components/Post";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import PingAuth from "~/components/Auth";
@@ -14,6 +14,7 @@ import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useTheme } from "next-themes";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 
 const LandingPage = () => {
   const supabase = useSupabaseClient();
@@ -129,9 +130,38 @@ const LandingPage = () => {
               Kunet Global Network
             </a>
           </p>
-          {/* <ChevronDown /> */}
         </div>
-        <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow">
+        <Card className="flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4">
+          <CardHeader>
+            <CardTitle> FAQ </CardTitle>
+          </CardHeader>
+          <CardContent className="w-full max-w-3xl">
+            <div className="w-full max-w-3xl">
+              <Accordion type="single">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger>Current status?</AccordionTrigger>
+                  <AccordionContent>
+                    In development. Right now in open beta.{" "}
+                    <a className="underline" href="https://github.com/kualta/ping">
+                      Contributions
+                    </a>{" "}
+                    are welcome.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger>Is it free?</AccordionTrigger>
+                  <AccordionContent>Free forever.</AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3">
+                  <AccordionTrigger>Is it any good?</AccordionTrigger>
+                  <AccordionContent>Yes.</AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">
           <Link href="https://github.com/kualta/ping">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <Github /> GitHub
