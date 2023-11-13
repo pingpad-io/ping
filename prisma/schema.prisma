@@ -301,6 +301,7 @@ model Profile {
   @@schema("public")
 }
 
+
 model Post {
   id          String         @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   authorId    String         @db.Uuid

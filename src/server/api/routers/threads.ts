@@ -7,8 +7,29 @@ import { randomUUID } from "crypto";
 import { RouterOutputs } from "~/utils/api";
 
 export type Thread = RouterOutputs["threads"]["get"][number];
+export type PrivateThread = RouterOutputs["threads"]["getPrivate"][number];
 
 export const threadsRouter = createTRPCRouter({
+  getPrivate: privateProcedure.query(async ({ ctx }) => {
+    const threads = await ctx.prisma.thread.findMany({
+      include: {
+        users: { select: { id: true, username: true } },
+        posts: { select: { _count: true } },
+      },
+      orderBy: [{ created_at: "asc" }],
+      where: { users: { some: { id: ctx.userId } } },
+    });
+
+    if (!threads) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "No threads found",
+      });
+    }
+
+    return threads;
+  }),
+
   get: publicProcedure
     .input(
       z.object({
@@ -18,12 +39,26 @@ export const threadsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      if (!input.public) {
+        if (!ctx.userId) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "You must be logged in to view private threads",
+          });
+        }
+      }
+
       const threads = await ctx.prisma.thread.findMany({
         include: {
           posts: { select: { _count: true } },
         },
         orderBy: [{ created_at: "asc" }],
-        where: { id: input.threadId, name: input.threadName, public: input.public },
+        where: {
+          AND: [
+            { id: input.threadId, name: input.threadName, public: input.public },
+            { ...(input.public ? {} : { users: { some: { id: ctx.userId } } }) },
+          ],
+        },
       });
 
       if (input.threadId || input.threadName) {
@@ -56,20 +91,39 @@ export const threadsRouter = createTRPCRouter({
     });
   }),
 
-  create: privateProcedure.input(z.object({ title: z.string() })).mutation(async ({ ctx, input }) => {
-    const name = input.title.replace(/[^a-z\d\s]+/gi, "").replace(/\s/g, "-").toLowerCase();
+  create: privateProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        public: z.boolean().default(true),
+        users: z.array(z.string().uuid()).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const name = input.title.replace(/[^a-z\d\s]+/gi, "").replace(/\s/g, "-").toLowerCase();
 
-    const post = await ctx.prisma.thread.create({
-      data: {
-        id: randomUUID(),
-        authorId: ctx.userId,
-        updated_at: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-        title: input.title,
-        name: name,
-      },
-    });
+      const thread = await ctx.prisma.thread.create({
+        data: {
+          id: randomUUID(),
+          authorId: ctx.userId,
+          updated_at: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          title: input.title,
+          public: input.public,
+          name: name,
+        },
+      });
 
-    return post;
-  }),
+      input.users = [ctx.userId, "ddb9e216-3bd1-47d5-a7d1-a387cb7869df", ...(input.users || [])];
+      console.log(input.users);
+
+      if (input.users && input.users?.length > 0) {
+        await ctx.prisma.thread.update({
+          where: { id: thread.id },
+          data: { users: { connect: input.users.map((id) => ({ id })) } },
+        });
+      }
+
+      return thread;
+    }),
 });

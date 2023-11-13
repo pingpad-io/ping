@@ -10,8 +10,11 @@ import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
 import { Card } from "./ui/card";
 
-export default function ThreadWizard({ setOpen }: { setOpen: Dispatch<SetStateAction<boolean>> }) {
-  const ctx = api.useContext();
+export default function ThreadWizard({
+  setOpen,
+  defaultPublic = true,
+}: { setOpen: Dispatch<SetStateAction<boolean>>; defaultPublic?: boolean }) {
+  const ctx = api.useUtils();
   const { mutate, isLoading } = api.threads.create.useMutation({
     onSuccess: async () => {
       await ctx.threads.invalidate();
@@ -38,17 +41,19 @@ export default function ThreadWizard({ setOpen }: { setOpen: Dispatch<SetStateAc
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutate({ title: values.title });
+    mutate({ title: values.title, public: values.public });
   };
 
   const formSchema = z.object({
     title: z.string().min(2).max(50),
-    isPrivate: z.boolean().default(false), // TODO: implement private threads
+    public: z.boolean().default(true),
   });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      public: defaultPublic,
     },
   });
 
@@ -70,22 +75,16 @@ export default function ThreadWizard({ setOpen }: { setOpen: Dispatch<SetStateAc
         />
         <FormField
           control={form.control}
-          name="isPrivate"
+          name="public"
           render={({ field }) => (
             <FormItem>
               <Card className="flex flex-row items-center justify-between p-3">
                 <div className="space-y-0.5">
-                  <FormLabel>Private</FormLabel>
-                  <FormDescription>Make thread invite-only</FormDescription>
+                  <FormLabel>Public</FormLabel>
+                  <FormDescription>Anyone can join this thread</FormDescription>
                 </div>
                 <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    // disabled={isLoading}
-                    disabled
-                    aria-readonly
-                  />
+                  <Switch checked={field.value} onCheckedChange={field.onChange} disabled={isLoading} aria-readonly />
                 </FormControl>
               </Card>
             </FormItem>

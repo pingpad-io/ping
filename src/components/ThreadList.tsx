@@ -11,14 +11,14 @@ import { Button } from "./ui/button";
 import ThreadWizard from "./ThreadWizard";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useState } from "react";
-import { ThreadEntry } from "./ThreadEntry";
+import { PirvateThread, PublicThread } from "./ThreadEntry";
 
 export function PublicThreads() {
   const [open, setOpen] = useState(false);
   const { data: threads } = api.threads.get.useQuery({ public: true });
 
   const threadList = threads?.map((thread) => {
-    return <ThreadEntry key={thread.id} thread={thread} />;
+    return <PublicThread key={thread.id} thread={thread} />;
   });
 
   return (
@@ -50,10 +50,10 @@ export function PublicThreads() {
 
 export function PrivateThreads() {
   const [open, setOpen] = useState(false);
-  const { data: threads } = api.threads.get.useQuery({ public: false });
+  const { data: threads } = api.threads.getPrivate.useQuery();
 
   const chatList = threads?.map((thread) => {
-    return <ThreadEntry key={thread.id} thread={thread} />;
+    return <PirvateThread key={thread.id} thread={thread} />;
   });
 
   return (
@@ -70,7 +70,7 @@ export function PrivateThreads() {
                 </Button>
               </DialogTrigger>
               <DialogContent>
-                <ThreadWizard setOpen={setOpen} />
+                <ThreadWizard defaultPublic={false} setOpen={setOpen} />
               </DialogContent>
             </Dialog>
           </div>
