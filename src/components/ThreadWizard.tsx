@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
@@ -9,6 +9,8 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
 import { Card } from "./ui/card";
+import { SearchBar } from "./SearchBar";
+import { SearchIcon } from "lucide-react";
 
 export default function ThreadWizard({
   setOpen,
@@ -47,6 +49,7 @@ export default function ThreadWizard({
   const formSchema = z.object({
     title: z.string().min(2).max(50),
     public: z.boolean().default(true),
+    users: z.array(z.string().uuid()),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,8 +57,19 @@ export default function ThreadWizard({
     defaultValues: {
       title: "",
       public: defaultPublic,
+      users: [],
     },
   });
+
+  // let searchResult = []
+  // const searchOnChange = (value: { username: string }) => {
+  //   searchResult = api.profiles.get.useQuery({value.username})
+  // }
+
+  // On search input update, search for users by username
+  const searchUsers = (value: FormEvent<HTMLElement>) => {
+    // return api.profiles.get.useQuery({ username: value });
+  };
 
   return (
     <Form {...form}>
@@ -90,6 +104,34 @@ export default function ThreadWizard({
             </FormItem>
           )}
         />
+        {!form.getValues().public && (
+          <FormField
+            control={form.control}
+            name="public"
+            render={({ field }) => (
+              <Card className="flex flex-row items-center justify-between p-3">
+                <div className="space-y-0.5">
+                  <FormLabel>Search</FormLabel>
+                  <FormDescription>Add members</FormDescription>
+                </div>
+                <FormItem className="relative w-max grow ml-3">
+                  <FormField
+                    control={form.control}
+                    name="users"
+                    render={({ field }) => (
+                      <>
+                        <SearchIcon className="align-top absolute top-0 bottom-0 m-auto text-gray-500 mt-4  ml-3" />
+                        <FormControl onSubmit={searchUsers}>
+                          <Input type="text" placeholder="Search users..." className="pl-12 pr-4 mt-0" {...field} />
+                        </FormControl>
+                      </>
+                    )}
+                  />
+                </FormItem>
+              </Card>
+            )}
+          />
+        )}
         <Button type="submit">Submit</Button>
       </form>
     </Form>
