@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { PrivateThread, Thread } from "~/server/api/routers/threads";
 import { api } from "~/utils/api";
 import { ThreadLink } from "./ThreadLink";
+import Image from "next/image";
 
 export const PublicThread = ({ thread }: { thread: Thread }) => {
   if (!thread || !thread.name) return null;
@@ -45,7 +46,7 @@ export const PublicThread = ({ thread }: { thread: Thread }) => {
   );
 };
 
-export const PirvateThread = ({ thread }: { thread: PrivateThread}) => {
+export const PirvateThread = ({ thread }: { thread: PrivateThread }) => {
   if (!thread || !thread.name) return null;
 
   const user = useUser();
@@ -65,14 +66,23 @@ export const PirvateThread = ({ thread }: { thread: PrivateThread}) => {
     },
   });
 
+  // Get avatars of other user in this thread
+  const avatars = thread.users.map((threadMember) => {
+    if (threadMember.id !== user?.id) {
+      return threadMember.avatar_url;
+    }
+  }).filter((avatar) => avatar !== undefined);
+
+  const otherUser = thread.users.find((threadMember) => threadMember.id !== user?.id);
+  const title = thread.users.length === 2 ? otherUser?.full_name : thread.title;
 
   return (
     <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2">
+      {avatars[0] && <Image src={avatars[0] ?? ""} className="rounded-full mx-1" alt="avatar" width={30} height={30} />}
+
       <ThreadLink thread={thread.name}>
         <span className={`flex flex-row items-center gap-2 ${isCurrent && "font-bold"}`}>
-          <span className={"hover:underline "}>{thread.title}</span>
-          <span className={"text-sm"}>{thread.posts.length}</span>
-          <MessageSquareIcon size={15} />
+          <span className={"hover:underline "}>{title}</span>
         </span>
       </ThreadLink>
 

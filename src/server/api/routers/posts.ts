@@ -115,7 +115,7 @@ export const postsRouter = createTRPCRouter({
             status: "Posted",
             id: input.postId,
             repliedToId: input.repliedToPostId,
-            thread: { name: input.thread },
+            thread: { name: input.thread, public: true },
             content: { contains: input.contains },
             author: { username: input.authorUsername, id: input.authorId },
           },
