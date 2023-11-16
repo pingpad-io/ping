@@ -13,11 +13,11 @@ type DebouncedFunction<T extends (...args: any[]) => any> = {
 export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): DebouncedFunction<T> {
   let timeoutId: ReturnType<typeof setTimeout>;
 
-  const debouncedFunction: DebouncedFunction<T> = function (...args: Parameters<T>): void {
+  const debouncedFunction: DebouncedFunction<T> = (...args: Parameters<T>): void => {
     clearTimeout(timeoutId);
 
     timeoutId = setTimeout(() => {
-      func.apply(this, args);
+      func(...args);
     }, delay);
   };
 
