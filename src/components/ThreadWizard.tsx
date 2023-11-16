@@ -14,6 +14,7 @@ import { SearchIcon } from "lucide-react";
 import { debounce } from "~/utils";
 import { useMutation } from "@tanstack/react-query";
 import { ProfileEntry } from "./ProfileEntry";
+import { quicksand } from "~/styles/fonts";
 
 export default function ThreadWizard({
   setOpen,
@@ -45,6 +46,9 @@ export default function ThreadWizard({
     },
   });
 
+  const [searchValue, setSearchValue] = useState("");
+  const { data: searchResult, isLoading: isSearching } = api.profiles.search.useQuery({ query: searchValue });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutate({ title: values.title, public: values.public });
   };
@@ -53,6 +57,7 @@ export default function ThreadWizard({
     title: z.string().min(2).max(50),
     public: z.boolean().default(true),
     users: z.array(z.string().uuid()),
+    usersSearchInput: z.string(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,6 +66,7 @@ export default function ThreadWizard({
       title: "",
       public: defaultPublic,
       users: [],
+      usersSearchInput: "",
     },
   });
 
@@ -69,14 +75,20 @@ export default function ThreadWizard({
     setSearchValue(value);
   };
 
-  const [searchValue, setSearchValue] = useState("");
-  const { data: searchResult, isLoading: isSearching } = api.profiles.search.useQuery({ query: searchValue })
+  const addProfile = (user_id: string) => {
+    form.setValue("users", [...form.getValues("users"), user_id]);
+    setSearchValue("");
+  }
+
 
   const profilesSearchList = searchResult?.map((profile) => {
-    if (!profile) return
-    return <ProfileEntry key={`entry ${profile.id}`} profile={profile} />
-  })
-
+    if (!profile) return;
+    return (
+      <Button variant="ghost" size="default" className="w-full p-1 " key={profile.id} onClick={() => addProfile(profile.id)}>
+        <ProfileEntry key={`entry ${profile.id}`} profile={profile} />
+      </Button>
+    );
+  });
 
   const debouncedOnChange = debounce(searchUsers, 300);
 
@@ -126,7 +138,7 @@ export default function ThreadWizard({
                 <FormItem className="relative w-max grow ml-3">
                   <FormField
                     control={form.control}
-                    name="users"
+                    name="usersSearchInput"
                     render={({ field }) => (
                       <>
                         <SearchIcon className="align-top absolute top-0 bottom-0 m-auto text-gray-500 mt-4  ml-3" />
@@ -136,7 +148,13 @@ export default function ThreadWizard({
                       </>
                     )}
                   />
-                  {profilesSearchList}
+                  {searchResult?.length !== 0 && (
+                  <Card
+                    className={`absolute p-2 w-full flex flex-col  overflow-scroll max-h-72 gap-2 ${quicksand.className}`}
+                  >
+                    {profilesSearchList}
+                  </Card>
+                  )}
                 </FormItem>
               </Card>
             )}
