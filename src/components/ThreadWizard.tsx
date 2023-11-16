@@ -50,7 +50,7 @@ export default function ThreadWizard({
   const { data: searchResult, isLoading: isSearching } = api.profiles.search.useQuery({ query: searchValue });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutate({ title: values.title, public: values.public });
+    mutate({ title: values.title, public: values.public, users: values.users });
   };
 
   const formSchema = z.object({
