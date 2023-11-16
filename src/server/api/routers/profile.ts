@@ -26,6 +26,32 @@ export const profileRouter = createTRPCRouter({
       return profile;
     }),
 
+  search: publicProcedure
+    .input(
+      z.object({
+        query: z.string().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+
+      if (!input.query) {
+        return [];
+      }
+
+      const profiles = await ctx.prisma.profile.findMany({
+        where: { username: { contains: input.query } },
+      });
+
+      if (!profiles) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "No profiles found",
+        });
+      }
+
+      return profiles;
+    }),
+
   getAll: publicProcedure.input(z.object({})).query(async ({ ctx }) => {
     const profiles = await ctx.prisma.profile.findMany({});
 

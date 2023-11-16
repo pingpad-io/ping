@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
@@ -11,6 +11,9 @@ import { Switch } from "./ui/switch";
 import { Card } from "./ui/card";
 import { SearchBar } from "./SearchBar";
 import { SearchIcon } from "lucide-react";
+import { debounce } from "~/utils";
+import { useMutation } from "@tanstack/react-query";
+import { ProfileEntry } from "./ProfileEntry";
 
 export default function ThreadWizard({
   setOpen,
@@ -61,15 +64,21 @@ export default function ThreadWizard({
     },
   });
 
-  // let searchResult = []
-  // const searchOnChange = (value: { username: string }) => {
-  //   searchResult = api.profiles.get.useQuery({value.username})
-  // }
-
-  // On search input update, search for users by username
-  const searchUsers = (value: FormEvent<HTMLElement>) => {
-    // return api.profiles.get.useQuery({ username: value });
+  const searchUsers = (event: any) => {
+    const value = event.target.value;
+    setSearchValue(value);
   };
+
+  const [searchValue, setSearchValue] = useState("");
+  const { data: searchResult, isLoading: isSearching } = api.profiles.search.useQuery({ query: searchValue })
+
+  const profilesSearchList = searchResult?.map((profile) => {
+    if (!profile) return
+    return <ProfileEntry key={`entry ${profile.id}`} profile={profile} />
+  })
+
+
+  const debouncedOnChange = debounce(searchUsers, 300);
 
   return (
     <Form {...form}>
@@ -121,12 +130,13 @@ export default function ThreadWizard({
                     render={({ field }) => (
                       <>
                         <SearchIcon className="align-top absolute top-0 bottom-0 m-auto text-gray-500 mt-4  ml-3" />
-                        <FormControl onSubmit={searchUsers}>
+                        <FormControl onChange={debouncedOnChange}>
                           <Input type="text" placeholder="Search users..." className="pl-12 pr-4 mt-0" {...field} />
                         </FormControl>
                       </>
                     )}
                   />
+                  {profilesSearchList}
                 </FormItem>
               </Card>
             )}
