@@ -37,7 +37,7 @@ export const postsRouter = createTRPCRouter({
     .input(
       z.object({
         take: z.number().default(35),
-        thread: z.string().optional(),
+        thread: z.string().optional().default("global"),
         contains: z.string().optional(),
         postId: z.string().optional(),
         authorUsername: z.string().optional(),
@@ -115,7 +115,7 @@ export const postsRouter = createTRPCRouter({
             status: "Posted",
             id: input.postId,
             repliedToId: input.repliedToPostId,
-            thread: { name: input.thread, public: true },
+            thread: { name: input.thread },
             content: { contains: input.contains },
             author: { username: input.authorUsername, id: input.authorId },
           },
