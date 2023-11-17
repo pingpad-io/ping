@@ -15,6 +15,9 @@ import { debounce } from "~/utils";
 import { useMutation } from "@tanstack/react-query";
 import { ProfileEntry } from "./ProfileEntry";
 import { quicksand } from "~/styles/fonts";
+import { Profile } from "@prisma/client";
+import { Avatar } from "./ui/avatar";
+import { UserAvatar } from "./UserAvatar";
 
 export default function ThreadWizard({
   setOpen,
@@ -50,13 +53,14 @@ export default function ThreadWizard({
   const { data: searchResult, isLoading: isSearching } = api.profiles.search.useQuery({ query: searchValue });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutate({ title: values.title, public: values.public, users: values.users });
+    const ids = values.users.map((user) => user.id);
+    mutate({ title: values.title, public: values.public, users: ids });
   };
 
   const formSchema = z.object({
     title: z.string().min(2).max(50),
     public: z.boolean().default(true),
-    users: z.array(z.string().uuid()),
+    users: z.array(z.custom<Profile>()),
     usersSearchInput: z.string(),
   });
 
@@ -75,16 +79,31 @@ export default function ThreadWizard({
     setSearchValue(value);
   };
 
-  const addProfile = (user_id: string) => {
-    form.setValue("users", [...form.getValues("users"), user_id]);
+  const addProfile = (profile: Profile) => {
+    form.setValue("users", [...form.getValues("users"), profile]);
+    form.setValue("usersSearchInput", "");
     setSearchValue("");
-  }
+  };
 
-
-  const profilesSearchList = searchResult?.map((profile) => {
+  const profileAvatarsList = form.watch("users").map((profile) => {
     if (!profile) return;
     return (
-      <Button variant="ghost" size="default" className="w-full p-1 " key={profile.id} onClick={() => addProfile(profile.id)}>
+      <div className="w-8 h-8">
+        <UserAvatar userId={profile.id} key={`avatar ${profile.id}`} />
+      </div>
+    );
+  });
+
+  const profileSearchList = searchResult?.map((profile) => {
+    if (!profile) return;
+    return (
+      <Button
+        variant="ghost"
+        size="default"
+        className="w-full p-1 "
+        key={profile.id}
+        onClick={() => addProfile(profile)}
+      >
         <ProfileEntry key={`entry ${profile.id}`} profile={profile} />
       </Button>
     );
@@ -130,32 +149,35 @@ export default function ThreadWizard({
             control={form.control}
             name="public"
             render={({ field }) => (
-              <Card className="flex flex-row items-center justify-between p-3">
-                <div className="space-y-0.5">
-                  <FormLabel>Search</FormLabel>
-                  <FormDescription>Add members</FormDescription>
-                </div>
-                <FormItem className="relative w-max grow ml-3">
-                  <FormField
-                    control={form.control}
-                    name="usersSearchInput"
-                    render={({ field }) => (
-                      <>
-                        <SearchIcon className="align-top absolute top-0 bottom-0 m-auto text-gray-500 mt-4  ml-3" />
-                        <FormControl onChange={debouncedOnChange}>
-                          <Input type="text" placeholder="Search users..." className="pl-12 pr-4 mt-0" {...field} />
-                        </FormControl>
-                      </>
+              <Card className="flex flex-col p-3 gap-4">
+                <div className="flex flex-row items-center justify-between">
+                  <div className="space-y-0.5">
+                    <FormLabel>Search</FormLabel>
+                    <FormDescription>Add members</FormDescription>
+                  </div>
+                  <FormItem className="relative w-max grow ml-3">
+                    <FormField
+                      control={form.control}
+                      name="usersSearchInput"
+                      render={({ field }) => (
+                        <>
+                          <SearchIcon className="align-top absolute top-0 bottom-0 m-auto text-gray-500 mt-4  ml-3" />
+                          <FormControl onChange={debouncedOnChange}>
+                            <Input type="text" placeholder="Search users..." className="pl-12 pr-4 mt-0" {...field} />
+                          </FormControl>
+                        </>
+                      )}
+                    />
+                    {searchResult?.length !== 0 && (
+                      <Card
+                        className={`absolute p-2 w-full flex flex-col  overflow-scroll max-h-72 gap-2 ${quicksand.className}`}
+                      >
+                        {profileSearchList}
+                      </Card>
                     )}
-                  />
-                  {searchResult?.length !== 0 && (
-                  <Card
-                    className={`absolute p-2 w-full flex flex-col  overflow-scroll max-h-72 gap-2 ${quicksand.className}`}
-                  >
-                    {profilesSearchList}
-                  </Card>
-                  )}
-                </FormItem>
+                  </FormItem>
+                </div>
+                <Card className="flex flex-row items-center -space-x-4 p-2">{profileAvatarsList}</Card>
               </Card>
             )}
           />
