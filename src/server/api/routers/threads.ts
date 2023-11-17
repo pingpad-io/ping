@@ -114,8 +114,7 @@ export const threadsRouter = createTRPCRouter({
         },
       });
 
-      input.users = [ctx.userId, "ddb9e216-3bd1-47d5-a7d1-a387cb7869df", ...(input.users || [])];
-      console.log(input.users);
+      input.users = [ctx.userId, ...(input.users || [])];
 
       if (input.users && input.users?.length > 0) {
         await ctx.prisma.thread.update({
