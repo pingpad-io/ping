@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  KeyboardEvent,
-  useEffect,
-  useRef,
-  useState,
-  PropsWithChildren,
-  forwardRef,
-} from "react";
+import { KeyboardEvent, useEffect, useRef, useState, PropsWithChildren, forwardRef } from "react";
 import { PostMenu, PostMenuContent } from "./PostMenu";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,10 +37,10 @@ export const ChatView = ({ post, showBadges = true }: { post: Post; showBadges?:
         <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
           <UserAvatar userId={author.id} />
         </div>
-              <ReplyInfo post={post} />
-        <Card className=" rounded-2xl rounded-bl-none w-full">
+        <Card className=" rounded-2xl w-full">
           <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
             <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
+              <ReplyInfo post={post} />
               <PostInfo post={post} />
               <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
               {showBadges && (
