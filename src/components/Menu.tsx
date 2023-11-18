@@ -84,7 +84,7 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
 
   return (
     <>
-      <Link href="/chat">
+      <Link href="/c">
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex">messages</div>
           <MailIcon className="sm:ml-2" />

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 import { PrivateThread, Thread } from "~/server/api/routers/threads";
 import { api } from "~/utils/api";
-import { ThreadLink } from "./ThreadLink";
+import { ChatLink, ThreadLink } from "./ThreadLink";
 import Image from "next/image";
 
 export const PublicThread = ({ thread }: { thread: Thread }) => {
@@ -80,11 +80,11 @@ export const PirvateThread = ({ thread }: { thread: PrivateThread }) => {
     <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2">
       {avatars[0] && <Image src={avatars[0] ?? ""} className="rounded-full mx-1" alt="avatar" width={30} height={30} />}
 
-      <ThreadLink thread={thread.name}>
+      <ChatLink chat={thread.name}>
         <span className={`flex flex-row items-center gap-2 ${isCurrent && "font-bold"}`}>
-          <span className={"hover:underline "}>{title}</span>
+          <span className={"hover:underline"}>{title}</span>
         </span>
-      </ThreadLink>
+      </ChatLink>
 
       {user?.id === thread.authorId && (
         <button type="submit" onClick={() => deleteThread.mutate({ name: thread.name ?? "" })}>

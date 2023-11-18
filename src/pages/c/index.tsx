@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { PageLayout } from "~/components/Layout";
 import { CollapsedContext } from "~/components/Menu";
-import { PrivateThreads } from "~/components/ThreadList";
+import { PrivateThreads, PublicThreads } from "~/components/ThreadList";
 
 const ThreadsPage = () => {
   return (

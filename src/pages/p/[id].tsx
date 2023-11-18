@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import ErrorPage from "~/components/ErrorPage";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
-import { PostView } from "~/components/Post";
+import { PostView } from "~/components/PostView";
 import PostWizard from "~/components/PostWizard";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -86,15 +86,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const ssg = getSSGHelper();
-  const posts = await ssg.posts.get.fetch({ take: 100 });
 
   return {
-    paths: posts.map((post) => ({
-      params: {
-        id: post.id,
-      },
-    })),
-    fallback: "blocking",
+    paths: [],
+    fallback: false,
   };
 };
 

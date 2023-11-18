@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 const ErrorPage = ({ title }: { title: string }) => {
   return (
-    <Card className="flex items-center justify-center">
+    <Card className="flex flex-col items-center justify-center">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
+
       <CardContent>
         <Link href={"/"}>
           <Button>{"< Home"}</Button>

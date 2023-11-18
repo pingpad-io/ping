@@ -4,8 +4,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type Dispatch,
-  type SetStateAction,
   PropsWithChildren,
   forwardRef,
 } from "react";
@@ -35,26 +33,35 @@ import Metadata from "./Metadata";
 import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import { DropdownMenuTrigger } from "./ui/dropdown-menu";
 
-export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
+export const ChatView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const author = post.author;
   const [collapsed, setCollapsed] = useState(true);
   const postContentRef = useRef<HTMLDivElement>(null);
 
   return (
     <ContextMenu post={post}>
-      <Card>
-        <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
-          <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-            <UserAvatar userId={author.id} />
-          </div>
-          <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
-            <ReplyInfo post={post} />
-            <PostInfo post={post} />
-            <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-            {showBadges && <PostBadges postContentRef={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-row gap-4 items-center">
+        <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
+          <UserAvatar userId={author.id} />
+        </div>
+              <ReplyInfo post={post} />
+        <Card className=" rounded-2xl rounded-bl-none w-full">
+          <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
+            <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
+              <PostInfo post={post} />
+              <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
+              {showBadges && (
+                <PostBadges
+                  postContentRef={postContentRef}
+                  post={post}
+                  collapsed={collapsed}
+                  setCollapsed={setCollapsed}
+                />
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </ContextMenu>
   );
 };

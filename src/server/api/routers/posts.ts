@@ -37,7 +37,7 @@ export const postsRouter = createTRPCRouter({
     .input(
       z.object({
         take: z.number().default(35),
-        thread: z.string().optional().default("global"),
+        thread: z.string().optional(),
         contains: z.string().optional(),
         postId: z.string().optional(),
         authorUsername: z.string().optional(),
@@ -47,6 +47,12 @@ export const postsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      if (input.postId !== undefined) {
+        input.thread = undefined;
+      } else {
+        input.thread = input.thread ?? "global";
+      }
+
       // If thread is private, check if user is part of it
       if (input.thread) {
         const thread = await ctx.prisma.thread.findUnique({
@@ -169,6 +175,13 @@ export const postsRouter = createTRPCRouter({
 
           return postsWithMetadata;
         });
+
+      if (!posts) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Posts were not found.",
+        });
+      }
 
       return posts;
     }),
