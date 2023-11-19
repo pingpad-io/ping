@@ -74,10 +74,6 @@ export default function ThreadWizard({
     },
   });
 
-  const searchUsers = (event: any) => {
-    const value = event.target.value;
-    setSearchValue(value);
-  };
 
   const addProfile = (profile: Profile) => {
     form.setValue("users", [...form.getValues("users"), profile]);
@@ -109,7 +105,11 @@ export default function ThreadWizard({
     );
   });
 
-  const debouncedOnChange = debounce(searchUsers, 300);
+  const searchUsers = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchValue(value);
+  };
+  const debouncedSearchUsers = debounce(searchUsers, 300);
 
   return (
     <Form {...form}>
@@ -162,7 +162,7 @@ export default function ThreadWizard({
                       render={({ field }) => (
                         <>
                           <SearchIcon className="align-top absolute top-0 bottom-0 m-auto text-gray-500 mt-4  ml-3" />
-                          <FormControl onChange={debouncedOnChange}>
+                          <FormControl onChange={debouncedSearchUsers}>
                             <Input type="text" placeholder="Search users..." className="pl-12 pr-4 mt-0" {...field} />
                           </FormControl>
                         </>

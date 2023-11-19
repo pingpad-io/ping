@@ -7,7 +7,6 @@ import Link from "next/link";
 import { ArrowRight, AtSign, ChevronDown, Cookie, Github, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { PostView } from "~/components/Post";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import PingAuth from "~/components/Auth";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
@@ -15,6 +14,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
+import { PostView } from "~/components/PostView";
 
 const LandingPage = () => {
   const supabase = useSupabaseClient();

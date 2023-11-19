@@ -9,7 +9,7 @@ import { PageLayout } from "~/components/Layout";
 import ProfileSettings from "~/components/ProfileSettingsView";
 import { SignedIn, SignedOut } from "~/components/Signed";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
