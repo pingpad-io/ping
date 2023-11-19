@@ -113,7 +113,7 @@ export default function ThreadWizard({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="title"
@@ -177,7 +177,9 @@ export default function ThreadWizard({
                     )}
                   </FormItem>
                 </div>
-                <Card className="flex flex-row items-center -space-x-4 p-2">{profileAvatarsList}</Card>
+                {profileAvatarsList.length > 0 && (
+                  <Card className="flex flex-row items-center -space-x-4 p-2">{profileAvatarsList}</Card>
+                )}
               </Card>
             )}
           />
