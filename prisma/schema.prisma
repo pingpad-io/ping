@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  binaryTargets   = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -268,15 +268,16 @@ model User {
 }
 
 model Thread {
-  id         String    @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  updated_at DateTime? @db.Timestamptz(6)
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  title      String?
-  authorId   String?   @db.Uuid
-  name       String?   @unique
-  posts      Post[]
-  users      Profile[] @relation(name: "ProfileToThread")
-  public     Boolean   @default(true)
+  id            String         @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  updated_at    DateTime?      @db.Timestamptz(6)
+  created_at    DateTime?      @default(now()) @db.Timestamptz(6)
+  title         String?
+  authorId      String?        @db.Uuid
+  name          String?        @unique
+  posts         Post[]
+  users         Profile[]      @relation(name: "ProfileToThread")
+  public        Boolean        @default(true)
+  notifications Notification[]
 
   @@map("threads")
   @@schema("public")
@@ -296,27 +297,60 @@ model Profile {
   threads       Thread[]       @relation("ProfileToThread")
   user          User           @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   reactions     PostReaction[]
+  notifications Notification[] @relation(name: "ProfileToNotification")
+  Notification  Notification[]
 
   @@map("profiles")
   @@schema("public")
 }
 
+enum NotificationType {
+  Reply
+  Mention
+  Message
+  Follow
+  Reaction
+  Warn
+
+  @@schema("public")
+}
+
+model Notification {
+  id         Int              @id @default(autoincrement())
+  type       NotificationType
+  profileId  String           @db.Uuid
+  postId     String?          @db.Uuid
+  userId     String?          @db.Uuid
+  reactionId Int?
+  profile    Profile?         @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: NoAction, name: "ProfileToNotification")
+  post       Post?            @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  who        Profile?         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  reaction   Reaction?        @relation(fields: [reactionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  Thread     Thread?          @relation(fields: [threadId], references: [id])
+  threadId   String?          @db.Uuid
+
+  seen      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@schema("public")
+}
 
 model Post {
-  id          String         @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  authorId    String         @db.Uuid
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime
-  content     String         @db.Text
-  threadId    String         @db.Uuid
-  status      PostStatus     @default(Posted)
-  repliedToId String?        @db.Uuid
-  author      Profile        @relation("AuthorToPost", fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  repliedTo   Post?          @relation("PostReply", fields: [repliedToId], references: [id])
-  thread      Thread         @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  replies     Post[]         @relation("PostReply")
-  reactions   PostReaction[]
-  
+  id            String         @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId      String         @db.Uuid
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime
+  content       String         @db.Text
+  threadId      String         @db.Uuid
+  status        PostStatus     @default(Posted)
+  repliedToId   String?        @db.Uuid
+  author        Profile        @relation("AuthorToPost", fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repliedTo     Post?          @relation("PostReply", fields: [repliedToId], references: [id])
+  thread        Thread         @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  replies       Post[]         @relation("PostReply")
+  reactions     PostReaction[]
+  notifications Notification[]
+
   @@index([authorId], map: "Post_authorId_idx")
   @@map("posts")
   @@schema("public")
@@ -339,6 +373,7 @@ model Reaction {
   name         String
   description  String?
   PostReaction PostReaction[]
+  Notification Notification[]
 
   @@schema("public")
 }
