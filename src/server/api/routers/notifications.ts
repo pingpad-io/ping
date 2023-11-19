@@ -29,7 +29,7 @@ export const notificationRouter = createTRPCRouter({
         },
         orderBy: { createdAt: input.orderBy },
         take: input.take,
-      }); 
+      });
 
       if (!notifications) {
         throw new TRPCError({
@@ -38,11 +38,10 @@ export const notificationRouter = createTRPCRouter({
         });
       }
 
-      return notifications
-      }),
-    
+      return notifications;
+    }),
 
-    create: privateProcedure
+  create: privateProcedure
     .input(
       z.object({
         type: z.custom<NotificationType>(),
@@ -51,8 +50,8 @@ export const notificationRouter = createTRPCRouter({
         reactionId: z.number().optional(),
         threadId: z.string().optional(),
       }),
-    
-    ).mutation(async ({ ctx, input }) => {
+    )
+    .mutation(async ({ ctx, input }) => {
       const notification = await ctx.prisma.notification.create({
         data: {
           type: input.type,
@@ -62,7 +61,32 @@ export const notificationRouter = createTRPCRouter({
           threadId: input.threadId,
         },
       });
-    })
 
-      
-    });
+      if (!notification) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create notification",
+        });
+      }
+
+      return notification;
+    }),
+
+  setSeen: privateProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        seen: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.notification.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          seen: input.seen,
+        },
+      });
+    }),
+});
