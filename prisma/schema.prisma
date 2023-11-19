@@ -365,7 +365,6 @@ model PostReaction {
   reaction   Reaction @relation(fields: [reactionId], references: [id])
   post       Post     @relation(fields: [postId], references: [id])
 
-  @@map("post_reactions")
   @@schema("public")
 }
 
@@ -376,7 +375,6 @@ model Reaction {
   PostReaction PostReaction[]
   Notification Notification[]
 
-  @@map("reactions")
   @@schema("public")
 }
 
