@@ -178,6 +178,9 @@ model schema_migrations {
 model sessions {
   id             String           @id @db.Uuid
   user_id        String           @db.Uuid
+  refreshed_at   DateTime?        @db.Timestamptz(6)
+  user_agent     String?          @db.VarChar(255)
+  ip             String           @db.Inet() @default("127.0.0.1")
   created_at     DateTime?        @db.Timestamptz(6)
   updated_at     DateTime?        @db.Timestamptz(6)
   factor_id      String?          @db.Uuid
@@ -194,6 +197,7 @@ model sessions {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_domains {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -208,6 +212,7 @@ model sso_domains {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_providers {
   id                String              @id @db.Uuid
   resource_id       String?
@@ -222,6 +227,7 @@ model sso_providers {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model User {
   instance_id                 String?       @db.Uuid
   id                          String        @id @db.Uuid
@@ -274,10 +280,10 @@ model Thread {
   title         String?
   authorId      String?        @db.Uuid
   name          String?        @unique
-  posts         Post[]
-  users         Profile[]      @relation(name: "ProfileToThread")
   public        Boolean        @default(true)
   notifications Notification[]
+  posts         Post[]
+  users         Profile[]      @relation("ProfileToThread")
 
   @@map("threads")
   @@schema("public")
@@ -293,25 +299,14 @@ model Profile {
   avatar_url    String?
   created_at    DateTime?      @default(now()) @db.Timestamptz(6)
   description   String?
-  posts         Post[]         @relation("AuthorToPost")
-  threads       Thread[]       @relation(name: "ProfileToThread", map: "thread_members")
-  user          User           @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   reactions     PostReaction[]
-  notifications Notification[] @relation(name: "ProfileToNotification")
+  notifications Notification[] @relation("ProfileToNotification")
   Notification  Notification[]
+  posts         Post[]         @relation("AuthorToPost")
+  user          User           @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  threads       Thread[]       @relation("ProfileToThread")
 
   @@map("profiles")
-  @@schema("public")
-}
-
-enum NotificationType {
-  Reply
-  Mention
-  Message
-  Follow
-  Reaction
-  Warn
-
   @@schema("public")
 }
 
@@ -322,14 +317,14 @@ model Notification {
   postId     String?          @db.Uuid
   userId     String?          @db.Uuid
   reactionId Int?
-  profile    Profile?         @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: NoAction, name: "ProfileToNotification")
+  threadId   String?          @db.Uuid
+  seen       Boolean          @default(false)
+  createdAt  DateTime         @default(now())
   post       Post?            @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  who        Profile?         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profile    Profile          @relation("ProfileToNotification", fields: [profileId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   reaction   Reaction?        @relation(fields: [reactionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   Thread     Thread?          @relation(fields: [threadId], references: [id])
-  threadId   String?          @db.Uuid
-  seen      Boolean  @default(false)
-  createdAt DateTime @default(now())
+  who        Profile?         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("notifications")
   @@schema("public")
@@ -340,16 +335,16 @@ model Post {
   authorId      String         @db.Uuid
   createdAt     DateTime       @default(now())
   updatedAt     DateTime
-  content       String         @db.Text
+  content       String
   threadId      String         @db.Uuid
   status        PostStatus     @default(Posted)
   repliedToId   String?        @db.Uuid
-  author        Profile        @relation("AuthorToPost", fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  repliedTo     Post?          @relation("PostReply", fields: [repliedToId], references: [id])
-  thread        Thread         @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  replies       Post[]         @relation("PostReply")
   reactions     PostReaction[]
   notifications Notification[]
+  author        Profile        @relation("AuthorToPost", fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repliedTo     Post?          @relation("PostReply", fields: [repliedToId], references: [id])
+  replies       Post[]         @relation("PostReply")
+  thread        Thread         @relation(fields: [threadId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([authorId], map: "Post_authorId_idx")
   @@map("posts")
@@ -361,19 +356,30 @@ model PostReaction {
   profileId  String   @db.Uuid
   postId     String   @db.Uuid
   reactionId Int
+  post       Post     @relation(fields: [postId], references: [id])
   profile    Profile  @relation(fields: [profileId], references: [id])
   reaction   Reaction @relation(fields: [reactionId], references: [id])
-  post       Post     @relation(fields: [postId], references: [id])
 
   @@schema("public")
 }
 
 model Reaction {
-  id           Int            @id @default(autoincrement())
   name         String
   description  String?
+  id           Int            @id @default(autoincrement())
   PostReaction PostReaction[]
   Notification Notification[]
+
+  @@schema("public")
+}
+
+enum NotificationType {
+  Reply
+  Mention
+  Message
+  Follow
+  Reaction
+  Warn
 
   @@schema("public")
 }
