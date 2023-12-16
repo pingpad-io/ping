@@ -6,8 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "format": "bunx @biomejs/biome format --write ./src/*",
-    "lint": "bunx @biomejs/biome lint --apply ./src/*",
+    "format": "bunx @biomejs/biome format --write .",
+    "lint": "bunx @biomejs/biome lint --apply .",
     "start": "next start"
   },
   "dependencies": {

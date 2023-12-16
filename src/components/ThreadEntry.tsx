@@ -67,11 +67,13 @@ export const PirvateThread = ({ thread }: { thread: PrivateThread }) => {
   });
 
   // Get avatars of other user in this thread
-  const avatars = thread.users.map((threadMember) => {
-    if (threadMember.id !== user?.id) {
-      return threadMember.avatar_url;
-    }
-  }).filter((avatar) => avatar !== undefined);
+  const avatars = thread.users
+    .map((threadMember) => {
+      if (threadMember.id !== user?.id) {
+        return threadMember.avatar_url;
+      }
+    })
+    .filter((avatar) => avatar !== undefined);
 
   const otherUser = thread.users.find((threadMember) => threadMember.id !== user?.id);
   const title = thread.users.length === 2 ? otherUser?.full_name : thread.title;

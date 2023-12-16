@@ -1,18 +1,46 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.2.2/schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true
-		}
-	},
-	"formatter": {
-		"indentSize": 2,
-		"indentStyle": "space",
-		"enabled": true,
-		"lineWidth": 120
-	}
+  "$schema": "https://biomejs.dev/schemas/1.2.2/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off"
+      }
+    },
+    "ignore": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/coverage/**",
+      "**/.next/**",
+      "**/public/**",
+      "**/.cache/**",
+      "**/.idea/**",
+      "**/.vscode/**",
+      "**/.git/**"
+    ]
+  },
+  "formatter": {
+    "indentSize": 2,
+    "indentStyle": "space",
+    "enabled": true,
+    "lineWidth": 120,
+    "ignore": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/coverage/**",
+      "**/.next/**",
+      "**/public/**",
+      "**/.cache/**",
+      "**/.idea/**",
+      "**/.vscode/**",
+      "**/.git/**"
+    ]
+  }
 }

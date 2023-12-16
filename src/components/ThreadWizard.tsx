@@ -74,7 +74,6 @@ export default function ThreadWizard({
     },
   });
 
-
   const addProfile = (profile: Profile) => {
     form.setValue("users", [...form.getValues("users"), profile]);
     form.setValue("usersSearchInput", "");

@@ -33,7 +33,6 @@ export const profileRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-
       if (!input.query) {
         return [];
       }
