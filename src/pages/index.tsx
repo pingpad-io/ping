@@ -1,4 +1,3 @@
-import Feed from "~/components/Feed";
 import { api } from "~/utils/api";
 import { GetStaticProps } from "next";
 import { getSSGHelper } from "~/utils/getSSGHelper";
@@ -30,12 +29,11 @@ const LandingPage = () => {
   const postsList = posts.data?.map((post) => (
     <div
       key={post.id}
-      className="duration-150 hover:-skew-x-3 hover:scale-105 hover:dark:drop-shadow-glow-sm hover:drop-shadow-lg"
+      className="duration-150 hover:-skew-x-3 hover:scale-105 hover:dark:drop-shadow-glow-sm hover:drop-shadow-lg overflow-visible"
     >
       <PostView showBadges={false} post={post} />
     </div>
   ));
-  if (!postsList) return;
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((event) => {
@@ -44,6 +42,8 @@ const LandingPage = () => {
       }
     });
   }, []);
+
+  if (!postsList) return;
 
   return (
     <div className={`flex flex-col mx-auto max-w-5xl min-w-0 w-fit ${quicksand.className}`}>
@@ -70,7 +70,7 @@ const LandingPage = () => {
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="default" size="sm_icon">
-                      <div className="hidden  sm:flex mr-2">Sign in</div>
+                      <div className="hidden  sm:flex mr-2">Join Beta</div>
                       <LogInIcon />
                     </Button>
                   </DialogTrigger>
@@ -86,7 +86,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 items-center justify-center p-10">
+        <div className="grid md:grid-cols-2 items-center justify-center py-10 mt-24">
           <div className="text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
             <h1>
               a <b>better </b> microblogging experience
@@ -102,11 +102,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 px-2 w-2/3 md:w-full mx-auto">
-            <Card className="h-4" />
-            <div className="px-2 h-full flex flex-col gap-4 w-full">{postsList}</div>
-            <Card className="h-4" />
-          </div>
+          <div className="flex flex-col gap-4 px-2 w-2/3 md:w-full mx-auto">{postsList}</div>
 
           <div className="block md:hidden text-3xl p-8 text-center drop-shadow-lg dark:drop-shadow-glow">
             <h1>
