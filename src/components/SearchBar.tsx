@@ -32,7 +32,7 @@ export const SearchBar = ({ defaultText }: { defaultText: string }) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input type="text" placeholder="Search ping..." className="pl-12 pr-4 mt-0" {...field} />
+                  <Input type="text" placeholder="Search ping..." className="pl-12 pr-4 mt-0 border-0" {...field} />
                 </FormControl>
               </FormItem>
             )}

@@ -22,7 +22,7 @@ export function PublicThreads() {
   });
 
   return (
-    <Card>
+    <Card className="border-0">
       <CardHeader className="py-3">
         <CardTitle className="text-lg">
           <div className="flex flex-row place-items-center gap-4">

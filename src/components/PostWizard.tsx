@@ -110,7 +110,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
                     onKeyDown={onKeyDown}
                     placeholder={placeholderText}
                     disabled={isPosting}
-                    className="min-h-12 resize-none"
+                    className="min-h-12 resize-none px-2"
                     ref={textarea}
                     rows={1}
                   />
