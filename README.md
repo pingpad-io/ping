@@ -14,6 +14,6 @@ a minimalistic microblogging platform
 **contributing**
 
 thank you for considering contributing to Ping!
-read the [contributing guide](https://github.com/kualta/ping/blob/main/CONTRIBUTING.md) to get started
+read the [contributing guide](./CONTRIBUTING.md) to get started
 
 ![image psd(1)](https://github.com/kualta/ping/assets/72769566/fe22cb59-0442-4d4f-8af4-5709c2ce91d2)
