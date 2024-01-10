@@ -9,7 +9,7 @@ const Metadata = ({ metadata }: { metadata: Post["metadata"] }) => {
     <span
       className="max-w-md min-w-0 w-fit
 				rounded-lg border text-card-foreground shadow-sm select-none truncate line-clamp-1 
-				bg-slate-100 dark:bg-slate-900 mt-2 sm:mt-4 p-2 sm:p-4 flex flex-col gap-2 "
+				bg-accent mt-2 sm:mt-4 p-2 sm:p-4 flex flex-col gap-2 "
     >
       {metadata.publisher && (
         <span>
