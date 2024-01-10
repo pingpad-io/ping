@@ -4,12 +4,12 @@ Thank you for considering contributing to Ping. As an open sourced project
 we only exist by contributions from users like you.
 
 To contribute you will first need to fork the repo. To get the repository up and
-running, please look at [LOCAL.md](/LOCAL.md) for setup instructions.
+running, please look at [LOCAL.md](./LOCAL.md) for setup instructions.
 
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[Code of Conduct](/CODE_OF_CONDUCT.md). By
+[Code of Conduct](./CODE_OF_CONDUCT.md). By
 participating you are expected to uphold this code. Please report unacceptable
 behavior to <contact@kualta.dev>
 
