@@ -4,8 +4,9 @@ import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 import { PrivateThread, Thread } from "~/server/api/routers/threads";
 import { api } from "~/utils/api";
-import { ChatLink, ThreadLink } from "./ThreadLink";
+import { ChatLink, ThreadLink } from "./Link";
 import Image from "next/image";
+import { Card } from "./ui/card";
 
 export const PublicThread = ({ thread }: { thread: Thread }) => {
   if (!thread || !thread.name) return null;
@@ -28,7 +29,7 @@ export const PublicThread = ({ thread }: { thread: Thread }) => {
   });
 
   return (
-    <div key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2">
+    <Card key={thread.id} className="flex flex-row place-items-center gap-2 px-4 py-2">
       <ThreadLink thread={thread.name}>
         <span className={`flex flex-row items-center gap-2 ${isCurrent && "font-bold"}`}>
           <span className={"hover:underline "}>{thread.title}</span>
@@ -42,7 +43,7 @@ export const PublicThread = ({ thread }: { thread: Thread }) => {
           <XIcon size={14} />
         </button>
       )}
-    </div>
+    </Card>
   );
 };
 

@@ -43,7 +43,7 @@ export const ReactionBadge = ({ reaction, post }: { reaction: PostReaction | Rea
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant={isUserReacted ? "secondary" : "outline"}
+            variant={isUserReacted ? "accent" : "outline"}
             size="icon"
             className={`h-6 ${count > 0 ? "w-10" : "w-8"}`}
             onClick={() =>

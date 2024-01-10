@@ -1,12 +1,7 @@
 import { api } from "~/utils/api";
-import { useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
-import { toast } from "react-hot-toast";
-import { ThreadLink } from "./ThreadLink";
-import { Thread } from "~/server/api/routers/threads";
-import { useRouter } from "next/router";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import { MessageSquareIcon, PlusIcon, XIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import ThreadWizard from "./ThreadWizard";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -22,7 +17,7 @@ export function PublicThreads() {
   });
 
   return (
-    <Card className="border-0">
+    <Card className="hover:bg-card">
       <CardHeader className="py-3">
         <CardTitle className="text-lg">
           <div className="flex flex-row place-items-center gap-4">
