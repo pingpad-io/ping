@@ -285,7 +285,6 @@ model Thread {
   title         String?
   authorId      String?        @db.Uuid
   name          String?        @unique
-  public        Boolean        @default(true)
   notifications Notification[]
   posts         Post[]
   users         Profile[]      @relation("ProfileToThread")

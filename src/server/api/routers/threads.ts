@@ -35,30 +35,15 @@ export const threadsRouter = createTRPCRouter({
       z.object({
         threadId: z.string().uuid().optional(),
         threadName: z.string().optional(),
-        public: z.boolean().optional().default(true),
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (!input.public) {
-        if (!ctx.userId) {
-          throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: "You must be logged in to view private threads",
-          });
-        }
-      }
-
       const threads = await ctx.prisma.thread.findMany({
         include: {
           posts: { select: { _count: true } },
         },
         orderBy: [{ created_at: "asc" }],
-        where: {
-          AND: [
-            { id: input.threadId, name: input.threadName, public: input.public },
-            { ...(input.public ? {} : { users: { some: { id: ctx.userId } } }) },
-          ],
-        },
+        where: { id: input.threadId, name: input.threadName },
       });
 
       if (input.threadId || input.threadName) {
@@ -95,7 +80,6 @@ export const threadsRouter = createTRPCRouter({
     .input(
       z.object({
         title: z.string(),
-        public: z.boolean().default(true),
         users: z.array(z.string().uuid()).optional(),
       }),
     )
@@ -109,7 +93,6 @@ export const threadsRouter = createTRPCRouter({
           updated_at: new Date().toISOString(),
           created_at: new Date().toISOString(),
           title: input.title,
-          public: input.public,
           name: name,
         },
       });

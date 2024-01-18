@@ -57,27 +57,13 @@ export const postsRouter = createTRPCRouter({
       if (input.thread) {
         const thread = await ctx.prisma.thread.findUnique({
           where: { name: input.thread },
-          select: { public: true, users: { select: { id: true } } },
+          select: { users: { select: { id: true } } },
         });
         if (!thread) {
           throw new TRPCError({
             code: "NOT_FOUND",
             message: "Thread was not found.",
           });
-        }
-        if (!thread.public) {
-          if (!ctx.userId) {
-            throw new TRPCError({
-              code: "UNAUTHORIZED",
-              message: "You must be logged in to view private threads",
-            });
-          }
-          if (!thread.users.some((user) => user.id === ctx.userId)) {
-            throw new TRPCError({
-              code: "UNAUTHORIZED",
-              message: "You must be part of the thread to view it",
-            });
-          }
         }
       }
 

@@ -10,7 +10,7 @@ import { PirvateThread, PublicThread } from "./ThreadEntry";
 
 export function PublicThreads() {
   const [open, setOpen] = useState(false);
-  const { data: threads } = api.threads.get.useQuery({ public: true });
+  const { data: threads } = api.threads.get.useQuery({});
 
   const threadList = threads?.map((thread) => {
     return <PublicThread key={thread.id} thread={thread} />;

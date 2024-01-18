@@ -54,7 +54,7 @@ export default function ThreadWizard({
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const ids = values.users.map((user) => user.id);
-    mutate({ title: values.title, public: values.public, users: ids });
+    mutate({ title: values.title, users: ids });
   };
 
   const formSchema = z.object({
