@@ -13,21 +13,13 @@ import { api } from "~/utils/api";
 import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
-  const { data, isError, error } = api.posts.get.useQuery(
-    { postId: id },
-    {
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      retry: false,
-    },
-  );
+  const { data, isError, error } = api.posts.get.useQuery({ postId: id });
   const replies = api.posts.get.useQuery({ repliedToPostId: id });
   const router = useRouter();
 
   if (isError) return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
-  if (data?.length !== 1) return <ErrorPage title={"Something went wrong..."} />;
 
+  if (!data) return <Card>Loading...</Card>;
   const post = data[0];
   if (!post) return <ErrorPage title={"Post not found qwq"} />;
 
@@ -86,8 +78,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const ssg = getSSGHelper();
-
   return {
     paths: [],
     fallback: false,
