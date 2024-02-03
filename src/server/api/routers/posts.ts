@@ -53,19 +53,6 @@ export const postsRouter = createTRPCRouter({
         input.thread = input.thread ?? "global";
       }
 
-      // If thread is private, check if user is part of it
-      if (input.thread) {
-        const thread = await ctx.prisma.thread.findUnique({
-          where: { name: input.thread },
-          select: { users: { select: { id: true } } },
-        });
-        if (!thread) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Thread was not found.",
-          });
-        }
-      }
 
       const posts = await ctx.prisma.post
         .findMany({

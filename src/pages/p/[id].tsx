@@ -22,6 +22,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
       retry: false,
     },
   );
+  const replies = api.posts.get.useQuery({ repliedToPostId: id });
   const router = useRouter();
 
   if (isError) return <ErrorPage title={error.data?.code ?? "Something went wrong..."} />;
@@ -31,8 +32,7 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
   if (!post) return <ErrorPage title={"Post not found qwq"} />;
 
   const author = post.author;
-  const replies = api.posts.get.useQuery({ repliedToPostId: id });
-  const hasReplies = replies.data ? replies.data.length > 0 : 0;
+  const hasReplies = replies.data ? replies.data.length > 0 : false;
 
   return (
     <>
@@ -74,6 +74,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (typeof id !== "string") throw new Error("Bad post id");
 
   await ssg.posts.get.prefetch({ postId: id });
+  await ssg.posts.get.prefetch({ repliedToPostId: id });
 
   return {
     props: {
