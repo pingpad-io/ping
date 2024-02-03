@@ -15,7 +15,7 @@ const Links = () => {
         About
       </Link>
       <a href="https://kualta.dev/" className="select-none">
-        © 2023 K.U Corp.
+        © 2024 K.U
       </a>
     </div>
   );
