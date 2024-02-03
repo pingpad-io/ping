@@ -9,14 +9,11 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
 import { Card } from "./ui/card";
-import { SearchBar } from "./SearchBar";
 import { SearchIcon } from "lucide-react";
 import { debounce } from "~/utils";
-import { useMutation } from "@tanstack/react-query";
 import { ProfileEntry } from "./ProfileEntry";
 import { quicksand } from "~/styles/fonts";
 import { Profile } from "@prisma/client";
-import { Avatar } from "./ui/avatar";
 import { UserAvatar } from "./UserAvatar";
 
 export default function ThreadWizard({

@@ -98,7 +98,7 @@ export const ContextMenu = (props: PropsWithChildren & { post: Post }) => {
             <DropdownMenu open={true}>
               <DropdownMenuTrigger />
               <DropdownMenuContent>
-                <Card>
+                <Card className="hover:bg-card">
                   <PostMenuContent post={props.post} />
                 </Card>
               </DropdownMenuContent>
