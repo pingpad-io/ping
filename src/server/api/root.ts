@@ -1,9 +1,9 @@
 import { createTRPCRouter } from "~/server/api/trpc";
+import { notificationRouter } from "./routers/notifications";
 import { postsRouter } from "./routers/posts";
 import { profileRouter } from "./routers/profile";
-import { threadsRouter } from "./routers/threads";
 import { reactionsRouter } from "./routers/reactions";
-import { notificationRouter } from "./routers/notifications";
+import { threadsRouter } from "./routers/threads";
 
 export const appRouter = createTRPCRouter({
   posts: postsRouter,

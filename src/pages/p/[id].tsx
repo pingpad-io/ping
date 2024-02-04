@@ -1,5 +1,5 @@
 import { ChevronLeft } from "lucide-react";
-import { GetStaticPaths, type GetStaticProps, type NextPage } from "next";
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import ErrorPage from "~/components/ErrorPage";

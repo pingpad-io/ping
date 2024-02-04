@@ -1,17 +1,19 @@
 import Link from "next/link";
-import { KeyboardEvent, useEffect, useRef, useState, PropsWithChildren, forwardRef } from "react";
+import { type KeyboardEvent, type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
 import { PostMenu, PostMenuContent } from "./PostMenu";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import { useUser } from "@supabase/auth-helpers-react";
-import { ArrowDown, ArrowUp, ChevronDown, ChevronUp, Edit2Icon, MoreHorizontalIcon, ReplyIcon } from "lucide-react";
+import { ChevronDown, ChevronUp, Edit2Icon, ReplyIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { boolean, z } from "zod";
-import { Post } from "~/server/api/routers/posts";
+import { z } from "zod";
+import type { Post } from "~/server/api/routers/posts";
 import { api } from "~/utils/api";
 import Markdown from "./Markdown";
+import Metadata from "./Metadata";
 import { ReactionBadge } from "./Reactions";
 import { ReactionsList } from "./ReactionsList";
 import { SignedIn } from "./Signed";
@@ -19,12 +21,10 @@ import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
+import { DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { Textarea } from "./ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import Metadata from "./Metadata";
-import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
-import { DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 export const ChatView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const author = post.author;
@@ -72,7 +72,7 @@ export const ContextMenu = (props: PropsWithChildren & { post: Post }) => {
     return () => {
       window.removeEventListener("click", handleClick);
     };
-  }, []);
+  }, [handleClick]);
 
   return (
     <div
@@ -144,7 +144,7 @@ export const PostEditor = ({ post }: { post: Post }) => {
   const user = useUser();
 
   const removeEditingQuery = () => {
-    const { editing, ...routerQuery } = router.query;
+    const { ...routerQuery } = router.query;
     router.replace({
       query: { ...routerQuery },
     });
@@ -157,7 +157,7 @@ export const PostEditor = ({ post }: { post: Post }) => {
       removeEditingQuery();
       toast.error("You are not allowed to edit this post");
     }
-  }, [user]);
+  }, [user, post.authorId, removeEditingQuery]);
 
   const { mutate: updatePost, isLoading: isPosting } = api.posts.update.useMutation({
     onSuccess: async () => {
@@ -265,7 +265,7 @@ export const PostEditor = ({ post }: { post: Post }) => {
 export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
->(({ post, collapsed, setCollapsed }, ref) => {
+>(({ post, collapsed }, ref) => {
   const router = useRouter();
   const editing = router.query.editing === post.id;
 
@@ -362,7 +362,6 @@ export function ReplyCount({ post }: { post: Post }) {
   );
 }
 export function PostExtensionButton({
-  post,
   collapsed,
   setCollapsed,
   postContentRef,
@@ -380,7 +379,7 @@ export function PostExtensionButton({
       const hasLineClamp2Effect = postContentElement.scrollHeight > postContentElement.clientHeight;
       setCollapsable(hasLineClamp2Effect);
     }
-  }, [post.content]);
+  }, []);
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
@@ -423,7 +422,7 @@ export function PostReactionList({ post }: { post: Post }) {
 }
 
 export function EditedIndicator({ post }: { post: Post }) {
-  const editCount = 1; // TODO: add editCount to schema
+  const _editCount = 1; // TODO: add editCount to schema
   const lastUpdated = post.updatedAt.toLocaleString();
   const tooltipText = `last updated at ${lastUpdated}`;
 

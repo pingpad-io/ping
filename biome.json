@@ -7,8 +7,16 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "warn",
+        "useExhaustiveDependencies": "off"
+      },
+      "nursery": {
+        "noUnusedImports": "warn"
+      },
       "suspicious": {
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "noImplicitAnyLet": "off"
       },
       "a11y": {
         "noSvgWithoutTitle": "off"
@@ -27,7 +35,7 @@
     ]
   },
   "formatter": {
-    "indentSize": 2,
+    "indentWidth": 2,
     "indentStyle": "space",
     "enabled": true,
     "lineWidth": 120,

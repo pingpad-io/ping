@@ -1,8 +1,8 @@
+import type { Post } from "~/server/api/routers/posts";
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import ErrorPage from "./ErrorPage";
 import { PostView } from "./PostView";
 import { SuspensePostView } from "./SuspensePostView";
-import { Post } from "~/server/api/routers/posts";
 
 export default function Feed(props: {
   data?: Post[];
@@ -10,7 +10,7 @@ export default function Feed(props: {
   isError?: boolean;
 }) {
   if (props.isLoading) {
-    const suspense = [...Array(12)].map((e, i) => <SuspensePostView key={`${i}`} />);
+    const suspense = [...Array(12)].map((_e, _i) => <SuspensePostView />);
     return <div className="flex flex-col gap-1">{suspense}</div>;
   }
 

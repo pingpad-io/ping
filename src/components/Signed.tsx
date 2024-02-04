@@ -1,5 +1,5 @@
 import { useUser } from "@supabase/auth-helpers-react";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 
 // render any react children only if the user is signed out
 export function SignedIn(props: PropsWithChildren) {

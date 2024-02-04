@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Link from "next/link";
 import { PageLayout } from "~/components/Layout";
 import { CollapsedContext } from "~/components/Menu";
 import { PublicThreads } from "~/components/ThreadList";

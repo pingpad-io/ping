@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
 import { createMiddlewareSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { type NextRequest, NextResponse } from "next/server";
 
 export const config = {
   matcher: [
@@ -48,7 +48,6 @@ export async function middleware(req: NextRequest) {
   // Auth condition not met, redirect to landing
   if (pathname === "/") {
     return res;
-  } else {
-    return NextResponse.redirect(new URL("/", req.url));
   }
+  return NextResponse.redirect(new URL("/", req.url));
 }

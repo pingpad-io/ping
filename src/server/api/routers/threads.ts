@@ -2,9 +2,9 @@ import { z } from "zod";
 
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
-import { TRPCError } from "@trpc/server";
 import { randomUUID } from "crypto";
-import { RouterOutputs } from "~/utils/api";
+import { TRPCError } from "@trpc/server";
+import type { RouterOutputs } from "~/utils/api";
 
 export type Thread = RouterOutputs["threads"]["get"][number];
 export type PrivateThread = RouterOutputs["threads"]["getPrivate"][number];
@@ -84,7 +84,10 @@ export const threadsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const name = input.title.replace(/[^a-z\d\s]+/gi, "").replace(/\s/g, "-").toLowerCase();
+      const name = input.title
+        .replace(/[^a-z\d\s]+/gi, "")
+        .replace(/\s/g, "-")
+        .toLowerCase();
 
       const thread = await ctx.prisma.thread.create({
         data: {

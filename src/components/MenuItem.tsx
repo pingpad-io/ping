@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useContext, type ReactNode } from "react";
+import { type ReactNode, useContext } from "react";
 import { CollapsedContext } from "./Menu";
 
 export const MenuItem = (props: {

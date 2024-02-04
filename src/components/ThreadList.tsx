@@ -1,12 +1,12 @@
-import { api } from "~/utils/api";
-import Link from "next/link";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { PlusIcon } from "lucide-react";
-import { Button } from "./ui/button";
-import ThreadWizard from "./ThreadWizard";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import Link from "next/link";
 import { useState } from "react";
+import { api } from "~/utils/api";
 import { PirvateThread, PublicThread } from "./ThreadEntry";
+import ThreadWizard from "./ThreadWizard";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 export function PublicThreads() {
   const [open, setOpen] = useState(false);

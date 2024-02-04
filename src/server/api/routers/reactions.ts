@@ -33,21 +33,19 @@ export const reactionsRouter = createTRPCRouter({
               id: reaction.id,
             },
           });
-        } else {
-          return await ctx.prisma.postReaction.update({
-            where: { id: reaction.id },
-            data: { reactionId: input.reactionId },
-          });
         }
-      } else {
-        return await ctx.prisma.postReaction.create({
-          data: {
-            postId: input.postId,
-            profileId: input.profileId,
-            reactionId: input.reactionId,
-          },
+        return await ctx.prisma.postReaction.update({
+          where: { id: reaction.id },
+          data: { reactionId: input.reactionId },
         });
       }
+      return await ctx.prisma.postReaction.create({
+        data: {
+          postId: input.postId,
+          profileId: input.profileId,
+          reactionId: input.reactionId,
+        },
+      });
     }),
 
   delete: privateProcedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {

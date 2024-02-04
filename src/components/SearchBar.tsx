@@ -1,10 +1,10 @@
-import { useRouter } from "next/router";
-import { Input } from "~/components/ui/input";
-import { SearchIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { SearchIcon } from "lucide-react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
 
 export const SearchBar = ({ defaultText }: { defaultText: string }) => {
   const router = useRouter();

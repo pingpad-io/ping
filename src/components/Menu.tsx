@@ -18,7 +18,6 @@ import { Button } from "~/components/ui/button";
 import { api } from "~/utils/api";
 import PingAuth from "./Auth";
 import PostWizard from "./PostWizard";
-import { Card } from "./ui/card";
 
 export const CollapsedContext = createContext(false);
 

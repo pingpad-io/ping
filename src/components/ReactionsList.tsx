@@ -1,5 +1,5 @@
 import { useUser } from "@supabase/auth-helpers-react";
-import { Post } from "~/server/api/routers/posts";
+import type { Post } from "~/server/api/routers/posts";
 import { api } from "~/utils/api";
 import { ReactionBadge } from "./Reactions";
 

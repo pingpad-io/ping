@@ -2,11 +2,11 @@ import { z } from "zod";
 
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
+import { randomUUID } from "crypto";
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { randomUUID } from "crypto";
-import { RouterOutputs } from "~/utils/api";
+import type { RouterOutputs } from "~/utils/api";
 import { getMetadata } from "~/utils/getMetadata";
 
 export type Post = RouterOutputs["posts"]["get"][number];
@@ -52,7 +52,6 @@ export const postsRouter = createTRPCRouter({
       } else {
         input.thread = input.thread ?? "global";
       }
-
 
       const posts = await ctx.prisma.post
         .findMany({
@@ -310,36 +309,36 @@ export const postsRouter = createTRPCRouter({
     }),
 });
 
-function assertPostStatus(post: Post | null | undefined) {
-  if (!post) {
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: "Post was not found.",
-    });
-  }
+// function assertPostStatus(post: Post | null | undefined) {
+//   if (!post) {
+//     throw new TRPCError({
+//       code: "NOT_FOUND",
+//       message: "Post was not found.",
+//     });
+//   }
 
-  if (post.status === "UserDeleted") {
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: "This post was deleted by the user.",
-      cause: "the user",
-    });
-  }
+//   if (post.status === "UserDeleted") {
+//     throw new TRPCError({
+//       code: "NOT_FOUND",
+//       message: "This post was deleted by the user.",
+//       cause: "the user",
+//     });
+//   }
 
-  if (post.status === "AdminDeleted") {
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: "This post was deleted by the moderation team.",
-      cause: "the moderation team",
-    });
-  }
+//   if (post.status === "AdminDeleted") {
+//     throw new TRPCError({
+//       code: "NOT_FOUND",
+//       message: "This post was deleted by the moderation team.",
+//       cause: "the moderation team",
+//     });
+//   }
 
-  if (post.status === "Posted") {
-    return post;
-  }
+//   if (post.status === "Posted") {
+//     return post;
+//   }
 
-  throw new TRPCError({
-    code: "INTERNAL_SERVER_ERROR",
-    message: "Invalid post status. Something went wrong.",
-  });
-}
+//   throw new TRPCError({
+//     code: "INTERNAL_SERVER_ERROR",
+//     message: "Invalid post status. Something went wrong.",
+//   });
+// }

@@ -1,4 +1,4 @@
-import { Post } from "~/server/api/routers/posts";
+import type { Post } from "~/server/api/routers/posts";
 
 const Metadata = ({ metadata }: { metadata: Post["metadata"] }) => {
   if (!metadata) {

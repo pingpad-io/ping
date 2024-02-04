@@ -6,8 +6,9 @@
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "format": "bunx @biomejs/biome format --write .",
-    "lint": "bunx @biomejs/biome lint --apply .",
+    "format": "bunx @biomejs/biome format --write ./src/*",
+    "lint": "bunx @biomejs/biome lint --apply-unsafe ./src/*",
+    "check": "bunx @biomejs/biome check --apply-unsafe ./src/*",
     "start": "next start"
   },
   "dependencies": {
@@ -75,7 +76,7 @@
     "zod": "^3.22.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.2.2",
+    "@biomejs/biome": "1.5.3",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.21.1",
     "@types/metascraper": "^5.14.3",

@@ -1,13 +1,12 @@
-import { api } from "~/utils/api";
-import toast from "react-hot-toast";
-import { useRouter } from "next/router";
-import { PageLayout } from "~/components/Layout";
-import Feed from "~/components/Feed";
-import ErrorPage from "~/components/ErrorPage";
-import Link from "next/link";
-import { SearchBar } from "../../components/SearchBar";
-import { Button } from "~/components/ui/button";
 import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
+import Feed from "~/components/Feed";
+import { PageLayout } from "~/components/Layout";
+import { Button } from "~/components/ui/button";
+import { api } from "~/utils/api";
+import { SearchBar } from "../../components/SearchBar";
 
 export default function SearchPage() {
   const router = useRouter();

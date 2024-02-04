@@ -1,4 +1,4 @@
-import { Profile } from "@prisma/client";
+import type { Profile } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
+import Link from "next/link";
 import { api } from "~/utils/api";
 
 export function UserAvatar({ userId }: { userId?: string }) {

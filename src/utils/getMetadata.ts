@@ -1,14 +1,10 @@
-import { z } from "zod";
-
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-
-import metascraperImage from "metascraper-image";
-import metascraperTitle from "metascraper-title";
-import metascraperPublisher from "metascraper-publisher";
-import metascraperUrl from "metascraper-url";
-import metascraperLogo from "metascraper-logo";
-import createMetascraper from "metascraper";
 import got from "got";
+import createMetascraper from "metascraper";
+import metascraperImage from "metascraper-image";
+import metascraperLogo from "metascraper-logo";
+import metascraperPublisher from "metascraper-publisher";
+import metascraperTitle from "metascraper-title";
+import metascraperUrl from "metascraper-url";
 
 const metascraper = createMetascraper([
   metascraperTitle(),
@@ -21,9 +17,9 @@ const metascraper = createMetascraper([
 export const getMetadata = async (url?: string | null) => {
   if (!url) return null;
 
-  const { body: html, url: gotUrl, errored, statusCode, statusMessage } = await got(url, { throwHttpErrors: false });
+  const { body: html, url: gotUrl, statusCode } = await got(url, { throwHttpErrors: false });
   if (statusCode >= 400) {
-    console.info("metadata fetch failed for url:", url, "status:", statusCode, statusMessage);
+    // console.info("metadata fetch failed for url:", url, "status:", statusCode, statusMessage);
     return null;
   }
 

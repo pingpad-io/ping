@@ -5,12 +5,10 @@
  */
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { TRPCError, initTRPC } from "@trpc/server";
-import { CreateTRPCNext, createTRPCNext } from "@trpc/next";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { prisma, supabaseKey, supabaseUrl } from "~/server/db";
-import { httpBatchLink } from "@trpc/client";
 
-const getBaseUrl = () => {
+const _getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
 
@@ -52,7 +50,6 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { AppRouter } from "./root";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

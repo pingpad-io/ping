@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
-import duration from "dayjs/plugin/duration";
 
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
@@ -32,9 +32,8 @@ export const TimeElapsedSince = ({ date }: { date: Date }) => {
 
   if (diff > dayjs.duration(3, "weeks").asMilliseconds()) {
     return <span>{fullDate.format("MMM DD")}</span>;
-  } else {
-    return <span>{timeSince}</span>;
   }
+  return <span>{timeSince}</span>;
 };
 
 export const TimeSince = ({ date }: { date: Date }) => {

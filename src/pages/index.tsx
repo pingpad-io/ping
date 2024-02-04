@@ -1,19 +1,19 @@
-import { api } from "~/utils/api";
-import { GetStaticProps } from "next";
-import { getSSGHelper } from "~/utils/getSSGHelper";
-import { quicksand } from "~/styles/fonts";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { ArrowRight, AtSign, Cookie, Github, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
+import type { GetStaticProps } from "next";
+import { useTheme } from "next-themes";
 import Link from "next/link";
-import { ArrowRight, AtSign, ChevronDown, Cookie, Github, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import PingAuth from "~/components/Auth";
+import { PostView } from "~/components/PostView";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
-import PingAuth from "~/components/Auth";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { useTheme } from "next-themes";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
-import { PostView } from "~/components/PostView";
+import { quicksand } from "~/styles/fonts";
+import { api } from "~/utils/api";
+import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const LandingPage = () => {
   const supabase = useSupabaseClient();
@@ -41,7 +41,7 @@ const LandingPage = () => {
         router.push({ pathname: "/home" });
       }
     });
-  }, []);
+  }, [router.push, supabase.auth.onAuthStateChange]);
 
   if (!postsList) return;
 

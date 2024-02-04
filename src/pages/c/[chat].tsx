@@ -1,11 +1,10 @@
-import Feed from "~/components/Feed";
+import type { GetStaticPaths, GetStaticProps } from "next";
+import Chat from "~/components/Chat";
 import { PageLayout } from "~/components/Layout";
 import PostWizard from "~/components/PostWizard";
-import { api } from "~/utils/api";
-import { GetStaticProps, type GetServerSideProps, GetStaticPaths } from "next";
-import { getSSGHelper } from "~/utils/getSSGHelper";
 import { Card } from "~/components/ui/card";
-import Chat from "~/components/Chat";
+import { api } from "~/utils/api";
+import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ChatsPage = ({ chat }: { chat: string }) => {
   const posts = api.posts.get.useQuery({ thread: chat });

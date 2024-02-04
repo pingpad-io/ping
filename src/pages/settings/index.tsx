@@ -2,7 +2,7 @@ import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { type GetServerSidePropsContext, type NextApiRequest, type NextApiResponse } from "next";
+import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { PageLayout } from "~/components/Layout";

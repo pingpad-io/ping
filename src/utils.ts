@@ -21,7 +21,7 @@ export function debounce<T extends (...args: any[]) => any>(func: T, delay: numb
     }, delay);
   };
 
-  debouncedFunction.cancel = function (): void {
+  debouncedFunction.cancel = (): void => {
     clearTimeout(timeoutId);
   };
 

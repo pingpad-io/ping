@@ -1,10 +1,10 @@
+import type { GetStaticProps } from "next";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import PostWizard from "~/components/PostWizard";
-import { api } from "~/utils/api";
-import { GetStaticProps } from "next";
-import { getSSGHelper } from "~/utils/getSSGHelper";
 import { Card } from "~/components/ui/card";
+import { api } from "~/utils/api";
+import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const HomePage = () => {
   const posts = api.posts.get.useQuery({});

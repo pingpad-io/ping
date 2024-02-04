@@ -1,6 +1,6 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import { CalendarIcon, EditIcon } from "lucide-react";
-import { GetStaticProps, type GetServerSideProps, type NextPage, GetStaticPaths } from "next";
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";

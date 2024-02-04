@@ -3,8 +3,9 @@
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@supabase/auth-helpers-react";
+import { MenuIcon, SendHorizontalIcon } from "lucide-react";
 import { useRouter } from "next/router";
-import { KeyboardEvent, useRef } from "react";
+import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 import toast, { LoaderIcon } from "react-hot-toast";
 import * as z from "zod";
@@ -12,7 +13,6 @@ import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { MenuIcon, SendHorizontalIcon } from "lucide-react";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
   const ctx = api.useUtils();
@@ -23,7 +23,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
   const placeholderText = replyingTo ? "write a reply..." : `write a new post in ${thread}...`;
 
   const { mutate: createPost, isLoading: isPosting } = api.posts.create.useMutation({
-    onSettled: (e) => {
+    onSettled: (_e) => {
       updateHeight();
     },
     onSuccess: async () => {

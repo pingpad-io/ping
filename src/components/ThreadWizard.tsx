@@ -1,20 +1,20 @@
-import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { api } from "~/utils/api";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Switch } from "./ui/switch";
-import { Card } from "./ui/card";
+import type { Profile } from "@prisma/client";
 import { SearchIcon } from "lucide-react";
-import { debounce } from "~/utils";
-import { ProfileEntry } from "./ProfileEntry";
+import { type Dispatch, type SetStateAction, useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { z } from "zod";
 import { quicksand } from "~/styles/fonts";
-import { Profile } from "@prisma/client";
+import { debounce } from "~/utils";
+import { api } from "~/utils/api";
+import { ProfileEntry } from "./ProfileEntry";
 import { UserAvatar } from "./UserAvatar";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import { Input } from "./ui/input";
+import { Switch } from "./ui/switch";
 
 export default function ThreadWizard({
   setOpen,
@@ -47,7 +47,7 @@ export default function ThreadWizard({
   });
 
   const [searchValue, setSearchValue] = useState("");
-  const { data: searchResult, isLoading: isSearching } = api.profiles.search.useQuery({ query: searchValue });
+  const { data: searchResult } = api.profiles.search.useQuery({ query: searchValue });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const ids = values.users.map((user) => user.id);
@@ -144,7 +144,7 @@ export default function ThreadWizard({
           <FormField
             control={form.control}
             name="public"
-            render={({ field }) => (
+            render={() => (
               <Card className="flex flex-col p-3 gap-4">
                 <div className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">

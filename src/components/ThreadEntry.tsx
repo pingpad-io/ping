@@ -1,11 +1,11 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import { MessageSquareIcon, XIcon } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
-import { PrivateThread, Thread } from "~/server/api/routers/threads";
+import type { PrivateThread, Thread } from "~/server/api/routers/threads";
 import { api } from "~/utils/api";
 import { ChatLink, ThreadLink } from "./Link";
-import Image from "next/image";
 import { Card } from "./ui/card";
 
 export const PublicThread = ({ thread }: { thread: Thread }) => {

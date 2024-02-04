@@ -1,4 +1,5 @@
-import { Post } from "~/server/api/routers/posts";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
+import type { Reaction } from "@prisma/client";
 import { useUser } from "@supabase/auth-helpers-react";
 import {
   AlertCircleIcon,
@@ -9,11 +10,10 @@ import {
   PartyPopperIcon,
   XIcon,
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
-import { Button } from "./ui/button";
-import { api } from "~/utils/api";
 import toast from "react-hot-toast";
-import { Reaction } from "@prisma/client";
+import type { Post } from "~/server/api/routers/posts";
+import { api } from "~/utils/api";
+import { Button } from "./ui/button";
 
 type PostReaction = Post["reactions"][number];
 
