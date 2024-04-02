@@ -25,7 +25,7 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <Head>
           <title>Ping</title>
-          <meta name="description" content="reach Your people on Ping" />
+          <meta name="description" content="reach Your people on Pingpad" />
           <link rel="icon" ref="/favicon.ico" />
         </Head>
 
