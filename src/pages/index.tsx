@@ -121,7 +121,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className="w-full p-8 mt-5 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
+        <div className="w-full p-8 mt-16 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
           <div className="-mt-20 text-xl flex flex-col gap-4">
             Stay up to date
             <EmailSubscription />
@@ -155,9 +155,8 @@ const LandingPage = () => {
                 <AccordionItem value="item-2">
                   <AccordionTrigger>When open for all?</AccordionTrigger>
                   <AccordionContent>
-                    We're still in closed Beta, we are doing this to attain feedback and improve the experience for when
-                    we fully open to the masses We are excited to get you all enjoying Lens, but we want to do it at the
-                    right time to give you the best experience possible
+                    Pingpad in currently in closed Beta, gathering feedback and improving the experience. <br />
+                    <br /> Subscribe to the newsletter above to get in early.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-3">
@@ -170,6 +169,11 @@ const LandingPage = () => {
         </Card>
 
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">
+          <Link href="https://kualta.dev">
+            <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
+              by kualta with love ♥
+            </Button>
+          </Link>
           <Link href="https://github.com/kualta/ping">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <Github /> GitHub
