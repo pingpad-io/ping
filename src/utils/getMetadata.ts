@@ -17,12 +17,12 @@ const metascraper = createMetascraper([
 export const getMetadata = async (url?: string | null) => {
   if (!url) return null;
 
-  const { body: html, url: gotUrl, statusCode } = await got(url, { throwHttpErrors: false });
-  if (statusCode >= 400) {
+  // const { body: html, url: gotUrl, statusCode } = await got(url, { throwHttpErrors: false,  });
+  // if (statusCode >= 400) {
     // console.info("metadata fetch failed for url:", url, "status:", statusCode, statusMessage);
-    return null;
-  }
+    // return null;
+  // }
 
-  const metadata = await metascraper({ html, url: gotUrl });
-  return metadata;
+  // const metadata = await metascraper({ html, url: gotUrl });
+  return null;
 };

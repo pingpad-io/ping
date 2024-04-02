@@ -18,36 +18,38 @@ export const config = {
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const res = NextResponse.next();
-  const supabase = createMiddlewareSupabaseClient({ req, res });
+  // const res = NextResponse.next();
+  // const supabase = createMiddlewareSupabaseClient({ req, res });
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // const {
+  //   data: { session },
+  // } = await supabase.auth.getSession();
 
-  // Auth successful
-  if (session?.user) {
-    if (pathname === "/") {
-      return NextResponse.redirect(new URL("/home", req.url));
-    }
+  // console.log(session?.user);
+  // // Auth successful
+  // if (session?.user) {
+  //   if (pathname === "/") {
+  //     return NextResponse.redirect(new URL("/home", req.url));
+  //   }
 
-    // Forward request to protected route.
-    return res;
-  }
+  //   // Forward request to protected route.
+  //   return res;
+  // }
 
-  // Allow open routes
-  if (pathname === "/policy" || pathname === "/conditions" || pathname === "/about") {
-    return res;
-  }
+  // // Allow open routes
+  // if (pathname === "/policy" || pathname === "/conditions" || pathname === "/about") {
+  //   return res;
+  // }
 
-  // Individual posts are open too
-  if (pathname.match(/^\/p\/.*/)) {
-    return res;
-  }
+  // // Individual posts are open too
+  // if (pathname.match(/^\/p\/.*/)) {
+  //   return res;
+  // }
 
-  // Auth condition not met, redirect to landing
-  if (pathname === "/") {
-    return res;
-  }
-  return NextResponse.redirect(new URL("/", req.url));
+  // // Auth condition not met, redirect to landing
+  // if (pathname === "/") {
+  //   return res;
+  // }
+
+  // return res
 }

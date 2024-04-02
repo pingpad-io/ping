@@ -1,11 +1,12 @@
-Available at **[ping.kualta.dev](https://ping.kualta.dev)**
+Available at **[pingpad.io](https://pingpad.io)**
 
 **what?**
 
-a minimalistic microblogging platform
+a minimalistic decentralized social platform
 
 **features**
 
+- Lens network integration
 - Full Markdown support
 - Rich embeddings
 - LessWrong-style reactions

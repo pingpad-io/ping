@@ -35,13 +35,13 @@ const LandingPage = () => {
     </div>
   ));
 
-  useEffect(() => {
-    supabase.auth.onAuthStateChange((event) => {
-      if (event === "INITIAL_SESSION") {
-        router.push({ pathname: "/home" });
-      }
-    });
-  }, [router.push, supabase.auth.onAuthStateChange]);
+  // useEffect(() => {
+  //   supabase.auth.onAuthStateChange((event) => {
+  //     if (event === "INITIAL_SESSION") {
+  //       router.push({ pathname: "/home" });
+  //     }
+  //   });
+  // }, [router.push, supabase.auth.onAuthStateChange]);
 
   if (!postsList) return;
 
@@ -51,7 +51,7 @@ const LandingPage = () => {
         <div className="p-4 rounded-t-none flex place-content-between">
           <Link className="flex flex-row gap-4 items-center " href="/">
             <AtSign className="dark:drop-shadow-glow-sm drop-shadow-md" size={35} />
-            <div className="text-3xl font-bold dark:drop-shadow-glow drop-shadow-md  -mt-1.5 -ml-2">ping</div>
+            <div className="text-3xl font-bold dark:drop-shadow-glow drop-shadow-md  -mt-1.5 -ml-2">pingpad</div>
           </Link>
 
           <div className="flex gap-4 items-center ">
