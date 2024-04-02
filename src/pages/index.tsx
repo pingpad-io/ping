@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import PingAuth from "~/components/Auth";
+import { LensTextDark, LensTextLight } from "~/components/Icons";
 import { PostView } from "~/components/PostView";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
@@ -112,19 +113,22 @@ const LandingPage = () => {
         </div>
 
         <div className="w-full text-4xl p-8 mt-10 md:mt-20 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
-          <h1 className="w-fit min-w-0">
-            A{" "}
-            <Link className="hover:underline" href={"https://kualta.dev/"}>
-              <b>KUALTA</b>
+          <h1 className="w-fit min-w-0 flex flex-row gap-2 items-center justify-center">
+            <Link className="hover:underline flex items-center gap-2" href={"https://lens.xyz"}>
+              <div className="dark:hidden">
+                <LensTextDark />
+              </div>
+              <div className="dark:flex hidden">
+                <LensTextLight />
+              </div>
             </Link>{" "}
-            PROJECT
           </h1>
-          <p className="text-lg">
+          {/* <p className="text-lg">
             part of{" "}
             <a className="hover:underline" href="https://net.kualta.dev/">
               Kunet Global Network
             </a>
-          </p>
+          </p> */}
         </div>
         <Card className="flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4 my-32">
           <CardHeader>
@@ -136,16 +140,22 @@ const LandingPage = () => {
                 <AccordionItem value="item-1">
                   <AccordionTrigger>Current status?</AccordionTrigger>
                   <AccordionContent>
-                    In development. Right now in open beta.{" "}
+                    In development. Ping (centralized version) has retired, and Pingpad is currently being
+                    decentralized.
+                    {/* decentralized.{" "}
                     <a className="underline" href="https://github.com/kualta/ping">
                       Contributions
                     </a>{" "}
-                    are welcome.
+                    are welcome. */}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
-                  <AccordionTrigger>Is it free?</AccordionTrigger>
-                  <AccordionContent>Free forever.</AccordionContent>
+                  <AccordionTrigger>When open for all?</AccordionTrigger>
+                  <AccordionContent>
+                    We're still in closed Beta, we are doing this to attain feedback and improve the experience for when
+                    we fully open to the masses We are excited to get you all enjoying Lens, but we want to do it at the
+                    right time to give you the best experience possible
+                  </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-3">
                   <AccordionTrigger>Is it any good?</AccordionTrigger>
@@ -162,11 +172,11 @@ const LandingPage = () => {
               <Github /> GitHub
             </Button>
           </Link>
-          <Link href="/about">
+          {/* <Link href="/about">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <InfoIcon /> About
             </Button>
-          </Link>
+          </Link> */}
           {/* <Link href="https://ping.kualta.dev/policy">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <Cookie /> Privacy

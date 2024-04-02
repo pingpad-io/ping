@@ -24,7 +24,7 @@ function Ping({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
     <SessionContextProvider supabaseClient={supabaseClient} initialSession={pageProps.initialSession}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <Head>
-          <title>Ping</title>
+          <title>PingPad</title>
           <meta name="description" content="reach Your people on Pingpad" />
           <link rel="icon" ref="/favicon.ico" />
         </Head>
