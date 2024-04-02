@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import PingAuth from "~/components/Auth";
+import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
 import { PostView } from "~/components/PostView";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
@@ -100,6 +101,14 @@ const LandingPage = () => {
               <h1>
                 to reach <b>your</b> people
               </h1>
+              <Link className="hover:underline -mt-16 -mb-24  flex items-center gap-2" href={"https://lens.xyz"}>
+                <div className="dark:hidden">
+                  <LensTextDark />
+                </div>
+                <div className="dark:flex hidden">
+                  <LensTextLight />
+                </div>
+              </Link>
             </div>
           </div>
 
@@ -112,17 +121,11 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className="w-full text-4xl p-8 mt-10 md:mt-20 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
-          <h1 className="w-fit min-w-0 flex flex-row gap-2 items-center justify-center">
-            <Link className="hover:underline flex items-center gap-2" href={"https://lens.xyz"}>
-              <div className="dark:hidden">
-                <LensTextDark />
-              </div>
-              <div className="dark:flex hidden">
-                <LensTextLight />
-              </div>
-            </Link>{" "}
-          </h1>
+        <div className="w-full p-8 mt-5 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
+          <div className="-mt-20 text-xl flex flex-col gap-4">
+            Stay up to date
+            <EmailSubscription />
+          </div>
           {/* <p className="text-lg">
             part of{" "}
             <a className="hover:underline" href="https://net.kualta.dev/">
