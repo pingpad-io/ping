@@ -31,7 +31,7 @@ export default function Menu() {
       <span className="flex h-fit flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
         <Link href="/home">
           <Button variant="ghost" size="sm_icon">
-            <div className="hidden sm:flex">ping</div>
+            <div className="hidden sm:flex">pingpad</div>
             <AtSign className="sm:ml-2" />
           </Button>
         </Link>

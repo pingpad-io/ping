@@ -69,8 +69,8 @@ const LandingPage = () => {
               ) : (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="default" size="sm_icon">
-                      <div className="hidden  sm:flex mr-2">Join Beta</div>
+                    <Button disabled variant="default" size="sm_icon">
+                      <div className="hidden sm:flex mr-2 disabled">Closed Beta</div>
                       <LogInIcon />
                     </Button>
                   </DialogTrigger>
@@ -89,7 +89,7 @@ const LandingPage = () => {
         <div className="grid md:grid-cols-2 items-center justify-center py-10 mt-24">
           <div className="text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
             <h1>
-              a <b>better </b> microblogging experience
+              a <b>better </b> decentralized social
             </h1>
             <div className="hidden md:block">
               <br />
@@ -162,16 +162,16 @@ const LandingPage = () => {
               <Github /> GitHub
             </Button>
           </Link>
-          <Link href="https://ping.kualta.dev/about">
+          <Link href="/about">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <InfoIcon /> About
             </Button>
           </Link>
-          <Link href="https://ping.kualta.dev/policy">
+          {/* <Link href="https://ping.kualta.dev/policy">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <Cookie /> Privacy
             </Button>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>
