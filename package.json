@@ -78,7 +78,6 @@
     "tailwindcss-animate": "^1.0.7",
     "theme-change": "^2.5.0",
     "viem": "^2.9.8",
-    "wagmi": "^2.5.18",
     "zod": "^3.22.3"
   },
   "devDependencies": {
