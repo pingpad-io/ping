@@ -3,10 +3,11 @@
  *
  * This section defines the "contexts" that are available in the backend API.
  */
+import { IStorageProvider, LensClient, production } from "@lens-protocol/client";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { TRPCError, initTRPC } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { prisma, supabaseKey, supabaseUrl } from "~/server/db";
+// import { prisma, supabaseKey, supabaseUrl } from "~/server/db";
 
 const _getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -15,31 +16,35 @@ const _getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
+class LocalStorageProvider implements IStorageProvider {
+  getItem(key: string) {
+    return window.localStorage.getItem(key);
+  }
+
+  setItem(key: string, value: string) {
+    window.localStorage.setItem(key, value);
+  }
+
+  removeItem(key: string) {
+    window.localStorage.removeItem(key);
+  }
+}
+
+const lensClientConfig = {
+  environment: production,
+  storage: new LocalStorageProvider(),
+};
+
 /**
  * Context that is used in the router.
  * @see https://trpc.io/docs/context
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const { req, res } = opts;
 
-  const supabase = createServerSupabaseClient({ req, res }, { supabaseUrl, supabaseKey });
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  if (user && error) {
-    console.log(user, error);
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: error.message,
-    });
-  }
+  const lensClient = new LensClient(lensClientConfig);
 
   return {
-    prisma,
-    userId: user?.id,
+    lens: lensClient,
   };
 };
 
@@ -72,16 +77,4 @@ export const createTRPCRouter = t.router;
 
 export const publicProcedure = t.procedure;
 
-const userIsAuthed = t.middleware(async ({ ctx, next }) => {
-  if (!ctx.userId) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-
-  return next({
-    ctx: {
-      userId: ctx.userId,
-    },
-  });
-});
-
-export const privateProcedure = t.procedure.use(userIsAuthed);
+// export const privateProcedure = t.procedure.use(userIsAuthed);

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { type KeyboardEvent, type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
 import { PostMenu, PostMenuContent } from "./PostMenu";

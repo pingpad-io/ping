@@ -1,55 +1,19 @@
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { ArrowRight, AtSign, Cookie, Github, Heart, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
-import type { GetStaticProps } from "next";
-import { useTheme } from "next-themes";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import PingAuth from "~/components/Auth";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
-import { PostView } from "~/components/PostView";
+import { ThemeToggle } from "~/components/ThemeProvider";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { quicksand } from "~/styles/fonts";
-import { api } from "~/utils/api";
-import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const LandingPage = () => {
-  const supabase = useSupabaseClient();
-  const session = useSession();
-  const router = useRouter();
-  const { setTheme, theme } = useTheme();
-
-  const toggleTheme = () => {
-    theme === "dark" ? setTheme("light") : setTheme("dark");
-  };
-
-  const posts = api.posts.get.useQuery({ take: 3 });
-  const postsList = posts.data?.map((post) => (
-    <div
-      key={post.id}
-      className="duration-150 hover:-skew-x-3 hover:scale-105 hover:dark:drop-shadow-glow-sm hover:drop-shadow-lg overflow-visible"
-    >
-      <PostView showBadges={false} post={post} />
-    </div>
-  ));
-
-  // useEffect(() => {
-  //   supabase.auth.onAuthStateChange((event) => {
-  //     if (event === "INITIAL_SESSION") {
-  //       router.push({ pathname: "/home" });
-  //     }
-  //   });
-  // }, [router.push, supabase.auth.onAuthStateChange]);
-
-  if (!postsList) return;
-
   return (
-    <div className={`flex flex-col mx-auto max-w-5xl min-w-0 w-fit ${quicksand.className}`}>
-      <div className="h-screen">
+    <div className={`flex flex-col mx-auto max-w-5xl min-w-0 ${quicksand.className}`}>
+      <div className="w-full">
         <div className="p-4 rounded-t-none flex place-content-between">
           <Link className="flex flex-row gap-4 items-center " href="/">
             <AtSign className="dark:drop-shadow-glow-sm drop-shadow-md" size={35} />
@@ -57,38 +21,27 @@ const LandingPage = () => {
           </Link>
 
           <div className="flex gap-4 items-center ">
-            <Button variant="outline" size="icon" onClick={toggleTheme}>
-              {theme === "light" ? <SunIcon /> : <MoonIcon />}
-            </Button>
+            <ThemeToggle />
             <div className="dark:drop-shadow-glow drop-shadow-md ">
-              {session?.user ? (
-                <Button variant="default" size="sm_icon">
-                  <Link className="pr-2" href="/home">
-                    Home
-                  </Link>
-                  <ArrowRight />
-                </Button>
-              ) : (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button disabled variant="default" size="sm_icon">
-                      <div className="hidden sm:flex mr-2 disabled">Closed Beta</div>
-                      <LogInIcon />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[350px]">
-                    <DialogTitle>
-                      <h3 className="text-center">Sign in to Ping </h3>
-                    </DialogTitle>
-                    <PingAuth />
-                  </DialogContent>
-                </Dialog>
-              )}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button disabled variant="default" size="sm_icon">
+                    <div className="hidden sm:flex mr-2 disabled">Closed Beta</div>
+                    <LogInIcon />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[350px]">
+                  <DialogTitle>
+                    <h3 className="text-center">Sign in to Ping </h3>
+                  </DialogTitle>
+                  <PingAuth />
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 items-center justify-center py-10 mt-24">
+        <div className="flex px-auto grow items-center justify-center py-10 mt-16">
           <div className="text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
             <h1>
               a <b>better </b> decentralized social
@@ -112,7 +65,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 px-2 w-2/3 md:w-full mx-auto">{postsList}</div>
+          {/* <div className="flex flex-col gap-4 px-2 w-2/3 md:w-full mx-auto">{postsList}</div> */}
 
           <div className="block md:hidden text-3xl p-8 text-center drop-shadow-lg dark:drop-shadow-glow">
             <h1>
@@ -193,19 +146,6 @@ const LandingPage = () => {
       </div>
     </div>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const ssg = getSSGHelper();
-
-  await ssg.posts.get.prefetch({ take: 3 });
-
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-    },
-    revalidate: 1,
-  };
 };
 
 export default LandingPage;

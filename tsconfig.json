@@ -29,6 +29,11 @@
         "./*"
       ]
     },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     ".eslintrc.cjs",
@@ -38,6 +43,7 @@
     "**/*.cjs",
     "**/*.mjs",
     "src/utils/useBreakpoint.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

@@ -15,45 +15,13 @@ import {
   production,
 } from "@lens-protocol/client";
 import { useEffect, useState } from "react";
-import { textOnly } from "@lens-protocol/metadata/*";
 
-class LocalStorageProvider implements IStorageProvider {
-  getItem(key: string) {
-    return window.localStorage.getItem(key);
-  }
-
-  setItem(key: string, value: string) {
-    window.localStorage.setItem(key, value);
-  }
-
-  removeItem(key: string) {
-    window.localStorage.removeItem(key);
-  }
-}
-
-const lensClientConfig = {
-  environment: production,
-  storage: new LocalStorageProvider(),
-};
-
-const lensClient = new LensClient(lensClientConfig);
 
 const HomePage = () => {
-  // const posts = api.posts.get.useQuery({});
-  const [posts, setPosts] = useState<AnyPublicationFragment[]>();
-  console.log(lensClient);
+  const {data: posts} = api.posts.get.useQuery({});
+  // const [posts, setPosts] = useState<AnyPublicationFragment[]>();
+  // console.log(lensClient);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const publications = await lensClient.publication.fetchAll({
-        where: { from: ["0x027290"] },
-      });
-      setPosts(publications.items);
-      console.log(publications.items.map((publication) => publication.id));
-    };
-
-    fetchPosts();
-  }, []);
   const post = posts?.map((publication) => publication.by.id);
 
   console.log(post);
