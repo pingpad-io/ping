@@ -13,6 +13,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
+    "@lens-protocol/client": "^2.0.0-alpha.37",
+    "@lens-protocol/metadata": "^1.1.6",
+    "@lens-protocol/react-web": "^2.0.0-alpha.37",
+    "@lens-protocol/wagmi": "^4.0.0-alpha.6",
     "@next/bundle-analyzer": "^13.5.4",
     "@prisma/client": "^5.8.1",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -73,6 +77,8 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "theme-change": "^2.5.0",
+    "viem": "^2.9.8",
+    "wagmi": "^2.5.18",
     "zod": "^3.22.3"
   },
   "devDependencies": {

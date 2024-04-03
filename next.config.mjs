@@ -32,6 +32,9 @@ const config = {
         hostname: "avatars.githubusercontent.com",
       },
     ],
+
   },
+
+  transpilePackages: ['@lens-protocol'],
 };
 export default bundleAnalyzer(config);

@@ -1,5 +1,5 @@
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-import { ArrowRight, AtSign, Cookie, Github, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
+import { ArrowRight, AtSign, Cookie, Github, Heart, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
 import type { GetStaticProps } from "next";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -171,7 +171,7 @@ const LandingPage = () => {
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">
           <Link href="https://kualta.dev">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-              by kualta with love ♥
+              <Heart /> by kualta with love
             </Button>
           </Link>
           <Link href="https://github.com/kualta/ping">
