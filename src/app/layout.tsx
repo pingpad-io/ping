@@ -1,6 +1,5 @@
 import Providers from "~/components/Providers";
 import "../styles/globals.css";
-import dynamic from "next/dynamic";
 
 export const metadata = {
   title: "Pingpad",

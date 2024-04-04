@@ -35,14 +35,12 @@ export function LoginForm({ owner, onSuccess }: { owner: string; onSuccess?: () 
   }
 
   if (profiles.length === 0) {
-    return <p className="mb-4 text-base text-gray-500">No Lens Profiles found in this wallet.</p>;
+    return <p className="mb-4">No Lens Profiles found in this wallet.</p>;
   }
 
   return (
     <form onSubmit={onSubmit} className="flex">
       <fieldset className="flex place-items-center flex-col">
-        <legend className="text-base text-gray-500">Select a Lens Profile to login with.</legend>
-
         <div className="my-4 space-y-2">
           {profiles.map((profile, idx) => (
             <label
