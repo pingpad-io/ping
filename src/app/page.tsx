@@ -1,6 +1,5 @@
 import { ArrowRight, AtSign, Cookie, Github, Heart, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
 import Link from "next/link";
-import PingAuth from "~/components/Auth";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
 import { ThemeToggle } from "~/components/ThemeProvider";
@@ -34,7 +33,6 @@ const LandingPage = () => {
                   <DialogTitle>
                     <h3 className="text-center">Sign in to Ping </h3>
                   </DialogTitle>
-                  <PingAuth />
                 </DialogContent>
               </Dialog>
             </div>
