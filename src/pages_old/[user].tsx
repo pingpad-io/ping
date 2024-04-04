@@ -61,37 +61,37 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = getSSGHelper();
-  const username = context.params?.user;
+// export const getStaticProps: GetStaticProps = async (context) => {
+//   const ssg = getSSGHelper();
+//   const username = context.params?.user;
 
-  if (typeof username !== "string") throw new Error("Bad URL");
+//   if (typeof username !== "string") throw new Error("Bad URL");
 
-  await ssg.profiles.get.prefetch({ username });
-  await ssg.posts.get.prefetch({ authorUsername: username });
-  await ssg.reactions.get.prefetch({});
+//   await ssg.profiles.get.prefetch({ username });
+//   await ssg.posts.get.prefetch({ authorUsername: username });
+//   await ssg.reactions.get.prefetch({});
 
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-      username,
-    },
-    revalidate: 1,
-  };
-};
+//   return {
+//     props: {
+//       trpcState: ssg.dehydrate(),
+//       username,
+//     },
+//     revalidate: 1,
+//   };
+// };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const ssg = getSSGHelper();
-  const profiles = await ssg.profiles.getAll.fetch({});
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const ssg = getSSGHelper();
+//   const profiles = await ssg.profiles.getAll.fetch({});
 
-  return {
-    paths: profiles.map((profile) => ({
-      params: {
-        user: profile.username ?? "",
-      },
-    })),
-    fallback: "blocking",
-  };
-};
+//   return {
+//     paths: profiles.map((profile) => ({
+//       params: {
+//         user: profile.username ?? "",
+//       },
+//     })),
+//     fallback: "blocking",
+//   };
+// };
 
 export default ProfilePage;

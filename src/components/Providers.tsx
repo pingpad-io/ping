@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { type Session, createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
@@ -28,23 +28,21 @@ const wagmiConfig = createConfig({
     [polygon.id]: http(),
   },
 });
+
 const lensConfig: LensConfig = {
   bindings: bindings(wagmiConfig),
   environment: production,
 };
 import { LensProvider } from "@lens-protocol/react-web";
 
-
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <WagmiProvider config={wagmiConfig}>
-            <QueryClientProvider client={queryClient}>
-              <LensProvider config={lensConfig}>
-                {children}
-              </LensProvider>
-            </QueryClientProvider>
-          </WagmiProvider>
-      </ThemeProvider>
-  )
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <LensProvider config={lensConfig}>{children}</LensProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </ThemeProvider>
+  );
 }

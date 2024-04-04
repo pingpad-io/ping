@@ -41,50 +41,36 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className="flex px-auto grow items-center justify-center py-10 mt-16">
-          <div className="text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
+        <div className="grid md:grid-cols-2 px-auto grow items-center justify-center py-10 mt-16 text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
+          <div className="col-span-1 flex flex-col gap-2">
             <h1>
-              a <b>better </b> decentralized social
+              a <b>better </b> decentralized social,
             </h1>
-            <div className="hidden md:block">
-              <br />
-              <h1>
-                staying <b>out of the way</b>
-              </h1>
-              <h1>
-                to reach <b>your</b> people
-              </h1>
-              <Link className="hover:underline -mt-16 -mb-24  flex items-center gap-2" href={"https://lens.xyz"}>
-                <div className="dark:hidden">
-                  <LensTextDark />
-                </div>
-                <div className="dark:flex hidden">
-                  <LensTextLight />
-                </div>
-              </Link>
-            </div>
+            <h1>
+              staying <b>out of the way</b>
+            </h1>
+            <h1>
+              to reach <b>your</b> people
+            </h1>
           </div>
-
-          {/* <div className="flex flex-col gap-4 px-2 w-2/3 md:w-full mx-auto">{postsList}</div> */}
-
-          <div className="block md:hidden text-3xl p-8 text-center drop-shadow-lg dark:drop-shadow-glow">
-            <h1>
-              staying <b>out of the way</b> to reach <b>your</b> people.
-            </h1>
+          <div className="col-span-1 flex flex-row gap-2 items-center justify-center">
+            <h1>built on</h1>
+            <Link className="hover:underline -mt-24 -mb-24  flex items-center gap-2" href={"https://lens.xyz"}>
+              <div className="dark:hidden">
+                <LensTextDark />
+              </div>
+              <div className="dark:flex hidden">
+                <LensTextLight />
+              </div>
+            </Link>
           </div>
         </div>
 
         <div className="w-full p-8 mt-16 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
-          <div className="-mt-20 text-xl flex flex-col gap-4">
-            Stay up to date
+          <div className=" text-xl flex flex-col gap-4">
+            Join Waitlist
             <EmailSubscription />
           </div>
-          {/* <p className="text-lg">
-            part of{" "}
-            <a className="hover:underline" href="https://net.kualta.dev/">
-              Kunet Global Network
-            </a>
-          </p> */}
         </div>
         <Card className="flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4 my-32">
           <CardHeader>
@@ -124,12 +110,12 @@ const LandingPage = () => {
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">
           <Link href="https://kualta.dev">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-              <Heart /> by kualta with love
+              <Heart /> by kualta
             </Button>
           </Link>
           <Link href="https://github.com/kualta/ping">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-              <Github /> GitHub
+              <Github /> github
             </Button>
           </Link>
           {/* <Link href="/about">

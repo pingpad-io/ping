@@ -5,7 +5,6 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "postinstall": "prisma generate",
     "format": "bunx @biomejs/biome format --write ./src/*",
     "lint": "bunx @biomejs/biome lint --apply-unsafe ./src/*",
     "check": "bunx @biomejs/biome check --apply-unsafe ./src/*",
@@ -14,9 +13,9 @@
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
     "@lens-protocol/client": "^2.0.0-alpha.37",
-    "@lens-protocol/metadata": "^1.1.6",
-    "@lens-protocol/react-web": "^2.0.0-alpha.37",
-    "@lens-protocol/wagmi": "^4.0.0-alpha.6",
+    "@lens-protocol/metadata": "^1.0.5",
+    "@lens-protocol/react-web": "^2.0.0",
+    "@lens-protocol/wagmi": "^4.0.0",
     "@next/bundle-analyzer": "^13.5.4",
     "@prisma/client": "^5.8.1",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -35,7 +34,6 @@
     "@supabase/auth-ui-react": "^0.4.2",
     "@supabase/auth-ui-shared": "^0.1.6",
     "@supabase/supabase-js": "^2.22.0",
-    "@tanstack/react-query": "^4.20.2",
     "@trpc/client": "^10.9.0",
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
@@ -44,6 +42,7 @@
     "@upstash/ratelimit": "^0.4.1",
     "@upstash/redis": "^1.20.1",
     "@vercel/analytics": "^0.1.11",
+    "@web3modal/wagmi": "^3.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cookies-next": "^2.1.1",
@@ -77,7 +76,7 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "theme-change": "^2.5.0",
-    "viem": "^2.9.8",
+    "viem": "^2.9.9",
     "wagmi": "^2.5.18",
     "zod": "^3.22.3"
   },
@@ -105,7 +104,7 @@
     "prisma": "^5.8.1",
     "supabase": "^1.59.1",
     "tailwindcss": "^3.2.0",
-    "typescript": "^4.9.5"
+    "typescript": "5.1.6"
   },
   "ct3aMetadata": {
     "initVersion": "7.8.0"

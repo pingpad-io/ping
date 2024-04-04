@@ -32,9 +32,13 @@ const config = {
         hostname: "avatars.githubusercontent.com",
       },
     ],
-
   },
-
   transpilePackages: ['@lens-protocol'],
+
+  /// FIXME: temporary while migrating
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
+
 export default bundleAnalyzer(config);

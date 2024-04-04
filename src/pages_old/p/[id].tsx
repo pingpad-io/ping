@@ -59,29 +59,29 @@ const PostPage: NextPage<{ id: string }> = ({ id }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = getSSGHelper();
-  const id = context.params?.id;
+// export const getStaticProps: GetStaticProps = async (context) => {
+//   const ssg = getSSGHelper();
+//   const id = context.params?.id;
 
-  if (typeof id !== "string") throw new Error("Bad post id");
+//   if (typeof id !== "string") throw new Error("Bad post id");
 
-  await ssg.posts.get.prefetch({ postId: id });
-  await ssg.posts.get.prefetch({ repliedToPostId: id });
+//   await ssg.posts.get.prefetch({ postId: id });
+//   await ssg.posts.get.prefetch({ repliedToPostId: id });
 
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-      id: id,
-    },
-    revalidate: 1,
-  };
-};
+//   return {
+//     props: {
+//       trpcState: ssg.dehydrate(),
+//       id: id,
+//     },
+//     revalidate: 1,
+//   };
+// };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-};
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   return {
+//     paths: [],
+//     fallback: "blocking",
+//   };
+// };
 
 export default PostPage;
