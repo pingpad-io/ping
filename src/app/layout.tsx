@@ -1,6 +1,6 @@
+import Providers from "~/components/Providers";
 import "../styles/globals.css";
 import dynamic from "next/dynamic";
-const Providers = dynamic(() => import('../components/Providers'), { ssr: false })
 
 export const metadata = {
   title: "Pingpad",

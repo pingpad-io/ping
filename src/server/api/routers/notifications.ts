@@ -2,9 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
-import type { NotificationType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import type { RouterOutputs } from "~/utils/api";
 
 export type Notification = RouterOutputs["notifications"]["get"][number];
 

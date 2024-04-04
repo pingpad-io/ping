@@ -16,7 +16,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": ".",
+    "allowUmdGlobalAccess": true,
     "paths": {
       "~/*": [
         "./src/*"
@@ -35,15 +35,21 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     ".eslintrc.cjs",
-    "next-env.d.ts",
     "src/app/*.ts",
     "src/app/*.tsx",
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx",
+    "src/utils/**.ts",
+    "src/components/*.ts",
+    "src/components/*.tsx",
+    "src/components/**/*.ts",
+    "src/components/**/*.tsx",
   ],
   "exclude": [
-    "src/pages_old/**",
     "src/pages_old/**.ts",
     "src/pages_old/**/*.tsx",
-    "src/components",
+    "src/components_old/**/*.ts",
+    "src/components_old/**/*.tsx",
     "node_modules",
     ".next"
   ]

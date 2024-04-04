@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import type { PrivateThread, Thread } from "~/server/api/routers/threads";
 import { api } from "~/utils/api";
 import { ChatLink, ThreadLink } from "./Link";
-import { Card } from "./ui/card";
+import { Card } from "../components/ui/card";
 
 export const PublicThread = ({ thread }: { thread: Thread }) => {
   if (!thread || !thread.name) return null;

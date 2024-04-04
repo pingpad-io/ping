@@ -13,7 +13,7 @@ import {
 import toast from "react-hot-toast";
 import type { Post } from "~/server/api/routers/posts";
 import { api } from "~/utils/api";
-import { Button } from "./ui/button";
+import { Button } from "../components/ui/button";
 
 type PostReaction = Post["reactions"][number];
 

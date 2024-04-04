@@ -11,8 +11,8 @@ import toast, { LoaderIcon } from "react-hot-toast";
 import * as z from "zod";
 import { api } from "~/utils/api";
 import { UserAvatar } from "./UserAvatar";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
+import { Button } from "../components/ui/button";
+import { Textarea } from "../components/ui/textarea";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
   const ctx = api.useUtils();

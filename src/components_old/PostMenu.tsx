@@ -15,8 +15,8 @@ import type { Post } from "~/server/api/routers/posts";
 import { api } from "~/utils/api";
 import { ReactionsList } from "./ReactionsList";
 import { SignedIn } from "./Signed";
-import { Button } from "./ui/button";
-import { Card } from "./ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 
 export const PostMenu = ({ post }: { post: Post }) => {
   return (

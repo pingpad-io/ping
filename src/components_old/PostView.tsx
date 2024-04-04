@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { type KeyboardEvent, type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
 import { PostMenu, PostMenuContent } from "./PostMenu";
@@ -19,42 +20,40 @@ import { ReactionsList } from "./ReactionsList";
 import { SignedIn } from "./Signed";
 import { TimeElapsedSince } from "./TimeLabel";
 import { UserAvatar } from "./UserAvatar";
-import { Button } from "./ui/button";
-import { Card, CardContent } from "./ui/card";
-import { DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Form, FormControl, FormField, FormItem } from "./ui/form";
-import { Textarea } from "./ui/textarea";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { DropdownMenuTrigger } from "../components/ui/dropdown-menu";
+import { Form, FormControl, FormField, FormItem } from "../components/ui/form";
+import { Textarea } from "../components/ui/textarea";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip";
 
-export const ChatView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
+export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const author = post.author;
   const [collapsed, setCollapsed] = useState(true);
   const postContentRef = useRef<HTMLDivElement>(null);
 
   return (
     <ContextMenu post={post}>
-      <div className="flex flex-row gap-4 items-center">
-        <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-          <UserAvatar userId={author.id} />
-        </div>
-        <Card className=" rounded-2xl w-full">
-          <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
-            <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
-              <ReplyInfo post={post} />
-              <PostInfo post={post} />
-              <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-              {showBadges && (
-                <PostBadges
-                  postContentRef={postContentRef}
-                  post={post}
-                  collapsed={collapsed}
-                  setCollapsed={setCollapsed}
-                />
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="">
+        <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
+          <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
+            <UserAvatar userId={author.id} />
+          </div>
+          <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
+            <ReplyInfo post={post} />
+            <PostInfo post={post} />
+            <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
+            {showBadges && (
+              <PostBadges
+                postContentRef={postContentRef}
+                post={post}
+                collapsed={collapsed}
+                setCollapsed={setCollapsed}
+              />
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </ContextMenu>
   );
 };
@@ -91,7 +90,7 @@ export const ContextMenu = (props: PropsWithChildren & { post: Post }) => {
             <DropdownMenu open={true}>
               <DropdownMenuTrigger />
               <DropdownMenuContent>
-                <Card>
+                <Card className="hover:bg-card">
                   <PostMenuContent post={props.post} />
                 </Card>
               </DropdownMenuContent>
@@ -157,7 +156,7 @@ export const PostEditor = ({ post }: { post: Post }) => {
       removeEditingQuery();
       toast.error("You are not allowed to edit this post");
     }
-  }, [user, post.authorId, removeEditingQuery]);
+  }, [user]);
 
   const { mutate: updatePost, isLoading: isPosting } = api.posts.update.useMutation({
     onSuccess: async () => {
@@ -379,7 +378,7 @@ export function PostExtensionButton({
       const hasLineClamp2Effect = postContentElement.scrollHeight > postContentElement.clientHeight;
       setCollapsable(hasLineClamp2Effect);
     }
-  }, []);
+  }, [postContentRef.current]);
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };

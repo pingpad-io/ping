@@ -4,9 +4,9 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 import { PirvateThread, PublicThread } from "./ThreadEntry";
 import ThreadWizard from "./ThreadWizard";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "../components/ui/dialog";
 
 export function PublicThreads() {
   const [open, setOpen] = useState(false);

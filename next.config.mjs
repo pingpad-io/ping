@@ -39,6 +39,7 @@ const config = {
   typescript: {
     ignoreBuildErrors: true,
   },
+
 };
 
 export default bundleAnalyzer(config);

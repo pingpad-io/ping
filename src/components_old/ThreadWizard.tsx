@@ -10,11 +10,11 @@ import { debounce } from "~/utils";
 import { api } from "~/utils/api";
 import { ProfileEntry } from "./ProfileEntry";
 import { UserAvatar } from "./UserAvatar";
-import { Button } from "./ui/button";
-import { Card } from "./ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
-import { Input } from "./ui/input";
-import { Switch } from "./ui/switch";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
+import { Input } from "../components/ui/input";
+import { Switch } from "../components/ui/switch";
 
 export default function ThreadWizard({
   setOpen,
