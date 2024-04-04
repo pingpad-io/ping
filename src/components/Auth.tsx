@@ -1,21 +1,19 @@
 "use client";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
+
+import React from "react";
 
 const PingAuth = () => {
-  const supabase = useSupabaseClient();
 
   return (
     <div className="px-4 pb-2 pt-4 dark:drop-shadow-glow drop-shadow-lg">
-      <Auth
+      {/* <Auth
         supabaseClient={supabase}
         onlyThirdPartyProviders={true}
         appearance={{ theme: ThemeSupa }}
         providers={["google", "github"]}
         theme="light"
         redirectTo={getBaseUrl()}
-      />
+      /> */}
     </div>
   );
 };

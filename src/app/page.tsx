@@ -1,4 +1,4 @@
-import { ArrowRight, AtSign, Cookie, Github, Heart, InfoIcon, LogInIcon, MoonIcon, SunIcon } from "lucide-react";
+import { AtSign, Github, Heart, LogInIcon } from "lucide-react";
 import Link from "next/link";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
