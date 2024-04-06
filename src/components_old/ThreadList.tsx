@@ -1,7 +1,6 @@
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { api } from "~/utils/api";
 import { PirvateThread, PublicThread } from "./ThreadEntry";
 import ThreadWizard from "./ThreadWizard";
 import { Button } from "../components/ui/button";
@@ -10,7 +9,8 @@ import { Dialog, DialogContent, DialogTrigger } from "../components/ui/dialog";
 
 export function PublicThreads() {
   const [open, setOpen] = useState(false);
-  const { data: threads } = api.threads.get.useQuery({});
+  // const { data: threads } = api.threads.get.useQuery({});
+  const threads = [1,3]
 
   const threadList = threads?.map((thread) => {
     return <PublicThread key={thread.id} thread={thread} />;
@@ -45,7 +45,6 @@ export function PublicThreads() {
 
 export function PrivateThreads() {
   const [open, setOpen] = useState(false);
-  const { data: threads } = api.threads.getPrivate.useQuery();
 
   const chatList = threads?.map((thread) => {
     return <PirvateThread key={thread.id} thread={thread} />;

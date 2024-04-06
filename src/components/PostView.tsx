@@ -35,7 +35,7 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
       <Card className="">
         <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
           <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-            <UserAvatar author={post.author} />
+            <UserAvatar profile={post.author} />
           </div>
           <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
             {/* <ReplyInfo post={post} /> */}

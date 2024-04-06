@@ -2,56 +2,54 @@
 
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUser } from "@supabase/auth-helpers-react";
 import { MenuIcon, SendHorizontalIcon } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 import toast, { LoaderIcon } from "react-hot-toast";
 import * as z from "zod";
-import { api } from "~/utils/api";
-import { UserAvatar } from "./UserAvatar";
-import { Button } from "../components/ui/button";
-import { Textarea } from "../components/ui/textarea";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
+import { UserAvatar } from "~/components/UserAvatar";
+import { profileToAuthor } from "~/types/post";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
-  const ctx = api.useUtils();
-  const user = useUser();
+  const { data: session, error, loading } = useSession();
   const router = useRouter();
-  const thread = replyingTo ? undefined : router.asPath.split("/")[2] ?? "global";
   const textarea = useRef<HTMLTextAreaElement>(null);
-  const placeholderText = replyingTo ? "write a reply..." : `write a new post in ${thread}...`;
+  const placeholderText = replyingTo ? "write a reply..." : "write a new post...";
 
-  const { mutate: createPost, isLoading: isPosting } = api.posts.create.useMutation({
-    onSettled: (_e) => {
-      updateHeight();
-    },
-    onSuccess: async () => {
-      form.setValue("content", "");
-      await ctx.posts.invalidate();
-    },
-    onError: (e) => {
-      let error = "Something went wrong";
-      switch (e.data?.code) {
-        case "UNAUTHORIZED":
-          error = "You must be logged in to post";
-          break;
-        case "FORBIDDEN":
-          error = "You are not allowed to post";
-          break;
-        case "TOO_MANY_REQUESTS":
-          error = "Slow down! You are posting too fast";
-          break;
-        case "BAD_REQUEST":
-          error = "Invalid request";
-          break;
-        case "PAYLOAD_TOO_LARGE":
-          error = "Your message is too big";
-          break;
-      }
-      toast.error(error);
-    },
-  });
+  // const { mutate: createPost, isLoading: isPosting } = api.posts.create.useMutation({
+  //   onSettled: (_e) => {
+  //     updateHeight();
+  //   },
+  //   onSuccess: async () => {
+  //     form.setValue("content", "");
+  //     // await ctx.posts.invalidate();
+  //   },
+  //   onError: (e) => {
+  //     let error = "Something went wrong";
+  //     switch (e.data?.code) {
+  //       case "UNAUTHORIZED":
+  //         error = "You must be logged in to post";
+  //         break;
+  //       case "FORBIDDEN":
+  //         error = "You are not allowed to post";
+  //         break;
+  //       case "TOO_MANY_REQUESTS":
+  //         error = "Slow down! You are posting too fast";
+  //         break;
+  //       case "BAD_REQUEST":
+  //         error = "Invalid request";
+  //         break;
+  //       case "PAYLOAD_TOO_LARGE":
+  //         error = "Your message is too big";
+  //         break;
+  //     }
+  //     toast.error(error);
+  //   },
+  // });
 
   const FormSchema = z.object({
     content: z.string().max(3000, {
@@ -64,11 +62,11 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    createPost({
-      content: data.content,
-      threadName: thread,
-      repliedToId: replyingTo,
-    });
+    // createPost({
+    //   content: data.content,
+    //   threadName: thread,
+    //   repliedToId: replyingTo,
+    // });
   }
 
   const updateHeight = () => {
@@ -88,7 +86,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
     }
   };
 
-  if (!user) return null;
+  if (!session || !(session.type === SessionType.WithProfile)) return null;
 
   return (
     <div className="w-full">
@@ -98,7 +96,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
           onChange={onChange}
           className="flex flex-row gap-2 w-full h-fit place-items-end"
         >
-          <AvatarMenu userId={user?.id} />
+          <AvatarMenu profile={session.profile} />
           <FormField
             control={form.control}
             name="content"
@@ -109,7 +107,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
                     {...field}
                     onKeyDown={onKeyDown}
                     placeholder={placeholderText}
-                    disabled={isPosting}
+                    disabled={loading}
                     className="min-h-12 resize-none px-2 py-3"
                     ref={textarea}
                     rows={1}
@@ -118,17 +116,17 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
               </FormItem>
             )}
           />
-          <Button disabled={isPosting} size="icon" type="submit">
+          {/* <Button disabled={isPosting} size="icon" type="submit">
             {isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
-          </Button>
+          </Button> */}
         </form>
       </Form>
     </div>
   );
 }
 
-export const AvatarMenu = ({ userId }: { userId?: string }) => {
-  if (!userId)
+export const AvatarMenu = ({ profile }: { profile: Profile }) => {
+  if (!profile)
     return (
       <div className="w-10 h-10 shrink-0 grow-0">
         <MenuIcon />
@@ -136,7 +134,7 @@ export const AvatarMenu = ({ userId }: { userId?: string }) => {
     );
   return (
     <div className="w-10 h-10 shrink-0 grow-0">
-      <UserAvatar userId={userId} />
+      <UserAvatar profile={profileToAuthor(profile)} />
     </div>
   );
 };

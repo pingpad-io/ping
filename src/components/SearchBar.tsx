@@ -1,6 +1,8 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SearchIcon } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
@@ -19,7 +21,7 @@ export const SearchBar = ({ defaultText }: { defaultText: string }) => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!values) return;
-    router.push(`/search?q=${values.input}`).catch(console.error);
+    router.push(`/search?q=${values.input}`);
   };
 
   return (

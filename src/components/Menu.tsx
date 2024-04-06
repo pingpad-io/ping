@@ -1,5 +1,6 @@
+"use client";
+
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/src/components/ui/dialog";
-import { useUser } from "@supabase/auth-helpers-react";
 import {
   AtSign,
   BellIcon,
@@ -12,19 +13,22 @@ import {
   UserIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { createContext } from "react";
 import { Button } from "~/components/ui/button";
-import { api } from "~/utils/api";
 import PingAuth from "./Auth";
 import PostWizard from "./PostWizard";
+import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
 
 export const CollapsedContext = createContext(false);
 
 export default function Menu() {
   const router = useRouter();
-  const pathname = router.pathname;
-  const user = useUser();
+  const { data: session, error, loading } = useSession();
+
+  if (loading || error) return null;
+
+  const authed = session.authenticated && session.type === SessionType.WithProfile;
 
   return (
     <span className="flex h-fit w-full sm:w-max shrink py-4 text-2xl px-4 sm:px-2 lg:w-56">
@@ -37,14 +41,14 @@ export default function Menu() {
         </Link>
 
         <div className="flex flex-row sm:flex-col items-end gap-2 lg:hidden">
-          {pathname !== "/search" && (
-            <Link href={"/search"} className="xl:hidden text-2xl">
-              <Button variant="ghost" size="sm_icon">
-                <div className="hidden sm:flex text-2xl">search</div>
-                <SearchIcon className="sm:ml-2" />
-              </Button>
-            </Link>
-          )}
+          {/* {pathname !== "/search" && ( */}
+          <Link href={"/search"} className="xl:hidden text-2xl">
+            <Button variant="ghost" size="sm_icon">
+              <div className="hidden sm:flex text-2xl">search</div>
+              <SearchIcon className="sm:ml-2" />
+            </Button>
+          </Link>
+          {/* )} */}
           <Link href={"/t"} className="xl:hidden text-2xl">
             <Button variant="ghost" size="sm_icon" className="xl:hidden">
               <div className="hidden sm:flex text-2xl">threads</div>
@@ -53,8 +57,8 @@ export default function Menu() {
           </Link>
         </div>
 
-        {user ? (
-          <MenuAuthed userId={user.id} />
+        {authed ? (
+          <MenuAuthed profile={session.profile} />
         ) : (
           <Dialog>
             <DialogTrigger asChild>
@@ -76,11 +80,7 @@ export default function Menu() {
   );
 }
 
-export const MenuAuthed = ({ userId }: { userId: string }) => {
-  const { data: profile } = api.profiles.get.useQuery({
-    id: userId,
-  });
-
+export const MenuAuthed = ({ profile }: { profile: Profile }) => {
   return (
     <>
       <Link href="/c">
@@ -104,7 +104,12 @@ export const MenuAuthed = ({ userId }: { userId: string }) => {
         </Button>
       </Link>
 
-      <Link href={`${profile?.username ? `/${profile.username}` : undefined}`}>
+      <Link
+        href={{
+          pathname: "/",
+          query: `${profile.handle}`,
+        }}
+      >
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex">profile</div>
           <UserIcon className="sm:ml-2" />
