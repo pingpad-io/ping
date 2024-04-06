@@ -35,11 +35,11 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
       <Card className="">
         <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
           <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-            <UserAvatar userId={author.id} />
+            <UserAvatar author={post.author} />
           </div>
           <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
             {/* <ReplyInfo post={post} /> */}
-            {/* <PostInfo post={post} /> */}
+            <PostInfo post={post} />
             <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
             {showBadges &&
               // <PostBadges
@@ -143,22 +143,22 @@ export const PostContent = forwardRef<
 //   );
 // };
 
-// export const PostInfo = ({ post }: { post: Post }) => {
-//   const author = post.author;
-//   const username = author.username ?? "";
+export const PostInfo = ({ post }: { post: Post }) => {
+  const author = post.author;
+  const handle = author.handle ?? "";
 
-//   return (
-//     <div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
-//       <Link className="flex gap-2" href={`/${username}`}>
-//         <span className="w-fit truncate font-bold">{author.full_name}</span>
-//         <span className="">{`@${username}`}</span>
-//       </Link>
-//       <span>{"·"}</span>
-//       <TimeElapsedSince date={post.createdAt} />
-//       <PostMenu post={post} />
-//     </div>
-//   );
-// };
+  return (
+    <div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
+      <Link className="flex gap-2" href={`/${handle}`}>
+        <span className="w-fit truncate font-bold">{author.name}</span>
+        <span className="">{`@${handle}`}</span>
+      </Link>
+      <span>{"·"}</span>
+      <TimeElapsedSince date={post.createdAt} />
+      {/* <PostMenu post={post} /> */}
+    </div>
+  );
+};
 
 // export const PostEditor = ({ post }: { post: Post }) => {
 //   const router = useRouter();

@@ -6,7 +6,7 @@ export type Post = {
   content: string;
   author: Author;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;
   metadata: any;
 };
 
@@ -25,6 +25,10 @@ export function lensFeedItemToPost(item: FeedItem) {
     return null;
   }
 
+  const profilePictureUrl = item.root.by.metadata.picture.__typename === "ImageSet"
+    ? item.root.by.metadata.picture.raw.uri
+    : item.root.by.metadata.picture.image.raw.uri;
+
   if (item.root.__typename === "Post") {
     return {
       platform: "lens",
@@ -32,7 +36,7 @@ export function lensFeedItemToPost(item: FeedItem) {
         id: item.root.by.id as string,
         name: item.root.by.metadata.displayName as string,
         handle: item.root.by.handle.fullHandle,
-        // profilePictureUrl: item.root.by.metadata.picture.raw.uri as string,
+        profilePictureUrl: profilePictureUrl
       },
       metadata: item.root.metadata,
       content: item.root.metadata.content,

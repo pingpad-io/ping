@@ -20,11 +20,11 @@ export function Feed({ profileId }: { profileId: ProfileId }) {
 
   const feed = data.map((feedItem, idx) => {
     const post: Post = lensFeedItemToPost(feedItem);
+
     if (post) {
-      return <PostView key={post.id + `${idx}`} post={post} />
+      return <PostView key={`${post.id}-${idx}`} post={post} />
     }
 });
-  // const feed = data.map((post) => post.id);
 
   return <div className="flex p-2 flex-col gap-1">{feed}</div>;
 }
