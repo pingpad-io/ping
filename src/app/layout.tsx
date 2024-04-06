@@ -1,19 +1,32 @@
+"use client";
 import Providers from "~/components/Providers";
-import "../styles/globals.css";
 import { quicksand } from "~/styles/fonts";
 import { Sidebar } from "~/components/Sidebar";
 import Menu from "~/components/Menu";
+import { usePathname } from "next/navigation";
+import "../styles/globals.css";
 
-export const metadata = {
-  title: "Pingpad",
-  description: "reach your people on pingpad",
-};
+// export const metadata = {
+//   title: "Pingpad",
+//   description: "reach your people on pingpad",
+// };
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // FIXME: this should be rendered on the server. temporary hotfix with client rendering
+  const pathname = usePathname();
+  if (pathname === "/") {
+    return (
+      <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
+        <body className="flex flex-col">
+          <Providers>{children}</Providers>
+        </body>
+      </html>
+    );
+  }
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
       <body className="flex flex-col">
