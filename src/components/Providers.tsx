@@ -4,7 +4,6 @@ import { LensProvider } from "@lens-protocol/react-web";
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, createConfig } from "wagmi";
-
 import { polygon, polygonMumbai } from "wagmi/chains";
 import { LensConfig, production } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
@@ -33,7 +32,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <ConnectKitProvider>
-              <LensProvider config={lensConfig}>{children}</LensProvider>
+            <LensProvider config={lensConfig}>{children}</LensProvider>
           </ConnectKitProvider>
         </QueryClientProvider>
       </WagmiProvider>

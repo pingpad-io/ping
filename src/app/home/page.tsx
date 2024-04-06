@@ -1,30 +1,37 @@
-import { LensClient, production } from "@lens-protocol/client";
+import { LensClient, production, PublicationMetadataMainFocusType, PublicationType } from "@lens-protocol/client";
 import { HomePage } from "./HomePage";
 import { localStorage } from "~/utils/storage";
+import { SessionType, useSession as useLensSession } from "@lens-protocol/react-web";
+import { getAuthenticatedClient } from "~/utils/getAuthenticatedClient";
+import { createWalletClient } from "viem";
+import { useAccount, useWalletClient } from "wagmi";
+import { getWalletClient } from "@wagmi/core";
+import { Card } from "~/components/ui/card";
 
 const home = async () => {
-  const client = new LensClient({ environment: production, storage: localStorage() });
-  const publications = await client.publication.fetchAll({ where: { from: ["0x04359b"] } });
+  // const wagmi = useAccount()
+  // const wallet = createWalletClient(wagmi)
 
-  // console.log(`Is LensClient authenticated? `, await client.authentication.isAuthenticated());
-  // console.log(`Authenticated profileId: `, profileId);
-  // console.log(`Access token: `, accessToken);
-  // console.log(`Is access token valid? `, await client.authentication.verify({ accessToken }));
-  // const post = posts?.map((publication) => publication.by.id);
-  const posts = publications.items.map((publication) => publication.by.metadata.bio);
+  // const result = await lens.explore.publications({
+  //   orderBy: ExplorePublicationsOrderByType.Latest,
+  // });
 
-  console.log(publications.items);
+  // const { data: session } = useLensSession();
+  // if (!session || !(session.type === SessionType.WithProfile)) {
+  // return null
+  // }
+
+  // const handle = session.profile.handle?.fullHandle
+  // const publications = await lens.feed.fetch({ where: { for: "@kualta" } });
+
   return (
     <>
-      {/* <Card className="z-[30] sticky top-0 flex-col hidden sm:flex flex-none p-4 border-0"> */}
+      <Card className="z-[30] sticky top-0 flex-col hidden sm:flex flex-none p-4 border-0">
       {/* <PostWizard /> */}
-      {/* </Card> */}
-      {/* {publications.items} */}
-      {posts}
 
-      {/* {publications.items} */}
-      {/* <Feed {...posts} /> */}
       <HomePage />
+      </Card>
+      {/* <Feed {...posts} /> */}
     </>
   );
 };

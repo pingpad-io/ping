@@ -43,7 +43,7 @@
     "src/components/*.ts",
     "src/components/*.tsx",
     "src/components/**/*.ts",
-    "src/components/**/*.tsx",
+    "src/components/**/*.tsx", "src/pages_old/Providers.tsx",
   ],
   "exclude": [
     "src/pages_old/**.ts",
