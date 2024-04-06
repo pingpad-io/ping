@@ -43,7 +43,9 @@
     "src/components/*.ts",
     "src/components/*.tsx",
     "src/components/**/*.ts",
-    "src/components/**/*.tsx", "src/pages_old/Providers.tsx",
+    "src/components/**/*.tsx",
+    "src/pages_old/Providers.tsx",
+    "src/components_old/PostView.tsx",
   ],
   "exclude": [
     "src/pages_old/**.ts",

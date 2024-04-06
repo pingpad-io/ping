@@ -5,14 +5,12 @@ import { PostMenu, PostMenuContent } from "./PostMenu";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
-import { useUser } from "@supabase/auth-helpers-react";
 import { ChevronDown, ChevronUp, Edit2Icon, ReplyIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import type { Post } from "~/server/api/routers/posts";
-import { api } from "~/utils/api";
 import Markdown from "./Markdown";
 import Metadata from "./Metadata";
 import { ReactionBadge } from "./Reactions";

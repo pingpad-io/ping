@@ -27,7 +27,6 @@ export function WalletButton() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Select a Lens Profile to login with.</DialogTitle>
-            </DialogHeader>
               <DialogDescription>
                 <p className="mb-4">Connected wallet: {truncateEthAddress(address)}</p>
                 <LoginForm owner={address} />
@@ -35,6 +34,7 @@ export function WalletButton() {
                   <DisconnectWalletButton />
                 </div>
               </DialogDescription>
+            </DialogHeader>
           </DialogContent>
         </Dialog>
       </Dialog>

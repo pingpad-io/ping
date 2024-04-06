@@ -7,6 +7,7 @@ export async function getAuthenticatedClient(walletClient: WalletClient) {
   });
 
   const address = walletClient.account.address;
+  const profileId = lensClient.profile.
 
   const { id, text } = await lensClient.authentication.generateChallenge({
     signedBy: address,
