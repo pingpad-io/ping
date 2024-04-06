@@ -1,11 +1,11 @@
-import { useUser } from "@supabase/auth-helpers-react";
+import { useSession } from "@lens-protocol/react-web";
 import type { PropsWithChildren } from "react";
 
 // render any react children only if the user is signed out
 export function SignedIn(props: PropsWithChildren) {
-  const user = useUser();
+  const { data: session} = useSession();
 
-  if (!user) {
+  if (!session.authenticated) {
     return null;
   }
 
@@ -13,9 +13,9 @@ export function SignedIn(props: PropsWithChildren) {
 }
 
 export function SignedOut(props: PropsWithChildren) {
-  const user = useUser();
+  const { data: session} = useSession();
 
-  if (user) {
+  if (session.authenticated) {
     return null;
   }
 

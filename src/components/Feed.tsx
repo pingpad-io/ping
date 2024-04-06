@@ -1,5 +1,6 @@
+import { lensFeedItemToPost, Post } from "~/types/post";
 import ErrorPage from "./ErrorPage";
-import { PostView } from "../components_old/PostView";
+import { PostView } from "./PostView";
 import { SuspensePostView } from "./SuspensePostView";
 import { ProfileId, useFeed } from "@lens-protocol/react-web";
 
@@ -17,8 +18,13 @@ export function Feed({ profileId }: { profileId: ProfileId }) {
 
   if (error || !data) return <ErrorPage title="Couldn't fetch posts" />;
 
-  // const feed = data.map((post) => <PostView key={post.id} post={post} />);
-  const feed = data.map((post) => post.id);
+  const feed = data.map((feedItem, idx) => {
+    const post: Post = lensFeedItemToPost(feedItem);
+    if (post) {
+      return <PostView key={post.id + `${idx}`} post={post} />
+    }
+});
+  // const feed = data.map((post) => post.id);
 
   return <div className="flex p-2 flex-col gap-1">{feed}</div>;
 }

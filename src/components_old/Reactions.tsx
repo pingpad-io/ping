@@ -1,6 +1,4 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
-import type { Reaction } from "@prisma/client";
-import { useUser } from "@supabase/auth-helpers-react";
 import {
   AlertCircleIcon,
   CheckIcon,
@@ -12,30 +10,16 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import type { Post } from "~/server/api/routers/posts";
-import { api } from "~/utils/api";
 import { Button } from "../components/ui/button";
 
 type PostReaction = Post["reactions"][number];
 
 export const ReactionBadge = ({ reaction, post }: { reaction: PostReaction | Reaction; post: Post }) => {
-  const user = useUser();
-  const ctx = api.useContext();
-
   const count = "count" in reaction ? reaction.count : 0;
   const id = "id" in reaction ? reaction.id : reaction.reactionId;
   const profiles = "profileIds" in reaction ? reaction.profileIds : [];
   const personText = count === 0 ? " I " : count === 1 ? " person " : " people ";
   const tooltipText = (count > 0 ? count : "") + personText + reaction.description;
-
-  const { mutate: react } = api.reactions.react.useMutation({
-    onSuccess: () => {
-      ctx.posts.invalidate();
-    },
-    onError: (e) => {
-      toast.error(e.message);
-    },
-  });
-
   const isUserReacted = profiles.find((profileId) => user && profileId === user.id);
 
   return (
