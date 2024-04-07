@@ -1,16 +1,14 @@
 "use client";
 
 import { Button } from "../ui/button";
-import {
-  profileId,
-  useSession as useLensSession,
-  useLogin,
-  useProfilesManaged,
-} from "@lens-protocol/react-web";
+import { profileId, useSession as useLensSession, useLogin, useProfilesManaged } from "@lens-protocol/react-web";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { truncateEthAddress } from "~/utils/truncateEthAddress";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DisconnectWalletButton } from "./WalletButton";
+import { LogInIcon } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
 
 export function LensProfileSelect() {
   const { isConnected, address } = useWagmiAccount();
@@ -57,69 +55,45 @@ export function LensProfileSelect() {
   // connect Lens Profile
   if (!session?.authenticated && address) {
     return (
-      <Dialog>
-        <Dialog open>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Select a Lens Profile to login with.</DialogTitle>
+      <Dialog open>
+        <DialogContent className="w-full">
+          <DialogHeader>
+            <DialogTitle>Select a Lens Profile to login with.</DialogTitle>
 
-              <DialogDescription>
-                <p className="mb-4">Connected wallet: {truncateEthAddress(address)}</p>
+            <DialogDescription>
+              <p className="mb-4">Connected wallet: {truncateEthAddress(address)}</p>
+            </DialogDescription>
+
+            {/* ////////////////////////////////// */}
+            <form onSubmit={onSubmit} className="flex">
+              <fieldset className="flex place-items-start flex-col w-full">
+                <RadioGroup defaultValue="option-one mb-4">
+                  {profiles.map((profile, idx) => (
+                    <>
+                      <div key={profile.id} className="flex items-center space-x-2 p-4">
+                        <RadioGroupItem disabled={isLoginPending} value={profile.id} id={`${idx}`} />
+                        <Label htmlFor={`${idx}`}>{profile.handle.fullHandle ?? profile.id}</Label>
+                      </div>
+                      <div key={profile.id} className="flex items-center space-x-2 p-4">
+                        <RadioGroupItem disabled={isLoginPending} value={profile.id} id={`${idx}`} />
+                        <Label htmlFor={`${idx}`}>{profile.handle.fullHandle ?? profile.id}</Label>
+                      </div>
+                    </>
+                  ))}
+                </RadioGroup>
 
                 {/* ////////////////////////////////// */}
-                <form onSubmit={onSubmit} className="flex">
-                  <fieldset className="flex place-items-center flex-col">
-                    <div className="my-4 space-y-2">
-                      {profiles.map((profile, idx) => (
-                        <>
-                          <label
-                            key={profile.id}
-                            className="w-full items-center p-4 rounded-lg cursor-pointer border transition-colors border-gray-300 hover:border-gray-500 grid grid-cols-[24px_auto]"
-                          >
-                            <input
-                              disabled={isLoginPending}
-                              type="radio"
-                              defaultChecked={idx === 0}
-                              name="id"
-                              value={profile.id}
-                              className="box-content h-1.5 w-1.5 appearance-none rounded-full border-[5px] border-white bg-white bg-clip-padding outline-none ring-1 ring-gray-950/10 checked:border-green-500 checked:ring-green-500"
-                            />
-                            <span className="font-semibold">{profile.handle?.fullHandle ?? profile.id}</span>
-                          </label>
-                          <label
-                            key={profile.id}
-                            className="w-full items-center p-4 rounded-lg cursor-pointer border transition-colors border-gray-300 hover:border-gray-500 grid grid-cols-[24px_auto]"
-                          >
-                            <input
-                              disabled={isLoginPending}
-                              type="radio"
-                              defaultChecked={idx === 0}
-                              name="id"
-                              value={profile.id}
-                              className="box-content h-1.5 w-1.5 appearance-none rounded-full border-[5px] border-white bg-white bg-clip-padding outline-none ring-1 ring-gray-950/10 checked:border-green-500 checked:ring-green-500"
-                            />
-                            <span className="font-semibold">{profile.handle?.fullHandle ?? profile.id}</span>
-                          </label>
-                        </>
-                      ))}
-                    </div>
 
-                    <div>
-                      <Button disabled={isLoginPending} type="submit">
-                        {isLoginPending ? "Sign message in your wallet" : "Login to Lens"}
-                      </Button>
-                    </div>
-                  </fieldset>
-                </form>
-                {/* ////////////////////////////////// */}
-
-                <div className="mt-2">
+                <DialogFooter className="grid grid-cols-2 gap-4 place-content-between items-center space-x-4 w-full">
                   <DisconnectWalletButton />
-                </div>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+                  <Button size="sm_icon" disabled={isLoginPending} type="submit">
+                    {isLoginPending ? "Sign message in your wallet" : "Login"}
+                  </Button>
+                </DialogFooter>
+              </fieldset>
+            </form>
+          </DialogHeader>
+        </DialogContent>
       </Dialog>
     );
   }

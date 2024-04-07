@@ -26,8 +26,7 @@ export function DisconnectWalletButton() {
 
   return (
     <Button variant="ghost" size="sm_icon" onClick={(e) => disconnect()}>
-      <div className="hidden sm:flex text-base">disconnect</div>
-      <LogOutIcon className="sm:ml-2" />
+      <div className="hidden sm:flex text-base">Cancel</div>
     </Button>
   );
 }
