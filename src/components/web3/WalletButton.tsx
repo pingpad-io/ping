@@ -1,7 +1,6 @@
 "use client";
 
 import { useAccount, useDisconnect } from "wagmi";
-import { ConnectKitButton } from "connectkit";
 import { Button } from "../ui/button";
 import { SessionType, useSession as useLensSession } from "@lens-protocol/react-web";
 import { useAccount as useWagmiAccount } from "wagmi";
@@ -9,6 +8,8 @@ import { LoginForm } from "./LoginForm";
 import { truncateEthAddress } from "~/utils/truncateEthAddress";
 import { LogoutButton } from "./LogoutButton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { LogInIcon } from "lucide-react";
+import { ConnectWalletButton } from "./ConnectWalletButton";
 
 export function WalletButton() {
   const { isConnected, address } = useWagmiAccount();
@@ -53,16 +54,6 @@ export function WalletButton() {
       </>
     );
   }
-}
-
-export function ConnectWalletButton() {
-  return (
-    <ConnectKitButton.Custom>
-      {({ isConnected, show, truncatedAddress }) => {
-        return <Button onClick={show}>{isConnected ? truncatedAddress : "Connect Wallet"}</Button>;
-      }}
-    </ConnectKitButton.Custom>
-  );
 }
 
 export function DisconnectWalletButton() {

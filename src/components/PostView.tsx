@@ -14,7 +14,7 @@ import Markdown from "../components_old/Markdown";
 import Metadata from "./Metadata";
 // import { ReactionBadge } from "../components_old/Reactions";
 // import { ReactionsList } from "../components_old/ReactionsList";
-import { SignedIn } from "./Signed";
+import { SignedIn } from "./Authenticated";
 import { TimeElapsedSince } from "../components_old/TimeLabel";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";

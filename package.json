@@ -41,7 +41,6 @@
     "@web3modal/wagmi": "^4.1.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "connectkit": "^1.7.3",
     "cookies-next": "^2.1.1",
     "dayjs": "^1.11.7",
     "eslint-config-next": "latest",

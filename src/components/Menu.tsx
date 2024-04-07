@@ -19,6 +19,7 @@ import { Button } from "~/components/ui/button";
 import PingAuth from "./Auth";
 import PostWizard from "./PostWizard";
 import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
+import { ConnectWalletButton } from "./web3/ConnectWalletButton";
 
 export const CollapsedContext = createContext(false);
 
@@ -60,20 +61,9 @@ export default function Menu() {
         {authed ? (
           <MenuAuthed profile={session.profile} />
         ) : (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="default" size="sm_icon">
-                <div className="hidden sm:flex">sign in</div>
-                <LogInIcon className="sm:ml-2" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[350px]">
-              <DialogTitle>
-                <h3 className="text-center">Sign in to Ping </h3>
-              </DialogTitle>
-              <PingAuth />
-            </DialogContent>
-          </Dialog>
+          <>
+            <ConnectWalletButton />
+          </>
         )}
       </span>
     </span>

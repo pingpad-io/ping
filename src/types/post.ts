@@ -32,7 +32,7 @@ export function lensFeedItemToPost(item: FeedItem) {
   // metadata: ArticleMetadataV3 | AudioMetadataV3 | CheckingInMetadataV3 | EmbedMetadataV3 | EventMetadataV3 | ImageMetadataV3 |
   // LinkMetadataV3 | LiveStreamMetadataV3 | MintMetadataV3 | SpaceMetadataV3 | StoryMetadataV3 | TextOnlyMetadataV3 |
   // ThreeDMetadataV3 | TransactionMetadataV3 | VideoMetadataV3;
-  if (item.root.metadata.__typename !== "TextOnlyMetadataV3") {
+  if (!item.root.by.metadata || item.root.metadata.__typename !== "TextOnlyMetadataV3") {
     return null;
   }
 
