@@ -4,8 +4,7 @@ import { LensClient, production } from "@lens-protocol/client";
 import { LimitType, SessionType, useFeed, useSession as useLensSession } from "@lens-protocol/react-web";
 import { useAccount as useWagmiAccount, useWalletClient } from "wagmi";
 import { Feed } from "~/components/Feed";
-import { DisconnectWalletButton, WalletButton } from "~/components/web3/WalletButton";
-import { ConnectWalletButton } from "~/components/web3/ConnectWalletButton";
+import { LensProfileSelect } from "~/components/web3/LensProfileSelect";
 
 export const HomePage = () => {
   // const { isConnected, address, connector, status } = useWagmiAccount();
@@ -15,7 +14,7 @@ export const HomePage = () => {
   if (!session || !(session.type === SessionType.WithProfile)) {
     return (
       <div>
-        <WalletButton />
+        <LensProfileSelect />
       </div>
     );
   }

@@ -9,9 +9,21 @@ import { LensConfig, production } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
 import React from "react";
 import { http } from "@wagmi/core";
+import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 
-const wagmiConfig = createConfig({
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+
+const metadata = {
+  name: "Pingpad",
+  description: "minimalistic decentralized social",
+  url: "https://pingpad.io",
+  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+};
+
+const wagmiConfig = defaultWagmiConfig({
+  metadata,
+  projectId,
   chains: [polygonMumbai, polygon],
   transports: {
     [polygonMumbai.id]: http(),
@@ -26,13 +38,19 @@ const lensConfig: LensConfig = {
   environment: production, // or production
 };
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
-
 const w3m = createWeb3Modal({
   wagmiConfig,
   projectId,
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration
-  enableOnramp: true, // Optional - false as default
+  enableAnalytics: true,
+  enableOnramp: true,
+  defaultChain: polygon,
+  enableWalletFeatures: true,
+  allWallets: "SHOW",
+  themeMode: "dark",
+  themeVariables: {
+    "--w3m-border-radius-master": "2px",
+    "--w3m-font-family": "Quicksand, sans-serif",
+  },
 });
 
 export default function Providers({ children }: { children: React.ReactNode }) {

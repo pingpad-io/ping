@@ -1,7 +1,7 @@
 "use client";
 
-import { WalletButton } from "./web3/WalletButton";
-import { ConnectWalletButton } from "./web3/ConnectWalletButton";
+import { LensProfileSelect } from "./web3/LensProfileSelect";
+import { ConnectWalletButton } from "./web3/WalletButton";
 
 const PingAuth = () => {
   return (

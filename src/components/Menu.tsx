@@ -19,7 +19,7 @@ import { Button } from "~/components/ui/button";
 import PingAuth from "./Auth";
 import PostWizard from "./PostWizard";
 import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
-import { ConnectWalletButton } from "./web3/ConnectWalletButton";
+import { ConnectWalletButton } from "./web3/WalletButton";
 
 export const CollapsedContext = createContext(false);
 
