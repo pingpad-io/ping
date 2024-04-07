@@ -22,9 +22,9 @@ export function Feed({ profileId }: { profileId: ProfileId }) {
     const post: Post = lensFeedItemToPost(feedItem);
 
     if (post) {
-      return <PostView key={`${post.id}-${idx}`} post={post} />
+      return <PostView key={`${post.id}-${idx}`} post={post} />;
     }
-});
+  });
 
-  return <div className="flex p-2 flex-col gap-1">{feed}</div>;
+  return <div className="flex flex-col gap-1">{feed}</div>;
 }
