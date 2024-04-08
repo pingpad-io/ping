@@ -11,6 +11,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "^3.7.2",
     "@hookform/resolvers": "^3.3.1",
     "@lens-protocol/client": "^2.0.0-alpha.37",
     "@lens-protocol/metadata": "^1.0.5",
@@ -29,6 +30,7 @@
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@reduxjs/toolkit": "^1.9.5",
+    "@tanstack/react-query": "^5.29.0",
     "@trpc/client": "^10.9.0",
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
@@ -74,8 +76,8 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "theme-change": "^2.5.0",
-    "viem": "^2.9.9",
-    "wagmi": "^2.5.18",
+    "viem": "^2.9.13",
+    "wagmi": "^2.5.19",
     "zod": "^3.22.3"
   },
   "devDependencies": {

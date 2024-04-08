@@ -12,13 +12,15 @@ import { http } from "@wagmi/core";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { localStorage } from "~/utils/localStorage";
+import { getBaseUrl } from "~/utils/getBaseUrl";
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+const url = getBaseUrl();
 
 const metadata = {
   name: "Pingpad",
   description: "minimalistic decentralized social",
-  url: "https://pingpad.io",
+  url,
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
