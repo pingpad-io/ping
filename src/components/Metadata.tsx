@@ -1,15 +1,11 @@
-import type { Post } from "~/server/api/routers/posts";
-
-const Metadata = ({ metadata }: { metadata: Post["metadata"] }) => {
-  if (!metadata) {
-    return <></>;
-  }
+const Metadata = () => {
+  return <></>;
 
   return (
     // <span
     //   className="max-w-md min-w-0 w-fit
-		// 		rounded-lg border text-card-foreground shadow-sm select-none truncate line-clamp-1 
-		// 		bg-accent mt-2 sm:mt-4 p-2 sm:p-4 flex flex-col gap-2 "
+    // 		rounded-lg border text-card-foreground shadow-sm select-none truncate line-clamp-1
+    // 		bg-accent mt-2 sm:mt-4 p-2 sm:p-4 flex flex-col gap-2 "
     // >
     //   {metadata.publisher && (
     //     <span>

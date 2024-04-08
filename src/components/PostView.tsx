@@ -122,7 +122,7 @@ export const PostContent = forwardRef<
       }`}
     >
       <Markdown content={post.content} />
-      <Metadata metadata={post.metadata} />
+      {/* <Metadata metadata={post.metadata} /> */}
     </div>
   );
 });
@@ -145,7 +145,7 @@ export const PostContent = forwardRef<
 
 export const PostInfo = ({ post }: { post: Post }) => {
   const author = post.author;
-  const handle = author.handle.split('/')[1]
+  const handle = author.handle.split("/")[1];
 
   return (
     <div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
