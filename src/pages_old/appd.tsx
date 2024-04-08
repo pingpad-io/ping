@@ -25,7 +25,7 @@ const wagmiConfig = createConfig({
   },
 });
 
-import { IStorageProvider, LensConfig, production } from "@lens-protocol/react-web";
+import { LensConfig, production } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
 
 const lensConfig: LensConfig = {
