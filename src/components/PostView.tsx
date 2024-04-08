@@ -41,14 +41,14 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
             {/* <ReplyInfo post={post} /> */}
             <PostInfo post={post} />
             <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-            {showBadges &&
+            {/* {showBadges &&
               // <PostBadges
               //   postContentRef={postContentRef}
               //   post={post}
               //   collapsed={collapsed}
               //   setCollapsed={setCollapsed}
               // />
-              "reactions"}
+              "reactions"} */}
           </div>
         </CardContent>
       </Card>

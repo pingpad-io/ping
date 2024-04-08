@@ -4,7 +4,7 @@ Thank you for considering contributing to Ping. As an open sourced project
 we only exist by contributions from users like you.
 
 To contribute you will first need to fork the repo. To get the repository up and
-running, please look at [LOCAL.md](./LOCAL.md) for setup instructions.
+running, please look at the **Local setup** instructions at the end of the page.
 
 ## Code of Conduct
 
@@ -117,3 +117,37 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/kualta
 | adds in [cool New Feature Name]                                       | YOOOOOO          |
 | fix: Stops a bug on challenge pages causing tests to fail incorrectly | fixing the thing |
 | updates caching strategy to revalidate based on hash key              | Trust me bro     |
+
+
+# Local Setup
+
+To contribute you will first need to fork the repo and make some adjustments to
+get it up and running on your local machine. Below are the steps to follow for you to get Ping to run on your local machine.
+
+### 1. Create a `.env` file
+
+Copy the provided `.env.example` file to `.env`.
+
+```sh
+cp .env.example .env
+```
+
+### 2. Install dependencies
+
+Use `bun` to install dependencies.
+
+```sh
+bun install
+```
+
+### 3. Running the dev server
+
+Finally, you can run the dev server:
+
+```sh
+bun run dev
+```
+
+### 4. (optional) Install Biome
+
+  Biome is used for formatting and linting in the project, and can be installed in the vscode extension marketplace or on biome website: https://biomejs.dev/guides/getting-started/

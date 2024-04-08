@@ -1,7 +1,5 @@
-import { Feed } from "~/components/Feed";
 import { HomePage } from "./HomePage";
 import { Card } from "~/components/ui/card";
-import { LensClient, production } from "@lens-protocol/client";
 
 const home = async () => {
   return (
