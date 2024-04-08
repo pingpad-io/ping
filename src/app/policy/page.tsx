@@ -1,15 +1,6 @@
-/* eslint-disable react/no-unescaped-entities */
-import Head from "next/head";
-import { PageLayout } from "~/components/Layout";
-
 const PolicyPage = () => {
   return (
     <>
-      <Head>
-        <title>Ping Privacy Policy</title>
-      </Head>
-
-      <PageLayout>
         <div className="prose dark:prose-invert p-8 lg:prose-lg">
           <h2>Privacy Policy</h2>
           <p>
@@ -59,7 +50,6 @@ const PolicyPage = () => {
             Last updated: <b>Sep 14th, 2023</b>.
           </h5>
         </div>
-      </PageLayout>
     </>
   );
 };

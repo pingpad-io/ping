@@ -1,15 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
-import Head from "next/head";
-import { PageLayout } from "~/components/Layout";
-
 const ConditionsPage = () => {
   return (
     <>
-      <Head>
-        <title>Ping TOS</title>
-      </Head>
-
-      <PageLayout>
         <div className="prose dark:prose-invert p-8 lg:prose-lg">
           <h2>Terms of Service</h2>
           <p>By using Ping, you agree to comply with the following legally binding terms and conditions:</p>
@@ -54,7 +46,6 @@ const ConditionsPage = () => {
             terms, please refrain from using Ping.
           </p>
         </div>
-      </PageLayout>
     </>
   );
 };
