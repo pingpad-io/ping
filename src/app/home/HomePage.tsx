@@ -16,8 +16,6 @@ export const HomePage = () => {
   }
 
   return (
-    <>
       <Feed profileId={session.profile.id} />
-    </>
   );
 };

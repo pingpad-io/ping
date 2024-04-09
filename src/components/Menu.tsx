@@ -16,7 +16,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createContext } from "react";
 import { Button } from "~/components/ui/button";
-import PingAuth from "./Auth";
 import PostWizard from "./PostWizard";
 import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
 import { ConnectWalletButton } from "./web3/WalletButton";
@@ -58,13 +57,7 @@ export default function Menu() {
           </Link>
         </div>
 
-        {authed ? (
-          <MenuAuthed profile={session.profile} />
-        ) : (
-          <>
-            <ConnectWalletButton />
-          </>
-        )}
+        {authed ? <MenuAuthed profile={session.profile} /> : <ConnectWalletButton />}
       </span>
     </span>
   );

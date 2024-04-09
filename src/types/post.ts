@@ -21,11 +21,12 @@ export function profileToAuthor(profile: Profile): Author {
   return {
     id: profile.id,
     name: profile.metadata.displayName,
-    profilePictureUrl: profile.metadata.picture.__typename === "ImageSet"
-      ? profile.metadata.picture.optimized.uri
-      : profile.metadata.picture.image.optimized.uri,
-    handle: profile.handle.fullHandle
-  }
+    profilePictureUrl:
+      profile.metadata.picture.__typename === "ImageSet"
+        ? profile.metadata.picture.optimized.uri
+        : profile.metadata.picture.image.optimized.uri,
+    handle: profile.handle.fullHandle,
+  };
 }
 
 export function lensFeedItemToPost(item: FeedItem) {
@@ -36,9 +37,12 @@ export function lensFeedItemToPost(item: FeedItem) {
     return null;
   }
 
-  const profilePictureUrl = item.root.by.metadata.picture.__typename === "ImageSet"
-    ? item.root.by.metadata.picture.optimized.uri
-    : item.root.by.metadata.picture.image.optimized.uri;
+  const profilePictureUrl =
+    item.root.by.metadata.picture.__typename === "ImageSet"
+      ? item.root.by.metadata?.picture?.optimized?.uri
+      : item.root.by.metadata?.picture?.image.optimized?.uri;
+
+  const handle = (item.root.by.handle?.fullHandle) ?? item.root.by.id;
 
   if (item.root.__typename === "Post") {
     return {
@@ -46,8 +50,8 @@ export function lensFeedItemToPost(item: FeedItem) {
       author: {
         id: item.root.by.id as string,
         name: item.root.by.metadata.displayName as string,
-        handle: item.root.by.handle.fullHandle,
-        profilePictureUrl: profilePictureUrl
+        handle,
+        profilePictureUrl,
       },
       metadata: item.root.metadata,
       content: item.root.metadata.content,

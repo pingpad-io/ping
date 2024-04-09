@@ -145,13 +145,15 @@ export const PostContent = forwardRef<
 
 export const PostInfo = ({ post }: { post: Post }) => {
   const author = post.author;
-  const handle = author.handle.split("/")[1];
+  const isLensHandle = author.handle.split("/")[0] === "lens";
+
+  const handle = isLensHandle ? author.handle.split("/")[1] : author.handle;
 
   return (
     <div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
       <Link className="flex gap-2" href={`/${handle}`}>
         <span className="w-fit truncate font-bold">{author.name}</span>
-        <span className="">{`@${handle}`}</span>
+        <span className="">{`${isLensHandle ? "@" : "#"}${handle}`}</span>
       </Link>
       <span>{"·"}</span>
       <TimeElapsedSince date={post.createdAt} />

@@ -64,7 +64,7 @@ export function LensProfileSelect() {
   }
 
   // connect Lens Profile
-  if (!(session.type === SessionType.WithProfile) && address) {
+  if (session &&!(session.type === SessionType.WithProfile) && address) {
     return (
       <Dialog open>
         <DialogContent className="w-full">

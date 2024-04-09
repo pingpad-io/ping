@@ -18,6 +18,8 @@ export function Feed({ profileId }: { profileId: ProfileId }) {
 
   if (error || !data) return <ErrorPage title="Couldn't fetch posts" />;
 
+  console.log(data)
+
   const feed = data.map((feedItem, idx) => {
     const post: Post = lensFeedItemToPost(feedItem);
 
