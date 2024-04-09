@@ -5,6 +5,7 @@ import Menu from "~/components/Menu";
 import { usePathname } from "next/navigation";
 import "../styles/globals.css";
 import dynamic from "next/dynamic";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const Providers = dynamic(() => import("../components/Providers"), { ssr: false });
 
 // export const metadata = {
@@ -31,6 +32,8 @@ export default function RootLayout({
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
       <body className="flex flex-col">
+        <SpeedInsights />
+
         <Providers>
           <div className="flex flex-row justify-center shrink grow w-full shrink">
             <div className="hidden sm:flex sticky top-0 h-fit">
