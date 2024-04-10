@@ -1,4 +1,3 @@
-import type { Profile } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
 export const ProfileEntry = ({ profile }: { profile: Profile }) => {

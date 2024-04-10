@@ -11,14 +11,11 @@ export function Feed({ profileId }: { profileId: ProfileId }) {
     },
   });
 
-  if (loading) {
-    const suspense = [...Array(12)].map((_e, _i) => <SuspensePostView />);
-    return <div className="flex flex-col gap-1">{suspense}</div>;
-  }
+  const suspense = [...Array(12)].map((idx) => <SuspensePostView key={`suspense-${idx}`} />);
 
-  if (error || !data) return <ErrorPage title="Couldn't fetch posts" />;
+  if (loading) return suspense;
 
-  console.log(data)
+  if (error) return <ErrorPage title="Couldn't fetch posts" />;
 
   const feed = data.map((feedItem, idx) => {
     const post: Post = lensFeedItemToPost(feedItem);
@@ -28,5 +25,5 @@ export function Feed({ profileId }: { profileId: ProfileId }) {
     }
   });
 
-  return <div className="flex flex-col gap-1">{feed}</div>;
+  return feed;
 }
