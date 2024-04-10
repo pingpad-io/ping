@@ -80,13 +80,12 @@ const LandingPage = () => {
                 <AccordionItem value="item-1">
                   <AccordionTrigger>Current status?</AccordionTrigger>
                   <AccordionContent>
-                    In development. Ping (centralized version) has retired, and Pingpad is currently being
-                    decentralized.
-                    {/* decentralized.{" "}
-                    <a className="underline" href="https://github.com/kualta/ping">
+                    In development. Ping (centralized version) has retired, and Pingpad is currently being built. <br />{" "}
+                    <br />
+                    <a className="underline" href="https://github.com/pingpad-io/ping">
                       Contributions
                     </a>{" "}
-                    are welcome. */}
+                    are welcome.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
@@ -111,7 +110,7 @@ const LandingPage = () => {
               <Heart /> by kualta
             </Button>
           </Link>
-          <Link href="https://github.com/kualta/ping">
+          <Link href="https://github.com/pingpad-io/ping">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <Github /> github
             </Button>
