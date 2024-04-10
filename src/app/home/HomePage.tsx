@@ -8,14 +8,8 @@ export const HomePage = () => {
   const { data: session } = useLensSession();
 
   if (!session || !(session.type === SessionType.WithProfile)) {
-    return (
-      <div>
-        <LensProfileSelect />
-      </div>
-    );
+    return <LensProfileSelect />;
   }
 
-  return (
-      <Feed profileId={session.profile.id} />
-  );
+  return <Feed profileId={session.profile.id} />;
 };

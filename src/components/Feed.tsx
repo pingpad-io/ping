@@ -11,7 +11,8 @@ export function Feed({ profileId }: { profileId: ProfileId }) {
     },
   });
 
-  const suspense = [...Array(12)].map((idx) => <SuspensePostView key={`suspense-${idx}`} />);
+  // biome-ignore lint/suspicious/noArrayIndexKey: elements are not unique
+  const suspense = [...Array(12)].map((_v, idx) => <SuspensePostView key={`suspense-${idx}`} />);
 
   if (loading) return suspense;
 
