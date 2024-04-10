@@ -12,8 +12,9 @@ import { http } from "@wagmi/core";
 import { localStorage } from "~/utils/localStorage";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
+import { env } from "~/env.mjs";
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
 
 const metadata = {
