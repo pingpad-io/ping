@@ -6,17 +6,40 @@ import { LogInIcon, LogOutIcon } from "lucide-react";
 import { Form } from "react-hook-form";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { truncateEthAddress } from "~/utils/truncateEthAddress";
-import { DialogHeader, DialogFooter, DialogTrigger, Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "../ui/form";
+import {
+  DialogHeader,
+  DialogFooter,
+  DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "../ui/dialog";
 
 export function ConnectWalletButton() {
   const { connectors, connect } = useConnect();
 
-  const connectorList = connectors.map((connector) => (
-    <Button variant="outline" key={connector.uid} onClick={() => connect({ connector })}>
-      {connector.name}
-    </Button>
-  ));
+  const connectorList = connectors.map((connector) => {
+    if (connector.id !== "injected" && connector.id !== "walletConnect") return null;
+    let name = "";
+    switch (connector.id) {
+      case "injected":
+        name = "Browser Wallet";
+        break;
+      case "walletConnect":
+        name = "Mobile Wallet";
+        break;
+      default:
+        name = connector.name;
+        break;
+    }
+    return (
+      <Button className="w-full" variant="outline" key={connector.uid} onClick={() => connect({ connector })}>
+        <img src={connector.icon} alt="" />
+        {name}
+      </Button>
+    );
+  });
 
   return (
     <Dialog>
