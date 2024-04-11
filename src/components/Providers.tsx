@@ -30,6 +30,7 @@ const wagmiConfig = createConfig({
     injected(),
     walletConnect({
       projectId,
+      metadata,
       qrModalOptions: {
         themeMode: "dark",
         themeVariables: {
@@ -64,7 +65,7 @@ const queryClient = new QueryClient();
 
 const lensConfig: LensConfig = {
   bindings: bindings(wagmiConfig),
-  environment: production, // or production
+  environment: production,
   storage: localStorage(),
 };
 
