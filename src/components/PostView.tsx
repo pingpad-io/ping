@@ -1,32 +1,21 @@
 "use client";
 import Link from "next/link";
-import { type KeyboardEvent, type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
+import { type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
 // import { PostMenu, PostMenuContent } from "../components_old/PostMenu";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
-import { ChevronDown, ChevronUp, Edit2Icon, ReplyIcon } from "lucide-react";
-import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { z } from "zod";
 import Markdown from "../components_old/Markdown";
-import Metadata from "./Metadata";
 // import { ReactionBadge } from "../components_old/Reactions";
 // import { ReactionsList } from "../components_old/ReactionsList";
 import { SignedIn } from "./Authenticated";
 import { TimeElapsedSince } from "../components_old/TimeLabel";
 import { UserAvatar } from "./UserAvatar";
-import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Form, FormControl, FormField, FormItem } from "./ui/form";
-import { Textarea } from "./ui/textarea";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { Post } from "~/types/post";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
-  const author = post.author;
+  const _author = post.author;
   const [collapsed, setCollapsed] = useState(true);
   const postContentRef = useRef<HTMLDivElement>(null);
 

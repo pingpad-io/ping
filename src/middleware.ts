@@ -1,5 +1,4 @@
-import { createMiddlewareSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest, } from "next/server";
 
 export const config = {
   matcher: [
@@ -17,7 +16,7 @@ export const config = {
 };
 
 export async function middleware(req: NextRequest) {
-  const pathname = req.nextUrl.pathname;
+  const _pathname = req.nextUrl.pathname;
   // const res = NextResponse.next();
   // const supabase = createMiddlewareSupabaseClient({ req, res });
 

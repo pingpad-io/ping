@@ -1,6 +1,5 @@
 "use client";
 
-import { LensProfileSelect } from "./web3/LensProfileSelect";
 import { ConnectWalletButton } from "./web3/WalletButton";
 
 const PingAuth = () => {

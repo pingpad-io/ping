@@ -1,10 +1,9 @@
 "use client";
 
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/src/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/src/components/ui/dialog";
 import {
   AtSign,
   BellIcon,
-  LogInIcon,
   MailIcon,
   MessagesSquare,
   SearchIcon,
@@ -23,7 +22,7 @@ import { ConnectWalletButton } from "./web3/WalletButton";
 export const CollapsedContext = createContext(false);
 
 export default function Menu() {
-  const router = useRouter();
+  const _router = useRouter();
   const { data: session, error, loading } = useSession();
 
   if (loading || error) return null;

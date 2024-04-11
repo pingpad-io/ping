@@ -2,13 +2,11 @@
 
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MenuIcon, SendHorizontalIcon } from "lucide-react";
+import { MenuIcon, } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
-import toast, { LoaderIcon } from "react-hot-toast";
 import * as z from "zod";
-import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
 import { UserAvatar } from "~/components/UserAvatar";
@@ -16,7 +14,7 @@ import { profileToAuthor } from "~/types/post";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
   const { data: session, error, loading } = useSession();
-  const router = useRouter();
+  const _router = useRouter();
   const textarea = useRef<HTMLTextAreaElement>(null);
   const placeholderText = replyingTo ? "write a reply..." : "write a new post...";
 
@@ -61,7 +59,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(_data: z.infer<typeof FormSchema>) {
     // createPost({
     //   content: data.content,
     //   threadName: thread,

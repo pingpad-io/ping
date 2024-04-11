@@ -70,7 +70,7 @@ const LandingPage = () => {
             <EmailSubscription />
           </div>
         </div>
-        <Card className="flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4 my-32">
+        <Card className="hover:bg-card flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4 my-32">
           <CardHeader>
             <CardTitle> FAQ </CardTitle>
           </CardHeader>

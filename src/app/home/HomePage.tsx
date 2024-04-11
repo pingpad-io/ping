@@ -1,6 +1,6 @@
 "use client";
 
-import { LimitType, SessionType, useFeed, useSession as useLensSession } from "@lens-protocol/react-web";
+import { SessionType, useSession as useLensSession } from "@lens-protocol/react-web";
 import { Feed } from "~/components/Feed";
 import { LensProfileSelect } from "~/components/web3/LensProfileSelect";
 

@@ -1,10 +1,8 @@
-import type { GetStaticPaths, GetStaticProps } from "next";
 import Chat from "~/components/Chat";
 import { PageLayout } from "~/components/Layout";
 import PostWizard from "~/components/PostWizard";
 import { Card } from "~/components/ui/card";
 import { api } from "~/utils/api";
-import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ChatsPage = ({ chat }: { chat: string }) => {
   const posts = api.posts.get.useQuery({ thread: chat });

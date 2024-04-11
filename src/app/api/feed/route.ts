@@ -1,5 +1,3 @@
-import { LensClient, production } from "@lens-protocol/client";
-import { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 

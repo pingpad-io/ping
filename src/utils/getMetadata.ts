@@ -1,4 +1,3 @@
-import got from "got";
 import createMetascraper from "metascraper";
 import metascraperImage from "metascraper-image";
 import metascraperLogo from "metascraper-logo";
@@ -6,7 +5,7 @@ import metascraperPublisher from "metascraper-publisher";
 import metascraperTitle from "metascraper-title";
 import metascraperUrl from "metascraper-url";
 
-const metascraper = createMetascraper([
+const _metascraper = createMetascraper([
   metascraperTitle(),
   metascraperImage(),
   metascraperPublisher(),

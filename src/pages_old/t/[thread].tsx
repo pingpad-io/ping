@@ -1,10 +1,8 @@
-import type { GetStaticPaths, GetStaticProps } from "next";
 import Feed from "~/components/Feed";
 import { PageLayout } from "~/components/Layout";
 import PostWizard from "~/components/PostWizard";
 import { Card } from "~/components/ui/card";
 import { api } from "~/utils/api";
-import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ThreadPage = ({ thread }: { thread: string }) => {
   const posts = api.posts.get.useQuery({ thread });

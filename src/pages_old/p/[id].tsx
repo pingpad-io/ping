@@ -1,5 +1,5 @@
 import { ChevronLeft } from "lucide-react";
-import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import ErrorPage from "~/components/ErrorPage";
@@ -10,7 +10,6 @@ import PostWizard from "~/components/PostWizard";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { api } from "~/utils/api";
-import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const PostPage: NextPage<{ id: string }> = ({ id }) => {
   const { data, isError, error } = api.posts.get.useQuery({ postId: id });

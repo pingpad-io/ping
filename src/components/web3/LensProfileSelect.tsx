@@ -13,7 +13,6 @@ import { truncateEthAddress } from "~/utils/truncateEthAddress";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DisconnectWalletButton } from "./WalletButton";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { LogoutButton } from "./LogoutButton";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

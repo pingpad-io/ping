@@ -1,6 +1,6 @@
 import { useUser } from "@supabase/auth-helpers-react";
 import { CalendarIcon, EditIcon } from "lucide-react";
-import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";
@@ -9,7 +9,6 @@ import { PageLayout } from "~/components/Layout";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/UserAvatar";
 import { api } from "~/utils/api";
-import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const user = useUser();

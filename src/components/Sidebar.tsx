@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { SearchBar } from "./SearchBar";
-import { PublicThreads } from "../components_old/ThreadList";
 
 const Links = () => {
   return (

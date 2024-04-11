@@ -1,20 +1,9 @@
 "use client";
 
-import { RadioGroup, RadioGroupItem } from "@radix-ui/react-radio-group";
 import { Button } from "../ui/button";
-import { LogInIcon, LogOutIcon } from "lucide-react";
-import { Form } from "react-hook-form";
+import { LogInIcon, } from "lucide-react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { truncateEthAddress } from "~/utils/truncateEthAddress";
-import {
-  DialogHeader,
-  DialogFooter,
-  DialogTrigger,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "../ui/dialog";
+import { DialogHeader, DialogTrigger, Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 
 export function ConnectWalletButton() {
   const { connectors, connect } = useConnect();
@@ -60,7 +49,7 @@ export function DisconnectWalletButton() {
   }
 
   return (
-    <Button variant="ghost" size="sm_icon" onClick={(e) => disconnect()}>
+    <Button variant="ghost" size="sm_icon" onClick={(_e) => disconnect()}>
       <div className="hidden sm:flex text-base">Cancel</div>
     </Button>
   );

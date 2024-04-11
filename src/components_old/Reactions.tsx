@@ -8,7 +8,6 @@ import {
   PartyPopperIcon,
   XIcon,
 } from "lucide-react";
-import toast from "react-hot-toast";
 import type { Post } from "~/server/api/routers/posts";
 import { Button } from "../components/ui/button";
 

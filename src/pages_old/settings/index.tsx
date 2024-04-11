@@ -1,8 +1,6 @@
-import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { PageLayout } from "~/components/Layout";
@@ -11,7 +9,6 @@ import { SignedIn, SignedOut } from "~/components/Signed";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { api } from "~/utils/api";
-import { getSSGHelper } from "~/utils/getSSGHelper";
 
 const SettingsPage = ({ id }: { id: string }) => {
   const supabase = useSupabaseClient();
