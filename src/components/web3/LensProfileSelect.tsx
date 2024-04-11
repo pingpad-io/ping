@@ -1,22 +1,22 @@
 "use client";
 
-import { Button } from "../ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  profileId,
   SessionType,
-  useSession as useLensSession,
+  profileId,
   useLogin,
   useProfilesManaged,
+  useSession as useLensSession,
 } from "@lens-protocol/react-web";
-import { useAccount as useWagmiAccount } from "wagmi";
-import { truncateEthAddress } from "~/utils/truncateEthAddress";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
-import { DisconnectWalletButton } from "./WalletButton";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useAccount as useWagmiAccount } from "wagmi";
+import { z } from "zod";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Address } from "./Address";
+import { DisconnectWalletButton } from "./WalletButton";
 
 export function LensProfileSelect() {
   const { isConnected, address } = useWagmiAccount();
@@ -63,36 +63,47 @@ export function LensProfileSelect() {
   }
 
   // connect Lens Profile
-  if (session &&!(session.type === SessionType.WithProfile) && address) {
+  if (session && !(session.type === SessionType.WithProfile) && address) {
     return (
       <Dialog open>
-        <DialogContent className="w-full">
+        <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Select a Lens Profile to login with.</DialogTitle>
+            <DialogTitle>Select a Lens Profile</DialogTitle>
 
             <DialogDescription>
-              <p className="mb-4">Connected wallet: {truncateEthAddress(address)}</p>
+              <p className="mb-4">
+                Connected wallet: <Address address={address} />
+              </p>
             </DialogDescription>
           </DialogHeader>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
               <FormField
                 control={form.control}
                 name="id"
                 render={({ field }) => (
-                  <FormItem className="flex place-items-start flex-col w-full">
+                  <FormItem className="flex place-items-start flex-col mb-8 w-full">
                     <FormLabel>Pick Username</FormLabel>
                     <FormControl>
-                      <RadioGroup {...field} disabled={isLoginPending} defaultValue="option-one" className="mb-4">
-                        {profiles.map((profile, idx) => (
-                          <FormItem className="flex items-center space-x-3 space-y-0" id={`${idx}`}>
-                            <FormControl>
-                              <RadioGroupItem value={profile.id} />
-                            </FormControl>
-                            <FormLabel className="font-normal">{profile.handle.fullHandle ?? profile.id}</FormLabel>
-                          </FormItem>
-                        ))}
+                      <RadioGroup
+                        {...field}
+                        disabled={isLoginPending}
+                        className="flex flex-col gap-4"
+                        defaultValue="default"
+                      >
+                        {profiles.map((profile, idx) => {
+                          const handleSplit = profile.handle.fullHandle.split("/");
+                          const handle = handleSplit[0] === "lens" ? `@${handleSplit[1]}` : `#${profile.id}`;
+                          return (
+                            <FormItem className="flex items-center space-x-2 space-y-0" id={`${idx}`}>
+                              <FormControl>
+                                <RadioGroupItem value={profile.id} />
+                              </FormControl>
+                              <FormLabel className="font-normal">{handle}</FormLabel>
+                            </FormItem>
+                          );
+                        })}
                       </RadioGroup>
                     </FormControl>
                     <FormMessage />
@@ -100,12 +111,12 @@ export function LensProfileSelect() {
                 )}
               />
 
-              <DialogFooter className="grid grid-cols-2 gap-4 place-content-between items-center space-x-4 w-full">
+              <div className="flex flex-row items-center justify-between w-full">
                 <DisconnectWalletButton />
                 <Button size="sm_icon" disabled={isLoginPending} type="submit">
                   {isLoginPending ? "Sign a message" : "Login"}
                 </Button>
-              </DialogFooter>
+              </div>
             </form>
           </Form>
         </DialogContent>
