@@ -29,7 +29,7 @@ export function ConnectWalletButton() {
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button size="sm_icon">
           <div className="hidden sm:flex text-2xl">connect</div>
           <LogInIcon className="sm:ml-2" />

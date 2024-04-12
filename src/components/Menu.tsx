@@ -25,9 +25,12 @@ export default function Menu() {
   const _router = useRouter();
   const { data: session, error, loading } = useSession();
 
-  if (loading || error) return null;
+  if (error) {
+    console.log(error)
+    return null
+  };
 
-  const authed = session.authenticated && session.type === SessionType.WithProfile;
+  const authed = session?.authenticated && session.type === SessionType.WithProfile;
 
   return (
     <span className="flex h-fit w-full sm:w-max shrink py-4 text-2xl px-4 sm:px-2 lg:w-56">
@@ -87,10 +90,7 @@ export const MenuAuthed = ({ profile }: { profile: Profile }) => {
       </Link>
 
       <Link
-        href={{
-          pathname: "/",
-          query: `${profile.handle}`,
-        }}
+        href={`/u/${profile.handle.fullHandle.split("/")[1].toLowerCase()}`}
       >
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex">profile</div>
