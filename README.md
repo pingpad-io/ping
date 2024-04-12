@@ -62,7 +62,7 @@ and navigate to [http://localhost:3000/home](http://localhost:3000/home)
 
 Now you're all set to start contributing to Pingpad! 
 
-To make a high quality contribution, read **[CONTRIBUTING.md](CONTRIBUTING.md)**
+To make a high quality contribution, read **[contributing.md](CONTRIBUTING.md)**
 
 #### 5. (extra) Install Biome
 

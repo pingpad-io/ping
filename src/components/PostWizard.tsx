@@ -2,15 +2,15 @@
 
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
 import { MenuIcon, } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Textarea } from "./ui/textarea";
-import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
 import { UserAvatar } from "~/components/UserAvatar";
-import { profileToAuthor } from "~/types/post";
+import { Textarea } from "./ui/textarea";
+import { lensProfileToUser } from "./Post";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
   const { data: session, error, loading } = useSession();
@@ -132,7 +132,7 @@ export const AvatarMenu = ({ profile }: { profile: Profile }) => {
     );
   return (
     <div className="w-10 h-10 shrink-0 grow-0">
-      <UserAvatar profile={profileToAuthor(profile)} />
+      <UserAvatar user={lensProfileToUser(profile)} />
     </div>
   );
 };

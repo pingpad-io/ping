@@ -1,5 +1,5 @@
-import { lensFeedItemToPost, Post } from "~/types/post";
 import ErrorPage from "./ErrorPage";
+import { lensFeedItemToPost, Post } from "./Post";
 import { PostView } from "./PostView";
 import { SuspensePostView } from "./SuspensePostView";
 import { ProfileId, useFeed } from "@lens-protocol/react-web";

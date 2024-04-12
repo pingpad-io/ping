@@ -1,21 +1,20 @@
 "use client";
+import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
+import { ChevronDown, ChevronUp, Edit2Icon, ReplyIcon } from "lucide-react";
 import Link from "next/link";
 import { type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
-// import { PostMenu, PostMenuContent } from "../components_old/PostMenu";
-
-import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import Markdown from "../components_old/Markdown";
-// import { ReactionBadge } from "../components_old/Reactions";
-// import { ReactionsList } from "../components_old/ReactionsList";
-import { SignedIn } from "./Authenticated";
 import { TimeElapsedSince } from "../components_old/TimeLabel";
+import { SignedIn } from "./Authenticated";
+import { Post } from "./Post";
+import { ReactionsList } from "./ReactionsList";
 import { UserAvatar } from "./UserAvatar";
+import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Post } from "~/types/post";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
-  const _author = post.author;
   const [collapsed, setCollapsed] = useState(true);
   const postContentRef = useRef<HTMLDivElement>(null);
 
@@ -24,20 +23,20 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
       <Card className="">
         <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
           <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-            <UserAvatar profile={post.author} />
+            <UserAvatar user={post.author} />
           </div>
           <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
             {/* <ReplyInfo post={post} /> */}
             <PostInfo post={post} />
             <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-            {/* {showBadges &&
-              // <PostBadges
-              //   postContentRef={postContentRef}
-              //   post={post}
-              //   collapsed={collapsed}
-              //   setCollapsed={setCollapsed}
-              // />
-              "reactions"} */}
+            {showBadges &&
+              <PostBadges
+                postContentRef={postContentRef}
+                post={post}
+                collapsed={collapsed}
+                setCollapsed={setCollapsed}
+              />
+            }
           </div>
         </CardContent>
       </Card>
@@ -106,9 +105,8 @@ export const PostContent = forwardRef<
   ) : (
     <div
       ref={ref}
-      className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
-        collapsed ? "line-clamp-2" : "line-clamp-none"
-      }`}
+      className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${collapsed ? "line-clamp-2" : "line-clamp-none"
+        }`}
     >
       <Markdown content={post.content} />
       {/* <Metadata metadata={post.metadata} /> */}
@@ -275,159 +273,144 @@ export const PostInfo = ({ post }: { post: Post }) => {
 //   );
 // };
 
-// export const PostBadges = ({
-//   post,
-//   collapsed,
-//   setCollapsed,
-//   postContentRef,
-// }: {
-//   post: Post;
-//   collapsed: boolean;
-//   setCollapsed: (value: boolean) => void;
-//   postContentRef: React.RefObject<HTMLDivElement>;
-// }) => {
-//   const extensionButton = PostExtensionButton({
-//     postContentRef,
-//     post,
-//     collapsed,
-//     setCollapsed,
-//   });
-//   const replyButton = ReplyCount({ post });
-//   const editedButton = EditedIndicator({ post });
-//   const reactionsButton = PostReactionList({ post });
+export const PostBadges = ({
+  post,
+  collapsed,
+  setCollapsed,
+  postContentRef,
+}: {
+  post: Post;
+  collapsed: boolean;
+  setCollapsed: (value: boolean) => void;
+  postContentRef: React.RefObject<HTMLDivElement>;
+}) => {
+  const extensionButton = PostExpandButton({
+    postContentRef,
+    post,
+    collapsed,
+    setCollapsed,
+  });
+  const replyButton = ReplyCount({ post });
+  const editedButton = EditedIndicator({ post });
+  const reactionsButton = ReactionsList({ post });
 
-//   const buttons = (
-//     <>
-//       {extensionButton}
-//       {replyButton}
-//       {editedButton}
-//       {reactionsButton}
-//     </>
-//   );
-//   const hasButtons = extensionButton || replyButton || editedButton || reactionsButton;
+  const buttons = (
+    <>
+      {extensionButton}
+      {replyButton}
+      {editedButton}
+      {reactionsButton}
+    </>
+  );
+  const hasButtons = extensionButton || replyButton || editedButton || reactionsButton;
 
-//   return (
-//     <div className="flex grow flex-row items-center gap-2 leading-3 -mb-1 mt-2">
-//       {buttons}
-//       <SignedIn>
-//         {hasButtons && (
-//           <div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
-//             <ReactionsList post={post} />
-//           </div>
-//         )}
-//       </SignedIn>
-//     </div>
-//   );
-// };
+  return (
+    <div className="flex grow flex-row items-center gap-2 leading-3 -mb-1 mt-2">
+      {buttons}
+      {hasButtons && (
+        <div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
+          <ReactionsList post={post} />
+        </div>
+      )}
+    </div>
+  );
+};
 
-// export function ReplyCount({ post }: { post: Post }) {
-//   const replyCount = post.replies.length;
-//   const replyText = replyCount <= 1 ? "reply" : "replies";
-//   const tooltipText = `${replyCount} ${replyText}`;
+export function ReplyCount({ post }: { post: Post }) {
+  const replyCount = post.comments.length;
+  const replyText = replyCount <= 1 ? "reply" : "replies";
+  const tooltipText = `${replyCount} ${replyText}`;
 
-//   if (post.replies.length <= 0) return null;
+  if (replyCount <= 0) return null;
 
-//   return (
-//     <TooltipProvider>
-//       <Tooltip>
-//         <TooltipTrigger asChild>
-//           <Link
-//             href={`/p/${post.id}`}
-//             className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
-//           >
-//             <Button variant="outline" size="icon" className="w-10 h-6 flex flex-row gap-1 leading-3 ">
-//               {post.replies.length}
-//               <ReplyIcon size={14} className="" />
-//             </Button>
-//           </Link>
-//         </TooltipTrigger>
-//         <TooltipContent>
-//           <p>{tooltipText}</p>
-//         </TooltipContent>
-//       </Tooltip>
-//     </TooltipProvider>
-//   );
-// }
-// export function PostExtensionButton({
-//   collapsed,
-//   setCollapsed,
-//   postContentRef,
-// }: {
-//   post: Post;
-//   collapsed: boolean;
-//   setCollapsed: (value: boolean) => void;
-//   postContentRef: React.RefObject<HTMLDivElement>;
-// }): JSX.Element | null {
-//   const [collapsable, setCollapsable] = useState(false);
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            href={`/p/${post.id}`}
+            className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
+          >
+            <Button variant="outline" size="icon" className="w-10 h-6 flex flex-row gap-1 leading-3 ">
+              {replyCount}
+              <ReplyIcon size={14} className="" />
+            </Button>
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{tooltipText}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
-//   useEffect(() => {
-//     const postContentElement = postContentRef.current;
-//     if (postContentElement) {
-//       const hasLineClamp2Effect = postContentElement.scrollHeight > postContentElement.clientHeight;
-//       setCollapsable(hasLineClamp2Effect);
-//     }
-//   }, [postContentRef.current]);
-//   const toggleCollapsed = () => {
-//     setCollapsed(!collapsed);
-//   };
+export function PostExpandButton({
+  collapsed,
+  setCollapsed,
+  postContentRef,
+}: {
+  post: Post;
+  collapsed: boolean;
+  setCollapsed: (value: boolean) => void;
+  postContentRef: React.RefObject<HTMLDivElement>;
+}): JSX.Element | null {
+  const [collapsable, setCollapsable] = useState(false);
 
-//   if (!collapsable) return null;
+  useEffect(() => {
+    const postContentElement = postContentRef.current;
+    if (postContentElement) {
+      const hasLineClamp2Effect = postContentElement.scrollHeight > postContentElement.clientHeight;
+      setCollapsable(hasLineClamp2Effect);
+    }
+  }, [postContentRef.current]);
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
 
-//   return (
-//     <TooltipProvider>
-//       <Tooltip>
-//         <TooltipTrigger asChild>
-//           <Button
-//             onClick={() => {
-//               toggleCollapsed();
-//             }}
-//             variant="outline"
-//             size="icon"
-//             className="w-10 h-6 flex flex-row gap-1 leading-3 "
-//           >
-//             {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
-//           </Button>
-//         </TooltipTrigger>
-//         <TooltipContent>
-//           <p>{collapsed ? "show more" : "show less"}</p>
-//         </TooltipContent>
-//       </Tooltip>
-//     </TooltipProvider>
-//   );
-// }
+  if (!collapsable) return null;
 
-// export function PostReactionList({ post }: { post: Post }) {
-//   if (post.reactions.length === 0) return null;
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={() => {
+              toggleCollapsed();
+            }}
+            variant="outline"
+            size="icon"
+            className="w-10 h-6 flex flex-row gap-1 leading-3 "
+          >
+            {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{collapsed ? "show more" : "show less"}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
-//   return (
-//     <>
-//       {post.reactions.map((reaction) => (
-//         <ReactionBadge key={post.id + reaction.reactionId} reaction={reaction} post={post} />
-//       ))}
-//     </>
-//   );
-// }
+export function EditedIndicator({ post }: { post: Post }) {
+  const lastUpdated = post.updatedAt ? post.updatedAt.toLocaleString() : post.createdAt.toLocaleString();
+  const tooltipText = `last updated at ${lastUpdated}`;
 
-// export function EditedIndicator({ post }: { post: Post }) {
-//   const _editCount = 1; // TODO: add editCount to schema
-//   const lastUpdated = post.updatedAt.toLocaleString();
-//   const tooltipText = `last updated at ${lastUpdated}`;
+  if (post.createdAt.toUTCString() === post.updatedAt.toUTCString()) return null;
 
-//   if (post.createdAt.toUTCString() === post.updatedAt.toUTCString()) return null;
-
-//   return (
-//     <TooltipProvider>
-//       <Tooltip>
-//         <TooltipTrigger asChild>
-//           <Button variant="outline" size="icon" className="w-10 h-6 flex flex-row gap-1 leading-3 ">
-//             {/* TODO: Add edited count */}
-//             <Edit2Icon size={14} className="shrink-0 scale-x-[-1] transform" />
-//           </Button>
-//         </TooltipTrigger>
-//         <TooltipContent>
-//           <p>{tooltipText}</p>
-//         </TooltipContent>
-//       </Tooltip>
-//     </TooltipProvider>
-//   );
-// }
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline" size="icon" className="w-10 h-6 flex flex-row gap-1 leading-3 ">
+            <Edit2Icon size={14} className="shrink-0 scale-x-[-1] transform" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{tooltipText}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}

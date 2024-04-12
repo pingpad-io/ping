@@ -13,10 +13,10 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import type { Post } from "~/server/api/routers/posts";
 import { api } from "~/utils/api";
-import { ReactionsList } from "./ReactionsList";
-import { SignedIn } from "./Signed";
+import { ReactionsList } from "../components/ReactionsList";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import { SignedIn } from "./Signed";
 
 export const PostMenu = ({ post }: { post: Post }) => {
   return (
