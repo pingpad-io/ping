@@ -1,6 +1,7 @@
 "use client";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/src/components/ui/dialog";
+import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
 import {
   AtSign,
   BellIcon,
@@ -15,8 +16,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createContext } from "react";
 import { Button } from "~/components/ui/button";
-import PostWizard from "./PostWizard";
-import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
+import PostWizard from "./post/PostWizard";
 import { ConnectWalletButton } from "./web3/WalletButton";
 
 export const CollapsedContext = createContext(false);

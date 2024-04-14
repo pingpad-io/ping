@@ -1,7 +1,23 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import { HeartCrackIcon, HeartIcon } from "lucide-react";
-import { Reaction, ReactionType } from "./Post";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
+import { ReactionType } from "./Post";
+
+export function ReactionsList({ post }: { post: Post }) {
+  const reactions = post.reactions;
+
+  if (reactions.length === 0) return null;
+
+  const upvotes = reactions.filter((reaction) => reaction.type === "UPVOTE");
+  const downvotes = reactions.filter((reaction) => reaction.type === "DOWNVOTE");
+
+  return (
+    <>
+      <ReactionBadge key={`${post.id}-upvotes`} reaction={"UPVOTE"} amount={upvotes.length} />
+      <ReactionBadge key={`${post.id}-downvotes`} reaction={"DOWNVOTE"} amount={downvotes.length} />
+    </>
+  );
+}
 
 export const ReactionBadge = ({ reaction, amount }: { reaction: ReactionType; amount: number }) => {
   const tooltipText = "votes";
@@ -15,8 +31,7 @@ export const ReactionBadge = ({ reaction, amount }: { reaction: ReactionType; am
             variant={isUserReacted ? "accent" : "outline"}
             size="icon"
             className={`h-6 ${amount > 0 ? "w-10" : "w-8"}`}
-            onClick={() => {}}
-
+            onClick={() => { }}
           >
             <span className={"flex flex-row gap-1 leading-3"}>
               {amount > 0 ? amount : <></>}

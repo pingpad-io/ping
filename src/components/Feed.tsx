@@ -6,9 +6,9 @@ import {
   usePublications,
 } from "@lens-protocol/react-web";
 import ErrorPage from "./ErrorPage";
-import { Post, lensItemToPost } from "./Post";
-import { PostView } from "./PostView";
 import { SuspensePostView } from "./SuspensePostView";
+import { Post, lensItemToPost } from "./post/Post";
+import { PostView } from "./post/PostView";
 
 
 export function FeedPublic() {

@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import Link from "next/link";
-import { User } from "./Post";
+import { User } from "./post/Post";
 
 export function UserAvatar({ user }: { user: User }) {
   return (

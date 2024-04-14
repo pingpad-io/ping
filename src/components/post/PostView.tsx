@@ -3,16 +3,16 @@ import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu
 import { ChevronDown, ChevronUp, Edit2Icon, ReplyIcon } from "lucide-react";
 import Link from "next/link";
 import { type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
-import Markdown from "../components_old/Markdown";
-import { TimeElapsedSince } from "../components_old/TimeLabel";
-import { SignedIn } from "./Authenticated";
+import Markdown from "../../components_old/Markdown";
+import { TimeElapsedSince } from "../../components_old/TimeLabel";
+import { SignedIn } from "../Authenticated";
+import { ReactionsList } from "../ReactionsList";
+import { UserAvatar } from "../UserAvatar";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
+import { DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { Post } from "./Post";
-import { ReactionsList } from "./ReactionsList";
-import { UserAvatar } from "./UserAvatar";
-import { Button } from "./ui/button";
-import { Card, CardContent } from "./ui/card";
-import { DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const [collapsed, setCollapsed] = useState(true);

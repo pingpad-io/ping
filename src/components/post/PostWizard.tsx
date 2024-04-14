@@ -9,7 +9,7 @@ import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { UserAvatar } from "~/components/UserAvatar";
-import { Textarea } from "./ui/textarea";
+import { Textarea } from "../ui/textarea";
 import { lensProfileToUser } from "./Post";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {

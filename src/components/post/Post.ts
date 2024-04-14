@@ -1,5 +1,5 @@
 import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
-import { AnyPublication, Comment, FeedItem, Mirror, Post, Profile, Quote } from "@lens-protocol/react-web";
+import { AnyPublication, Comment, FeedItem, Mirror, Post as LensPost, Profile, Quote } from "@lens-protocol/react-web";
 
 export type Post = {
   id: string;
@@ -46,18 +46,56 @@ export function lensItemToPost(publication: AnyPublication | FeedItem): Post {
   }
 }
 
+
 export function lensPostToPost(post): Post {}
-export function lensCommentToPost(comment: Comment): Post {}
-export function lensQuoteToPost(quote: Quote): Post {}
+export function lensCommentToPost(comment: Comment): Post {
+  const content = comment.metadata.__typename === "TextOnlyMetadataV3" ? comment.metadata.content : ""; 
+
+  return {
+    id: comment.id,
+    platform: "lens",
+    author: lensProfileToUser(comment.by),
+    comments: [],
+    reactions: [],
+    metadata: comment.metadata,
+    content,
+    createdAt: new Date(comment.createdAt),
+    updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
+  };
+}
+export function lensQuoteToPost(quote: Quote): Post {
+  const content = quote.quoteOn.metadata.__typename === "TextOnlyMetadataV3" ? quote.quoteOn.metadata.content : "";
+
+  return {
+    id: quote.id,
+    platform: "lens",
+    author: lensProfileToUser(quote.by),
+    comments: [],
+    reactions: [],
+    metadata: quote.quoteOn.metadata,
+    content,
+    createdAt: new Date(quote.createdAt),
+    updatedAt: new Date(quote.createdAt), // NOT IMPLEMENTED YET
+  }
+
+}
+
 export function lensMirrorToPost(mirror: Mirror): Post {
+  const content = mirror.mirrorOn.metadata.__typename === "TextOnlyMetadataV3" ? mirror.mirrorOn.metadata.content : "";
+
   return {
     id: mirror.id,
     platform: "lens",
-    content: mirror.mirrorOn.
     author: lensProfileToUser(mirror.by),
+    comments: [],
+    reactions: [],
+    metadata: mirror.mirrorOn.metadata,
+    content,
+    createdAt: new Date(mirror.createdAt),
+    updatedAt: new Date(mirror.createdAt), 
+  };
+}
 
-}
-}
 
 
 export function lensFeedItemToPost(publication: FeedItem | AnyPublication) {
@@ -66,7 +104,7 @@ export function lensFeedItemToPost(publication: FeedItem | AnyPublication) {
   // ThreeDMetadataV3 | TransactionMetadataV3 | VideoMetadataV3;
 
 
-  let root: CommentFields | Post | QuoteFields;
+  let root: CommentFields | LensPost | QuoteFields;
   switch (publication.__typename) {
     case "FeedItem":
       root = publication.root
@@ -89,8 +127,9 @@ export function lensFeedItemToPost(publication: FeedItem | AnyPublication) {
   if (!root.by.metadata || root.metadata.__typename !== "TextOnlyMetadataV3") {
     return null;
   }
+  const content = root.metadata.content;
 
-  const reactions: Reaction[] = root.__typename === "Comment" ? [] : root.reactions.map((reaction) => ({
+  const reactions: Reaction[] = root.__typename === "" ? [] : root.reactions.map((reaction) => ({
     createdAt: reaction.createdAt as unknown as Date,
     type: reaction.reaction,
     by: lensProfileToUser(reaction.by),
