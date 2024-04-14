@@ -42,7 +42,6 @@
     "@vercel/speed-insights": "^1.0.10",
     "@wagmi/connectors": "^4.1.24",
     "@wagmi/core": "^2.6.15",
-    "@web3modal/wagmi": "^4.1.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cookies-next": "^2.1.1",

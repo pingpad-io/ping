@@ -1,7 +1,7 @@
 "use client";
 
 import { SessionType, useSession as useLensSession } from "@lens-protocol/react-web";
-import { Feed } from "~/components/Feed";
+import { FeedPrivate } from "~/components/Feed";
 import { LensProfileSelect } from "~/components/web3/LensProfileSelect";
 
 export const HomePage = () => {
@@ -11,5 +11,5 @@ export const HomePage = () => {
     return <LensProfileSelect />;
   }
 
-  return <Feed profileId={session.profile.id} />;
+  return <FeedPrivate profileId={session.profile.id} />;
 };

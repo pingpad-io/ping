@@ -1,4 +1,5 @@
-import { FeedItem, Profile } from "@lens-protocol/react-web";
+import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
+import { AnyPublication, Comment, FeedItem, Mirror, Post, Profile, Quote } from "@lens-protocol/react-web";
 
 export type Post = {
   id: string;
@@ -28,23 +29,76 @@ export type User = {
   profilePictureUrl?: string;
 };
 
-export function lensFeedItemToPost(item: FeedItem) {
+export function lensItemToPost(publication: AnyPublication | FeedItem): Post {
+  switch (publication.__typename) {
+    case "FeedItem":
+      return lensFeedItemToPost(publication);
+    case "Post":
+      return lensPostToPost(publication);
+    case "Comment":
+      return lensCommentToPost(publication);
+    case "Quote":
+      return lensQuoteToPost(publication);
+    case "Mirror":
+      return lensMirrorToPost(publication);
+    default:
+      return null;
+  }
+}
+
+export function lensPostToPost(post): Post {}
+export function lensCommentToPost(comment: Comment): Post {}
+export function lensQuoteToPost(quote: Quote): Post {}
+export function lensMirrorToPost(mirror: Mirror): Post {
+  return {
+    id: mirror.id,
+    platform: "lens",
+    content: mirror.mirrorOn.
+    author: lensProfileToUser(mirror.by),
+
+}
+}
+
+
+export function lensFeedItemToPost(publication: FeedItem | AnyPublication) {
   // metadata: ArticleMetadataV3 | AudioMetadataV3 | CheckingInMetadataV3 | EmbedMetadataV3 | EventMetadataV3 | ImageMetadataV3 |
   // LinkMetadataV3 | LiveStreamMetadataV3 | MintMetadataV3 | SpaceMetadataV3 | StoryMetadataV3 | TextOnlyMetadataV3 |
   // ThreeDMetadataV3 | TransactionMetadataV3 | VideoMetadataV3;
-  if (!item.root.by.metadata || item.root.metadata.__typename !== "TextOnlyMetadataV3") {
+
+
+  let root: CommentFields | Post | QuoteFields;
+  switch (publication.__typename) {
+    case "FeedItem":
+      root = publication.root
+      break
+    case "Post":
+      root = publication
+      break
+    case "Comment":
+      root = publication.root
+      break
+    case "Quote":
+      root = publication.quoteOn
+      break
+    case "Mirror":
+      root = publication.mirrorOn
+      break
+    default:
+      return null;
+  }
+  if (!root.by.metadata || root.metadata.__typename !== "TextOnlyMetadataV3") {
     return null;
   }
 
-  const reactions: Reaction[] = item.reactions.map((reaction) => ({
+  const reactions: Reaction[] = root.__typename === "Comment" ? [] : root.reactions.map((reaction) => ({
     createdAt: reaction.createdAt as unknown as Date,
     type: reaction.reaction,
     by: lensProfileToUser(reaction.by),
-  }));
+  })): [];
 
-  const author = lensProfileToUser(item.root.by);
+  const author = lensProfileToUser(root.root.by);
 
-  const comments: Post[] = item.comments.map((comment) => ({
+  const comments: Post[] = root.comments.map((comment) => ({
     id: comment.id as string,
     author: lensProfileToUser(comment.by),
     content: comment.metadata.__typename === "TextOnlyMetadataV3" ? comment.metadata.content : "",
@@ -56,17 +110,17 @@ export function lensFeedItemToPost(item: FeedItem) {
     platform: "lens",
   }));
 
-  const createdAt = new Date(item.root.createdAt);
+  const createdAt = new Date(root.root.createdAt);
 
-  if (item.root.__typename === "Post") {
+  if (root.root.__typename === "Post") {
     return {
-      id: item.root.id as string,
+      id: root.root.id as string,
       platform: "lens",
       author,
       reactions,
       comments,
-      metadata: item.root.metadata,
-      content: item.root.metadata.content,
+      metadata: root.root.metadata,
+      content: root.root.metadata.content,
       createdAt,
       updatedAt: createdAt, // NOT IMPLEMENTED YET
     } as Post;
