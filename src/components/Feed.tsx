@@ -23,7 +23,7 @@ export function FeedPublic() {
 
   const posts = data.map(publication => lensItemToPost(publication))
   return (
-
+    <Feed data={posts} loading={loading} error={error} />
   )
 }
 
@@ -34,25 +34,13 @@ export function FeedPrivate({ profileId }: { profileId?: ProfileId }) {
     },
   });
 
-  // biome-ignore lint/suspicious/noArrayIndexKey: elements are not unique
-  const suspense = [...Array(12)].map((_v, idx) => <SuspensePostView key={`suspense-${idx}`} />);
-
-  if (loading) return suspense;
-
-  if (error) return <ErrorPage title="Couldn't fetch posts" />;
-
-  const feed = data.map((feedItem, idx) => {
-    const post: Post = lensItemToPost(feedItem);
-
-    if (post) {
-      return <PostView key={`${post.id}-${idx}`} post={post} />;
-    }
-  });
-
-  return feed;
+  const posts = data.map(publication => lensItemToPost(publication))
+  return (
+    <Feed data={posts} loading={loading} error={error} />
+  )
 }
 
-function FeedInternal({ data, loading, error }: { data: Post[]; loading: boolean; error: Error | undefined }) {
+function Feed ({ data, loading, error }: { data: Post[]; loading: boolean; error: Error | undefined }) {
   // biome-ignore lint/suspicious/noArrayIndexKey: elements are not unique
   const suspense = [...Array(12)].map((_v, idx) => <SuspensePostView key={`suspense-${idx}`} />);
 

@@ -6,13 +6,13 @@ import { type PropsWithChildren, forwardRef, useEffect, useRef, useState } from 
 import Markdown from "../../components_old/Markdown";
 import { TimeElapsedSince } from "../../components_old/TimeLabel";
 import { SignedIn } from "../Authenticated";
-import { ReactionsList } from "../ReactionsList";
 import { UserAvatar } from "../UserAvatar";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { Post } from "./Post";
+import { ReactionsList } from "./PostReactions";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const [collapsed, setCollapsed] = useState(true);

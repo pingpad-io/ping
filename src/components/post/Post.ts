@@ -29,76 +29,7 @@ export type User = {
   profilePictureUrl?: string;
 };
 
-export function lensItemToPost(publication: AnyPublication | FeedItem): Post {
-  switch (publication.__typename) {
-    case "FeedItem":
-      return lensFeedItemToPost(publication);
-    case "Post":
-      return lensPostToPost(publication);
-    case "Comment":
-      return lensCommentToPost(publication);
-    case "Quote":
-      return lensQuoteToPost(publication);
-    case "Mirror":
-      return lensMirrorToPost(publication);
-    default:
-      return null;
-  }
-}
-
-
-export function lensPostToPost(post): Post {}
-export function lensCommentToPost(comment: Comment): Post {
-  const content = comment.metadata.__typename === "TextOnlyMetadataV3" ? comment.metadata.content : ""; 
-
-  return {
-    id: comment.id,
-    platform: "lens",
-    author: lensProfileToUser(comment.by),
-    comments: [],
-    reactions: [],
-    metadata: comment.metadata,
-    content,
-    createdAt: new Date(comment.createdAt),
-    updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
-  };
-}
-export function lensQuoteToPost(quote: Quote): Post {
-  const content = quote.quoteOn.metadata.__typename === "TextOnlyMetadataV3" ? quote.quoteOn.metadata.content : "";
-
-  return {
-    id: quote.id,
-    platform: "lens",
-    author: lensProfileToUser(quote.by),
-    comments: [],
-    reactions: [],
-    metadata: quote.quoteOn.metadata,
-    content,
-    createdAt: new Date(quote.createdAt),
-    updatedAt: new Date(quote.createdAt), // NOT IMPLEMENTED YET
-  }
-
-}
-
-export function lensMirrorToPost(mirror: Mirror): Post {
-  const content = mirror.mirrorOn.metadata.__typename === "TextOnlyMetadataV3" ? mirror.mirrorOn.metadata.content : "";
-
-  return {
-    id: mirror.id,
-    platform: "lens",
-    author: lensProfileToUser(mirror.by),
-    comments: [],
-    reactions: [],
-    metadata: mirror.mirrorOn.metadata,
-    content,
-    createdAt: new Date(mirror.createdAt),
-    updatedAt: new Date(mirror.createdAt), 
-  };
-}
-
-
-
-export function lensFeedItemToPost(publication: FeedItem | AnyPublication) {
+export function lensItemToPost(publication: FeedItem | AnyPublication) {
   // metadata: ArticleMetadataV3 | AudioMetadataV3 | CheckingInMetadataV3 | EmbedMetadataV3 | EventMetadataV3 | ImageMetadataV3 |
   // LinkMetadataV3 | LiveStreamMetadataV3 | MintMetadataV3 | SpaceMetadataV3 | StoryMetadataV3 | TextOnlyMetadataV3 |
   // ThreeDMetadataV3 | TransactionMetadataV3 | VideoMetadataV3;
@@ -129,37 +60,37 @@ export function lensFeedItemToPost(publication: FeedItem | AnyPublication) {
   }
   const content = root.metadata.content;
 
-  const reactions: Reaction[] = root.__typename === "" ? [] : root.reactions.map((reaction) => ({
+  const reactions: Reaction[] = publication.__typename === "FeedItem" ? publication.reactions.map((reaction) => ({
     createdAt: reaction.createdAt as unknown as Date,
     type: reaction.reaction,
     by: lensProfileToUser(reaction.by),
   })): [];
 
-  const author = lensProfileToUser(root.root.by);
+  const author = lensProfileToUser(root.by);
 
-  const comments: Post[] = root.comments.map((comment) => ({
+  const comments: Post[] = publication.__typename === "FeedItem" ? publication.comments.map((comment) => ({
     id: comment.id as string,
     author: lensProfileToUser(comment.by),
-    content: comment.metadata.__typename === "TextOnlyMetadataV3" ? comment.metadata.content : "",
     createdAt: new Date(comment.createdAt),
     updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
+    content, 
     comments: [],
     reactions: [],
     metadata: comment.metadata,
     platform: "lens",
-  }));
+  })) : [];
 
-  const createdAt = new Date(root.root.createdAt);
+  const createdAt = new Date(root.createdAt);
 
-  if (root.root.__typename === "Post") {
+  if (root.__typename === "Post") {
     return {
-      id: root.root.id as string,
+      id: root.id as string,
       platform: "lens",
       author,
       reactions,
       comments,
-      metadata: root.root.metadata,
-      content: root.root.metadata.content,
+      metadata: root.metadata,
+      content: root.metadata.content,
       createdAt,
       updatedAt: createdAt, // NOT IMPLEMENTED YET
     } as Post;

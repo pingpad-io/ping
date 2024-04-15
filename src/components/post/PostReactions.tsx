@@ -1,7 +1,7 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import { HeartCrackIcon, HeartIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { ReactionType } from "./Post";
+import { Post, ReactionType } from "./Post";
 
 export function ReactionsList({ post }: { post: Post }) {
   const reactions = post.reactions;
