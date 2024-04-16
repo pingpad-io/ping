@@ -1,6 +1,6 @@
-import { Card } from "./ui/card";
+import { Card } from "../ui/card";
 
-export const SuspensePostView = () => {
+export const SuspenseView = () => {
   const avatar = (
     <div className="flex h-full items-center justify-center">
       <div className="h-12 w-12 animate-pulse rounded-full bg-muted" />

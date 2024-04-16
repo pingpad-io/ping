@@ -5,7 +5,7 @@ import type { PropsWithChildren } from "react";
 export function SignedIn(props: PropsWithChildren) {
   const { data: session} = useSession();
 
-  if (!session.authenticated) {
+  if (!session || !session.authenticated) {
     return null;
   }
 
@@ -15,7 +15,7 @@ export function SignedIn(props: PropsWithChildren) {
 export function SignedOut(props: PropsWithChildren) {
   const { data: session} = useSession();
 
-  if (session.authenticated) {
+  if (session?.authenticated) {
     return null;
   }
 

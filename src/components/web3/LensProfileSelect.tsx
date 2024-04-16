@@ -32,8 +32,6 @@ export function LensProfileSelect() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    event.preventDefault();
-
     const id = profileId(values.id);
 
     const result = await login({
@@ -51,18 +49,18 @@ export function LensProfileSelect() {
   if (!isConnected) return null;
 
   if (loading) {
-    return <>loading...</>;
+    return null;
   }
 
   if (error) {
-    return <>{error}</>;
+    console.error(error.message)
+    return null;
   }
 
   if (profiles.length === 0) {
     return <p className="mb-4">No Lens Profiles found in this wallet.</p>;
   }
 
-  // connect Lens Profile
   if (session && !(session.type === SessionType.WithProfile) && address) {
     return (
       <Dialog open>
@@ -98,7 +96,7 @@ export function LensProfileSelect() {
                           return (
                             <FormItem className="flex items-center space-x-2 space-y-0" id={`${idx}`}>
                               <FormControl>
-                                <RadioGroupItem value={profile.id} />
+                                <RadioGroupItem defaultChecked={idx === 0} value={profile.id} />
                               </FormControl>
                               <FormLabel className="font-normal">{handle}</FormLabel>
                             </FormItem>

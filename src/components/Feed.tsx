@@ -6,12 +6,12 @@ import {
   usePublications,
 } from "@lens-protocol/react-web";
 import ErrorPage from "./ErrorPage";
-import { SuspensePostView } from "./SuspensePostView";
 import { Post, lensItemToPost } from "./post/Post";
 import { PostView } from "./post/PostView";
+import { SuspenseView } from "./post/SuspenseView";
 
 
-export function FeedPublic() {
+export function PublicFeed() {
   const { data, loading, error } = usePublications({
     where: {
       publicationTypes: [PublicationType.Post],
@@ -22,7 +22,7 @@ export function FeedPublic() {
   });
 
   // biome-ignore lint/suspicious/noArrayIndexKey: elements are not unique
-  const suspense = [...Array(12)].map((_v, idx) => <SuspensePostView key={`suspense-${idx}`} />);
+  const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
 
   if (loading) return suspense;
 
@@ -34,7 +34,7 @@ export function FeedPublic() {
   )
 }
 
-export function FeedPrivate({ profileId }: { profileId?: ProfileId }) {
+export function PersonalFeed({ profileId }: { profileId?: ProfileId }) {
   const { data, loading, error } = useFeed({
     where: {
       for: profileId,
@@ -42,7 +42,7 @@ export function FeedPrivate({ profileId }: { profileId?: ProfileId }) {
   });
 
   // biome-ignore lint/suspicious/noArrayIndexKey: elements are not unique
-  const suspense = [...Array(12)].map((_v, idx) => <SuspensePostView key={`suspense-${idx}`} />);
+  const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
 
   if (loading) return suspense;
 
