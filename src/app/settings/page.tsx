@@ -1,16 +1,13 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
 import { SignedIn, SignedOut } from "~/components/Authenticated";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { DisconnectWalletButton } from "~/components/web3/WalletButton";
 
 export const SettingsPage = () => {
   const { setTheme } = useTheme();
-  const router = useRouter();
-
-  const signOut = async () => { };
 
   const themeButtons = ["light", "dark"].map((theme) => (
     <Button
@@ -44,9 +41,7 @@ export const SettingsPage = () => {
             <CardTitle>Danger Zone</CardTitle>
           </CardHeader>
           <CardContent>
-            <Button type="button" variant="destructive" onClick={() => signOut()}>
-              Sign Out
-            </Button>
+            <DisconnectWalletButton />
           </CardContent>
         </Card>
       </SignedIn>
