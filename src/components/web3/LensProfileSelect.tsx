@@ -110,7 +110,7 @@ export function LensProfileSelect() {
               />
 
               <div className="flex flex-row items-center justify-between w-full">
-                <DisconnectWalletButton />
+                <DisconnectWalletButton>Cancel</DisconnectWalletButton>
                 <Button size="sm_icon" disabled={isLoginPending} type="submit">
                   {isLoginPending ? "Sign a message" : "Login"}
                 </Button>

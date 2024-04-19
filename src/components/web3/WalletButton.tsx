@@ -6,6 +6,7 @@ import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { PropsWithChildren } from "react";
 
 export function ConnectWalletButton() {
   const { connectors, connect } = useConnect();
@@ -48,7 +49,7 @@ export function ConnectWalletButton() {
   );
 }
 
-export function DisconnectWalletButton() {
+export function DisconnectWalletButton(props: PropsWithChildren) {
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
@@ -58,7 +59,7 @@ export function DisconnectWalletButton() {
 
   return (
     <Button variant="ghost" size="sm_icon" onClick={(_e) => disconnect()}>
-      <div className="hidden sm:flex text-base">Cancel</div>
+      <div className="hidden sm:flex text-base">{props.children}</div>
     </Button>
   );
 }
