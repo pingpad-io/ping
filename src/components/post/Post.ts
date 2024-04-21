@@ -1,5 +1,5 @@
 import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
-import { AnyPublication, Comment, FeedItem, Mirror, Post as LensPost, Profile, Quote } from "@lens-protocol/react-web";
+import { AnyPublication, FeedItem, Post as LensPost, Profile } from "@lens-protocol/react-web";
 
 export type Post = {
   id: string;
@@ -34,24 +34,23 @@ export function lensItemToPost(publication: FeedItem | AnyPublication) {
   // LinkMetadataV3 | LiveStreamMetadataV3 | MintMetadataV3 | SpaceMetadataV3 | StoryMetadataV3 | TextOnlyMetadataV3 |
   // ThreeDMetadataV3 | TransactionMetadataV3 | VideoMetadataV3;
 
-
   let root: CommentFields | LensPost | QuoteFields;
   switch (publication.__typename) {
     case "FeedItem":
-      root = publication.root
-      break
+      root = publication.root;
+      break;
     case "Post":
-      root = publication
-      break
+      root = publication;
+      break;
     case "Comment":
-      root = publication.root
-      break
+      root = publication.root;
+      break;
     case "Quote":
-      root = publication.quoteOn
-      break
+      root = publication.quoteOn;
+      break;
     case "Mirror":
-      root = publication.mirrorOn
-      break
+      root = publication.mirrorOn;
+      break;
     default:
       return null;
   }
@@ -60,25 +59,31 @@ export function lensItemToPost(publication: FeedItem | AnyPublication) {
   }
   const content = root.metadata.content;
 
-  const reactions: Reaction[] = publication.__typename === "FeedItem" ? publication.reactions.map((reaction) => ({
-    createdAt: reaction.createdAt as unknown as Date,
-    type: reaction.reaction,
-    by: lensProfileToUser(reaction.by),
-  })): [];
+  const reactions: Reaction[] =
+    publication.__typename === "FeedItem"
+      ? publication.reactions.map((reaction) => ({
+          createdAt: reaction.createdAt as unknown as Date,
+          type: reaction.reaction,
+          by: lensProfileToUser(reaction.by),
+        }))
+      : [];
 
   const author = lensProfileToUser(root.by);
 
-  const comments: Post[] = publication.__typename === "FeedItem" ? publication.comments.map((comment) => ({
-    id: comment.id as string,
-    author: lensProfileToUser(comment.by),
-    createdAt: new Date(comment.createdAt),
-    updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
-    content, 
-    comments: [],
-    reactions: [],
-    metadata: comment.metadata,
-    platform: "lens",
-  })) : [];
+  const comments: Post[] =
+    publication.__typename === "FeedItem"
+      ? publication.comments.map((comment) => ({
+          id: comment.id as string,
+          author: lensProfileToUser(comment.by),
+          createdAt: new Date(comment.createdAt),
+          updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
+          content,
+          comments: [],
+          reactions: [],
+          metadata: comment.metadata,
+          platform: "lens",
+        }))
+      : [];
 
   const createdAt = new Date(root.createdAt);
 

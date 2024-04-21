@@ -1,16 +1,16 @@
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { PirvateThread, PublicThread } from "./ThreadEntry";
-import ThreadWizard from "./ThreadWizard";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "../components/ui/dialog";
+import { PirvateThread, PublicThread } from "./ThreadEntry";
+import ThreadWizard from "./ThreadWizard";
 
 export function PublicThreads() {
   const [open, setOpen] = useState(false);
   // const { data: threads } = api.threads.get.useQuery({});
-  const threads = [1,3]
+  const threads = [1, 3];
 
   const threadList = threads?.map((thread) => {
     return <PublicThread key={thread.id} thread={thread} />;

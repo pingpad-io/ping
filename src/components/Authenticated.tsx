@@ -3,7 +3,7 @@ import type { PropsWithChildren } from "react";
 
 // render any react children only if the user is signed out
 export function SignedIn(props: PropsWithChildren) {
-  const { data: session} = useSession();
+  const { data: session } = useSession();
 
   if (!session || !session.authenticated) {
     return null;
@@ -13,7 +13,7 @@ export function SignedIn(props: PropsWithChildren) {
 }
 
 export function SignedOut(props: PropsWithChildren) {
-  const { data: session} = useSession();
+  const { data: session } = useSession();
 
   if (session?.authenticated) {
     return null;

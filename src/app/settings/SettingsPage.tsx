@@ -40,9 +40,7 @@ export const SettingsPage = () => {
             <CardTitle>Danger Zone</CardTitle>
           </CardHeader>
           <CardContent>
-            <DisconnectWalletButton>
-              Disconnect
-            </DisconnectWalletButton>
+            <DisconnectWalletButton>Disconnect</DisconnectWalletButton>
           </CardContent>
         </Card>
       </SignedIn>

@@ -5,10 +5,8 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "format": "bunx @biomejs/biome format --write ./src/*",
-    "lint": "bunx @biomejs/biome lint --apply-unsafe ./src/*",
-    "check": "bunx @biomejs/biome check --apply-unsafe ./src/*",
-    "start": "next start"
+    "start": "next start",
+    "check": "bunx @biomejs/biome check --apply-unsafe ./src/*"
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.7.2",
@@ -36,8 +34,6 @@
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
     "@types/got": "^9.6.12",
-    "@upstash/ratelimit": "^0.4.1",
-    "@upstash/redis": "^1.20.1",
     "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.10",
     "@wagmi/connectors": "^4.1.24",
@@ -81,7 +77,6 @@
     "zod": "^3.22.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.5.3",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.21.1",
     "@types/metascraper": "^5.14.3",

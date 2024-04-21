@@ -29,14 +29,14 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
             {/* <ReplyInfo post={post} /> */}
             <PostInfo post={post} />
             <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-            {showBadges &&
+            {showBadges && (
               <PostBadges
                 postContentRef={postContentRef}
                 post={post}
                 collapsed={collapsed}
                 setCollapsed={setCollapsed}
               />
-            }
+            )}
           </div>
         </CardContent>
       </Card>
@@ -105,8 +105,9 @@ export const PostContent = forwardRef<
   ) : (
     <div
       ref={ref}
-      className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${collapsed ? "line-clamp-2" : "line-clamp-none"
-        }`}
+      className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
+        collapsed ? "line-clamp-2" : "line-clamp-none"
+      }`}
     >
       <Markdown content={post.content} />
       {/* <Metadata metadata={post.metadata} /> */}

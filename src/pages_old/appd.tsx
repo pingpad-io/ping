@@ -12,7 +12,7 @@ import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider, createConfig, http } from "wagmi";
+import { http, WagmiProvider, createConfig } from "wagmi";
 import { polygon, polygonMumbai } from "wagmi/chains";
 
 const queryClient = new QueryClient();

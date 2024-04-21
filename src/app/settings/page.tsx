@@ -1,10 +1,7 @@
 import { SettingsPage } from "./SettingsPage";
 
 const settings = async () => {
-  return (
-    <SettingsPage />
-  );
+  return <SettingsPage />;
 };
-
 
 export default settings;

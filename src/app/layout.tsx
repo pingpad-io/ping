@@ -1,12 +1,12 @@
 "use client";
-import { quicksand } from "~/styles/fonts";
-import { Sidebar } from "~/components/Sidebar";
-import Menu from "~/components/Menu";
-import { usePathname } from "next/navigation";
-import "../styles/globals.css";
-import dynamic from "next/dynamic";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
+import Menu from "~/components/Menu";
+import { Sidebar } from "~/components/Sidebar";
+import { quicksand } from "~/styles/fonts";
+import "../styles/globals.css";
 
 const Providers = dynamic(() => import("../components/Providers"), { ssr: false });
 

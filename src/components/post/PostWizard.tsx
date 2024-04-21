@@ -3,7 +3,7 @@
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
-import { MenuIcon, } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";

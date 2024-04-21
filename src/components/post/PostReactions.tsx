@@ -31,7 +31,7 @@ export const ReactionBadge = ({ reaction, amount }: { reaction: ReactionType; am
             variant={isUserReacted ? "accent" : "outline"}
             size="icon"
             className={`h-6 ${amount > 0 ? "w-10" : "w-8"}`}
-            onClick={() => { }}
+            onClick={() => {}}
           >
             <span className={"flex flex-row gap-1 leading-3"}>
               {amount > 0 ? amount : <></>}

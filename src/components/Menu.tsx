@@ -2,16 +2,7 @@
 
 import { Dialog, DialogContent, DialogTrigger } from "@/src/components/ui/dialog";
 import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
-import {
-  AtSign,
-  BellIcon,
-  MailIcon,
-  MessagesSquare,
-  SearchIcon,
-  SendIcon,
-  SettingsIcon,
-  UserIcon,
-} from "lucide-react";
+import { AtSign, BellIcon, MailIcon, MessagesSquare, SearchIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createContext } from "react";
@@ -26,9 +17,9 @@ export default function Menu() {
   const { data: session, error, loading } = useSession();
 
   if (error) {
-    console.log(error)
-    return null
-  };
+    console.log(error);
+    return null;
+  }
 
   const authed = session?.authenticated && session.type === SessionType.WithProfile;
 
@@ -89,9 +80,7 @@ export const MenuAuthed = ({ profile }: { profile: Profile }) => {
         </Button>
       </Link>
 
-      <Link
-        href={`/u/${profile.handle.fullHandle.split("/")[1].toLowerCase()}`}
-      >
+      <Link href={`/u/${profile.handle.fullHandle.split("/")[1].toLowerCase()}`}>
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex">profile</div>
           <UserIcon className="sm:ml-2" />

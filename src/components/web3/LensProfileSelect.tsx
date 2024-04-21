@@ -1,29 +1,19 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  SessionType,
-  profileId,
-  useLogin,
-  useProfilesManaged,
-  useSession as useLensSession,
-} from "@lens-protocol/react-web";
+import { profileId, useLogin, useProfilesManaged, useSession as useLensSession } from "@lens-protocol/react-web";
 import { useAccount as useWagmiAccount } from "wagmi";
-import { z } from "zod";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Address } from "./Address";
-import { DisconnectWalletButton } from "./WalletButton";
-import { Label } from "../ui/label";
 import { UserAvatar } from "../UserAvatar";
 import { lensProfileToUser } from "../post/Post";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Label } from "../ui/label";
+import { Address } from "./Address";
 
 export function LensProfileSelect() {
   const { isConnected, address } = useWagmiAccount();
   const { data: session } = useLensSession();
   const { execute: login, loading: isLoginPending } = useLogin();
   const { data: profiles, error, loading } = useProfilesManaged({ for: address, includeOwned: true });
-
 
   const onSubmit = async (profile: string) => {
     const id = profileId(profile);
@@ -47,7 +37,7 @@ export function LensProfileSelect() {
   }
 
   if (error) {
-    console.error(error.message)
+    console.error(error.message);
     return null;
   }
 
@@ -56,7 +46,7 @@ export function LensProfileSelect() {
   }
 
   if (!session || !address) {
-    return null
+    return null;
   }
 
   return (
@@ -78,7 +68,14 @@ export function LensProfileSelect() {
             const handle = handleSplit[0] === "lens" ? `${handleSplit[1]}` : `#${profile.id}`;
             return (
               <div id={`${idx}`} key={`${profile.id}`}>
-                <Button className="flex flex-row items-center gap-2" size="default" variant="outline" value={profile.id} type="submit" onClick={() => onSubmit(profile.id)}>
+                <Button
+                  className="flex flex-row items-center gap-2"
+                  size="default"
+                  variant="outline"
+                  value={profile.id}
+                  type="submit"
+                  onClick={() => onSubmit(profile.id)}
+                >
                   <div className="w-9 h-9">
                     <UserAvatar link={false} user={lensProfileToUser(profile)} />
                   </div>
@@ -87,7 +84,6 @@ export function LensProfileSelect() {
               </div>
             );
           })}
-
         </div>
 
         {isLoginPending ? <Label>Sign the message in your wallet to login</Label> : <></>}

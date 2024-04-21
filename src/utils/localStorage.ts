@@ -1,5 +1,5 @@
-import { IObservableStorageProvider, StorageProviderSubscriber } from '@lens-protocol/storage';
-import { window } from './globals';
+import { IObservableStorageProvider, StorageProviderSubscriber } from "@lens-protocol/storage";
+import { window } from "./globals";
 
 class LocalStorageProvider implements IObservableStorageProvider {
   private subscribers = new Map<string, StorageProviderSubscriber[]>();
@@ -60,11 +60,11 @@ class LocalStorageProvider implements IObservableStorageProvider {
   };
 
   private listenToStorageEvent() {
-    window?.addEventListener('storage', this.onStorageEvent);
+    window?.addEventListener("storage", this.onStorageEvent);
   }
 
   private stopListeningToStorageEvent() {
-    window?.removeEventListener('storage', this.onStorageEvent);
+    window?.removeEventListener("storage", this.onStorageEvent);
   }
 }
 

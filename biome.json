@@ -15,8 +15,7 @@
         "noUnusedImports": "warn"
       },
       "suspicious": {
-        "noExplicitAny": "off",
-        "noImplicitAnyLet": "off"
+        "noExplicitAny": "off"
       },
       "a11y": {
         "noSvgWithoutTitle": "off"

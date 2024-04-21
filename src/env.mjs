@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 /**
- * Server-side environment variables schema. 
+ * Server-side environment variables schema.
  */
 const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
 });
 
 /**
- * Client-side environment variables schema 
+ * Client-side environment variables schema
  */
 const client = z.object({
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: z.string(),

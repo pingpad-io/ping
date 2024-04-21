@@ -2,11 +2,11 @@
 
 import { useLogout } from "@lens-protocol/react-web";
 import { GlobeIcon, LogInIcon } from "lucide-react";
+import { PropsWithChildren } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { PropsWithChildren } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 export function ConnectWalletButton() {
   const { connectors, connect } = useConnect();
