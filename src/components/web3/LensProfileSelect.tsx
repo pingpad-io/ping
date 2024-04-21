@@ -8,15 +8,15 @@ import {
   useProfilesManaged,
   useSession as useLensSession,
 } from "@lens-protocol/react-web";
-import { useForm } from "react-hook-form";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Address } from "./Address";
 import { DisconnectWalletButton } from "./WalletButton";
+import { Label } from "../ui/label";
+import { UserAvatar } from "../UserAvatar";
+import { lensProfileToUser } from "../post/Post";
 
 export function LensProfileSelect() {
   const { isConnected, address } = useWagmiAccount();
@@ -24,15 +24,9 @@ export function LensProfileSelect() {
   const { execute: login, loading: isLoginPending } = useLogin();
   const { data: profiles, error, loading } = useProfilesManaged({ for: address, includeOwned: true });
 
-  const formSchema = z.object({
-    id: z.string(),
-  });
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const id = profileId(values.id);
+  const onSubmit = async (profile: string) => {
+    const id = profileId(profile);
 
     const result = await login({
       address,
@@ -61,64 +55,43 @@ export function LensProfileSelect() {
     return <p className="mb-4">No Lens Profiles found in this wallet.</p>;
   }
 
-  if (session && !(session.type === SessionType.WithProfile) && address) {
-    return (
-      <Dialog open>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Select a Lens Profile</DialogTitle>
+  if (!session || !address) {
+    return null
+  }
 
-            <DialogDescription>
-              <p className="mb-4">
-                Connected wallet: <Address address={address} />
-              </p>
-            </DialogDescription>
-          </DialogHeader>
+  return (
+    <Dialog open>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Select a Lens Profile</DialogTitle>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
-              <FormField
-                control={form.control}
-                name="id"
-                render={({ field }) => (
-                  <FormItem className="flex place-items-start flex-col mb-8 w-full">
-                    <FormLabel>Pick Username</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        {...field}
-                        disabled={isLoginPending}
-                        className="flex flex-col gap-4"
-                        defaultValue="default"
-                      >
-                        {profiles.map((profile, idx) => {
-                          const handleSplit = profile.handle.fullHandle.split("/");
-                          const handle = handleSplit[0] === "lens" ? `@${handleSplit[1]}` : `#${profile.id}`;
-                          return (
-                            <FormItem className="flex items-center space-x-2 space-y-0" id={`${idx}`}>
-                              <FormControl>
-                                <RadioGroupItem defaultChecked={idx === 0} value={profile.id} />
-                              </FormControl>
-                              <FormLabel className="font-normal">{handle}</FormLabel>
-                            </FormItem>
-                          );
-                        })}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <DialogDescription>
+            <p className="mb-4">
+              Connected wallet: <Address address={address} />
+            </p>
+          </DialogDescription>
+        </DialogHeader>
 
-              <div className="flex flex-row items-center justify-between w-full">
-                <DisconnectWalletButton>Cancel</DisconnectWalletButton>
-                <Button size="sm_icon" disabled={isLoginPending} type="submit">
-                  {isLoginPending ? "Sign a message" : "Login"}
+
+        <div className="flex flex-wrap gap-2">
+          {profiles.map((profile, idx) => {
+            const handleSplit = profile.handle.fullHandle.split("/");
+            const handle = handleSplit[0] === "lens" ? `${handleSplit[1]}` : `#${profile.id}`;
+            return (
+              <div className="" id={`${idx}`} key={`${profile.id}`}>
+                <Button className="flex flex-row items-center gap-2" size="default" variant="outline" value={profile.id} type="submit" onClick={() => onSubmit(profile.id)}>
+                  <div className="w-9 h-9">
+                    <UserAvatar user={lensProfileToUser(profile)} />
+                  </div>
+                  {handle}
                 </Button>
               </div>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+            );
+          })}
+
+        </div>
+
+      </DialogContent>
+    </Dialog>
+  );
 }

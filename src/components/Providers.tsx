@@ -4,7 +4,7 @@ import { LensProvider } from "@lens-protocol/react-web";
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, WagmiProvider } from "wagmi";
-import { polygon, polygonMumbai } from "wagmi/chains";
+import { polygon } from "wagmi/chains";
 import { LensConfig, production } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
 import React from "react";
@@ -25,7 +25,7 @@ const metadata = {
 };
 
 const wagmiConfig = createConfig({
-  chains: [polygon, polygonMumbai],
+  chains: [polygon],
   connectors: [
     injected(),
     walletConnect({
@@ -57,7 +57,6 @@ const wagmiConfig = createConfig({
   ],
   transports: {
     [polygon.id]: http(),
-    [polygonMumbai.id]: http(),
   },
 });
 

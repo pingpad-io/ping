@@ -17,7 +17,7 @@ export function ConnectWalletButton() {
     const icon = connector.id === "injected" ? <GlobeIcon strokeWidth={1.1} size={26} /> : <WalletConnectIcon />;
     return (
       <Button
-        className="w-56  flex flex-row justify-between"
+        className="w-64 flex flex-row justify-between"
         variant="outline"
         key={connector.uid}
         onClick={() => connect({ connector })}
@@ -36,11 +36,9 @@ export function ConnectWalletButton() {
           <LogInIcon className="sm:ml-2" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-sm flex flex-col items-center justify-center">
+      <DialogContent className="max-w-xs flex flex-col items-center justify-center">
         <DialogHeader>
           <DialogTitle>Select a wallet to connect</DialogTitle>
-
-          <DialogDescription>{/*  */}</DialogDescription>
         </DialogHeader>
 
         {connectorList}
