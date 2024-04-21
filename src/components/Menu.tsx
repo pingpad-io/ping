@@ -1,16 +1,14 @@
 "use client";
 
-import { Dialog, DialogContent, DialogTrigger } from "@/src/components/ui/dialog";
 import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
-import { AtSign, BellIcon, MailIcon, MessagesSquare, SearchIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
+import { AtSign, BellIcon, MailIcon, SearchIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createContext } from "react";
-import { Button } from "~/components/ui/button";
-import PostWizard from "./post/PostWizard";
-import { ConnectWalletButton } from "./web3/WalletButton";
-import { useAccount } from "wagmi";
 import { toast } from "react-hot-toast";
+import { useAccount } from "wagmi";
+import { Button } from "~/components/ui/button";
+import { ConnectWalletButton } from "./web3/WalletButton";
 
 export const CollapsedContext = createContext(false);
 
@@ -18,12 +16,9 @@ export default function Menu() {
   const _router = useRouter();
   const { data: session, error, loading } = useSession();
   const { isConnected: connected } = useAccount();
-  const todo = () => {
-    toast.error("coming soon™")
-  }
 
   if (loading) {
-    return null
+    return null;
   }
 
   if (error) {
@@ -62,20 +57,20 @@ export default function Menu() {
 
 export const MenuAuthed = ({ profile }: { profile: Profile }) => {
   const todo = () => {
-    toast.error("coming soon™")
-  }
+    toast.error("coming soon™");
+  };
 
   return (
     <>
-        <Button variant="ghost" size="sm_icon" onClick={todo}>
-          <div className="hidden sm:flex">messages</div>
-          <MailIcon className="sm:ml-2" />
-        </Button>
+      <Button variant="ghost" size="sm_icon" onClick={todo}>
+        <div className="hidden sm:flex">messages</div>
+        <MailIcon className="sm:ml-2" />
+      </Button>
 
-        <Button variant="ghost" size="sm_icon" onClick={todo}>
-          <div className="hidden sm:flex">notifications</div>
-          <BellIcon className="sm:ml-2" />
-        </Button>
+      <Button variant="ghost" size="sm_icon" onClick={todo}>
+        <div className="hidden sm:flex">notifications</div>
+        <BellIcon className="sm:ml-2" />
+      </Button>
 
       <Link href="/settings">
         <Button variant="ghost" size="sm_icon">
@@ -84,14 +79,18 @@ export const MenuAuthed = ({ profile }: { profile: Profile }) => {
         </Button>
       </Link>
 
-      <Link href={`/u/${profile.handle.fullHandle.split("/")[1].toLowerCase()}`}>
-        <Button variant="ghost" size="sm_icon">
+      {/* <Link href={`/u/${profile.handle.fullHandle.split("/")[1].toLowerCase()}`}> */}
+        <Button variant="ghost" size="sm_icon" onClick={todo}>
           <div className="hidden sm:flex">profile</div>
           <UserIcon className="sm:ml-2" />
         </Button>
-      </Link>
+      {/* </Link> */}
 
-      <Dialog>
+      <Button onClick={todo}>
+        <div className="hidden sm:flex">post</div>
+        <SendIcon className="sm:ml-2" />
+      </Button>
+      {/* <Dialog>
         <DialogTrigger asChild>
           <Button>
             <div className="hidden sm:flex">post</div>
@@ -103,7 +102,7 @@ export const MenuAuthed = ({ profile }: { profile: Profile }) => {
             <PostWizard />
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };

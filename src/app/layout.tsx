@@ -7,6 +7,7 @@ import Menu from "~/components/Menu";
 import { Sidebar } from "~/components/Sidebar";
 import { quicksand } from "~/styles/fonts";
 import "../styles/globals.css";
+import { Toaster } from "react-hot-toast";
 
 const Providers = dynamic(() => import("../components/Providers"), { ssr: false });
 
@@ -36,6 +37,7 @@ export default function RootLayout({
       <body className="flex flex-col">
         <SpeedInsights />
         <Analytics />
+        <Toaster />
 
         <Providers>
           <div className="flex flex-row justify-center shrink grow w-full shrink">
