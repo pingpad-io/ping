@@ -72,16 +72,15 @@ export function LensProfileSelect() {
           </DialogDescription>
         </DialogHeader>
 
-
         <div className="flex flex-wrap gap-2">
           {profiles.map((profile, idx) => {
             const handleSplit = profile.handle.fullHandle.split("/");
             const handle = handleSplit[0] === "lens" ? `${handleSplit[1]}` : `#${profile.id}`;
             return (
-              <div className="" id={`${idx}`} key={`${profile.id}`}>
+              <div id={`${idx}`} key={`${profile.id}`}>
                 <Button className="flex flex-row items-center gap-2" size="default" variant="outline" value={profile.id} type="submit" onClick={() => onSubmit(profile.id)}>
                   <div className="w-9 h-9">
-                    <UserAvatar user={lensProfileToUser(profile)} />
+                    <UserAvatar link={false} user={lensProfileToUser(profile)} />
                   </div>
                   {handle}
                 </Button>
@@ -91,6 +90,7 @@ export function LensProfileSelect() {
 
         </div>
 
+        {isLoginPending ? <Label>Sign the message in your wallet to login</Label> : <></>}
       </DialogContent>
     </Dialog>
   );
