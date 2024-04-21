@@ -44,7 +44,6 @@ export function PersonalFeed({ profileId }: { profileId?: ProfileId }) {
   if (error) return <ErrorPage title="Couldn't fetch posts" />;
 
   const posts = data.map((publication) => lensItemToPost(publication)).filter((post) => post);
-  console.log(posts);
   return <Feed data={posts} />;
 }
 

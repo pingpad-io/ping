@@ -1,10 +1,12 @@
 "use client";
 
+import { MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { SignedIn, SignedOut } from "~/components/Authenticated";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { DisconnectWalletButton } from "~/components/web3/WalletButton";
+import { Label } from "~/components/ui/label";
+import { LogoutButton } from "~/components/web3/WalletButton";
 
 export const SettingsPage = () => {
   const { setTheme } = useTheme();
@@ -14,10 +16,12 @@ export const SettingsPage = () => {
       data-theme={theme}
       type="submit"
       key={theme}
-      variant={theme === "dark" ? "secondary" : "outline"}
+      variant={"secondary"}
+      size="sm_icon"
       onClick={() => setTheme(theme)}
     >
-      {theme}
+      {theme === "dark" ? <MoonIcon className="sm:mr-2" /> : <SunIcon className="sm:mr-2" />}
+      <div className="hidden sm:flex text-xl">{theme}</div>
     </Button>
   ));
 
@@ -26,21 +30,22 @@ export const SettingsPage = () => {
       <SignedIn>
         {/* <ProfileSettings profile={profile} /> */}
 
-        <Card>
+        <Card className="hover:bg-card">
           <CardHeader>
-            <CardTitle>Theme</CardTitle>
+            <CardTitle>App</CardTitle>
           </CardHeader>
           <CardContent>
+            <Label>Theme</Label>
             <span className="flex gap-2">{themeButtons}</span>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:bg-card">
           <CardHeader>
-            <CardTitle>Danger Zone</CardTitle>
+            <CardTitle>Account</CardTitle>
           </CardHeader>
           <CardContent>
-            <DisconnectWalletButton>Disconnect</DisconnectWalletButton>
+            <LogoutButton />
           </CardContent>
         </Card>
       </SignedIn>

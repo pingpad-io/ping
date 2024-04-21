@@ -9,19 +9,25 @@ import { createContext } from "react";
 import { Button } from "~/components/ui/button";
 import PostWizard from "./post/PostWizard";
 import { ConnectWalletButton } from "./web3/WalletButton";
+import { useAccount } from "wagmi";
 
 export const CollapsedContext = createContext(false);
 
 export default function Menu() {
   const _router = useRouter();
   const { data: session, error, loading } = useSession();
+  const { isConnected: connected } = useAccount();
+
+  if (loading) {
+    return null
+  }
 
   if (error) {
     console.log(error);
     return null;
   }
 
-  const authed = session?.authenticated && session.type === SessionType.WithProfile;
+  const authed = connected && session?.authenticated && session.type === SessionType.WithProfile;
 
   return (
     <span className="flex h-fit w-full sm:w-max shrink py-4 text-2xl px-4 sm:px-2 lg:w-56">

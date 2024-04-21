@@ -85,6 +85,7 @@ export function LogoutButton() {
 
   return (
     <Button
+      variant="destructive"
       onClick={() => {
         disconnectLens();
         disconnectWallet();
