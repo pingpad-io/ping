@@ -10,6 +10,7 @@ import { Button } from "~/components/ui/button";
 import PostWizard from "./post/PostWizard";
 import { ConnectWalletButton } from "./web3/WalletButton";
 import { useAccount } from "wagmi";
+import { toast } from "react-hot-toast";
 
 export const CollapsedContext = createContext(false);
 
@@ -17,6 +18,9 @@ export default function Menu() {
   const _router = useRouter();
   const { data: session, error, loading } = useSession();
   const { isConnected: connected } = useAccount();
+  const todo = () => {
+    toast.error("coming soon™")
+  }
 
   if (loading) {
     return null
@@ -48,12 +52,6 @@ export default function Menu() {
             </Button>
           </Link>
           {/* )} */}
-          <Link href={"/t"} className="xl:hidden text-2xl">
-            <Button variant="ghost" size="sm_icon" className="xl:hidden">
-              <div className="hidden sm:flex text-2xl">threads</div>
-              <MessagesSquare className="sm:ml-2" />
-            </Button>
-          </Link>
         </div>
 
         {authed ? <MenuAuthed profile={session.profile} /> : <ConnectWalletButton />}
@@ -63,21 +61,21 @@ export default function Menu() {
 }
 
 export const MenuAuthed = ({ profile }: { profile: Profile }) => {
+  const todo = () => {
+    toast.error("coming soon™")
+  }
+
   return (
     <>
-      <Link href="/c">
-        <Button variant="ghost" size="sm_icon">
+        <Button variant="ghost" size="sm_icon" onClick={todo}>
           <div className="hidden sm:flex">messages</div>
           <MailIcon className="sm:ml-2" />
         </Button>
-      </Link>
 
-      <Link href="/notifications">
-        <Button variant="ghost" size="sm_icon">
+        <Button variant="ghost" size="sm_icon" onClick={todo}>
           <div className="hidden sm:flex">notifications</div>
           <BellIcon className="sm:ml-2" />
         </Button>
-      </Link>
 
       <Link href="/settings">
         <Button variant="ghost" size="sm_icon">
