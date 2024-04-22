@@ -1,4 +1,4 @@
-import { AtSign, Github, Heart, LogInIcon } from "lucide-react";
+import { AtSign, Github, Heart } from "lucide-react";
 import Link from "next/link";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
@@ -6,7 +6,6 @@ import { ThemeToggle } from "~/components/ThemeProvider";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { quicksand } from "~/styles/fonts";
 
 const LandingPage = () => {
@@ -21,25 +20,10 @@ const LandingPage = () => {
 
           <div className="flex gap-4 items-center ">
             <ThemeToggle />
-            <div className="dark:drop-shadow-glow drop-shadow-md ">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button disabled variant="default" size="sm_icon">
-                    <div className="hidden sm:flex mr-2 disabled">Closed Beta</div>
-                    <LogInIcon />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[350px]">
-                  <DialogTitle>
-                    <h3 className="text-center">Sign in to Ping </h3>
-                  </DialogTitle>
-                </DialogContent>
-              </Dialog>
-            </div>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 px-auto grow items-center justify-center py-10 mt-16 text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
+        <div className="flex flex-col px-auto grow items-center justify-center py-10 mt-16 text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
           <div className="col-span-1 flex flex-col gap-2">
             <h1>
               a <b>better </b> decentralized social,

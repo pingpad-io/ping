@@ -1,37 +1,25 @@
-"use client";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
+import { headers } from "next/headers";
+import { Toaster } from "react-hot-toast";
 import Menu from "~/components/Menu";
 import { Sidebar } from "~/components/Sidebar";
 import { quicksand } from "~/styles/fonts";
 import "../styles/globals.css";
-import { Toaster } from "react-hot-toast";
 
 const Providers = dynamic(() => import("../components/Providers"), { ssr: false });
 
-// export const metadata = {
-//   title: "Pingpad",
-//   description: "reach your people on pingpad",
-// };
+export const metadata = {
+  title: "Pingpad",
+  description: "reach your people on pingpad",
+};
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // FIXME: this should be rendered on the server. temporary hotfix with client rendering
-  const pathname = usePathname();
-  if (pathname === "/") {
-    return (
-      <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
-        <body className="flex flex-col">
-          <Providers>{children}</Providers>
-        </body>
-      </html>
-    );
-  }
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
       <body className="flex flex-col">
