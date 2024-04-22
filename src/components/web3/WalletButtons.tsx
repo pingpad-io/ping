@@ -68,7 +68,7 @@ export function DisconnectWalletButton(props: PropsWithChildren) {
   }
 
   return (
-    <Button variant="ghost" size="sm_icon" onClick={(_e) => disconnect()}>
+    <Button variant="destructive" size="sm_icon" onClick={(_e) => disconnect()}>
       <div className="hidden sm:flex text-base">{props.children}</div>
     </Button>
   );

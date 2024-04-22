@@ -2,14 +2,19 @@
 
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useAccount, useDisconnect } from "wagmi";
 import { SignedIn, SignedOut } from "~/components/Authenticated";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
-import { LogoutButton } from "~/components/web3/WalletButton";
+import { Address } from "~/components/web3/Address";
+import { LogoutButton } from "~/components/web3/WalletButtons";
 
 export const SettingsPage = () => {
   const { setTheme } = useTheme();
+  const { isConnected: walletConnected, address } = useAccount();
+  const { isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
 
   const themeButtons = ["light", "dark"].map((theme) => (
     <Button
@@ -20,8 +25,8 @@ export const SettingsPage = () => {
       size="sm_icon"
       onClick={() => setTheme(theme)}
     >
-      {theme === "dark" ? <MoonIcon className="sm:mr-2" /> : <SunIcon className="sm:mr-2" />}
-      <div className="hidden sm:flex text-xl">{theme}</div>
+      {theme === "dark" ? <MoonIcon size={20} className="sm:mr-2" /> : <SunIcon size={20} className="sm:mr-2" />}
+      <div className="hidden sm:flex text-base">{theme}</div>
     </Button>
   ));
 
@@ -35,7 +40,7 @@ export const SettingsPage = () => {
             <CardTitle>App</CardTitle>
           </CardHeader>
           <CardContent>
-            <Label>Theme</Label>
+            <Label className="text-lg">Theme</Label>
             <span className="flex gap-2">{themeButtons}</span>
           </CardContent>
         </Card>
@@ -44,7 +49,16 @@ export const SettingsPage = () => {
           <CardHeader>
             <CardTitle>Account</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col gap-4">
+            {walletConnected && (
+              <div className="flex flex-row gap-2">
+                Connected wallet: <Address address={address} />
+              </div>
+            )}
+            <Button variant="destructive" size="sm_icon" onClick={(_e) => disconnect()}>
+              <div className="hidden sm:flex text-base">Disconnect</div>
+            </Button>
+
             <LogoutButton />
           </CardContent>
         </Card>

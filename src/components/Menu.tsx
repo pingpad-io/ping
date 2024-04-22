@@ -8,7 +8,7 @@ import { createContext } from "react";
 import { toast } from "react-hot-toast";
 import { useAccount } from "wagmi";
 import { Button } from "~/components/ui/button";
-import { ConnectWalletButton } from "./web3/WalletButton";
+import { ConnectWalletButton } from "./web3/WalletButtons";
 
 export const CollapsedContext = createContext(false);
 
@@ -80,10 +80,10 @@ export const MenuAuthed = ({ profile }: { profile: Profile }) => {
       </Link>
 
       {/* <Link href={`/u/${profile.handle.fullHandle.split("/")[1].toLowerCase()}`}> */}
-        <Button variant="ghost" size="sm_icon" onClick={todo}>
-          <div className="hidden sm:flex">profile</div>
-          <UserIcon className="sm:ml-2" />
-        </Button>
+      <Button variant="ghost" size="sm_icon" onClick={todo}>
+        <div className="hidden sm:flex">profile</div>
+        <UserIcon className="sm:ml-2" />
+      </Button>
       {/* </Link> */}
 
       <Button onClick={todo}>
