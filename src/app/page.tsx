@@ -1,8 +1,6 @@
-import { AtSign, Github, Heart } from "lucide-react";
+import { Github, Heart } from "lucide-react";
 import Link from "next/link";
-import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
-import { ThemeToggle } from "~/components/ThemeProvider";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -12,17 +10,6 @@ const LandingPage = () => {
   return (
     <div className={`flex flex-col mx-auto max-w-5xl min-w-0 ${quicksand.className}`}>
       <div className="w-full">
-        <div className="p-4 rounded-t-none flex place-content-between">
-          <Link className="flex flex-row gap-4 items-center " href="/">
-            <AtSign className="dark:drop-shadow-glow-sm drop-shadow-md" size={35} />
-            <div className="text-3xl font-bold dark:drop-shadow-glow drop-shadow-md  -mt-1.5 -ml-2">pingpad</div>
-          </Link>
-
-          <div className="flex gap-4 items-center ">
-            <ThemeToggle />
-          </div>
-        </div>
-
         <div className="flex flex-col px-auto grow items-center justify-center py-10 mt-16 text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
           <div className="col-span-1 flex flex-col gap-2">
             <h1>
@@ -48,12 +35,6 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className="w-full p-8 mt-16 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
-          <div className=" text-xl flex flex-col gap-4">
-            Join Waitlist
-            <EmailSubscription />
-          </div>
-        </div>
         <Card className="hover:bg-card flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4 my-32">
           <CardHeader>
             <CardTitle> FAQ </CardTitle>
