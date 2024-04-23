@@ -1,7 +1,12 @@
+import { Suspense } from "react";
 import { SettingsPage } from "./SettingsPage";
 
 const settings = async () => {
-  return <SettingsPage />;
+  return (
+    <Suspense>
+      <SettingsPage />
+    </Suspense>
+  );
 };
 
 export default settings;
