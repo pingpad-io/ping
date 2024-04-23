@@ -25,10 +25,10 @@ export function SearchPage() {
 
   return (
     <>
-      <div className="h-16 flex flex-row gap-2 items-center justify-center sticky top-0 z-10 border-b">
+      <div className="h-16 flex flex-row gap-2 items-center justify-center sticky top-0 z-10 border-b backdrop-blur-md">
         <Link href={"/"}>
-          <Button variant="outline">
-            <ChevronLeft className="w-5 h-5" />
+          <Button variant="outline" size="sm">
+            <ChevronLeft size={15} />
           </Button>
         </Link>
         <SearchBar defaultText={query} />

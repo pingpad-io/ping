@@ -36,7 +36,7 @@ export async function middleware(req: NextRequest) {
   // }
 
   // // Allow open routes
-  // if (pathname === "/policy" || pathname === "/conditions" || pathname === "/about") {
+  // if (pathname === "/policy" || pathname === "/tos" || pathname === "/about") {
   //   return res;
   // }
 
