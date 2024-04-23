@@ -7,8 +7,8 @@ import Menu from "~/components/Menu";
 import { Sidebar } from "~/components/Sidebar";
 import { quicksand } from "~/styles/fonts";
 import "../styles/globals.css";
+import Providers from "~/components/Providers";
 
-const Providers = dynamic(() => import("../components/Providers"), { ssr: false });
 
 export const metadata = {
   title: "Pingpad",
