@@ -40,7 +40,7 @@ export function ConnectWalletButton() {
           <LogInIcon className="sm:ml-2" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-xs flex flex-col justify-center">
+      <DialogContent className="max-w-sm flex flex-col justify-center">
         <DialogHeader>
           <DialogTitle>{!walletConnected ? "Select a wallet to connect" : "Select a Profile"}</DialogTitle>
           {walletConnected && (

@@ -1,6 +1,8 @@
 "use client";
 
 import { profileId, useLogin, useProfilesManaged, useSession as useLensSession } from "@lens-protocol/react-web";
+import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { UserAvatar } from "../UserAvatar";
 import { lensProfileToUser } from "../post/Post";
@@ -39,10 +41,6 @@ export function LensProfileSelect() {
     return null;
   }
 
-  if (profiles.length === 0) {
-    return <p className="mb-4">No Lens Profiles found in this wallet.</p>;
-  }
-
   if (!session || !address) {
     return null;
   }
@@ -71,9 +69,16 @@ export function LensProfileSelect() {
             </div>
           );
         })}
+        <Link href={"https://lens.xyz/mint"} target="_blank">
+          <Button className="flex flex-row h-full w-full items-center gap-2" size="default" variant="outline">
+            <PlusIcon size={22} />
+            New Profile
+          </Button>
+        </Link>
       </div>
 
-      {isLoginPending ? <Label>Sign the message in your wallet</Label> : <></>}
+      {profiles.length === 0 && <Label className="mb-4">No Profiles found.</Label>}
+      {isLoginPending && <Label>Sign the message in your wallet</Label>}
     </>
   );
 }
