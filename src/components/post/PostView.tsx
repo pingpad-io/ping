@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu
 import { ChevronDown, ChevronUp, Edit2Icon, ReplyIcon } from "lucide-react";
 import Link from "next/link";
 import { type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
-import Markdown from "../../components_old/Markdown";
+import Markdown from "../Markdown";
 import { TimeElapsedSince } from "../../components_old/TimeLabel";
 import { SignedIn } from "../Authenticated";
 import { UserAvatar } from "../UserAvatar";
