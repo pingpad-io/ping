@@ -1,14 +1,11 @@
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import dynamic from "next/dynamic";
-import { headers } from "next/headers";
 import { Toaster } from "react-hot-toast";
 import Menu from "~/components/Menu";
+import Providers from "~/components/Providers";
 import { Sidebar } from "~/components/Sidebar";
 import { quicksand } from "~/styles/fonts";
 import "../styles/globals.css";
-import Providers from "~/components/Providers";
-
 
 export const metadata = {
   title: "Pingpad",

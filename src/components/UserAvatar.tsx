@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar"
 import Link from "next/link";
 import { User } from "./post/Post";
 
-export function UserAvatar({ user, link }: { user: User; link: boolean }) {
+export function UserAvatar({ user, link = true }: { user: User; link: boolean }) {
   return (
     <>
       {link ? (

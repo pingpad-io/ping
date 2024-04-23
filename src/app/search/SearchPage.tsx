@@ -11,7 +11,7 @@ import { SuspenseView } from "~/components/post/SuspenseView";
 import { Button } from "~/components/ui/button";
 import { SearchBar } from "../../components/SearchBar";
 
-export default function SearchPage() {
+export function SearchPage() {
   const params = useSearchParams();
   const query = params.get("q");
 
@@ -27,7 +27,7 @@ export default function SearchPage() {
     <>
       <div className="h-16 flex flex-row gap-2 items-center justify-center sticky top-0 z-10 border-b">
         <Link href={"/"}>
-          <Button variant="outline" className="">
+          <Button variant="outline">
             <ChevronLeft className="w-5 h-5" />
           </Button>
         </Link>

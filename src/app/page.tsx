@@ -1,9 +1,7 @@
 import { HomePage } from "./home/HomePage";
 
 const LandingPage = () => {
-  return (
-    <HomePage />
-  );
+  return <HomePage />;
 };
 
 export default LandingPage;

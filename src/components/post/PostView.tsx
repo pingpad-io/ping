@@ -3,9 +3,9 @@ import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu
 import { ChevronDown, ChevronUp, Edit2Icon, ReplyIcon } from "lucide-react";
 import Link from "next/link";
 import { type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
-import Markdown from "../Markdown";
 import { TimeElapsedSince } from "../../components_old/TimeLabel";
 import { SignedIn } from "../Authenticated";
+import Markdown from "../Markdown";
 import { UserAvatar } from "../UserAvatar";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -23,7 +23,7 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
       <Card className="">
         <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
           <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
-            <UserAvatar user={post.author} />
+            <UserAvatar user={post.author} link={false} />
           </div>
           <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
             {/* <ReplyInfo post={post} /> */}
