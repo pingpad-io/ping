@@ -47,7 +47,7 @@ export function PersonalFeed({ profileId }: { profileId?: ProfileId }) {
   return <Feed data={posts} />;
 }
 
-function Feed({ data }: { data: Post[] }) {
+export function Feed({ data }: { data: Post[] }) {
   const feed = data.map((post, idx) => {
     return <PostView key={`${post.id}-${idx}`} post={post} />;
   });
