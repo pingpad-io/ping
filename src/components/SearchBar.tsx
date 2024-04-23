@@ -34,12 +34,12 @@ export const SearchBar = ({ defaultText }: { defaultText: string }) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input type="text" placeholder="Search ping..." className="pl-12 pr-4 mt-0 border-0" {...field} />
+                  <Input type="text" placeholder="Search..." className="pl-8 pr-4 mt-0 h-8" {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
-          <SearchIcon className="align-top absolute top-0 bottom-0 m-auto text-gray-500 ml-3" />
+          <SearchIcon size={16} className="align-top absolute top-0 bottom-0 m-auto text-secondary-foreground ml-2" />
         </form>
       </Form>
     </div>
