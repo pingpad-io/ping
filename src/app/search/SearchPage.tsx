@@ -6,10 +6,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
+import { SearchBar } from "~/components/SearchBar";
 import { lensItemToPost } from "~/components/post/Post";
 import { SuspenseView } from "~/components/post/SuspenseView";
 import { Button } from "~/components/ui/button";
-import { SearchBar } from "../../components/SearchBar";
 
 export function SearchPage() {
   const params = useSearchParams();
