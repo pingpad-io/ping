@@ -1,7 +1,7 @@
 "use client";
 
 import { useLogout } from "@lens-protocol/react-web";
-import { GlobeIcon, LogInIcon, LogOutIcon } from "lucide-react";
+import { GlobeIcon, LogInIcon, LogOutIcon, UserMinusIcon } from "lucide-react";
 import { PropsWithChildren } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { WalletConnectIcon } from "../Icons";
@@ -36,8 +36,8 @@ export function ConnectWalletButton() {
     <Dialog>
       <DialogTrigger asChild>
         <Button size="sm_icon">
-          <div className="hidden sm:flex text-2xl">connect</div>
-          <LogInIcon className="sm:ml-2" />
+          <div className="hidden sm:flex text-xl -mt-1">connect</div>
+          <LogInIcon className="sm:ml-2" size={20} />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-sm flex flex-col justify-center">
@@ -91,6 +91,7 @@ export function LogoutButton() {
         disconnectWallet();
       }}
     >
+      <UserMinusIcon size={20} className="sm:mr-2" />
       Log out
     </Button>
   );

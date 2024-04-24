@@ -1,6 +1,6 @@
 "use client";
 
-import { MoonIcon, SunIcon } from "lucide-react";
+import { LogOutIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAccount, useDisconnect } from "wagmi";
 import { SignedIn, SignedOut } from "~/components/Authenticated";
@@ -51,14 +51,13 @@ export const SettingsPage = () => {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             {walletConnected && (
-              <div className="flex flex-row gap-2">
+              <div className="flex flex-row gap-2 items-center">
                 Connected wallet: <Address address={address} />
+                <Button size="icon" className="w-4 h-4" variant="ghost" onClick={(_e) => disconnect()}>
+                  <LogOutIcon />
+                </Button>
               </div>
             )}
-            <Button variant="destructive" size="sm_icon" onClick={(_e) => disconnect()}>
-              <div className="hidden sm:flex text-base">Disconnect</div>
-            </Button>
-
             <LogoutButton />
           </CardContent>
         </Card>
