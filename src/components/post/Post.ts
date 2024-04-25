@@ -15,7 +15,7 @@ export type Post = {
   reply?: Post;
 };
 
-export type PostReactionType = "Upvote" | "Downvote" | "Bookmark" | "Collect" | "Comment" | "Repost";
+export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number>;
 
 export type User = {

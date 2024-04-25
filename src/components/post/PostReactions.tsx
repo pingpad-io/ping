@@ -10,16 +10,22 @@ export function hasReactions(post: Post) {
 export function ReactionsList({ post, inversed = false }: { post: Post; inversed?: boolean }) {
   if (!hasReactions(post)) return null;
 
-  const reactions = Object.keys(post.reactions).map((reaction) => {
-    const name = reaction as PostReactionType;
-    const amount = post.reactions[name];
-    const badge = <ReactionBadge key={`${post.id}-${reaction}`} reaction={name} amount={amount} />;
+  const reactions = Object.keys(post.reactions)
+    .sort((a, b) => {
+      const order = ["Upvote", "Downvote", "Repost", "Comment", "Bookmark", "Collect"];
+      return order.indexOf(a) - order.indexOf(b);
+    })
+    .map((reaction) => {
+      const name = reaction as PostReactionType;
+      const amount = post.reactions[name];
+      const badge = <ReactionBadge key={`${post.id}-${reaction}`} reaction={name} amount={amount} />;
 
-    if (amount === 0 && !inversed) return null;
-    if (amount !== 0 && inversed) return null;
+      if (name === "Downvote") return null;
+      if (amount === 0 && !inversed) return null;
+      if (amount !== 0 && inversed) return null;
 
-    return badge;
-  });
+      return badge;
+    });
 
   return reactions;
 }
@@ -62,7 +68,7 @@ export const ReactionIcon = ({ reaction }: { reaction: PostReactionType }) => {
     case "Bookmark":
       return <BookmarkIcon size={14} />;
     case "Repost":
-      return <Repeat2Icon size={14} />;
+      return <Repeat2Icon size={16} />;
     default:
       return <></>;
   }
