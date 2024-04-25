@@ -1,6 +1,6 @@
 "use client";
 import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
-import { ChevronDown, ChevronUp, Edit2Icon, ReplyIcon } from "lucide-react";
+import { ChevronDown, ChevronUp, Edit2Icon } from "lucide-react";
 import Link from "next/link";
 import { type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
 import { TimeElapsedSince } from "../../components_old/TimeLabel";
@@ -291,60 +291,30 @@ export const PostBadges = ({
     collapsed,
     setCollapsed,
   });
-  const replyButton = ReplyCount({ post });
   const editedButton = EditedIndicator({ post });
-  const reactionsButton = ReactionsList({ post });
+  const existingReactions = ReactionsList({ post });
 
   const buttons = (
     <>
-      {extensionButton}
-      {replyButton}
+      {existingReactions}
       {editedButton}
-      {reactionsButton}
     </>
   );
-  const hasButtons = extensionButton || replyButton || editedButton || reactionsButton;
+  const hasButtons = extensionButton || editedButton || existingReactions;
 
   return (
     <div className="flex grow flex-row items-center gap-2 leading-3 -mb-1 mt-2">
       {buttons}
       {hasButtons && (
         <div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
-          <ReactionsList post={post} />
+          <ReactionsList post={post} inversed={true} />
         </div>
       )}
+      <span className="grow" />
+      {extensionButton}
     </div>
   );
 };
-
-export function ReplyCount({ post }: { post: Post }) {
-  const replyCount = post.comments.length;
-  const replyText = replyCount <= 1 ? "reply" : "replies";
-  const tooltipText = `${replyCount} ${replyText}`;
-
-  if (replyCount <= 0) return null;
-
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Link
-            href={`/p/${post.id}`}
-            className="flex flex-row gap-1 leading-3 badge badge-sm sm:badge-md badge-outline hover:bg-base-200"
-          >
-            <Button variant="outline" size="icon" className="w-10 h-6 flex flex-row gap-1 leading-3 ">
-              {replyCount}
-              <ReplyIcon size={14} className="" />
-            </Button>
-          </Link>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{tooltipText}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-}
 
 export function PostExpandButton({
   collapsed,

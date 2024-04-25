@@ -7,30 +7,16 @@ export type Post = {
   platform: "lens" | "farcaster";
   content: string;
   author: User;
-  stats?: PostStats;
   createdAt: Date;
   comments: Post[];
   metadata: any;
+  reactions?: PostReactions;
   updatedAt?: Date;
   reply?: Post;
 };
 
-export type ReactionType = "UPVOTE" | "DOWNVOTE";
-
-export type Reaction = {
-  createdAt?: Date;
-  type: ReactionType;
-  by: User;
-};
-
-export type PostStats = {
-  upvotes: number;
-  downvotes: number;
-  bookmarks: number;
-  collects: number;
-  comments: number;
-  reposts: number;
-};
+export type PostReactionType = "Upvote" | "Downvote" | "Bookmark" | "Collect" | "Comment" | "Repost";
+export type PostReactions = Record<PostReactionType, number>;
 
 export type User = {
   id: string;
@@ -75,13 +61,13 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
   const content = root.metadata.content;
 
   const author = lensProfileToUser(root.by);
-  const stats: PostStats = {
-    upvotes: root.stats.upvotes,
-    downvotes: root.stats.downvotes,
-    comments: root.stats.comments,
-    reposts: root.stats.mirrors,
-    collects: root.stats.collects,
-    bookmarks: root.stats.bookmarks,
+  const reactions: PostReactions = {
+    Upvote: root.stats.upvotes,
+    Downvote: root.stats.downvotes,
+    Bookmark: root.stats.bookmarks,
+    Collect: root.stats.collects,
+    Comment: root.stats.comments,
+    Repost: root.stats.mirrors,
   };
 
   const comments: Post[] =
@@ -93,6 +79,7 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
           updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
           content,
           comments: [],
+          reactions: undefined,
           metadata: comment.metadata,
           platform: "lens",
         }))
@@ -105,7 +92,7 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
       id: root.id as string,
       platform: "lens",
       author,
-      stats,
+      reactions,
       comments,
       metadata: root.metadata,
       content: root.metadata.content,

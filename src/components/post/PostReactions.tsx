@@ -1,59 +1,68 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
-import { HeartCrackIcon, HeartIcon } from "lucide-react";
+import { BookmarkIcon, HeartIcon, LibraryIcon, MessageSquareIcon, Repeat2Icon, ThumbsDownIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { Post, ReactionType } from "./Post";
+import { Post, PostReactionType } from "./Post";
 
 export function hasReactions(post: Post) {
-  return Object.values(post.stats).some((value) => value !== 0 || value !== undefined);
+  return Object.values(post.reactions).some((value) => value !== 0 || value !== undefined);
 }
 
-export function ReactionsList({ post }: { post: Post }) {
-  const reactions = post.stats;
-
+export function ReactionsList({ post, inversed = false }: { post: Post; inversed?: boolean }) {
   if (!hasReactions(post)) return null;
 
-  return (
-    <>
-      <ReactionBadge key={`${post.id}-upvotes`} reaction={"UPVOTE"} amount={reactions.upvotes} />
-      <ReactionBadge key={`${post.id}-downvotes`} reaction={"DOWNVOTE"} amount={reactions.downvotes} />
-    </>
-  );
+  const reactions = Object.keys(post.reactions).map((reaction) => {
+    const name = reaction as PostReactionType;
+    const amount = post.reactions[name];
+    const badge = <ReactionBadge key={`${post.id}-${reaction}`} reaction={name} amount={amount} />;
+
+    if (amount === 0 && !inversed) return null;
+    if (amount !== 0 && inversed) return null;
+
+    return badge;
+  });
+
+  return reactions;
 }
 
-export const ReactionBadge = ({ reaction, amount }: { reaction: ReactionType; amount: number }) => {
-  const tooltipText = "votes";
+export const ReactionBadge = ({ reaction, amount }: { reaction: PostReactionType; amount: number }) => {
+  const tooltipText = reaction.toLowerCase() + (amount === 1 ? "" : "s");
   const isUserReacted = false;
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            variant={isUserReacted ? "accent" : "outline"}
-            size="icon"
-            className={`h-6 ${amount > 0 ? "w-10" : "w-8"}`}
-            onClick={() => {}}
-          >
-            <span className={"flex flex-row gap-1 leading-3"}>
-              {amount > 0 ? amount : <></>}
+          <Button variant={isUserReacted ? "accent" : "outline"} size="icon" className={"h-6 w-max"} onClick={() => {}}>
+            <span className={"flex flex-row gap-1 leading-3 px-2"}>
+              {amount > 0 && amount}
               <ReactionIcon reaction={reaction} />
             </span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{tooltipText}</p>
+          <p>
+            {amount} {tooltipText}
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
 };
 
-export const ReactionIcon = ({ reaction }: { reaction: ReactionType }) => {
+export const ReactionIcon = ({ reaction }: { reaction: PostReactionType }) => {
   switch (reaction) {
-    case "UPVOTE":
+    case "Upvote":
       return <HeartIcon size={14} />;
-    case "DOWNVOTE":
-      return <HeartCrackIcon size={14} />;
+    case "Downvote":
+      return <ThumbsDownIcon size={14} />;
+    case "Comment":
+      return <MessageSquareIcon size={14} />;
+    case "Collect":
+      return <LibraryIcon size={14} />;
+    case "Bookmark":
+      return <BookmarkIcon size={14} />;
+    case "Repost":
+      return <Repeat2Icon size={14} />;
     default:
       return <></>;
   }
