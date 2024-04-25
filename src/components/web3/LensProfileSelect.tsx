@@ -8,6 +8,8 @@ import { UserAvatar } from "../UserAvatar";
 import { lensProfileToUser } from "../post/Post";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import { setCookie } from "cookies-next";
+
 
 export function LensProfileSelect() {
   const { isConnected, address } = useWagmiAccount();
@@ -25,6 +27,13 @@ export function LensProfileSelect() {
 
     if (result.isSuccess()) {
       console.info(`Welcome ${String(result.value?.handle?.fullHandle ?? result.value?.id)}`);
+      const refreshToken = JSON.parse(localStorage.getItem("lens.production.credentials"))?.data?.refreshToken;
+      if (refreshToken) {
+        setCookie("refreshToken", refreshToken, {
+          secure: true,
+          sameSite: "lax",
+        });
+      }
     } else {
       console.error(result.error.message);
     }
@@ -78,7 +87,7 @@ export function LensProfileSelect() {
       </div>
 
       {profiles.length === 0 && <Label className="mb-4">No Profiles found.</Label>}
-      {isLoginPending && <Label>Sign the message in your wallet</Label>}
+      {isLoginPending && <Label>Sign a message in your wallet</Label>}
     </>
   );
 }

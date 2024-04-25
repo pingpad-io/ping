@@ -40,7 +40,7 @@
     "@wagmi/core": "^2.6.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "cookies-next": "^2.1.1",
+    "cookies-next": "^4.1.1",
     "dayjs": "^1.11.7",
     "eslint-config-next": "latest",
     "got": "^13.0.0",

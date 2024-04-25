@@ -2,7 +2,6 @@ import {
   ProfileId,
   PublicationMetadataMainFocusType,
   PublicationType,
-  useFeed,
   usePublications,
 } from "@lens-protocol/react-web";
 import ErrorPage from "./ErrorPage";
@@ -23,7 +22,6 @@ export function PublicFeed() {
   const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
 
   if (loading) return suspense;
-
   if (error) return <ErrorPage title="Couldn't fetch posts" />;
 
   const posts = data.map((publication) => lensItemToPost(publication)).filter((post) => post);
@@ -31,20 +29,15 @@ export function PublicFeed() {
 }
 
 export function PersonalFeed({ profileId }: { profileId?: ProfileId }) {
-  const { data, loading, error } = useFeed({
-    where: {
-      for: profileId,
-    },
-  });
-
   const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
 
-  if (loading) return suspense;
+  // if (loading) return suspense;
+  // if (error) return <ErrorPage title="Couldn't fetch posts" />;
+  // console.log(data);
 
-  if (error) return <ErrorPage title="Couldn't fetch posts" />;
-
-  const posts = data.map((publication) => lensItemToPost(publication)).filter((post) => post);
-  return <Feed data={posts} />;
+  // const posts = items.map((publication) => lensItemToPost(publication)).filter((post) => post);
+  // return <Feed data={posts} />;
+  return null;
 }
 
 export function Feed({ data }: { data: Post[] }) {

@@ -1,4 +1,5 @@
 import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
+import { FeedItemFragment } from "@lens-protocol/client";
 import { AnyPublication, FeedItem, Post as LensPost, Profile } from "@lens-protocol/react-web";
 
 export type Post = {
@@ -29,39 +30,44 @@ export type User = {
   profilePictureUrl?: string;
 };
 
-export function lensItemToPost(publication: FeedItem | AnyPublication) {
-  // metadata: ArticleMetadataV3 | AudioMetadataV3 | CheckingInMetadataV3 | EmbedMetadataV3 | EventMetadataV3 | ImageMetadataV3 |
-  // LinkMetadataV3 | LiveStreamMetadataV3 | MintMetadataV3 | SpaceMetadataV3 | StoryMetadataV3 | TextOnlyMetadataV3 |
-  // ThreeDMetadataV3 | TransactionMetadataV3 | VideoMetadataV3;
+export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublication) {
+  const post =
+    "__typename" in item
+      ? item
+      : {
+          __typename: "FeedItem",
+          ...(item as any as FeedItem),
+        };
 
   let root: CommentFields | LensPost | QuoteFields;
-  switch (publication.__typename) {
+  switch (post.__typename) {
     case "FeedItem":
-      root = publication.root;
+      root = post.root;
       break;
     case "Post":
-      root = publication;
+      root = post;
       break;
     case "Comment":
-      root = publication.root;
+      root = post.root;
       break;
     case "Quote":
-      root = publication.quoteOn;
+      root = post.quoteOn;
       break;
     case "Mirror":
-      root = publication.mirrorOn;
+      root = post.mirrorOn;
       break;
     default:
-      return null;
+      return Error(`Unknown post type on ${post}`);
   }
+
   if (!root.by.metadata || root.metadata.__typename !== "TextOnlyMetadataV3") {
     return null;
   }
   const content = root.metadata.content;
 
   const reactions: Reaction[] =
-    publication.__typename === "FeedItem"
-      ? publication.reactions.map((reaction) => ({
+    post.__typename === "FeedItem"
+      ? post.reactions.map((reaction) => ({
           createdAt: reaction.createdAt as unknown as Date,
           type: reaction.reaction,
           by: lensProfileToUser(reaction.by),
@@ -71,8 +77,8 @@ export function lensItemToPost(publication: FeedItem | AnyPublication) {
   const author = lensProfileToUser(root.by);
 
   const comments: Post[] =
-    publication.__typename === "FeedItem"
-      ? publication.comments.map((comment) => ({
+    post.__typename === "FeedItem"
+      ? post.comments.map((comment) => ({
           id: comment.id as string,
           author: lensProfileToUser(comment.by),
           createdAt: new Date(comment.createdAt),

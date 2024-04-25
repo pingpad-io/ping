@@ -9,6 +9,7 @@ export const HomePage = () => {
   if (!session || !(session.type === SessionType.WithProfile)) {
     return <PublicFeed />;
   }
+  
 
   return <PersonalFeed />;
 };
