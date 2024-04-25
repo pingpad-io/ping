@@ -7,12 +7,12 @@ export type Post = {
   platform: "lens" | "farcaster";
   content: string;
   author: User;
+  stats?: PostStats;
   createdAt: Date;
-  updatedAt?: Date;
-  reply?: Post;
-  reactions: Reaction[];
   comments: Post[];
   metadata: any;
+  updatedAt?: Date;
+  reply?: Post;
 };
 
 export type ReactionType = "UPVOTE" | "DOWNVOTE";
@@ -21,6 +21,15 @@ export type Reaction = {
   createdAt?: Date;
   type: ReactionType;
   by: User;
+};
+
+export type PostStats = {
+  upvotes: number;
+  downvotes: number;
+  bookmarks: number;
+  collects: number;
+  comments: number;
+  reposts: number;
 };
 
 export type User = {
@@ -57,7 +66,7 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
       root = post.mirrorOn;
       break;
     default:
-      return Error(`Unknown post type on ${post}`);
+      return null;
   }
 
   if (!root.by.metadata || root.metadata.__typename !== "TextOnlyMetadataV3") {
@@ -65,16 +74,15 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
   }
   const content = root.metadata.content;
 
-  const reactions: Reaction[] =
-    post.__typename === "FeedItem"
-      ? post.reactions.map((reaction) => ({
-          createdAt: reaction.createdAt as unknown as Date,
-          type: reaction.reaction,
-          by: lensProfileToUser(reaction.by),
-        }))
-      : [];
-
   const author = lensProfileToUser(root.by);
+  const stats: PostStats = {
+    upvotes: root.stats.upvotes,
+    downvotes: root.stats.downvotes,
+    comments: root.stats.comments,
+    reposts: root.stats.mirrors,
+    collects: root.stats.collects,
+    bookmarks: root.stats.bookmarks,
+  };
 
   const comments: Post[] =
     post.__typename === "FeedItem"
@@ -85,7 +93,6 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
           updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
           content,
           comments: [],
-          reactions: [],
           metadata: comment.metadata,
           platform: "lens",
         }))
@@ -98,7 +105,7 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
       id: root.id as string,
       platform: "lens",
       author,
-      reactions,
+      stats,
       comments,
       metadata: root.metadata,
       content: root.metadata.content,

@@ -3,18 +3,19 @@ import { HeartCrackIcon, HeartIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Post, ReactionType } from "./Post";
 
+export function hasReactions(post: Post) {
+  return Object.values(post.stats).some((value) => value !== 0 || value !== undefined);
+}
+
 export function ReactionsList({ post }: { post: Post }) {
-  const reactions = post.reactions;
+  const reactions = post.stats;
 
-  if (reactions.length === 0) return null;
-
-  const upvotes = reactions.filter((reaction) => reaction.type === "UPVOTE");
-  const downvotes = reactions.filter((reaction) => reaction.type === "DOWNVOTE");
+  if (!hasReactions(post)) return null;
 
   return (
     <>
-      <ReactionBadge key={`${post.id}-upvotes`} reaction={"UPVOTE"} amount={upvotes.length} />
-      <ReactionBadge key={`${post.id}-downvotes`} reaction={"DOWNVOTE"} amount={downvotes.length} />
+      <ReactionBadge key={`${post.id}-upvotes`} reaction={"UPVOTE"} amount={reactions.upvotes} />
+      <ReactionBadge key={`${post.id}-downvotes`} reaction={"DOWNVOTE"} amount={reactions.downvotes} />
     </>
   );
 }

@@ -1,5 +1,4 @@
-import { ExplorePublicationsOrderByType, LensClient, production } from "@lens-protocol/client";
-import { Post } from "@lens-protocol/react-web";
+import { LensClient, production } from "@lens-protocol/client";
 import { cookies } from "next/headers";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
@@ -16,14 +15,14 @@ const home = async () => {
   await lensClient.authentication.authenticateWith({ refreshToken });
   const data = await lensClient.feed.fetch({
     where: {
-      for: "0x01"
+      for: "0x01",
     }
   });
 
   const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
 
-  if (data.isFailure()) return <ErrorPage title={`Couldn't fetch posts: ${data.error} `}/>;
   if (!data.isSuccess()) return suspense;
+  if (data.isFailure()) return <ErrorPage title={`Couldn't fetch posts: ${data.error} `}/>;
 
   const items = data.unwrap().items;
   const posts = items.map((publication) => lensItemToPost(publication)).filter((post) => post);
