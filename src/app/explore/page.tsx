@@ -1,18 +1,16 @@
 import { LensClient, production } from "@lens-protocol/client";
-import { cookies } from "next/headers";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { SuspenseView } from "~/components/post/SuspenseView";
+import { getCookieAuth } from "~/utils/getCookieAuth";
 
 const lensClient = new LensClient({
   environment: production,
 });
 
 const home = async () => {
-  const cookieStore = cookies();
-  const refreshToken = cookieStore.get("refreshToken")?.value;
-  const profileId = cookieStore.get("profileId")?.value;
+  const { refreshToken, profileId, handle } = getCookieAuth();
 
   if (!refreshToken || !profileId) return <ErrorPage title="Login to view this page." />;
   await lensClient.authentication.authenticateWith({ refreshToken });

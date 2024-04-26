@@ -99,7 +99,7 @@ export const PostContent = forwardRef<
     <div
       ref={ref}
       className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
-        collapsed ? "line-clamp-2" : "line-clamp-none"
+        collapsed ? "line-clamp-5" : "line-clamp-none"
       }`}
     >
       <Markdown content={post.content} />

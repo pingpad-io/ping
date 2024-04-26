@@ -104,14 +104,26 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
 }
 
 export function lensProfileToUser(profile: Profile): User {
-  const imageUrl = profile.metadata.picture.__typename === "ImageSet"
-        ? profile.metadata?.picture?.optimized?.uri
-        : profile.metadata?.picture?.image.optimized?.uri;
+  const address = profile.ownedBy.address;
+
+  const imageUrl =
+    profile.metadata.picture.__typename === "ImageSet"
+      ? profile.metadata?.picture?.optimized?.uri || profile.metadata?.picture?.raw?.uri
+      : profile.metadata.picture.image.optimized?.uri || profile.metadata.picture.image.raw?.uri;
+
   return {
     id: profile.id,
     name: profile.metadata.displayName,
-    profilePictureUrl: imageUrl ?? "",
+    profilePictureUrl: imageUrl ?? getStampUrl(address),
     handle: profile.handle?.localName ?? profile.id,
-    namespace: profile.handle?.namespace ?? "wallet"
+    namespace: profile.handle?.namespace ?? "wallet",
   };
+}
+
+/// Get the URL for a stamp.fyi profile image.
+///
+/// @param address The address of the profile.
+/// @returns The URL for the profile stamp image.
+export function getStampUrl(address: string): string {
+  return `cdn.stamp.fyi/avatar/${address}?s=140`;
 }
