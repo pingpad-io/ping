@@ -11,7 +11,7 @@ const lensClient = new LensClient({
 
 const home = async () => {
   const cookieStore = cookies();
-  const refreshToken = cookieStore.get("refreshToken").value;
+  const refreshToken = cookieStore.get("refreshToken")?.value;
 
   if (!refreshToken) return <ErrorPage title="Login to view this page." />;
   await lensClient.authentication.authenticateWith({ refreshToken });

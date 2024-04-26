@@ -1,6 +1,7 @@
 "use client";
 
 import { profileId, useLogin, useProfilesManaged, useSession as useLensSession } from "@lens-protocol/react-web";
+import { setCookie } from "cookies-next";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useAccount as useWagmiAccount } from "wagmi";
@@ -8,8 +9,6 @@ import { UserAvatar } from "../UserAvatar";
 import { lensProfileToUser } from "../post/Post";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { setCookie } from "cookies-next";
-
 
 export function LensProfileSelect() {
   const { isConnected, address } = useWagmiAccount();
@@ -26,7 +25,19 @@ export function LensProfileSelect() {
     });
 
     if (result.isSuccess()) {
-      console.info(`Welcome ${String(result.value?.handle?.fullHandle ?? result.value?.id)}`);
+      const handle = result.value?.handle?.localName ?? result.value?.id;
+      if (handle) {
+        setCookie("handle", handle, {
+          secure: true,
+          sameSite: "lax",
+        });
+      }
+      const profileId = result.value?.id;
+      if (profileId)
+        setCookie("profileId", profileId, {
+          secure: true,
+          sameSite: "lax",
+        });
       const refreshToken = JSON.parse(localStorage.getItem("lens.production.credentials"))?.data?.refreshToken;
       if (refreshToken) {
         setCookie("refreshToken", refreshToken, {
@@ -34,6 +45,7 @@ export function LensProfileSelect() {
           sameSite: "lax",
         });
       }
+      console.info(`Welcome ${handle}`);
     } else {
       console.error(result.error.message);
     }
