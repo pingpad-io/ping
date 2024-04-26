@@ -1,6 +1,6 @@
 "use client";
 import { DropdownMenu, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
-import { ChevronDown, ChevronUp, Edit2Icon } from "lucide-react";
+import { Edit2Icon } from "lucide-react";
 import Link from "next/link";
 import { type PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
 import { TimeElapsedSince } from "../../components_old/TimeLabel";
@@ -20,7 +20,7 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
 
   return (
     <ContextMenu post={post}>
-      <Card className="">
+      <Card className="" onClick={() => setCollapsed(false)}>
         <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
           <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
             <UserAvatar user={post.author} link={false} />
@@ -29,14 +29,7 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
             {/* <ReplyInfo post={post} /> */}
             <PostInfo post={post} />
             <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-            {showBadges && (
-              <PostBadges
-                postContentRef={postContentRef}
-                post={post}
-                collapsed={collapsed}
-                setCollapsed={setCollapsed}
-              />
-            )}
+            {showBadges && <PostBadges post={post} />}
           </div>
         </CardContent>
       </Card>
@@ -274,83 +267,18 @@ export const PostInfo = ({ post }: { post: Post }) => {
 //   );
 // };
 
-export const PostBadges = ({
-  post,
-  collapsed,
-  setCollapsed,
-  postContentRef,
-}: {
-  post: Post;
-  collapsed: boolean;
-  setCollapsed: (value: boolean) => void;
-  postContentRef: React.RefObject<HTMLDivElement>;
-}) => {
-  const extensionButton = PostExpandButton({
-    postContentRef,
-    post,
-    collapsed,
-    setCollapsed,
-  });
+export const PostBadges = ({ post }: { post: Post }) => {
   // const editedIndicator = EditedIndicator({ post });
   const existingReactions = ReactionsList({ post });
 
-  const hasButtons = extensionButton || existingReactions;
+  const hasButtons = existingReactions;
 
   return (
     <div className="flex grow flex-row  grow justify-around w-full items-center -mb-2 -ml-2 mt-2">
       {hasButtons && <ReactionsList post={post} />}
-      {extensionButton}
     </div>
   );
 };
-
-export function PostExpandButton({
-  collapsed,
-  setCollapsed,
-  postContentRef,
-}: {
-  post: Post;
-  collapsed: boolean;
-  setCollapsed: (value: boolean) => void;
-  postContentRef: React.RefObject<HTMLDivElement>;
-}): JSX.Element | null {
-  const [collapsable, setCollapsable] = useState(false);
-
-  useEffect(() => {
-    const postContentElement = postContentRef.current;
-    if (postContentElement) {
-      const hasLineClamp2Effect = postContentElement.scrollHeight > postContentElement.clientHeight;
-      setCollapsable(hasLineClamp2Effect);
-    }
-  }, [postContentRef.current]);
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
-
-  if (!collapsable) return null;
-
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            onClick={() => {
-              toggleCollapsed();
-            }}
-            variant="outline"
-            size="icon"
-            className="w-12 h-6 flex flex-row gap-1 leading-3 "
-          >
-            {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{collapsed ? "show more" : "show less"}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-}
 
 export function EditedIndicator({ post }: { post: Post }) {
   const lastUpdated = post.updatedAt ? post.updatedAt.toLocaleString() : post.createdAt.toLocaleString();
