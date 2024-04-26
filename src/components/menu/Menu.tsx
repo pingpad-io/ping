@@ -1,8 +1,9 @@
-import { AtSign, BellIcon, MailIcon, SearchIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
+import { AtSign, BellIcon, MailIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { ConnectWalletButton } from "./web3/WalletButtons";
+import { ConnectWalletButton } from "../web3/WalletButtons";
+import { SearchButton } from "./SearchButton";
 
 export default function Menu() {
   const cookieStore = cookies();
@@ -20,6 +21,7 @@ export default function Menu() {
               <AtSign className="sm:ml-2" size={20} />
             </Button>
           </Link>
+          <ConnectWalletButton />
         </span>
       </span>
     );
@@ -35,18 +37,9 @@ export default function Menu() {
           </Button>
         </Link>
 
-        <div className="flex flex-row sm:flex-col items-end gap-2 lg:hidden">
-          {/* {pathname !== "/search" && ( */}
-          <Link href={"/search"} className="xl:hidden">
-            <Button variant="ghost" size="sm_icon">
-              <div className="hidden sm:flex -mt-1">search</div>
-              <SearchIcon className="sm:ml-2" size={20} />
-            </Button>
-          </Link>
-          {/* )} */}
-        </div>
+        <SearchButton />
 
-        {profileId ? <MenuAuthed handle={handleOrProfileId} /> : <ConnectWalletButton />}
+        <MenuAuthed handle={handleOrProfileId} />
       </span>
     </span>
   );
