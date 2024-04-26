@@ -12,13 +12,12 @@ const lensClient = new LensClient({
 const home = async () => {
   const cookieStore = cookies();
   const refreshToken = cookieStore.get("refreshToken")?.value;
+  const profileId = cookieStore.get("profileId")?.value;
 
-  if (!refreshToken) return <ErrorPage title="Login to view this page." />;
+  if (!refreshToken || !profileId) return <ErrorPage title="Login to view this page." />;
   await lensClient.authentication.authenticateWith({ refreshToken });
   const data = await lensClient.feed.fetch({
-    where: {
-      for: "0x01",
-    },
+    where: { for: profileId },
   });
 
   const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);

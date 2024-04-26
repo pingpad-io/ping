@@ -10,7 +10,7 @@ export const SearchButton = () => {
 
   if (pathname !== "/search") {
     return (
-      <Link href={"/search"} className="xl:hidden">
+      <Link href={"/search"} className="lg:hidden">
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">search</div>
           <SearchIcon className="sm:ml-2" size={20} />

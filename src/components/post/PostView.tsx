@@ -126,9 +126,8 @@ export const PostContent = forwardRef<
 
 export const PostInfo = ({ post }: { post: Post }) => {
   const author = post.author;
-  const isLensHandle = author.handle.split("/")[0] === "lens";
-
-  const handle = isLensHandle ? author.handle.split("/")[1] : author.handle;
+  const isLensHandle = author.namespace === "lens";
+  const handle = author.handle;
 
   return (
     <div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">

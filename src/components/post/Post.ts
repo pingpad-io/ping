@@ -22,6 +22,7 @@ export type User = {
   id: string;
   name?: string;
   handle: string;
+  namespace: string;
   profilePictureUrl?: string;
 };
 
@@ -103,13 +104,14 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
 }
 
 export function lensProfileToUser(profile: Profile): User {
+  const imageUrl = profile.metadata.picture.__typename === "ImageSet"
+        ? profile.metadata?.picture?.optimized?.uri
+        : profile.metadata?.picture?.image.optimized?.uri;
   return {
     id: profile.id,
     name: profile.metadata.displayName,
-    profilePictureUrl:
-      profile.metadata.picture.__typename === "ImageSet"
-        ? profile.metadata?.picture?.optimized?.uri
-        : profile.metadata?.picture?.image.optimized?.uri,
-    handle: profile.handle?.fullHandle ?? profile.handle.id,
+    profilePictureUrl: imageUrl ?? "",
+    handle: profile.handle?.localName ?? profile.id,
+    namespace: profile.handle?.namespace ?? "wallet"
   };
 }
