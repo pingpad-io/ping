@@ -7,30 +7,29 @@ export function hasReactions(post: Post) {
   return Object.values(post.reactions).some((value) => value !== 0 || value !== undefined);
 }
 
-export function ReactionsList({ post, inversed = false }: { post: Post; inversed?: boolean }) {
+export function ReactionsList({ post }: { post: Post }) {
   if (!hasReactions(post)) return null;
 
-  const reactions = Object.keys(post.reactions)
-    .sort((a, b) => {
-      const order = ["Upvote", "Downvote", "Repost", "Comment", "Bookmark", "Collect"];
-      return order.indexOf(a) - order.indexOf(b);
-    })
-    .map((reaction) => {
-      const name = reaction as PostReactionType;
-      const amount = post.reactions[name];
-      const badge = <ReactionBadge key={`${post.id}-${reaction}`} reaction={name} amount={amount} />;
-
-      if (name === "Downvote") return null;
-      if (amount === 0 && !inversed) return null;
-      if (amount !== 0 && inversed) return null;
-
-      return badge;
-    });
-
-  return reactions;
+  return (
+    <div className="flex flex-row items-center gap-12 w-full">
+      <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={post.reactions.Comment} />
+      <ReactionBadge key={`${post.id}-reposts`} reaction={"Repost"} amount={post.reactions.Repost} />
+      <ReactionBadge key={`${post.id}-upvotes`} reaction={"Upvote"} amount={post.reactions.Upvote} />
+      <ReactionBadge key={`${post.id}-collects`} reaction={"Collect"} amount={post.reactions.Collect} />
+      <div className="grow" />
+      <div className="flex flex-row opacity-0 group-hover:opacity-100 duration-300 delay-150">
+        <ReactionBadge key={`${post.id}-bookmarks`} reaction={"Bookmark"} amount={post.reactions.Bookmark} />
+      </div>
+    </div>
+  );
 }
 
 export const ReactionBadge = ({ reaction, amount }: { reaction: PostReactionType; amount: number }) => {
+  const formatAmount = Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(amount);
+
   const tooltipText = reaction.toLowerCase() + (amount === 1 ? "" : "s");
   const isUserReacted = false;
 
@@ -38,9 +37,15 @@ export const ReactionBadge = ({ reaction, amount }: { reaction: PostReactionType
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant={isUserReacted ? "accent" : "outline"} size="icon" className={"h-6 w-max"} onClick={() => {}}>
-            <span className={"flex flex-row gap-1 leading-3 px-2"}>
-              {amount > 0 && amount}
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className={"h-max w-12 border-0 px-0 place-content-center items-center"}
+            onClick={() => {}}
+          >
+            <span className={"flex flex-row gap-1 leading-4 py-1"}>
+              {amount > 0 && formatAmount}
               <ReactionIcon reaction={reaction} />
             </span>
           </Button>
@@ -58,17 +63,17 @@ export const ReactionBadge = ({ reaction, amount }: { reaction: PostReactionType
 export const ReactionIcon = ({ reaction }: { reaction: PostReactionType }) => {
   switch (reaction) {
     case "Upvote":
-      return <HeartIcon size={14} />;
+      return <HeartIcon size={15} />;
     case "Downvote":
-      return <ThumbsDownIcon size={14} />;
-    case "Comment":
-      return <MessageSquareIcon size={14} />;
-    case "Collect":
-      return <LibraryIcon size={14} />;
-    case "Bookmark":
-      return <BookmarkIcon size={14} />;
+      return <ThumbsDownIcon size={15} />;
     case "Repost":
-      return <Repeat2Icon size={16} />;
+      return <Repeat2Icon strokeWidth={1.5} size={18} />;
+    case "Comment":
+      return <MessageSquareIcon size={15} />;
+    case "Collect":
+      return <LibraryIcon size={16} />;
+    case "Bookmark":
+      return <BookmarkIcon size={16} />;
     default:
       return <></>;
   }

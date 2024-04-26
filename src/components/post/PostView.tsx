@@ -291,26 +291,14 @@ export const PostBadges = ({
     collapsed,
     setCollapsed,
   });
-  const editedButton = EditedIndicator({ post });
+  // const editedIndicator = EditedIndicator({ post });
   const existingReactions = ReactionsList({ post });
 
-  const buttons = (
-    <>
-      {existingReactions}
-      {editedButton}
-    </>
-  );
-  const hasButtons = extensionButton || editedButton || existingReactions;
+  const hasButtons = extensionButton || existingReactions;
 
   return (
-    <div className="flex grow flex-row items-center gap-2 leading-3 -mb-1 mt-2">
-      {buttons}
-      {hasButtons && (
-        <div className="flex gap-2 items-center opacity-0 group-hover:opacity-100 duration-300 delay-150">
-          <ReactionsList post={post} inversed={true} />
-        </div>
-      )}
-      <span className="grow" />
+    <div className="flex grow flex-row  grow justify-around w-full items-center -mb-2 -ml-2 mt-2">
+      {hasButtons && <ReactionsList post={post} />}
       {extensionButton}
     </div>
   );
@@ -351,7 +339,7 @@ export function PostExpandButton({
             }}
             variant="outline"
             size="icon"
-            className="w-10 h-6 flex flex-row gap-1 leading-3 "
+            className="w-12 h-6 flex flex-row gap-1 leading-3 "
           >
             {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
           </Button>
