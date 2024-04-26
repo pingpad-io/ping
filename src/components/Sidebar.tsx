@@ -1,10 +1,30 @@
 import Link from "next/link";
 import { SearchBar } from "./SearchBar";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 export function Sidebar() {
   return (
     <div className="flex flex-col gap-3 py-3.5 sm:px-2">
       <SearchBar defaultText="" />
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">Pingpad is in beta</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2">
+          <p>Welcome and Thank You for being here so early!</p>
+          <p>
+            If you encounter any bugs or wish to provide feedback, kindly report it to the{" "}
+            <a
+              className="hover:underline font-bold"
+              href="https://github.com/pingpad-io/ping/issues"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+          </p>
+        </CardContent>
+      </Card>
       <Links />
     </div>
   );
