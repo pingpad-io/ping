@@ -18,12 +18,10 @@ const home = async () => {
     where: { for: profileId },
   });
 
-  const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
-  if (!data.isSuccess()) return suspense;
   if (data.isFailure()) return <ErrorPage title={`Couldn't fetch posts: ${data.error} `} />;
 
   const items = data.unwrap().items;
-  const posts = items.map((publication) => lensItemToPost(publication)).filter((post) => post);
+  const posts = items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
   return <Feed data={posts} />;
 };
 

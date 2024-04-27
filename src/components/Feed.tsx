@@ -7,7 +7,7 @@ import {
 import ErrorPage from "./ErrorPage";
 import { Post, lensItemToPost } from "./post/Post";
 import { PostView } from "./post/PostView";
-import { SuspenseView } from "./post/SuspenseView";
+import { FeedSuspense, SuspenseView } from "./post/SuspenseView";
 
 export function PublicFeed() {
   const { data, loading, error } = usePublications({
@@ -19,18 +19,13 @@ export function PublicFeed() {
     },
   });
 
-  const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
-
-  if (loading) return suspense;
   if (error) return <ErrorPage title="Couldn't fetch posts" />;
 
-  const posts = data.map((publication) => lensItemToPost(publication)).filter((post) => post);
+  const posts = data?.map((publication) => lensItemToPost(publication)).filter((post) => post);
   return <Feed data={posts} />;
 }
 
 export function PersonalFeed({ profileId }: { profileId?: ProfileId }) {
-  const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
-
   // if (loading) return suspense;
   // if (error) return <ErrorPage title="Couldn't fetch posts" />;
   // console.log(data);
@@ -40,7 +35,9 @@ export function PersonalFeed({ profileId }: { profileId?: ProfileId }) {
   return null;
 }
 
-export function Feed({ data }: { data: Post[] }) {
+export function Feed({ data }: { data?: Post[] }) {
+  if (!data) return <FeedSuspense />;
+
   const feed = data.map((post, idx) => {
     return <PostView key={`${post.id}-${idx}`} post={post} />;
   });

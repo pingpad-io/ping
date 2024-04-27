@@ -8,7 +8,7 @@ import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { SearchBar } from "~/components/SearchBar";
 import { lensItemToPost } from "~/components/post/Post";
-import { SuspenseView } from "~/components/post/SuspenseView";
+import { FeedSuspense, SuspenseView } from "~/components/post/SuspenseView";
 import { Button } from "~/components/ui/button";
 
 export function SearchPage() {
@@ -16,12 +16,11 @@ export function SearchPage() {
   const query = params.get("q");
 
   const { data, loading, error } = useSearchPublications({ query });
-  const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
 
   if (error) return <ErrorPage title="Couldn't find anything" />;
 
   const posts = data?.map((item) => lensItemToPost(item)).filter((item) => item);
-  const feed = loading ? suspense : <Feed data={posts} />;
+  const feed = loading ? <FeedSuspense /> : <Feed data={posts} />;
 
   return (
     <>

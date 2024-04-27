@@ -20,3 +20,8 @@ export const SuspenseView = () => {
     </Card>
   );
 };
+
+export const FeedSuspense = () => {
+  return [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
+   
+}

@@ -70,8 +70,7 @@ export function LensProfileSelect() {
     <>
       <div className="flex flex-wrap gap-2">
         {profiles.map((profile, idx) => {
-          const handleSplit = profile.handle.fullHandle.split("/");
-          const handle = handleSplit[0] === "lens" ? `${handleSplit[1]}` : `#${profile.id}`;
+          const handle = profile.handle.namespace === "lens" ? `@${profile.handle.localName}` : `#${profile.id}`;
           return (
             <div id={`${idx}`} key={`${profile.id}`}>
               <Button
