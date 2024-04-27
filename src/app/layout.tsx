@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
+    <html className={`${quicksand.variable} scroll-smooth font-sans overflow-y-scroll`} lang="en">
       <body className="flex flex-col">
         <SpeedInsights />
         <Analytics />

@@ -1,11 +1,14 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SearchBar } from "./SearchBar";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 export function Sidebar() {
+  const pathname = usePathname();
   return (
     <div className="flex flex-col gap-3 py-3.5 sm:px-2">
-      <SearchBar defaultText="" />
+      {pathname !== "/search" && <SearchBar defaultText="" />}
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">Pingpad is in beta</CardTitle>
@@ -21,7 +24,8 @@ export function Sidebar() {
               rel="noreferrer"
             >
               GitHub
-            </a> or @pingpad on lens
+            </a>{" "}
+            or @pingpad on lens
           </p>
         </CardContent>
       </Card>

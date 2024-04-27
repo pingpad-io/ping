@@ -18,10 +18,10 @@ export function SearchPage() {
   const { data, loading, error } = useSearchPublications({ query });
   const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
 
-  if (loading) return suspense;
   if (error) return <ErrorPage title="Couldn't find anything" />;
 
-  const posts = data.map((item) => lensItemToPost(item)).filter((item) => item);
+  const posts = data?.map((item) => lensItemToPost(item)).filter((item) => item);
+  const feed = loading ? suspense : <Feed data={posts} />;
 
   return (
     <>
@@ -33,7 +33,7 @@ export function SearchPage() {
         </Link>
         <SearchBar defaultText={query} />
       </div>
-      <Feed data={posts} />
+      {feed}
     </>
   );
 }
