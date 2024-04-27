@@ -1,20 +1,13 @@
-import { LensClient, production } from "@lens-protocol/client";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
-import { SuspenseView } from "~/components/post/SuspenseView";
-import { getCookieAuth } from "~/utils/getCookieAuth";
+import { getLensClient } from "~/utils/getLensClient";
 
-const lensClient = new LensClient({
-  environment: production,
-});
+const explore = async () => {
+  const { client, isAuthenticated, profileId } = await getLensClient();
+  if (isAuthenticated) return <ErrorPage title="Login to view this page." />;
 
-const home = async () => {
-  const { refreshToken, profileId, handle } = getCookieAuth();
-
-  if (!refreshToken || !profileId) return <ErrorPage title="Login to view this page." />;
-  await lensClient.authentication.authenticateWith({ refreshToken });
-  const data = await lensClient.feed.fetch({
+  const data = await client.feed.fetch({
     where: { for: profileId },
   });
 
@@ -25,4 +18,4 @@ const home = async () => {
   return <Feed data={posts} />;
 };
 
-export default home;
+export default explore;
