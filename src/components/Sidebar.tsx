@@ -11,9 +11,9 @@ export function Sidebar() {
           <CardTitle className="text-xl">Pingpad is in beta</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
-          <p>Welcome and Thank You for being here so early!</p>
+          <p>Welcome and thank you for being here early!</p>
           <p>
-            If you encounter any bugs or wish to provide feedback, kindly report it to the{" "}
+            If you encounter any bugs or wish to provide feedback, report it to the{" "}
             <a
               className="hover:underline font-bold"
               href="https://github.com/pingpad-io/ping/issues"
@@ -21,7 +21,7 @@ export function Sidebar() {
               rel="noreferrer"
             >
               GitHub
-            </a>
+            </a> or @pingpad on lens
           </p>
         </CardContent>
       </Card>
