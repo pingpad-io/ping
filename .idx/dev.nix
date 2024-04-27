@@ -7,6 +7,10 @@
     "vscodevim.vim"
     "biomejs.biome"
   ];
+  idx.workspace.onStart = {
+    bun-install = "bun install";
+    cp-env = "cp .env.example .env";
+  };
   idx.previews = {
     previews = [
       {
