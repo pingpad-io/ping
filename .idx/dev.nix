@@ -3,9 +3,9 @@
   packages = with pkgs; [
     bun
   ];
-  idx.extensions = with pkgs; [
-    vscodevim.vim
-    biomejs.biome
+  idx.extensions = [
+    "vscodevim.vim"
+    "biomejs.biome"
   ];
   idx.previews = {
     previews = [
