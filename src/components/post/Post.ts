@@ -1,5 +1,5 @@
 import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
-import { FeedItemFragment } from "@lens-protocol/client";
+import { AnyPublicationFragment, FeedItemFragment, PostFragment, QuoteFragment } from "@lens-protocol/client";
 import { AnyPublication, FeedItem, Post as LensPost, Profile } from "@lens-protocol/react-web";
 
 export type Post = {
@@ -27,7 +27,9 @@ export type User = {
   profilePictureUrl?: string;
 };
 
-export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublication) {
+export function lensItemToPost(
+  item: FeedItem | FeedItemFragment | PostFragment | QuoteFragment | AnyPublication | AnyPublicationFragment,
+) {
   const post =
     "__typename" in item
       ? item
@@ -42,13 +44,13 @@ export function lensItemToPost(item: FeedItem | FeedItemFragment | AnyPublicatio
       root = post.root;
       break;
     case "Post":
-      root = post;
+      root = post as unknown as LensPost;
       break;
     case "Comment":
-      root = post.root;
+      root = post.root as unknown as CommentFields;
       break;
     case "Quote":
-      root = post.quoteOn;
+      root = post.quoteOn as unknown as LensPost;
       break;
     case "Mirror":
       root = post.mirrorOn;

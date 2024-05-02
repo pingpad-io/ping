@@ -4,6 +4,7 @@ import { profileId, useLogin, useProfilesManaged, useSession as useLensSession }
 import { setCookie } from "cookies-next";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { UserAvatar } from "../UserAvatar";
 import { lensProfileToUser } from "../post/Post";
@@ -15,6 +16,7 @@ export function LensProfileSelect() {
   const { data: session } = useLensSession();
   const { execute: login, loading: isLoginPending } = useLogin();
   const { data: profiles, error, loading } = useProfilesManaged({ for: address, includeOwned: true });
+  const router = useRouter();
 
   const onSubmit = async (profile: string) => {
     const id = profileId(profile);
@@ -45,6 +47,7 @@ export function LensProfileSelect() {
           sameSite: "lax",
         });
       }
+      router.refresh();
       console.info(`Welcome ${handle}`);
     } else {
       console.error(result.error.message);

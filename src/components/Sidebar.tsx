@@ -16,7 +16,7 @@ export function Sidebar() {
         <CardContent className="flex flex-col gap-2">
           <p>Welcome and thank you for being here early!</p>
           <p>
-            If you encounter any bugs or wish to provide feedback, report it to the{" "}
+            If you encounter any bugs or wish to provide feedback, report it on{" "}
             <a
               className="hover:underline font-bold"
               href="https://github.com/pingpad-io/ping/issues"

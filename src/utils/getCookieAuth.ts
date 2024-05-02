@@ -7,8 +7,6 @@ export const getCookieAuth = () => {
   const profileId = storage.get("profileId")?.value;
   const handle = storage.get("handle")?.value;
 
-  if (!refreshToken) throw new Error("Unauthenticated");
-
   return {
     refreshToken,
     profileId,
