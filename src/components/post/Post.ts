@@ -66,12 +66,12 @@ export function lensItemToPost(
 
   const author = lensProfileToUser(root.by);
   const reactions: PostReactions = {
-    Upvote: root.stats.upvotes,
-    Downvote: root.stats.downvotes,
-    Bookmark: root.stats.bookmarks,
-    Collect: root.stats.collects,
-    Comment: root.stats.comments,
-    Repost: root.stats.mirrors,
+    Upvote: root.stats?.upvotes,
+    Downvote: root.stats?.downvotes,
+    Bookmark: root.stats?.bookmarks,
+    Collect: root.stats?.collects,
+    Comment: root.stats?.comments,
+    Repost: root.stats?.mirrors,
   };
 
   const comments: Post[] =

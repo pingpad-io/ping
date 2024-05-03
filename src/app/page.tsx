@@ -1,7 +1,7 @@
-import { HomePage } from "./home/HomePage";
+import home from "./home/page";
 
-const LandingPage = () => {
-  return <HomePage />;
+const landing = () => {
+  return home()
 };
 
-export default LandingPage;
+export default landing;
