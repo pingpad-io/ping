@@ -17,13 +17,8 @@ export function Sidebar() {
           <p>Welcome and thank you for being here early!</p>
           <p>
             If you encounter any bugs or wish to provide feedback, report it on{" "}
-            <a
-              className="underline "
-              href="https://github.com/pingpad-io/ping/issues"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
+            <a className="underline " href="https://github.com/pingpad-io/ping/issues" target="_blank" rel="noreferrer">
+              github
             </a>{" "}
             or @pingpad on lens
           </p>
@@ -50,7 +45,7 @@ const Links = () => {
           About
         </Link>
       </div>
-      <span className="select-none">© 2024</span>
+      <span className="select-none">© 2024 Pingpad</span>
     </div>
   );
 };

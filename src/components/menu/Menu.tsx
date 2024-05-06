@@ -66,7 +66,7 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
       </Link>
 
       <Link href={`/u/${handle}`}>
-        <Button variant="ghost" size="sm_icon" disabled>
+        <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">profile</div>
           <UserIcon className="sm:ml-2" size={21} />
         </Button>

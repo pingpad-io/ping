@@ -1,5 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
-import { BookmarkIcon, HeartIcon, LibraryIcon, MessageSquareIcon, Repeat2Icon, ThumbsDownIcon } from "lucide-react";
+import { BookmarkIcon, CirclePlusIcon, HeartIcon, MessageSquareIcon, Repeat2Icon, ThumbsDownIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Post, PostReactionType } from "./Post";
 
@@ -31,7 +31,6 @@ export const ReactionBadge = ({ reaction, amount }: { reaction: PostReactionType
   }).format(amount);
 
   const tooltipText = reaction.toLowerCase() + (amount === 1 ? "" : "s");
-  const isUserReacted = false;
 
   return (
     <TooltipProvider>
@@ -71,7 +70,7 @@ export const ReactionIcon = ({ reaction }: { reaction: PostReactionType }) => {
     case "Comment":
       return <MessageSquareIcon size={15} />;
     case "Collect":
-      return <LibraryIcon size={16} />;
+      return <CirclePlusIcon size={16} />;
     case "Bookmark":
       return <BookmarkIcon size={16} />;
     default:
