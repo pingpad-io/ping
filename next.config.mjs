@@ -27,4 +27,5 @@ const config = {
 
 };
 
-export default bundleAnalyzer(config);
+// export default bundleAnalyzer(config);
+export default config;

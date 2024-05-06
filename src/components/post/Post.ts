@@ -53,8 +53,8 @@ export function lensItemToPost(
       root = post.quoteOn as unknown as LensPost;
       break;
     case "Mirror":
-      root = post.mirrorOn;
-      break;
+      // root = post.mirrorOn;
+      return null;
     default:
       return null;
   }
