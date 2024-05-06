@@ -18,7 +18,7 @@ export function Sidebar() {
           <p>
             If you encounter any bugs or wish to provide feedback, report it on{" "}
             <a
-              className="hover:underline font-bold"
+              className="underline "
               href="https://github.com/pingpad-io/ping/issues"
               target="_blank"
               rel="noreferrer"

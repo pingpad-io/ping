@@ -73,6 +73,7 @@
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@biomejs/biome": "^1.7.2",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.21.1",
     "@types/metascraper": "^5.14.3",
