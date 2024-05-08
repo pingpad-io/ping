@@ -2,7 +2,6 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import { SignedIn } from "../Authenticated";
 import { Card } from "../ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Post } from "./Post";
 import { PostMenuContent } from "./PostMenu";
 
@@ -16,6 +15,7 @@ export const PostContextMenu = (props: PropsWithChildren & { post: Post }) => {
   const handleClick = () => setClicked(false);
   useEffect(() => {
     window.addEventListener("click", handleClick);
+
     return () => {
       window.removeEventListener("click", handleClick);
     };
@@ -34,15 +34,10 @@ export const PostContextMenu = (props: PropsWithChildren & { post: Post }) => {
     >
       <SignedIn>
         {clicked && (
-          <div className="z-[10] absolute" style={{ top: `${points.y}px`, left: `${points.x}px` }}>
-            <DropdownMenu open={true}>
-              <DropdownMenuTrigger />
-              <DropdownMenuContent>
-                <Card className="hover:bg-card">
-                  <PostMenuContent post={props.post} profileId="" />
-                </Card>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="z-[40] absolute" style={{ top: `${points.y}px`, left: `${points.x}px` }}>
+            <Card className="flex flex-col w-max gap-2 p-2 hover:bg-card border">
+              <PostMenuContent post={props.post} profileId="" />
+            </Card>
           </div>
         )}
       </SignedIn>

@@ -19,13 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans overflow-y-scroll`} lang="en">
-      <body className="flex flex-col">
-        <SpeedInsights />
-        <Analytics />
-        <Toaster />
-
+      <body className="flex flex-col relative">
         <Providers>
-          <div className="flex flex-row justify-center shrink grow w-full shrink">
+          <SpeedInsights />
+          <Analytics />
+          <Toaster />
+
+          <div className="flex flex-row justify-center shrink grow w-full">
             <div className="hidden sm:flex sticky top-0 h-fit">
               <Menu />
             </div>

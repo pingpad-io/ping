@@ -2,7 +2,7 @@
 
 import { profileId, useLogin, useProfilesManaged, useSession as useLensSession } from "@lens-protocol/react-web";
 import { setCookie } from "cookies-next";
-import { PlusIcon } from "lucide-react";
+import { LoaderCircleIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccount as useWagmiAccount } from "wagmi";
@@ -57,7 +57,7 @@ export function LensProfileSelect() {
   if (!isConnected) return null;
 
   if (loading) {
-    return null;
+    return <LoaderCircleIcon size={22} className="animate-spin" />;
   }
 
   if (error) {

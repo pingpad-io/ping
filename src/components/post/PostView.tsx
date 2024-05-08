@@ -19,7 +19,7 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
 
   return (
     <PostContextMenu post={post}>
-      <Card className="" onClick={() => setCollapsed(false)}>
+      <Card onClick={() => setCollapsed(false)}>
         <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
           <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
             <UserAvatar user={post.author} link={false} />
