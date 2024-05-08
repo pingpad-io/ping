@@ -1,5 +1,11 @@
 import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
-import { AnyPublicationFragment, FeedItemFragment, PostFragment, QuoteFragment } from "@lens-protocol/client";
+import {
+  AnyPublicationFragment,
+  FeedItemFragment,
+  PostFragment,
+  ProfileFragment,
+  QuoteFragment,
+} from "@lens-protocol/client";
 import { AnyPublication, FeedItem, Post as LensPost, Profile } from "@lens-protocol/react-web";
 
 export type Post = {
@@ -59,7 +65,7 @@ export function lensItemToPost(
       return null;
   }
 
-  if (!root.by.metadata || root.metadata.__typename !== "TextOnlyMetadataV3") {
+  if (!root.by?.metadata || root.metadata.__typename !== "TextOnlyMetadataV3") {
     return null;
   }
   const content = root.metadata.content;
@@ -106,7 +112,7 @@ export function lensItemToPost(
   }
 }
 
-export function lensProfileToUser(profile: Profile): User {
+export function lensProfileToUser(profile: Profile | ProfileFragment): User {
   const imageUrl =
     profile.metadata.picture.__typename === "ImageSet"
       ? profile.metadata?.picture?.optimized?.uri || profile.metadata?.picture?.raw?.uri

@@ -1,25 +1,40 @@
-"use client";
-import { useProfile } from "@lens-protocol/react-web";
+import { PublicationType } from "@lens-protocol/client";
 import { CalendarIcon, EditIcon } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";
+import { Feed } from "~/components/Feed";
 import { UserAvatar } from "~/components/UserAvatar";
-import { lensProfileToUser } from "~/components/post/Post";
+import { lensItemToPost, lensProfileToUser } from "~/components/post/Post";
 import { TimeSince } from "~/components_old/TimeLabel";
+import { getLensClient } from "~/utils/getLensClient";
 
-const user = ({ params }: { params: { user: string } }) => {
+export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {
   const handle = params.user;
-  const {
-    data: profile,
-    loading,
-    error,
-  } = useProfile({
-    forHandle: handle,
+  const title = `${handle} | Pingpad`;
+  return {
+    title,
+    description: `@${handle} on Pingpad`,
+  };
+}
+
+const user = async ({ params }: { params: { user: string } }) => {
+  const { client, isAuthenticated, profileId } = await getLensClient();
+
+  const handle = params.user;
+  const profile = await client.profile.fetch({
+    forHandle: `lens/${handle}`,
   });
   if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
 
+  const data = await client.publication.fetchAll({
+    where: { from: [profile.id], publicationTypes: [PublicationType.Post] },
+  });
+  if (!data) return <ErrorPage title={`Couldn't fetch posts`} />;
+
+  const posts = data.items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
+
   const isUserProfile = false;
-  const title = `@${profile.handle.localName ?? ""} - Pingpad`;
 
   return (
     <>
@@ -48,7 +63,7 @@ const user = ({ params }: { params: { user: string } }) => {
         </div>
       </div>
 
-      {/* <Feed {...posts} /> */}
+      <Feed data={posts} />
     </>
   );
 };
