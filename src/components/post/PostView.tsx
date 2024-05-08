@@ -1,5 +1,5 @@
 "use client";
-import { Edit2Icon } from "lucide-react";
+import { Edit2Icon, ReplyIcon } from "lucide-react";
 import Link from "next/link";
 import { forwardRef, useRef, useState } from "react";
 import Markdown from "../Markdown";
@@ -25,7 +25,7 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
             <UserAvatar user={post.author} link={false} />
           </div>
           <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
-            {/* <ReplyInfo post={post} /> */}
+            <ReplyInfo post={post} />
             <PostInfo post={post} />
             <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
             {showBadges && <PostBadges post={post} />}
@@ -63,21 +63,21 @@ export const PostContent = forwardRef<
   );
 });
 
-// export const ReplyInfo = ({ post }: { post: Post }) => {
-//   const username = post.repliedTo?.author.username;
-//   const content = post.repliedTo?.content.substring(0, 100);
-//   const id = post.repliedTo?.id;
+export const ReplyInfo = ({ post }: { post: Post }) => {
+  const username = post.reply?.author?.handle;
+  const content = post.reply?.content?.substring(0, 100);
+  const id = post.reply?.id;
 
-//   if (!post.repliedToId) return null;
+  if (!post?.reply) return null;
 
-//   return (
-//     <Link href={`/p/${id ?? ""}`} className="flex flex-row items-center gap-1 -mt-2 text-xs font-light leading-3">
-//       <ReplyIcon size={14} className="shrink-0 scale-x-[-1] transform" />
-//       <span className="pb-0.5">@{username}:</span>
-//       <span className="truncate pb-0.5 ">{content}</span>
-//     </Link>
-//   );
-// };
+  return (
+    <Link href={`/p/${id ?? ""}`} className="flex flex-row items-center gap-1 -mt-2 text-xs font-light leading-3">
+      <ReplyIcon size={14} className="shrink-0 scale-x-[-1] transform" />
+      <span className="pb-0.5">@{username}:</span>
+      <span className="truncate pb-0.5 ">{content}</span>
+    </Link>
+  );
+};
 
 export const PostInfo = ({ post }: { post: Post }) => {
   const author = post.author;
@@ -86,7 +86,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
 
   return (
     <div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
-      <Link className="flex gap-2" href={`/${handle}`}>
+      <Link className="flex gap-2" href={`/u/${handle}`}>
         <span className="w-fit truncate font-bold">{author.name}</span>
         <span className="">{`${isLensHandle ? "@" : "#"}${handle}`}</span>
       </Link>
@@ -96,130 +96,6 @@ export const PostInfo = ({ post }: { post: Post }) => {
     </div>
   );
 };
-
-// export const PostEditor = ({ post }: { post: Post }) => {
-//   const router = useRouter();
-//   const ctx = api.useUtils();
-//   const user = useUser();
-
-//   const removeEditingQuery = () => {
-//     const { ...routerQuery } = router.query;
-//     router.replace({
-//       query: { ...routerQuery },
-//     });
-//   };
-
-//   useEffect(() => {
-//     if (!user) return;
-
-//     if (user.id !== post.authorId) {
-//       removeEditingQuery();
-//       toast.error("You are not allowed to edit this post");
-//     }
-//   }, [user]);
-
-//   const { mutate: updatePost, isLoading: isPosting } = api.posts.update.useMutation({
-//     onSuccess: async () => {
-//       removeEditingQuery();
-//       await ctx.posts.invalidate();
-//     },
-//     onError: (e) => {
-//       let error = "Something went wrong";
-//       switch (e.data?.code) {
-//         case "UNAUTHORIZED":
-//           error = "You must be logged in to post";
-//           break;
-//         case "FORBIDDEN":
-//           error = "You are not allowed to edit this post";
-//           break;
-//         case "TOO_MANY_REQUESTS":
-//           error = "Slow down! You are editing too often";
-//           break;
-//         case "BAD_REQUEST":
-//           error = "Invalid request";
-//           break;
-//         case "PAYLOAD_TOO_LARGE":
-//           error = "Your message is too big";
-//           break;
-//       }
-//       toast.error(error);
-//     },
-//   });
-
-//   const FormSchema = z.object({
-//     content: z.string().max(3000, {
-//       message: "Post must not be longer than 3000 characters.",
-//     }),
-//   });
-
-//   const form = useForm<z.infer<typeof FormSchema>>({
-//     resolver: zodResolver(FormSchema),
-//     defaultValues: {
-//       content: post.content,
-//     },
-//   });
-
-//   function onSubmit(data: z.infer<typeof FormSchema>) {
-//     updatePost({
-//       content: data.content,
-//       id: post.id,
-//     });
-//   }
-
-//   const updateHeight = () => {
-//     if (textarea.current) {
-//       textarea.current.style.height = "auto";
-//       textarea.current.style.height = `${textarea.current.scrollHeight + 2}px`;
-//     }
-//   };
-
-//   const onChange = () => {
-//     updateHeight();
-//   };
-
-//   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-//     if (event.ctrlKey && event.key === "Enter") {
-//       onSubmit(form.getValues());
-//     }
-//   };
-
-//   const textarea = useRef<HTMLTextAreaElement>(null);
-
-//   return (
-//     <Form {...form}>
-//       <form onSubmit={form.handleSubmit(onSubmit)} onChange={onChange} className="flex flex-col gap-2 p-1 w-full h-fit">
-//         <FormField
-//           control={form.control}
-//           name="content"
-//           render={({ field }) => (
-//             <FormItem className="grow">
-//               <FormControl>
-//                 <Textarea
-//                   {...field}
-//                   onKeyDown={onKeyDown}
-//                   disabled={isPosting}
-//                   placeholder="Update this post..."
-//                   className="min-h-12 resize-none"
-//                   ref={textarea}
-//                   rows={1}
-//                 />
-//               </FormControl>
-//             </FormItem>
-//           )}
-//         />
-//         <div className="flex justify-between">
-//           <Button size="default" className="flex gap-2" type="reset" variant={"ghost"} onClick={removeEditingQuery}>
-//             Cancel
-//           </Button>
-
-//           <Button disabled={isPosting} size="default" className="flex gap-2" type="submit">
-//             Update
-//           </Button>
-//         </div>
-//       </form>
-//     </Form>
-//   );
-// };
 
 export const PostBadges = ({ post }: { post: Post }) => {
   // const editedIndicator = EditedIndicator({ post });

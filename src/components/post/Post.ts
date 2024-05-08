@@ -66,7 +66,7 @@ export function lensItemToPost(
       return null;
   }
 
-  if (!root.by?.metadata || root.metadata.__typename !== "TextOnlyMetadataV3") {
+  if (!root?.metadata?.__typename || root.metadata.__typename !== "TextOnlyMetadataV3") {
     return null;
   }
   const content = root.metadata.content;
@@ -97,20 +97,27 @@ export function lensItemToPost(
       : [];
 
   const createdAt = new Date(root.createdAt);
+  const reply =
+    root.__typename === "Comment"
+      ? {
+          id: root.id as string,
+          author: root?.root?.by ? lensProfileToUser(root?.root?.by) : undefined,
+          content: root?.root?.metadata?.content ? root.root.metadata.content : "post",
+        }
+      : undefined;
 
-  if (root.__typename === "Post") {
-    return {
-      id: root.id as string,
-      platform: "lens",
-      author,
-      reactions,
-      comments,
-      metadata: root.metadata,
-      content: root.metadata.content,
-      createdAt,
-      updatedAt: createdAt, // NOT IMPLEMENTED YET
-    } as Post;
-  }
+  return {
+    id: root.id as string,
+    platform: "lens",
+    author,
+    reactions,
+    reply,
+    comments,
+    metadata: root.metadata,
+    content: root.metadata.content,
+    createdAt,
+    updatedAt: createdAt, // NOT IMPLEMENTED YET
+  };
 }
 
 export function lensProfileToUser(profile: Profile | ProfileFragment): User {
