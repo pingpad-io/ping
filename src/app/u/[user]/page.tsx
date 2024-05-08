@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
+import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/UserAvatar";
 import { lensItemToPost, lensProfileToUser } from "~/components/post/Post";
-import { TimeSince } from "~/components_old/TimeLabel";
 import { getLensClient } from "~/utils/getLensClient";
 
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {
