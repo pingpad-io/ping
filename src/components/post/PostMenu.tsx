@@ -7,16 +7,14 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { DropdownMenuSub, DropdownMenuSubContent } from "@radix-ui/react-dropdown-menu";
-import { useUser } from "@supabase/auth-helpers-react";
 import { EditIcon, HeartIcon, LinkIcon, MoreHorizontalIcon, ReplyIcon, TrashIcon } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import type { Post } from "~/server/api/routers/posts";
-import { api } from "~/utils/api";
-import { ReactionsList } from "../components/ReactionsList";
-import { Button } from "../components/ui/button";
-import { Card } from "../components/ui/card";
-import { SignedIn } from "./Signed";
+import { SignedIn } from "../Authenticated";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
+import { Post } from "./Post";
+import { ReactionsList } from "./PostReactions";
 
 export const PostMenu = ({ post }: { post: Post }) => {
   return (
@@ -28,35 +26,27 @@ export const PostMenu = ({ post }: { post: Post }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <PostMenuContent post={post} />
+          <PostMenuContent post={post} profileId="" />
         </DropdownMenuContent>
       </DropdownMenu>
     </SignedIn>
   );
 };
 
-export const PostMenuContent = ({ post }: { post: Post }) => {
-  const ctx = api.useUtils();
+export const PostMenuContent = ({ post, profileId }: { post: Post; profileId: string }) => {
   const router = useRouter();
-  const user = useUser();
   const author = post.author;
 
   const origin = typeof window !== "undefined" && window.location.origin ? window.location.origin : "";
   const postLink = `${origin}/p/${post.id}`;
 
   const setEditingQuery = () => {
-    router.query.editing = post.id;
-    router.push(router);
+    toast.error("Not implemented yet");
   };
 
-  const { mutate: deletePost } = api.posts.delete.useMutation({
-    onSuccess: async () => {
-      await ctx.posts.invalidate();
-    },
-    onError: (error) => {
-      toast.error(`Error deleting post ${error.message}`);
-    },
-  });
+  const deletePost = () => {
+    toast.error("Not implemented yet");
+  };
 
   const copyLink = () => {
     navigator.clipboard.writeText(postLink).then(
@@ -91,7 +81,7 @@ export const PostMenuContent = ({ post }: { post: Post }) => {
         <LinkIcon size={14} className="mr-2 h-4 w-4" />
         copy link
       </DropdownMenuItem>
-      {user?.id === author.id && (
+      {profileId === author.id && (
         <>
           <DropdownMenuItem onClick={setEditingQuery}>
             <EditIcon size={14} className="mr-2 h-4 w-4" />
@@ -100,7 +90,7 @@ export const PostMenuContent = ({ post }: { post: Post }) => {
 
           <DropdownMenuItem
             onClick={() => {
-              deletePost(post.id);
+              deletePost();
             }}
           >
             <TrashIcon size={14} className="mr-2 h-4 w-4" />
