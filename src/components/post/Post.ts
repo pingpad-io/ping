@@ -30,6 +30,7 @@ export type User = {
   handle: string;
   address: string;
   namespace: string;
+  description?: string;
   profilePictureUrl?: string;
 };
 

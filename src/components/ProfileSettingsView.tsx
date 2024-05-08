@@ -4,34 +4,29 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
-import { api } from "~/utils/api";
-import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
+import { User } from "./post/Post";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 
-export default function ProfileSettings({ profile }: { profile: Profile }) {
-  const { mutate: updateProfile, isLoading } = api.profiles.update.useMutation({
-    onSuccess() {
-      toast.success("Profile updated!");
-    },
-    onError(error) {
-      toast.error(`Error updating the data! ${error.message}`);
-    },
-  });
+export default function ProfileSettings({ user }: { user: User }) {
+  const updateProfile = () => {
+    toast.error("Not implemented yet");
+  };
+  const isLoading = true;
 
-  function onSubmit(values: Profile) {
-    const updates = {
-      id: profile.id,
-      created_at: profile.created_at,
-      username: values.username,
-      full_name: values.full_name,
-      description: values.description,
-      avatar_url: values.avatar_url,
-      updated_at: new Date(),
-    };
+  function onSubmit(values: User) {
+    // const updates = {
+    //   id: user.id,
+    //   username: values.username,
+    //   full_name: values.full_name,
+    //   description: values.description,
+    //   avatar_url: values.avatar_url,
+    //   updated_at: new Date(),
+    // };
 
-    updateProfile({ updates });
+    updateProfile();
   }
 
   const formSchema = z.object({
@@ -43,7 +38,7 @@ export default function ProfileSettings({ profile }: { profile: Profile }) {
       .max(20, {
         message: "Username must be shorter than 20 characters.",
       }),
-    full_name: z
+    name: z
       .string()
       .min(2, {
         message: "Name must be at least 2 characters.",
@@ -54,13 +49,12 @@ export default function ProfileSettings({ profile }: { profile: Profile }) {
     }),
   });
 
-  const form = useForm<Profile>({
+  const form = useForm<User>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: profile.username,
-      full_name: profile.full_name,
-      description: profile.description,
-      avatar_url: profile.avatar_url,
+      name: user.name,
+      description: user.description,
+      profilePictureUrl: user.profilePictureUrl,
     },
   });
 
@@ -75,7 +69,7 @@ export default function ProfileSettings({ profile }: { profile: Profile }) {
             <FormField
               control={form.control}
               disabled={isLoading}
-              name="full_name"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
@@ -88,11 +82,11 @@ export default function ProfileSettings({ profile }: { profile: Profile }) {
             />
             <FormField
               control={form.control}
-              disabled={isLoading}
-              name="username"
+              disabled={true}
+              name="handle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Handle</FormLabel>
                   <FormControl>
                     <Input placeholder="Username" {...field} value={field.value ?? undefined} />
                   </FormControl>
