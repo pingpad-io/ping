@@ -10,7 +10,6 @@ import { Card, CardContent } from "../ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { Post } from "./Post";
 import { PostContextMenu } from "./PostContextMenu";
-import { PostMenu } from "./PostMenu";
 import { ReactionsList } from "./PostReactions";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
@@ -92,7 +91,6 @@ export const PostInfo = ({ post }: { post: Post }) => {
       </Link>
       <span>{"·"}</span>
       <TimeElapsedSince date={post.createdAt} />
-      <PostMenu post={post} />
     </div>
   );
 };

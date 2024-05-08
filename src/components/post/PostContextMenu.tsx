@@ -35,7 +35,7 @@ export const PostContextMenu = (props: PropsWithChildren & { post: Post }) => {
       <SignedIn>
         {clicked && (
           <div className="z-[40] absolute" style={{ top: `${points.y}px`, left: `${points.x}px` }}>
-            <Card className="flex flex-col w-max gap-2 p-2 hover:bg-card border">
+            <Card className="flex flex-col w-max gap-1 p-1 hover:bg-card border">
               <PostMenuContent post={props.post} profileId="" />
             </Card>
           </div>

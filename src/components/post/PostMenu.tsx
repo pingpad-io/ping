@@ -1,31 +1,9 @@
 "use client";
-import { EditIcon, LinkIcon, MoreHorizontalIcon, ReplyIcon, TrashIcon } from "lucide-react";
+import { EditIcon, LinkIcon, ReplyIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import toast from "react-hot-toast";
-import { SignedIn } from "../Authenticated";
 import { Button } from "../ui/button";
 import { Post } from "./Post";
-
-export const PostMenu = ({ post }: { post: Post }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <SignedIn>
-      <Button
-        type="button"
-        size="icon"
-        className="w-6 h-4"
-        variant="ghost"
-        // onClick={() => setOpen(!open)
-        onClick={() => {}}
-      >
-        <MoreHorizontalIcon className="w-4 h-4" strokeWidth={1} />
-      </Button>
-      {open && <PostMenuContent post={post} profileId="" />}
-    </SignedIn>
-  );
-};
 
 export const PostMenuContent = ({ post, profileId }: { post: Post; profileId: string }) => {
   const router = useRouter();
@@ -55,17 +33,17 @@ export const PostMenuContent = ({ post, profileId }: { post: Post; profileId: st
   return (
     <>
       <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
-        <ReplyIcon size={14} className="mr-2 h-4 w-4" />
+        <ReplyIcon size={12} className="mr-2 h-4 w-4" />
         reply
       </Button>
       <Button size="context" variant="ghost" onClick={copyLink}>
-        <LinkIcon size={14} className="mr-2 h-4 w-4" />
+        <LinkIcon size={12} className="mr-2 h-4 w-4" />
         copy link
       </Button>
       {profileId === author.id && (
         <>
           <Button size="context" variant="ghost" onClick={setEditingQuery}>
-            <EditIcon size={14} className="mr-2 h-4 w-4" />
+            <EditIcon size={12} className="mr-2 h-4 w-4" />
             edit post
           </Button>
 
@@ -76,7 +54,7 @@ export const PostMenuContent = ({ post, profileId }: { post: Post; profileId: st
               deletePost();
             }}
           >
-            <TrashIcon size={14} className="mr-2 h-4 w-4" />
+            <TrashIcon size={12} className="mr-2 h-4 w-4" />
             delete post
           </Button>
         </>
