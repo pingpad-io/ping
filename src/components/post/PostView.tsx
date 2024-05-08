@@ -2,8 +2,8 @@
 import { Edit2Icon } from "lucide-react";
 import Link from "next/link";
 import { forwardRef, useRef, useState } from "react";
-import { TimeElapsedSince } from "../../components_old/TimeLabel";
 import Markdown from "../Markdown";
+import { TimeElapsedSince } from "../TimeLabel";
 import { UserAvatar } from "../UserAvatar";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
