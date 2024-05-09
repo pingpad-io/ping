@@ -16,7 +16,6 @@ const notifications = async () => {
     const notifications = items
       ?.map((notification) => lensNotificationToNative(notification))
       .filter((notification) => notification);
-    console.log(data);
 
     return (
       <Card className="z-[30] hover:bg-card p-4 border-0">

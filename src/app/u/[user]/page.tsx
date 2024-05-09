@@ -6,7 +6,8 @@ import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/UserAvatar";
-import { lensItemToPost, lensProfileToUser } from "~/components/post/Post";
+import { lensItemToPost } from "~/components/post/Post";
+import { lensProfileToUser } from "~/components/user/User";
 import { getLensClient } from "~/utils/getLensClient";
 
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {

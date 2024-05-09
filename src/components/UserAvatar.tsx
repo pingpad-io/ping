@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import Link from "next/link";
-import { User } from "./post/Post";
+import { User } from "./user/User";
 
 export function UserAvatar({ user, link = true }: { user: User; link?: boolean }) {
   const avatar = (
@@ -15,6 +15,15 @@ export function UserAvatar({ user, link = true }: { user: User; link?: boolean }
   );
 
   return link ? <Link href={`/u/${user.handle}`}>{avatar}</Link> : avatar;
+}
+
+export function UserAvatarArray({ users }: { users: User[] }) {
+  const avatars = users.map((user) => (
+    <div key={user.id} className="w-10 h-10 -mr-6 hover:mr-0 transition-all duration-200">
+      <UserAvatar link={true} user={user} />
+    </div>
+  ));
+  return <div className="flex flex-row mr-6 hover:-mr-0 transition-all duration-200">{avatars}</div>;
 }
 
 /// Get the URL for a stamp.fyi profile image.

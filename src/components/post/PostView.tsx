@@ -39,17 +39,7 @@ export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
-  // const router = useRouter();
-  // const editing = router.query.editing === post.id;
-  const editing = false;
-
-  return editing ? (
-    <>
-      <div className="truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto line-clamp-none">
-        {/* <PostEditor post={post} /> */}
-      </div>
-    </>
-  ) : (
+  return (
     <div
       ref={ref}
       className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
