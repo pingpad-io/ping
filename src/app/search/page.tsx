@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { FeedSuspense } from "~/components/post/SuspenseView";
+import { FeedSuspense } from "~/components/Feed";
 import { SearchPage } from "./SearchPage";
 
 const search = async () => {

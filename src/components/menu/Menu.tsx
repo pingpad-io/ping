@@ -53,10 +53,12 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         <MailIcon className="sm:ml-2" size={20} />
       </Button>
 
-      <Button variant="ghost" size="sm_icon" disabled>
-        <div className="hidden sm:flex -mt-1">notifications</div>
-        <BellIcon className="sm:ml-2" size={21} />
-      </Button>
+      <Link href={"/notifications"}>
+        <Button variant="ghost" size="sm_icon">
+          <div className="hidden sm:flex -mt-1">notifications</div>
+          <BellIcon className="sm:ml-2" size={21} />
+        </Button>
+      </Link>
 
       <Link href="/settings">
         <Button variant="ghost" size="sm_icon">

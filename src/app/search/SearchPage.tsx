@@ -5,10 +5,9 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import ErrorPage from "~/components/ErrorPage";
-import { Feed } from "~/components/Feed";
+import { Feed, FeedSuspense } from "~/components/Feed";
 import { SearchBar } from "~/components/SearchBar";
 import { lensItemToPost } from "~/components/post/Post";
-import { FeedSuspense, SuspenseView } from "~/components/post/SuspenseView";
 import { Button } from "~/components/ui/button";
 
 export function SearchPage() {

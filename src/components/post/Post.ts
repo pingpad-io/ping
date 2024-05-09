@@ -1,16 +1,15 @@
 import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
-import {
-  AnyPublicationFragment,
-  FeedItemFragment,
-  PostFragment,
-  ProfileFragment,
-  QuoteFragment,
-} from "@lens-protocol/client";
-import { AnyPublication, FeedItem, Post as LensPost, Profile } from "@lens-protocol/react-web";
+import { AnyPublicationFragment, FeedItemFragment, PostFragment, QuoteFragment } from "@lens-protocol/client";
+import { AnyPublication, FeedItem, Post as LensPost } from "@lens-protocol/react-web";
+import { User, lensProfileToUser } from "../user/User";
+
+export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
+export type PostReactions = Record<PostReactionType, number>;
+export type PostPlatform = "lens" | "farcaster";
 
 export type Post = {
   id: string;
-  platform: "lens" | "farcaster";
+  platform: PostPlatform;
   content: string;
   author: User;
   createdAt: Date;
@@ -19,19 +18,6 @@ export type Post = {
   reactions?: PostReactions;
   updatedAt?: Date;
   reply?: Post;
-};
-
-export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
-export type PostReactions = Record<PostReactionType, number>;
-
-export type User = {
-  id: string;
-  name?: string;
-  handle: string;
-  address: string;
-  namespace: string;
-  description?: string;
-  profilePictureUrl?: string;
 };
 
 export function lensItemToPost(
@@ -87,7 +73,7 @@ export function lensItemToPost(
           id: comment.id as string,
           author: lensProfileToUser(comment.by),
           createdAt: new Date(comment.createdAt),
-          updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
+          updatedAt: new Date(comment.createdAt),
           content,
           comments: [],
           reactions: undefined,
@@ -102,7 +88,7 @@ export function lensItemToPost(
       ? {
           id: root.id as string,
           author: root?.root?.by ? lensProfileToUser(root?.root?.by) : undefined,
-          content: root?.root?.metadata?.content ? root.root.metadata.content : "post",
+          content: root?.root?.metadata?.__typename !== "EventMetadataV3" ? root?.root?.metadata?.content : "post",
         }
       : undefined;
 
@@ -116,22 +102,6 @@ export function lensItemToPost(
     metadata: root.metadata,
     content: root.metadata.content,
     createdAt,
-    updatedAt: createdAt, // NOT IMPLEMENTED YET
-  };
-}
-
-export function lensProfileToUser(profile: Profile | ProfileFragment): User {
-  const imageUrl =
-    profile.metadata.picture.__typename === "ImageSet"
-      ? profile.metadata?.picture?.optimized?.uri || profile.metadata?.picture?.raw?.uri
-      : profile.metadata.picture.image.optimized?.uri || profile.metadata.picture.image.raw?.uri;
-
-  return {
-    id: profile.id,
-    address: profile.ownedBy.address,
-    name: profile.metadata.displayName,
-    profilePictureUrl: imageUrl,
-    handle: profile.handle?.localName ?? profile.id,
-    namespace: profile.handle?.namespace ?? "wallet",
-  };
+    updatedAt: createdAt,
+  } as Post;
 }

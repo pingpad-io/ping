@@ -1,6 +1,6 @@
 import { Card } from "../ui/card";
 
-export const SuspenseView = () => {
+export const PostSuspense = () => {
   const avatar = (
     <div className="flex h-full items-center justify-center">
       <div className="h-12 w-12 animate-pulse rounded-full bg-muted" />
@@ -20,8 +20,3 @@ export const SuspenseView = () => {
     </Card>
   );
 };
-
-export const FeedSuspense = () => {
-  return [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
-   
-}
