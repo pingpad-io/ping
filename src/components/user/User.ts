@@ -13,15 +13,15 @@ export type User = {
 
 export function lensProfileToUser(profile: Profile | ProfileFragment): User {
   const imageUrl =
-    profile.metadata.picture.__typename === "ImageSet"
-      ? profile.metadata?.picture?.optimized?.uri || profile.metadata?.picture?.raw?.uri
-      : profile.metadata.picture.image.optimized?.uri || profile.metadata.picture.image.raw?.uri;
+    profile?.metadata?.picture?.__typename === "ImageSet"
+      ? profile?.metadata?.picture?.optimized?.uri || profile?.metadata?.picture?.raw?.uri
+      : profile?.metadata?.picture.image.optimized?.uri || profile?.metadata?.picture?.image.raw?.uri;
 
   return {
     id: profile.id,
-    address: profile.ownedBy.address,
-    name: profile.metadata.displayName,
     profilePictureUrl: imageUrl,
+    address: profile.ownedBy.address,
+    name: profile?.metadata?.displayName,
     handle: profile.handle?.localName ?? profile.id,
     namespace: profile.handle?.namespace ?? "wallet",
   };

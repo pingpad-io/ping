@@ -1,7 +1,10 @@
 import ErrorPage from "~/components/ErrorPage";
+import { NotificationsFeed } from "~/components/Feed";
+import { lensNotificationToNative } from "~/components/notifications/Notification";
+import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
 
-const home = async () => {
+const notifications = async () => {
   const { client, isAuthenticated, profileId } = await getLensClient();
 
   if (isAuthenticated) {
@@ -10,15 +13,17 @@ const home = async () => {
     if (data.isFailure()) return <ErrorPage title={`Couldn't fetch posts: ${data.error} `} />;
 
     const items = data.unwrap().items;
-    console.log(items);
-    // const posts = items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
+    const notifications = items
+      ?.map((notification) => lensNotificationToNative(notification))
+      .filter((notification) => notification);
+    console.log(data);
+
     return (
-      <>notifications</>
-      // <Card className="z-[30] hover:bg-card p-4 border-0">
-      //   <Feed data={posts} />
-      // </Card>
+      <Card className="z-[30] hover:bg-card p-4 border-0">
+        <NotificationsFeed data={notifications} />
+      </Card>
     );
   }
 };
 
-export default home;
+export default notifications;

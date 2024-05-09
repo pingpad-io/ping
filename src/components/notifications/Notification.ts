@@ -66,7 +66,7 @@ export function lensNotificationToNative(item: NotificationFragment): Notificati
       break;
   }
   const who = profiles.map((profile) => lensProfileToUser(profile));
-  const content = lensItemToPost(actedOn);
+  const content = actedOn ? lensItemToPost(actedOn) : undefined;
   const id = item.id;
 
   return {

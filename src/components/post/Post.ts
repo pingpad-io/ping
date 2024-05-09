@@ -22,7 +22,11 @@ export type Post = {
 
 export function lensItemToPost(
   item: FeedItem | FeedItemFragment | PostFragment | QuoteFragment | AnyPublication | AnyPublicationFragment,
-) {
+): Post | null {
+  if (!item) {
+    return null;
+  }
+
   const post =
     "__typename" in item
       ? item
