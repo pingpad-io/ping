@@ -31,7 +31,7 @@ export const NotificationView = ({ notification }: { notification: Notification 
   const usersText = notification.who.map((profile, i) => {
     const userName = profile.name ? profile.name : profile.handle;
     const user = (
-      <Link className="font-bold hover:underline" href={`/u/${profile.handle}`}>
+      <Link key={profile.id + i} className="font-bold hover:underline whitespace-nowrap" href={`/u/${profile.handle}`}>
         {userName}
       </Link>
     );
@@ -54,12 +54,11 @@ export const NotificationView = ({ notification }: { notification: Notification 
         <div className=" shrink-0 grow-0 rounded-full">
           <UserAvatarArray users={notification.who} />
         </div>
-        <div className="flex flex-col w-3/4 shrink group max-w-2xl grow gap-2 place-content-start">
-          <div className="flex flex-row gap-2">
-            <span>{usersText}</span>
-            <span>{notificationText}</span>
+        <div className="flex flex-col w-3/4 shrink group max-w-2xl grow gap-1 place-content-start">
+          <div className="flex flex-wrap gap-1">
+            {usersText} {notificationText}
           </div>
-          <div>{notification?.actedOn?.content}</div>
+          <div className="text-muted-foreground text-sm">{notification?.actedOn?.content}</div>
         </div>
       </CardContent>
     </Card>
