@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { UserAvatarArray } from "../UserAvatar";
 import { Card, CardContent } from "../ui/card";
 import { Notification } from "./Notification";
@@ -28,14 +29,23 @@ export const NotificationView = ({ notification }: { notification: Notification 
       break;
   }
   const usersText = notification.who.map((profile, i) => {
-    const user = profile.name ? profile.name : profile.handle;
+    const userName = profile.name ? profile.name : profile.handle;
+    const user = (
+      <Link className="font-bold hover:underline" href={`/u/${profile.handle}`}>
+        {userName}
+      </Link>
+    );
+
     if (notification.who.length === 1) {
       return user;
     }
     if (i === notification.who.length - 1) {
-      return ` and ${user}`;
+      return <> and {user} </>;
     }
-    return `${user}, `;
+    if (i === 0) {
+      return <>{user}</>;
+    }
+    return <>, {user}</>;
   });
 
   return (
@@ -45,7 +55,10 @@ export const NotificationView = ({ notification }: { notification: Notification 
           <UserAvatarArray users={notification.who} />
         </div>
         <div className="flex flex-col w-3/4 shrink group max-w-2xl grow gap-2 place-content-start">
-          {usersText} {notificationText}
+          <div className="flex flex-row gap-2">
+            <span>{usersText}</span>
+            <span>{notificationText}</span>
+          </div>
           <div>{notification?.actedOn?.content}</div>
         </div>
       </CardContent>
