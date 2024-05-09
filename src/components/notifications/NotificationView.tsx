@@ -3,39 +3,50 @@ import { Card, CardContent } from "../ui/card";
 import { Notification } from "./Notification";
 
 export const NotificationView = ({ notification }: { notification: Notification }) => {
-  let text = "";
+  let notificationText = "";
   switch (notification.type) {
     case "Reaction":
-      text = "liked your post";
+      notificationText = "liked your post";
       break;
     case "Comment":
-      text = "commented on your post";
+      notificationText = "commented on your post";
       break;
     case "Follow":
-      text = "started following you";
+      notificationText = "started following you";
       break;
     case "Mention":
-      text = "mentioned you in a post";
+      notificationText = "mentioned you in a post";
       break;
     case "Repost":
-      text = "shared your post";
+      notificationText = "shared your post";
       break;
     case "Action":
-      text = "acted on your post";
+      notificationText = "acted on your post";
       break;
     case "Quote":
-      text = "quoted your post";
+      notificationText = "quoted your post";
       break;
   }
+  const usersText = notification.who.map((profile, i) => {
+    const user = profile.name ? profile.name : profile.handle;
+    if (notification.who.length === 1) {
+      return user;
+    }
+    if (i === notification.who.length - 1) {
+      return ` and ${user}`;
+    }
+    return `${user}, `;
+  });
+
   return (
     <Card>
       <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
         <div className=" shrink-0 grow-0 rounded-full">
           <UserAvatarArray users={notification.who} />
         </div>
-        <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
-          {text}
-          {notification?.actedOn?.content}
+        <div className="flex flex-col w-3/4 shrink group max-w-2xl grow gap-2 place-content-start">
+          {usersText} {notificationText}
+          <div>{notification?.actedOn?.content}</div>
         </div>
       </CardContent>
     </Card>
