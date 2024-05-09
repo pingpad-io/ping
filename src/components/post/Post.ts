@@ -44,7 +44,7 @@ export function lensItemToPost(
       root = post as unknown as LensPost;
       break;
     case "Comment":
-      root = post.root as unknown as CommentFields;
+      root = post as unknown as CommentFields;
       break;
     case "Quote":
       root = post.quoteOn as unknown as LensPost;

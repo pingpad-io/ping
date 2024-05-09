@@ -18,8 +18,8 @@ export function UserAvatar({ user, link = true }: { user: User; link?: boolean }
 }
 
 export function UserAvatarArray({ users }: { users: User[] }) {
-  const avatars = users.map((user) => (
-    <div key={user.id} className="w-10 h-10 -mr-4 hover:mr-0 transition-all duration-200">
+  const avatars = users.map((user, idx) => (
+    <div key={user.id + idx} className="w-10 h-10 -mr-4 hover:mr-0 transition-all duration-200">
       <UserAvatar link={true} user={user} />
     </div>
   ));
