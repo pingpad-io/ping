@@ -8,7 +8,7 @@ export function UserAvatar({ user, link = true }: { user: User; link?: boolean }
       <Avatar className="w-full h-full">
         <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} />
         <AvatarFallback>
-          <img src={getStampUrl(user?.address)} alt={user?.handle} />
+          <img src={getStampUrl(user.address)} alt={user.handle} />
         </AvatarFallback>
       </Avatar>
     </>
@@ -19,11 +19,12 @@ export function UserAvatar({ user, link = true }: { user: User; link?: boolean }
 
 export function UserAvatarArray({ users }: { users: User[] }) {
   const avatars = users.map((user, idx) => (
-    <div key={user.id + idx} className="w-10 h-10 -mr-4 hover:mr-0 transition-all duration-100">
+    <div key={user.id + idx} className="w-10 h-10 -ml-4">
       <UserAvatar link={true} user={user} />
     </div>
   ));
-  return <div className="flex flex-row mr-4">{avatars}</div>;
+
+  return <div className="flex flex-row pl-4">{avatars}</div>;
 }
 
 /// Get the URL for a stamp.fyi profile image.

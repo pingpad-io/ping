@@ -21,13 +21,13 @@ export const NotificationView = ({ notification }: { notification: Notification 
 
   // biome-ignore format: compact
   const notificationTextMap = {
-    Reaction: <>liked your post <HeartIcon className="-mb-0.5" size={16} /></>,
-    Comment: <>commented on your post <MessageSquareIcon className="-mb-0.5" size={16} /></>,
-    Follow: <>started following you <UserPlusIcon className="-mb-0.5" size={16} /></>,
-    Mention: <>mentioned you <AtSignIcon className="-mb-0.5" size={16} /></>,
-    Repost: <>reposted your post <Repeat2Icon className="-mb-0.5" size={16} /></>,
-    Action: <>acted on your post <CirclePlusIcon className="-mb-0.5" size={16} /></>,
-    Quote: <>quoted your post <MessageSquareQuoteIcon className="-mb-0.5" size={16} /></>,
+    Reaction: <> liked your{post} <HeartIcon className="-mb-0.5" size={16} /></>,
+    Comment: <> commented on your{post} <MessageSquareIcon className="-mb-0.5" size={16} /></>,
+    Follow: <> started following you <UserPlusIcon className="-mb-0.5" size={16} /></>,
+    Mention: <> mentioned you in their{post} <AtSignIcon className="-mb-0.5" size={16} /></>,
+    Repost: <> reposted your{post} <Repeat2Icon className="-mb-0.5" size={16} /></>,
+    Action: <> acted on your{post} <CirclePlusIcon className="-mb-0.5" size={16} /></>,
+    Quote: <> quoted your{post} <MessageSquareQuoteIcon className="-mb-0.5" size={16} /></>,
   };
 
   // biome-ignore format: keep it compact
@@ -36,11 +36,11 @@ export const NotificationView = ({ notification }: { notification: Notification 
     Comment: <><MessageSquareIcon  className="-mb-0.5" size={16} />commented on your{post}</>,
     Follow: <><UserPlusIcon  className="-mb-0.5" size={16} />started following you</>,
     Mention: <><AtSignIcon  className="-mb-0.5" size={16} />mentioned you in their{post}</>,
-    Repost: <><Repeat2Icon  className="-mb-0.5" size={16} />reposted your {post}</>,
+    Repost: <><Repeat2Icon  className="-mb-0.5" size={16} />reposted your{post}</>,
     Action: <><CirclePlusIcon  className="-mb-0.5" size={16} />acted on your{post}</>,
     Quote: <><MessageSquareQuoteIcon  className="-mb-0.5" size={16} />quoted your{post}</>,
   }
-  const notificationText = notificationTextInverse[notification.type];
+  const notificationText = notificationTextMap[notification.type];
 
   const usersText = notification.who.map((profile, i, arr) => {
     const userName = profile.name || profile.handle;
@@ -64,7 +64,7 @@ export const NotificationView = ({ notification }: { notification: Notification 
         <div className="flex flex-col w-3/4 shrink group max-w-2xl grow gap-1 place-content-center">
           <div className="flex flex-wrap whitespace-pre-wrap">
             {usersText}
-            <span className="flex flex-row gap-1 ml-1 justify-center place-items-center"> {notificationText}</span>
+            <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
           </div>
           <div className="text-muted-foreground text-sm">{notification?.actedOn?.content}</div>
         </div>
