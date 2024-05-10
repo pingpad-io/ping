@@ -6,7 +6,7 @@ import { SearchPage } from "./SearchPage";
 export async function generateMetadata({ searchParams }: { searchParams: { q: string } }): Promise<Metadata> {
   const query = searchParams.q;
 
-  const title = `Searching for ${query} | Pingpad`;
+  const title = `Searching for ${query}`;
   return {
     title,
     description: `@${query} on Pingpad`,

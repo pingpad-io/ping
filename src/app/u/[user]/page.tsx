@@ -7,12 +7,13 @@ import { Feed } from "~/components/Feed";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/UserAvatar";
 import { lensItemToPost } from "~/components/post/Post";
+import { Card } from "~/components/ui/card";
 import { lensProfileToUser } from "~/components/user/User";
 import { getLensClient } from "~/utils/getLensClient";
 
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {
   const handle = params.user;
-  const title = `${handle} | Pingpad`;
+  const title = `${handle}`;
   return {
     title,
     description: `@${handle} on Pingpad`,
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: { params: { user: string } })
 }
 
 const user = async ({ params }: { params: { user: string } }) => {
-  const { client, isAuthenticated, profileId } = await getLensClient();
+  const { client } = await getLensClient();
 
   const handle = params.user;
   const profile = await client.profile.fetch({
@@ -64,7 +65,9 @@ const user = async ({ params }: { params: { user: string } }) => {
         </div>
       </div>
 
-      <Feed data={posts} />
+      <Card className="z-[30] hover:bg-card p-4 border-0">
+        <Feed data={posts} />
+      </Card>
     </>
   );
 };

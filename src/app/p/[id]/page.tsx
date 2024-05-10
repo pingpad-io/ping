@@ -6,21 +6,21 @@ import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const { client, isAuthenticated, profileId } = await getLensClient();
+  const { client } = await getLensClient();
   const data = await client.publication.fetch({
     forId: params.id,
   });
   const handle = `@${data.by.handle.localName}`;
 
-  const title = `${handle}'s post | Pingpad`;
+  const title = `${handle}'s post `;
   return {
     title,
-    description: `@${handle} on Pingpad`,
+    description: `@${handle}'post on Pingpad`,
   };
 }
 
 const post = async ({ params }: { params: { id: string } }) => {
-  const { client, isAuthenticated, profileId } = await getLensClient();
+  const { client } = await getLensClient();
 
   const lensPost = await client.publication.fetch({
     forId: params.id,

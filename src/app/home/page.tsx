@@ -1,6 +1,7 @@
 import { PublicationType } from "@lens-protocol/client";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
+import { Navigation } from "~/components/menu/Navigation";
 import { lensItemToPost } from "~/components/post/Post";
 import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
@@ -18,7 +19,8 @@ const home = async () => {
     const items = data.unwrap().items;
     const posts = items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
     return (
-      <Card className="z-[30] hover:bg-card p-4 border-0">
+      <Card className="z-[30] hover:bg-card p-4 pt-0 border-0">
+        <Navigation />
         <Feed data={posts} />
       </Card>
     );

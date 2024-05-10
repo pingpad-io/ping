@@ -8,7 +8,10 @@ import { quicksand } from "~/styles/fonts";
 import "../styles/globals.css";
 
 export const metadata = {
-  title: "Pingpad",
+  title: {
+    default: "Pingpad",
+    template: "%s | Pingpad",
+  },
   description: "reach your people on pingpad",
 };
 
