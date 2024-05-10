@@ -6,11 +6,11 @@ import { lensItemToPost } from "~/components/post/Post";
 import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
 
-const home = async () => {
+const top = async () => {
   const { client, isAuthenticated, profileId } = await getLensClient();
 
   const data = isAuthenticated
-    ? await client.feed.fetch({
+    ? await client.feed.highlights({
         where: { for: profileId },
       })
     : await client.publication.fetchAll({
@@ -30,4 +30,4 @@ const home = async () => {
   );
 };
 
-export default home;
+export default top;
