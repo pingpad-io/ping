@@ -15,7 +15,7 @@ export const Navigation = () => {
   return (
     <nav className="z-[100] flex flex-row justify-around items-center p-4 sticky top-0 backdrop-blur-md rounded-b-lg">
       <Link className={selectedStyle("/home")} href={"/home"}>
-        For You
+        For you
       </Link>
       <Link className={selectedStyle("/best")} href={"/best"}>
         Best

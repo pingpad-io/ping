@@ -24,7 +24,7 @@ const home = async () => {
 
   return (
     <Card className="z-[30] hover:bg-card p-4 pt-0 border-0">
-      {isAuthenticated && <Navigation />}
+      <Navigation />
       <Feed data={posts} />
     </Card>
   );

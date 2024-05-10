@@ -66,7 +66,7 @@ export const ReactionIcon = ({ reaction }: { reaction: PostReactionType }) => {
     case "Downvote":
       return <ThumbsDownIcon size={15} />;
     case "Repost":
-      return <Repeat2Icon strokeWidth={1.5} size={18} />;
+      return <Repeat2Icon strokeWidth={1.5} size={19} />;
     case "Comment":
       return <MessageSquareIcon size={15} />;
     case "Collect":
