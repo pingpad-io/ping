@@ -1,5 +1,5 @@
 import { UserAvatar } from "./UserAvatar";
-import { User } from "./post/Post";
+import { User } from "./user/User";
 
 export const ProfileEntry = ({ user }: { user: User }) => {
   return (

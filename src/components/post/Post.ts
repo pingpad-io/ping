@@ -15,97 +15,114 @@ export type Post = {
   createdAt: Date;
   comments: Post[];
   metadata: any;
-  reactions?: PostReactions;
+  reactions?: Partial<PostReactions>;
   updatedAt?: Date;
   reply?: Post;
 };
 
 export function lensItemToPost(
   item: FeedItem | FeedItemFragment | PostFragment | QuoteFragment | AnyPublication | AnyPublicationFragment,
-): Post | null {
-  if (!item) {
-    return null;
-  }
-
-  const post =
-    "__typename" in item
-      ? item
-      : {
-          __typename: "FeedItem",
-          ...(item as any as FeedItem),
-        };
-
-  let root: CommentFields | LensPost | QuoteFields;
-  switch (post.__typename) {
-    case "FeedItem":
-      root = post.root;
-      break;
-    case "Post":
-      root = post as unknown as LensPost;
-      break;
-    case "Comment":
-      root = post as unknown as CommentFields;
-      break;
-    case "Quote":
-      root = post.quoteOn as unknown as LensPost;
-      break;
-    case "Mirror":
-      // root = post.mirrorOn;
-      return null;
-    default:
-      return null;
-  }
-
-  if (!root?.metadata?.__typename || root.metadata.__typename !== "TextOnlyMetadataV3") {
-    return null;
-  }
-  const content = root.metadata.content;
-
-  const author = lensProfileToUser(root.by);
-  const reactions: PostReactions = {
-    Upvote: root.stats?.upvotes,
-    Downvote: root.stats?.downvotes,
-    Bookmark: root.stats?.bookmarks,
-    Collect: root.stats?.collects,
-    Comment: root.stats?.comments,
-    Repost: root.stats?.mirrors,
+): Post {
+  const post: Post = {
+    id: "",
+    platform: "lens",
+    author: null,
+    reactions: {},
+    reply: null,
+    comments: [],
+    metadata: null,
+    content: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
-  const comments: Post[] =
-    post.__typename === "FeedItem"
-      ? post.comments.map((comment) => ({
-          id: comment.id as string,
-          author: lensProfileToUser(comment.by),
-          createdAt: new Date(comment.createdAt),
-          updatedAt: new Date(comment.createdAt),
-          content,
-          comments: [],
-          reactions: undefined,
-          metadata: comment.metadata,
-          platform: "lens",
-        }))
-      : [];
+  if (!item) return post;
 
-  const createdAt = new Date(root.createdAt);
-  const reply =
-    root.__typename === "Comment"
-      ? {
-          id: root.id as string,
-          author: root?.root?.by ? lensProfileToUser(root?.root?.by) : undefined,
-          content: root?.root?.metadata?.__typename !== "EventMetadataV3" ? root?.root?.metadata?.content : "post",
-        }
-      : undefined;
+  const normalizedPost = normalizePost(item);
 
+  let root: CommentFields | LensPost | QuoteFields;
+  switch (normalizedPost.__typename) {
+    case "FeedItem":
+      root = normalizedPost.root;
+      break;
+    case "Post":
+      root = normalizedPost as LensPost;
+      break;
+    case "Comment":
+      root = normalizedPost as CommentFields;
+      break;
+    case "Quote":
+      root = normalizedPost.quoteOn as LensPost;
+      break;
+    case "Mirror":
+      return post;
+    default:
+      return post;
+  }
+
+  post.id = root.id as string;
+  post.author = lensProfileToUser(root.by);
+  post.content = "content" in root.metadata ? root?.metadata?.content : "";
+
+  post.reactions = getReactions(root.stats);
+  post.comments = getComments(normalizedPost, post.content);
+  post.reply = getReply(root);
+  post.metadata = root.metadata;
+
+  return post;
+}
+
+function normalizePost(
+  item: FeedItem | FeedItemFragment | PostFragment | QuoteFragment | AnyPublication | AnyPublicationFragment,
+) {
+  if (!("__typename" in item)) {
+    return { __typename: "FeedItem", ...(item as any as FeedItem) };
+  }
+  return item;
+}
+
+function getReactions(stats: any) {
   return {
-    id: root.id as string,
-    platform: "lens",
-    author,
-    reactions,
-    reply,
-    comments,
-    metadata: root.metadata,
-    content: root.metadata.content,
-    createdAt,
-    updatedAt: createdAt,
-  } as Post;
+    Upvote: stats?.upvotes,
+    Downvote: stats?.downvotes,
+    Bookmark: stats?.bookmarks,
+    Collect: stats?.collects,
+    Comment: stats?.comments,
+    Repost: stats?.mirrors,
+  };
+}
+
+function getComments(post: any, content: string) {
+  if (post.__typename === "FeedItem") {
+    return post.comments.map((comment) => ({
+      id: comment.id as string,
+      author: lensProfileToUser(comment.by),
+      createdAt: new Date(comment.createdAt),
+      updatedAt: new Date(comment.createdAt),
+      content,
+      comments: [],
+      reactions: undefined,
+      metadata: comment.metadata,
+      platform: "lens",
+    }));
+  }
+  return [];
+}
+
+function getReply(root: CommentFields | LensPost | QuoteFields) {
+  if (root.__typename === "Comment") {
+    return {
+      id: root.id as string,
+      author: root?.by ? lensProfileToUser(root?.root?.by) : undefined,
+      content: "content" in root.metadata ? root?.metadata?.content : "",
+      platform: "lens",
+      comments: [],
+      reply: undefined,
+      reactions: undefined,
+      metadata: root.metadata,
+      createdAt: new Date(root.createdAt),
+      updatedAt: new Date(root.createdAt),
+    } as Post;
+  }
+  return undefined;
 }

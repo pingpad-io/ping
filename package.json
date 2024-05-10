@@ -55,7 +55,7 @@
     "pino-pretty": "^11.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.51.3",
+    "react-hook-form": "^7.51.4",
     "react-hot-toast": "^2.4.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-markdown": "^8.0.7",
@@ -70,7 +70,7 @@
     "theme-change": "^2.5.0",
     "viem": "^2.9.13",
     "wagmi": "^2.5.19",
-    "zod": "^3.22.3"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.3.4",

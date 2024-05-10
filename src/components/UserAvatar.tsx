@@ -6,9 +6,9 @@ export function UserAvatar({ user, link = true }: { user: User; link?: boolean }
   const avatar = (
     <>
       <Avatar className="w-full h-full">
-        <AvatarImage alt={user.profilePictureUrl} src={user.profilePictureUrl} />
+        <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} />
         <AvatarFallback>
-          <img src={getStampUrl(user.address)} alt={user.handle} />
+          <img src={getStampUrl(user?.address)} alt={user?.handle} />
         </AvatarFallback>
       </Avatar>
     </>
@@ -19,7 +19,7 @@ export function UserAvatar({ user, link = true }: { user: User; link?: boolean }
 
 export function UserAvatarArray({ users }: { users: User[] }) {
   const avatars = users.map((user, idx) => (
-    <div key={user.id + idx} className="w-10 h-10 -mr-4 hover:mr-0 transition-all duration-200">
+    <div key={user.id + idx} className="w-10 h-10 -mr-4 hover:mr-0 transition-all duration-100">
       <UserAvatar link={true} user={user} />
     </div>
   ));
