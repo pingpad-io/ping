@@ -1,5 +1,5 @@
-import { UserAvatar } from "./UserAvatar";
 import { User } from "./user/User";
+import { UserAvatar } from "./user/UserAvatar";
 
 export const ProfileEntry = ({ user }: { user: User }) => {
   return (

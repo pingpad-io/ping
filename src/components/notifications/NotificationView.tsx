@@ -8,8 +8,8 @@ import {
   UserPlusIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { UserAvatarArray } from "../UserAvatar";
 import { Card, CardContent } from "../ui/card";
+import { UserAvatarArray } from "../user/UserAvatar";
 import { Notification } from "./Notification";
 
 export const NotificationView = ({ notification }: { notification: Notification }) => {

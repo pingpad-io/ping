@@ -5,10 +5,10 @@ import Link from "next/link";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { TimeSince } from "~/components/TimeLabel";
-import { UserAvatar } from "~/components/UserAvatar";
 import { lensItemToPost } from "~/components/post/Post";
 import { Card } from "~/components/ui/card";
 import { lensProfileToUser } from "~/components/user/User";
+import { UserAvatar } from "~/components/user/UserAvatar";
 import { getLensClient } from "~/utils/getLensClient";
 
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {

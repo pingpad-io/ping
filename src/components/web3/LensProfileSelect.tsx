@@ -2,14 +2,15 @@
 
 import { profileId, useLogin, useProfilesManaged, useSession as useLensSession } from "@lens-protocol/react-web";
 import { setCookie } from "cookies-next";
-import { LoaderCircleIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccount as useWagmiAccount } from "wagmi";
-import { UserAvatar } from "../UserAvatar";
+import { LoadingSpinner } from "../LoadingIcon";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { lensProfileToUser } from "../user/User";
+import { UserAvatar } from "../user/UserAvatar";
 
 export function LensProfileSelect() {
   const { isConnected, address } = useWagmiAccount();
@@ -57,7 +58,7 @@ export function LensProfileSelect() {
   if (!isConnected) return null;
 
   if (loading) {
-    return <LoaderCircleIcon size={22} className="animate-spin" />;
+    return <LoadingSpinner />;
   }
 
   if (error) {

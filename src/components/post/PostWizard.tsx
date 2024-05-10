@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { UserAvatar } from "~/components/UserAvatar";
+import { UserAvatar } from "~/components/user/UserAvatar";
 import { Textarea } from "../ui/textarea";
 import { lensProfileToUser } from "./Post";
 

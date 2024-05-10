@@ -21,6 +21,7 @@ export function lensProfileToUser(profile: Profile | ProfileFragment): User {
     id: profile.id,
     profilePictureUrl: imageUrl,
     address: profile.ownedBy.address,
+    description: profile.metadata.bio,
     name: profile?.metadata?.displayName,
     handle: profile.handle?.localName ?? profile.id,
     namespace: profile.handle?.namespace ?? "wallet",

@@ -1,20 +1,21 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import Link from "next/link";
-import { User } from "./user/User";
+import { User } from "./User";
+import { UserCard } from "./UserCard";
 
-export function UserAvatar({ user, link = true }: { user: User; link?: boolean }) {
+export function UserAvatar({ user, link = true, card = true }: { user: User; link?: boolean; card?: boolean }) {
   const avatar = (
-    <>
-      <Avatar className="w-full h-full">
-        <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} />
-        <AvatarFallback>
-          <img src={getStampUrl(user.address)} alt={user.handle} />
-        </AvatarFallback>
-      </Avatar>
-    </>
+    <Avatar className="w-full h-full">
+      <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} />
+      <AvatarFallback>
+        <img src={getStampUrl(user.address)} alt={user.handle} />
+      </AvatarFallback>
+    </Avatar>
   );
+  const avatarLink = link ? <Link href={`/u/${user.handle}`}>{avatar}</Link> : avatar;
+  const avatarCard = card ? <UserCard user={user}>{avatarLink}</UserCard> : avatarLink;
 
-  return link ? <Link href={`/u/${user.handle}`}>{avatar}</Link> : avatar;
+  return avatarCard;
 }
 
 export function UserAvatarArray({ users }: { users: User[] }) {
