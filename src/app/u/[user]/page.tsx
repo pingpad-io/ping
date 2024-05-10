@@ -53,7 +53,7 @@ const user = async ({ params }: { params: { user: string } }) => {
               </Link>
             )}
           </div>
-          <Link className="grow" href={`/${profile.handle.localName}`}>
+          <Link className="grow" href={`/u/${profile.handle.localName}`}>
             <div className="text-sm text-base-content font-light">@{profile.handle.localName}</div>
           </Link>
           <div className="text-sm text-base-content grow">{profile.metadata.bio}</div>

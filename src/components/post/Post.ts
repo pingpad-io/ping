@@ -1,6 +1,5 @@
-import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
 import { AnyPublicationFragment, FeedItemFragment, PostFragment, QuoteFragment } from "@lens-protocol/client";
-import { AnyPublication, FeedItem, Post as LensPost } from "@lens-protocol/react-web";
+import { AnyPublication, Comment, FeedItem, Post as LensPost, Quote } from "@lens-protocol/react-web";
 import { User, lensProfileToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
@@ -40,7 +39,7 @@ export function lensItemToPost(
 
   const normalizedPost = normalizePost(item);
 
-  let root: CommentFields | LensPost | QuoteFields;
+  let root: Comment | LensPost | Quote;
   switch (normalizedPost.__typename) {
     case "FeedItem":
       root = normalizedPost.root;
@@ -49,10 +48,10 @@ export function lensItemToPost(
       root = normalizedPost as LensPost;
       break;
     case "Comment":
-      root = normalizedPost as CommentFields;
+      root = normalizedPost as Comment;
       break;
     case "Quote":
-      root = normalizedPost.quoteOn as LensPost;
+      root = normalizedPost.quoteOn as Quote;
       break;
     case "Mirror":
       return post;
@@ -68,6 +67,8 @@ export function lensItemToPost(
   post.comments = getComments(normalizedPost, post.content);
   post.reply = getReply(root);
   post.metadata = root.metadata;
+  post.createdAt = new Date(root.createdAt);
+  post.updatedAt = new Date(root.createdAt);
 
   return post;
 }
@@ -109,20 +110,33 @@ function getComments(post: any, content: string) {
   return [];
 }
 
-function getReply(root: CommentFields | LensPost | QuoteFields) {
-  if (root.__typename === "Comment") {
-    return {
-      id: root.id as string,
-      author: root?.by ? lensProfileToUser(root?.root?.by) : undefined,
-      content: "content" in root.metadata ? root?.metadata?.content : "",
-      platform: "lens",
-      comments: [],
-      reply: undefined,
-      reactions: undefined,
-      metadata: root.metadata,
-      createdAt: new Date(root.createdAt),
-      updatedAt: new Date(root.createdAt),
-    } as Post;
+function getReply(root: Comment | LensPost | Quote) {
+  const reply = {
+    reply: undefined,
+    reactions: undefined,
+    platform: "lens",
+    comments: [],
+    metadata: root.metadata,
+    createdAt: new Date(root.createdAt),
+    updatedAt: new Date(root.createdAt),
+  } as Post;
+
+  switch (root.__typename) {
+    case "Comment":
+      return {
+        id: root.root.id,
+        author: root?.root?.by ? lensProfileToUser(root?.root?.by) : undefined,
+        content: "content" in root.root.metadata ? root.root.metadata?.content : "",
+        ...reply,
+      };
+    case "Quote":
+      return {
+        id: root.quoteOn.id,
+        author: root?.quoteOn?.by ? lensProfileToUser(root?.quoteOn?.by) : undefined,
+        content: "content" in root.quoteOn.metadata ? root.quoteOn.metadata?.content : "",
+        ...reply,
+      };
+    case "Post":
+      return null;
   }
-  return undefined;
 }
