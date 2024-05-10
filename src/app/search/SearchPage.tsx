@@ -16,7 +16,7 @@ export function SearchPage() {
 
   const { data, loading, error } = useSearchPublications({ query });
 
-  if (error) return <ErrorPage title="Couldn't find anything" />;
+  if (error && query) return <ErrorPage title="Couldn't find anything" />;
 
   const posts = data?.map((item) => lensItemToPost(item)).filter((item) => item);
   const feed = loading ? <FeedSuspense /> : <Feed data={posts} />;
@@ -31,7 +31,7 @@ export function SearchPage() {
         </Link>
         <SearchBar defaultText={query} />
       </div>
-      {feed}
+      {query && feed}
     </>
   );
 }

@@ -8,7 +8,7 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 
-export const SearchBar = ({ defaultText }: { defaultText: string }) => {
+export const SearchBar = ({ defaultText = "" }: { defaultText: string }) => {
   const router = useRouter();
   const formSchema = z.object({ input: z.string() });
 

@@ -111,7 +111,7 @@ function getComments(post: any, content: string) {
   return [];
 }
 
-function getReply(origin: Comment | Quote) {
+function getReply(origin: Comment | Quote | LensPost) {
   const reply = {
     reply: undefined,
     reactions: undefined,
@@ -121,7 +121,6 @@ function getReply(origin: Comment | Quote) {
     createdAt: new Date(origin.createdAt),
     updatedAt: new Date(origin.createdAt),
   } as Post;
-  console.log(origin.__typename, origin);
 
   switch (origin.__typename) {
     case "Comment":
@@ -139,5 +138,7 @@ function getReply(origin: Comment | Quote) {
         content: "content" in origin.quoteOn.metadata ? origin.quoteOn?.metadata?.content : "",
         ...reply,
       } as Post;
+    case "Post":
+      return null;
   }
 }
