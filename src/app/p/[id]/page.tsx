@@ -22,16 +22,20 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 const post = async ({ params }: { params: { id: string } }) => {
   const { client, isAuthenticated, profileId } = await getLensClient();
 
-  const data = await client.publication.fetch({
+  const lensPost = await client.publication.fetch({
     forId: params.id,
   });
 
-  if (!data) return <ErrorPage title={`Couldn't fetch post`} />;
+  if (!lensPost) return <ErrorPage title={`Couldn't fetch post`} />;
+  const lensComments = await client.publication.fetchAll({ where: { commentOn: { id: params.id } } });
 
-  const post = lensItemToPost(data);
+  const post = lensItemToPost(lensPost);
+  const comments = lensComments.items.map((comment) => lensItemToPost(comment));
+
   return (
     <Card className="z-[30] hover:bg-card p-4 border-0">
       <Feed data={[post]} />
+      <Feed data={comments} />
     </Card>
   );
 };

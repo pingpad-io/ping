@@ -39,36 +39,37 @@ export function lensItemToPost(
 
   const normalizedPost = normalizePost(item);
 
-  let root: Comment | LensPost | Quote;
+  let origin: Comment | LensPost | Quote;
   switch (normalizedPost.__typename) {
     case "FeedItem":
-      root = normalizedPost.root;
+      origin = normalizedPost.root;
       break;
     case "Post":
-      root = normalizedPost as LensPost;
+      origin = normalizedPost as LensPost;
       break;
     case "Comment":
-      root = normalizedPost as Comment;
+      origin = normalizedPost as Comment;
       break;
     case "Quote":
-      root = normalizedPost.quoteOn as Quote;
+      origin = normalizedPost as Quote;
       break;
     case "Mirror":
-      return post;
+      origin = normalizedPost.mirrorOn as LensPost;
+      break;
     default:
       return post;
   }
 
-  post.id = root.id as string;
-  post.author = lensProfileToUser(root.by);
-  post.content = "content" in root.metadata ? root?.metadata?.content : "";
+  post.id = origin.id;
+  post.author = lensProfileToUser(origin.by);
+  post.content = "content" in origin.metadata ? origin?.metadata?.content : "";
 
-  post.reactions = getReactions(root.stats);
+  post.reactions = getReactions(origin.stats);
   post.comments = getComments(normalizedPost, post.content);
-  post.reply = getReply(root);
-  post.metadata = root.metadata;
-  post.createdAt = new Date(root.createdAt);
-  post.updatedAt = new Date(root.createdAt);
+  post.reply = getReply(origin);
+  post.metadata = origin.metadata;
+  post.createdAt = new Date(origin.createdAt);
+  post.updatedAt = new Date(origin.createdAt);
 
   return post;
 }
@@ -110,33 +111,33 @@ function getComments(post: any, content: string) {
   return [];
 }
 
-function getReply(root: Comment | LensPost | Quote) {
+function getReply(origin: Comment | Quote) {
   const reply = {
     reply: undefined,
     reactions: undefined,
     platform: "lens",
     comments: [],
-    metadata: root.metadata,
-    createdAt: new Date(root.createdAt),
-    updatedAt: new Date(root.createdAt),
+    metadata: origin.metadata,
+    createdAt: new Date(origin.createdAt),
+    updatedAt: new Date(origin.createdAt),
   } as Post;
+  console.log(origin.__typename, origin);
 
-  switch (root.__typename) {
+  switch (origin.__typename) {
     case "Comment":
       return {
-        id: root.root.id,
-        author: root?.root?.by ? lensProfileToUser(root?.root?.by) : undefined,
-        content: "content" in root.root.metadata ? root.root.metadata?.content : "",
+        id: origin.root.id,
+        author: origin?.commentOn?.by ? lensProfileToUser(origin?.commentOn?.by) : undefined,
+        content: "content" in origin.commentOn.metadata ? origin.commentOn.metadata.content : "",
         ...reply,
-      };
+      } as Post;
+
     case "Quote":
       return {
-        id: root.quoteOn.id,
-        author: root?.quoteOn?.by ? lensProfileToUser(root?.quoteOn?.by) : undefined,
-        content: "content" in root.quoteOn.metadata ? root.quoteOn.metadata?.content : "",
+        id: origin.quoteOn.id,
+        author: origin?.quoteOn?.by ? lensProfileToUser(origin?.quoteOn?.by) : undefined,
+        content: "content" in origin.quoteOn.metadata ? origin.quoteOn?.metadata?.content : "",
         ...reply,
-      };
-    case "Post":
-      return null;
+      } as Post;
   }
 }
