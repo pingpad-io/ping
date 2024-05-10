@@ -1,9 +1,8 @@
 import { ExplorePublicationType, ExplorePublicationsOrderByType } from "@lens-protocol/client";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
-import { Navigation } from "~/components/menu/Navigation";
+import { FeedPageLayout } from "~/components/FeedPagesLayout";
 import { lensItemToPost } from "~/components/post/Post";
-import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
 
 const explore = async () => {
@@ -19,10 +18,9 @@ const explore = async () => {
 
   const posts = data.items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
   return (
-    <Card className="z-[30] hover:bg-card p-4 pt-0 border-0">
-      <Navigation />
+    <FeedPageLayout>
       <Feed data={posts} />
-    </Card>
+    </FeedPageLayout>
   );
 };
 
