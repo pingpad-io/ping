@@ -24,7 +24,7 @@ export const UserCard = ({ children, user }: PropsWithChildren & { user: User })
     <HoverCard defaultOpen={false} onOpenChange={(open: boolean) => open && loadCard()} closeDelay={100}>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
       <HoverCardContent side="top">
-        {loading && <LoadingSpinner />}
+        {loading && !data && <LoadingSpinner />}
         {error && <div>Error: {error.message}</div>}
         {data && (
           <div className="flex flex-col gap-2">
