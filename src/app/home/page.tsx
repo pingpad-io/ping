@@ -1,4 +1,5 @@
 import { PublicationType } from "@lens-protocol/client";
+import { LimitType } from "@lens-protocol/react-web";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { FeedPageLayout } from "~/components/FeedPagesLayout";
@@ -14,6 +15,7 @@ const home = async () => {
       })
     : await client.publication.fetchAll({
         where: { publicationTypes: [PublicationType.Post] },
+        limit: LimitType.TwentyFive,
       });
 
   if (!data) return <ErrorPage title={`Couldn't fetch posts`} />;

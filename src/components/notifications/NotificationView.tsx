@@ -21,13 +21,13 @@ export const NotificationView = ({ notification }: { notification: Notification 
 
   // biome-ignore format: compact
   const notificationTextMap = {
-    Reaction: <> liked your{post} <HeartIcon className="-mb-0.5" size={16} /></>,
-    Comment: <> commented on your{post} <MessageSquareIcon className="-mb-0.5" size={16} /></>,
-    Follow: <> started following you <UserPlusIcon className="-mb-0.5" size={16} /></>,
-    Mention: <> mentioned you in their{post} <AtSignIcon className="-mb-0.5" size={16} /></>,
-    Repost: <> reposted your{post} <Repeat2Icon className="-mb-0.5" size={16} /></>,
-    Action: <> acted on your{post} <CirclePlusIcon className="-mb-0.5" size={16} /></>,
-    Quote: <> quoted your{post} <MessageSquareQuoteIcon className="-mb-0.5" size={16} /></>,
+    Reaction: <> liked <HeartIcon className="-mb-0.5" size={16} /> your{post} </>,
+    Comment: <> commented <MessageSquareIcon className="-mb-0.5" size={16} /> on your{post}</>,
+    Follow: <> started following <UserPlusIcon className="-mb-0.5" size={16} /> you</>,
+    Mention: <> mentioned <AtSignIcon className="-mb-0.5" size={16} /> you in their{post}</>,
+    Repost: <> reposted <Repeat2Icon className="-mb-0.5" size={16} /> your{post} </>,
+    Action: <> acted <CirclePlusIcon className="-mb-0.5" size={16} /> on your{post} </>,
+    Quote: <> quoted <MessageSquareQuoteIcon className="-mb-0.5" size={16} /> your{post} </>,
   };
 
   // biome-ignore format: keep it compact
