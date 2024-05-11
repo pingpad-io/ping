@@ -21,24 +21,24 @@ export const NotificationView = ({ notification }: { notification: Notification 
 
   // biome-ignore format: compact
   const notificationTextMap = {
-    Reaction: <> liked <HeartIcon className="-mb-0.5" size={16} /> your{post} </>,
-    Comment: <> commented <MessageSquareIcon className="-mb-0.5" size={16} /> on your{post}</>,
-    Follow: <> started following <UserPlusIcon className="-mb-0.5" size={16} /> you</>,
-    Mention: <> mentioned <AtSignIcon className="-mb-0.5" size={16} /> you in their{post}</>,
-    Repost: <> reposted <Repeat2Icon className="-mb-0.5" size={16} /> your{post} </>,
-    Action: <> acted <CirclePlusIcon className="-mb-0.5" size={16} /> on your{post} </>,
-    Quote: <> quoted <MessageSquareQuoteIcon className="-mb-0.5" size={16} /> your{post} </>,
+    Reaction: <> liked your{post} <HeartIcon className="-mb-0.5" size={16} /></>,
+    Comment: <> commented on your{post} <MessageSquareIcon className="-mb-0.5" size={16} /></>,
+    Follow: <> started following you <UserPlusIcon className="-mb-0.5" size={16} /></>,
+    Mention: <> mentioned you in their{post} <AtSignIcon className="-mb-0.5" size={16} /></>,
+    Repost: <> reposted your{post} <Repeat2Icon className="-mb-0.5" size={16} /></>,
+    Action: <> acted on your{post} <CirclePlusIcon className="-mb-0.5" size={16} /></>,
+    Quote: <> quoted your{post} <MessageSquareQuoteIcon className="-mb-0.5" size={16} /></>,
   };
 
   // biome-ignore format: keep it compact
   const notificationTextInverse = {
-    Reaction: <><HeartIcon className="-mb-0.5" size={16} />liked your{post}</>,
-    Comment: <><MessageSquareIcon  className="-mb-0.5" size={16} />commented on your{post}</>,
-    Follow: <><UserPlusIcon  className="-mb-0.5" size={16} />started following you</>,
-    Mention: <><AtSignIcon  className="-mb-0.5" size={16} />mentioned you in their{post}</>,
-    Repost: <><Repeat2Icon  className="-mb-0.5" size={16} />reposted your{post}</>,
-    Action: <><CirclePlusIcon  className="-mb-0.5" size={16} />acted on your{post}</>,
-    Quote: <><MessageSquareQuoteIcon  className="-mb-0.5" size={16} />quoted your{post}</>,
+    Reaction: <> <HeartIcon className="-mb-0.5" size={16} />liked your{post}</>,
+    Comment: <> <MessageSquareIcon  className="-mb-0.5" size={16} />commented on your{post}</>,
+    Follow:  <> <UserPlusIcon  className="-mb-0.5" size={16} />started following you</>,
+    Mention: <> <AtSignIcon  className="-mb-0.5" size={16} />mentioned you in their{post}</>,
+    Repost: <> <Repeat2Icon  className="-mb-0.5" size={16} />reposted your{post}</>,
+    Action: <> <CirclePlusIcon  className="-mb-0.5" size={16} />acted on your{post}</>,
+    Quote: <> <MessageSquareQuoteIcon  className="-mb-0.5" size={16} />quoted your{post}</>,
   }
   const notificationText = notificationTextMap[notification.type];
 
