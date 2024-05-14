@@ -9,17 +9,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-  images: {
-    remotePatterns: [
-      {
-        hostname: "*.googleusercontent.com",
-      },
-      {
-        hostname: "avatars.githubusercontent.com",
-      },
-    ],
-  },
-  transpilePackages: ['@lens-protocol'],
+  transpilePackages: ['@lens-protocol', 'lucide-react'],
 
   typescript: {
     ignoreBuildErrors: true,
