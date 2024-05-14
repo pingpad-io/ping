@@ -1,5 +1,4 @@
 import { PublicationType } from "@lens-protocol/client";
-import { LimitType } from "@lens-protocol/react-web";
 import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { FeedPageLayout } from "~/components/FeedPagesLayout";
@@ -10,18 +9,18 @@ const home = async () => {
   const { client, isAuthenticated, profileId } = await getLensClient();
 
   const data = isAuthenticated
-    ? await client.feed.fetch({
-        where: { for: profileId },
-      })
+    ? (
+        await client.feed.fetch({
+          where: { for: profileId },
+        })
+      ).unwrap()
     : await client.publication.fetchAll({
         where: { publicationTypes: [PublicationType.Post] },
-        limit: LimitType.TwentyFive,
       });
 
-  if (!data) return <ErrorPage title={`Couldn't fetch posts`} />;
+  if (!data.items) return <ErrorPage title={`Couldn't fetch posts`} />;
 
-  const items = isAuthenticated ? "unwrap" in data && data.unwrap().items : "items" in data && data.items;
-  const posts = items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
+  const posts = data.items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
 
   return (
     <FeedPageLayout>
