@@ -13,9 +13,7 @@ const notifications = async () => {
     if (data.isFailure()) return <ErrorPage title={`Couldn't fetch posts: ${data.error} `} />;
 
     const items = data.unwrap().items;
-    const notifications = items
-      ?.map((notification) => lensNotificationToNative(notification))
-      .filter((notification) => notification);
+    const notifications = items?.map((notification) => lensNotificationToNative(notification));
 
     return (
       <Card className="z-[30] hover:bg-card p-4 border-0">

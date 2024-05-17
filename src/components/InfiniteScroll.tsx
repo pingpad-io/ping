@@ -17,7 +17,7 @@ export const InfiniteScroll = ({ initialPosts, initialCursor, endpoint }) => {
     setLoading(true);
 
     try {
-      const res = await fetch(`/api/${endpoint}?cursor=${cursor}`, {
+      const res = await fetch(`${endpoint}?cursor=${cursor}`, {
         method: "GET",
       });
       if (!res.ok) throw new Error("Network error");
@@ -35,7 +35,8 @@ export const InfiniteScroll = ({ initialPosts, initialCursor, endpoint }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const threshold = 200;
+      /// FIXME: There's probably a better way to do this
+      const threshold = 10000;
       if (
         window.innerHeight + document.documentElement.scrollTop + threshold >= document.documentElement.offsetHeight &&
         !loading

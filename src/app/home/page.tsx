@@ -1,36 +1,31 @@
-import { PublicationType } from "@lens-protocol/client";
 import ErrorPage from "~/components/ErrorPage";
-import { Feed } from "~/components/Feed";
 import { FeedPageLayout } from "~/components/FeedPagesLayout";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
-import { lensItemToPost } from "~/components/post/Post";
-import { getLensClient } from "~/utils/getLensClient";
+import { getBaseUrl } from "~/utils/getBaseUrl";
 
 const home = async () => {
-  const { client, isAuthenticated, profileId } = await getLensClient();
+  const { posts, nextCursor } = await getInitialFeed();
 
-  const data = await getInitialFeed(client, isAuthenticated, profileId);
-
-  if (!data.items) {
+  if (!posts) {
     return <ErrorPage title={`Couldn't fetch posts`} />;
   }
-
-  const posts = data.items.map(lensItemToPost).filter((post) => post);
-
   return (
     <FeedPageLayout>
-      <InfiniteScroll endpoint={"posts/feed"} initialPosts={posts} initialCursor={data.pageInfo.next} />
+      <InfiniteScroll endpoint={"/api/posts/feed"} initialPosts={posts} initialCursor={nextCursor} />
     </FeedPageLayout>
   );
 };
 
-const getInitialFeed = async (client, isAuthenticated, profileId) => {
-  if (isAuthenticated) {
-    const response = await client.feed.fetch({ where: { for: profileId } });
-    return response.unwrap();
-  }
+const getInitialFeed = async () => {
+  const baseUrl = getBaseUrl();
+  const response = await fetch(`${baseUrl}/api/posts/feed`, {
+    method: "GET",
+  });
+  if (!response.ok) throw new Error(`Couldn't fetch initial feed: ${response.statusText}`);
 
-  return await client.publication.fetchAll({ where: { publicationTypes: [PublicationType.Post] } });
+  const { posts, nextCursor } = await response.json();
+
+  return { posts, nextCursor };
 };
 
 export default home;
