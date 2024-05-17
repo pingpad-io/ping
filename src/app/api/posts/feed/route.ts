@@ -1,16 +1,15 @@
-import type { PaginatedResult, FeedItemFragment, AnyPublicationFragment } from "@lens-protocol/client";
+import type { AnyPublicationFragment, FeedItemFragment, PaginatedResult } from "@lens-protocol/client";
 import { PublicationType } from "@lens-protocol/react-web";
+import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
-export async function GET(req) {
-  const { searchParams } = new URL(req.url);
+export async function GET(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
-  const profileId = searchParams.get("profileId");
-  const isAuthenticated = searchParams.get("isAuthenticated") === "true";
 
   try {
-    const { client } = await getLensClient();
+    const { client, isAuthenticated, profileId } = await getLensClient();
 
     let data: PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>;
     if (isAuthenticated) {
@@ -23,6 +22,6 @@ export async function GET(req) {
 
     return new Response(JSON.stringify({ posts, nextCursor: data.pageInfo.next }), { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Failed to fetch posts" }), { status: 500 });
+    return new Response(JSON.stringify({ error: `Failed to fetch posts: ${error.message}` }), { status: 500 });
   }
 }

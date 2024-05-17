@@ -1,41 +1,44 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import ErrorPage from "./ErrorPage";
 import { Feed } from "./Feed";
+import { LoadingSpinner } from "./LoadingIcon";
 
-export const InfiniteScrollFeed = ({ initialPosts, initialCursor, isAuthenticated, profileId }) => {
+export const InfiniteScroll = ({ initialPosts, initialCursor, endpoint }) => {
   const [posts, setPosts] = useState(initialPosts);
   const [cursor, setCursor] = useState(initialCursor);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const loadMorePosts = useCallback(async () => {
-    console.log("loadMorePosts");
     if (loading || !cursor) return;
 
     setLoading(true);
+
     try {
-      const res = await fetch(`/api/posts?cursor=${cursor}&profileId=${profileId}&isAuthenticated=${isAuthenticated}`, {
+      const res = await fetch(`/api/${endpoint}?cursor=${cursor}`, {
         method: "GET",
       });
-      if (!res.ok) throw new Error("Network response was not ok");
+      if (!res.ok) throw new Error("Network error");
 
       const { posts: newPosts, nextCursor } = await res.json();
 
       setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       setCursor(nextCursor);
     } catch (err) {
-      setError("Could not fetch more posts");
+      setError(`Could not fetch posts: ${err.message}`);
     } finally {
       setLoading(false);
     }
-  }, [cursor, isAuthenticated, profileId, loading]);
+  }, [cursor, loading]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const threshold = 200; 
+      const threshold = 200;
       if (
-        window.innerHeight + document.documentElement.scrollTop + threshold >= document.documentElement.offsetHeight && !loading
+        window.innerHeight + document.documentElement.scrollTop + threshold >= document.documentElement.offsetHeight &&
+        !loading
       ) {
         loadMorePosts();
       }
@@ -45,12 +48,16 @@ export const InfiniteScrollFeed = ({ initialPosts, initialCursor, isAuthenticate
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loadMorePosts]);
 
-  if (error) return <div>{error}</div>;
+  if (error) return <ErrorPage title={error} />;
 
   return (
     <>
       <Feed data={posts} />
-      {loading && <div>Loading more posts...</div>}
+      {loading && (
+        <div className="w-full h-fit flex justify-center items-center">
+          <LoadingSpinner />
+        </div>
+      )}
     </>
   );
 };
