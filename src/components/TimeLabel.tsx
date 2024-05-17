@@ -33,11 +33,11 @@ export const TimeElapsedSince = ({ date }: { date: Date }) => {
   if (diff > dayjs.duration(3, "weeks").asMilliseconds()) {
     return <span>{fullDate.format("MMM DD")}</span>;
   }
-  return <span>{timeSince}</span>;
+  return <span suppressHydrationWarning>{timeSince}</span>;
 };
 
 export const TimeSince = ({ date }: { date: Date }) => {
   const timeSince = dayjs(date).format("MMM YYYY");
 
-  return <span>{timeSince}</span>;
+  return <span suppressHydrationWarning>{timeSince}</span>;
 };

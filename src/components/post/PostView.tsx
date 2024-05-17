@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { UserAvatar } from "../user/UserAvatar";
-import { Post } from "./Post";
+import type { Post } from "./Post";
 import { PostContextMenu } from "./PostContextMenu";
 import { ReactionsList } from "./PostReactions";
 
