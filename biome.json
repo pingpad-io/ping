@@ -11,9 +11,6 @@
         "noUnusedVariables": "warn",
         "useExhaustiveDependencies": "off"
       },
-      "nursery": {
-        "noUnusedImports": "warn"
-      },
       "suspicious": {
         "noExplicitAny": "off"
       },

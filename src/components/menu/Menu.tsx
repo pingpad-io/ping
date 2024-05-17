@@ -11,16 +11,20 @@ export default function Menu() {
   const profileId = cookieStore.get("profileId")?.value;
   const handleOrProfileId = handle ?? profileId;
 
+  const logo = (
+    <Link href="/">
+      <Button variant="ghost" size="sm_icon">
+        <span className="hidden sm:flex -mt-1">pingpad</span>
+        <AtSign className="sm:ml-2" size={20} />
+      </Button>
+    </Link>
+  );
+
   if (!profileId) {
     return (
       <span className="flex shrink text-xl p-4 sm:px-2 w-full sm:w-max">
         <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
-          <Link href="/home">
-            <Button variant="ghost" size="sm_icon">
-              <span className="hidden sm:flex -mt-1">pingpad</span>
-              <AtSign className="sm:ml-2" size={20} />
-            </Button>
-          </Link>
+          {logo}
           <ConnectWalletButton />
         </span>
       </span>
@@ -30,13 +34,7 @@ export default function Menu() {
   return (
     <span className="flex shrink text-xl p-4 sm:px-2 w-full sm:w-max">
       <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
-        <Link href="/home">
-          <Button variant="ghost" size="sm_icon">
-            <div className="hidden sm:flex -mt-1">pingpad</div>
-            <AtSign className="sm:ml-2" size={20} />
-          </Button>
-        </Link>
-
+        {logo}
         <SearchButton />
 
         <MenuAuthed handle={handleOrProfileId} />
