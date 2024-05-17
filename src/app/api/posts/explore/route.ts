@@ -1,4 +1,10 @@
-import type { AnyPublicationFragment, FeedItemFragment, PaginatedResult } from "@lens-protocol/client";
+import {
+  type AnyPublicationFragment,
+  ExplorePublicationType,
+  ExplorePublicationsOrderByType,
+  type FeedItemFragment,
+  type PaginatedResult,
+} from "@lens-protocol/client";
 import { PublicationType } from "@lens-protocol/react-web";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
@@ -11,12 +17,15 @@ export async function GET(req: NextRequest) {
   try {
     const { client, isAuthenticated, profileId } = await getLensClient();
 
-    let data: PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>;
-    if (isAuthenticated) {
-      data = (await client.feed.fetch({ where: { for: profileId }, cursor })).unwrap();
-    } else {
-      data = await client.publication.fetchAll({ where: { publicationTypes: [PublicationType.Post] }, cursor });
+    if (!isAuthenticated) {
+      return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
     }
+
+    const data = await client.explore.publications({
+      where: { publicationTypes: [ExplorePublicationType.Post] },
+      orderBy: ExplorePublicationsOrderByType.Latest,
+      cursor: cursor,
+    });
 
     const posts = data.items.map(lensItemToPost);
 
