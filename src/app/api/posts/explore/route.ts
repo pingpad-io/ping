@@ -1,10 +1,9 @@
-import {
-  ExplorePublicationType,
-  ExplorePublicationsOrderByType,
-} from "@lens-protocol/client";
+import { ExplorePublicationType, ExplorePublicationsOrderByType } from "@lens-protocol/client";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;

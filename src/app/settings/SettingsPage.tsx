@@ -13,7 +13,7 @@ import { LogoutButton } from "~/components/web3/WalletButtons";
 export const SettingsPage = () => {
   const { setTheme } = useTheme();
   const { isConnected: walletConnected, address } = useAccount();
-  const { isConnected } = useAccount();
+  // const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
   const themeButtons = ["light", "dark"].map((theme) => (

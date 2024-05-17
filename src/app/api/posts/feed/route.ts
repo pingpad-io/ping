@@ -4,12 +4,15 @@ import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
 
   try {
     const { client, isAuthenticated, profileId } = await getLensClient();
+    console.log(client, isAuthenticated, profileId, req);
 
     let data: PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>;
     if (isAuthenticated) {

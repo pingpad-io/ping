@@ -1,31 +1,35 @@
 import { ExplorePublicationType, ExplorePublicationsOrderByType } from "@lens-protocol/client";
 import ErrorPage from "~/components/ErrorPage";
-import { Feed } from "~/components/Feed";
 import { FeedPageLayout } from "~/components/FeedPagesLayout";
+import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
+const endpoint = "api/posts/explore";
+
 const explore = async () => {
-  const { client, isAuthenticated, profileId } = await getLensClient();
-  if (!isAuthenticated) return <ErrorPage title="Login to view this page." />;
+  const { posts, nextCursor } = await getInitialFeed();
 
-  const data = await getInitialFeed(client, isAuthenticated, profileId);
-  if (!data) return <ErrorPage title={`Couldn't fetch posts`} />;
-
-  const posts = data.items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
+  if (!posts) {
+    return <ErrorPage title={`Couldn't fetch posts`} />;
+  }
   return (
     <FeedPageLayout>
-      <Feed data={posts} />
+      <InfiniteScroll endpoint={endpoint} initialPosts={posts} initialCursor={nextCursor} />
     </FeedPageLayout>
   );
 };
-const getInitialFeed = async (client, isAuthenticated, profileId) => {
+
+const getInitialFeed = async () => {
+  const { client, isAuthenticated } = await getLensClient();
   if (isAuthenticated) {
     const response = await client.explore.publications({
       where: { publicationTypes: [ExplorePublicationType.Post] },
       orderBy: ExplorePublicationsOrderByType.Latest,
     });
-    return response;
+
+    const posts = response.items.map(lensItemToPost);
+    return { posts, nextCursor: response.pageInfo.next };
   }
 };
 

@@ -2,6 +2,8 @@ import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
+export const dynamic = 'force-dynamic' 
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
@@ -12,7 +14,6 @@ export async function GET(req: NextRequest) {
     if (!isAuthenticated) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
     }
-
     const data = await client.feed.highlights({
       where: { for: profileId },
       cursor,
