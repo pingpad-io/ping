@@ -1,6 +1,6 @@
-import { Notification } from "./notifications/Notification";
+import type { Notification } from "./notifications/Notification";
 import { NotificationView } from "./notifications/NotificationView";
-import { Post } from "./post/Post";
+import type { Post } from "./post/Post";
 import { PostSuspense } from "./post/PostSuspense";
 import { PostView } from "./post/PostView";
 

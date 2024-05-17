@@ -1,6 +1,6 @@
-import { NotificationFragment, ProfileFragment } from "@lens-protocol/client";
-import { Post, lensItemToPost } from "../post/Post";
-import { User, lensProfileToUser } from "../user/User";
+import type { NotificationFragment, ProfileFragment } from "@lens-protocol/client";
+import { type Post, lensItemToPost } from "../post/Post";
+import { type User, lensProfileToUser } from "../user/User";
 
 type NotificationType = "Reaction" | "Comment" | "Follow" | "Repost" | "Action" | "Mention" | "Quote";
 
