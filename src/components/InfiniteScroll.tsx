@@ -54,7 +54,7 @@ export const InfiniteScroll = ({ initialPosts, initialCursor, endpoint }) => {
     <>
       <Feed data={posts} />
       {loading && (
-        <div className="w-full h-fit flex justify-center items-center">
+        <div className="w-full h-12 flex justify-center items-center">
           <LoadingSpinner />
         </div>
       )}

@@ -1,11 +1,3 @@
-import {
-  type AnyPublicationFragment,
-  ExplorePublicationType,
-  ExplorePublicationsOrderByType,
-  type FeedItemFragment,
-  type PaginatedResult,
-} from "@lens-protocol/client";
-import { PublicationType } from "@lens-protocol/react-web";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";

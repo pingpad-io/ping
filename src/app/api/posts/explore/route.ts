@@ -1,11 +1,7 @@
 import {
-  type AnyPublicationFragment,
   ExplorePublicationType,
   ExplorePublicationsOrderByType,
-  type FeedItemFragment,
-  type PaginatedResult,
 } from "@lens-protocol/client";
-import { PublicationType } from "@lens-protocol/react-web";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
@@ -15,7 +11,7 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor");
 
   try {
-    const { client, isAuthenticated, profileId } = await getLensClient();
+    const { client, isAuthenticated } = await getLensClient();
 
     if (!isAuthenticated) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });

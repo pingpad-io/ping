@@ -1,6 +1,6 @@
-import { AnyPublicationFragment, FeedItemFragment, PostFragment, QuoteFragment } from "@lens-protocol/client";
-import { AnyPublication, Comment, FeedItem, Post as LensPost, Quote } from "@lens-protocol/react-web";
-import { User, lensProfileToUser } from "../user/User";
+import type { AnyPublicationFragment, FeedItemFragment, PostFragment, QuoteFragment } from "@lens-protocol/client";
+import type { AnyPublication, Comment, FeedItem, Post as LensPost, Quote } from "@lens-protocol/react-web";
+import { type User, lensProfileToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number>;
@@ -139,6 +139,6 @@ function getReply(origin: Comment | Quote | LensPost) {
         ...reply,
       } as Post;
     case "Post":
-      return null;
+      return;
   }
 }
