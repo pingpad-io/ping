@@ -1,12 +1,27 @@
-import type { AnyPublicationFragment, FeedItemFragment, PostFragment, QuoteFragment } from "@lens-protocol/client";
+import type {
+  AnyPublicationFragment,
+  CommentBaseFragment,
+  FeedItemFragment,
+  PostFragment,
+  QuoteBaseFragment,
+  QuoteFragment,
+} from "@lens-protocol/client";
 import type { AnyPublication, Comment, FeedItem, Post as LensPost, Quote } from "@lens-protocol/react-web";
 import { type User, lensProfileToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number>;
 export type PostPlatform = "lens" | "farcaster";
+export type AnyLensItem =
+  | FeedItem
+  | FeedItemFragment
+  | PostFragment
+  | QuoteFragment
+  | AnyPublication
+  | AnyPublicationFragment;
 
 export type Post = {
+  __typename: "Post";
   id: string;
   platform: PostPlatform;
   content: string;
@@ -19,12 +34,9 @@ export type Post = {
   reply?: Post;
 };
 
-export function lensItemToPost(
-  item: FeedItem | FeedItemFragment | PostFragment | QuoteFragment | AnyPublication | AnyPublicationFragment,
-): Post {
+export function lensItemToPost(item: AnyLensItem): Post {
   const post: Post = {
     id: "",
-    platform: "lens",
     author: null,
     reactions: {},
     reply: null,
@@ -33,6 +45,8 @@ export function lensItemToPost(
     content: "",
     createdAt: new Date(),
     updatedAt: new Date(),
+    platform: "lens",
+    __typename: "Post",
   };
 
   if (!item) return post;
@@ -74,9 +88,7 @@ export function lensItemToPost(
   return post;
 }
 
-function normalizePost(
-  item: FeedItem | FeedItemFragment | PostFragment | QuoteFragment | AnyPublication | AnyPublicationFragment,
-) {
+function normalizePost(item: AnyLensItem) {
   if (!("__typename" in item)) {
     return { __typename: "FeedItem", ...(item as any as FeedItem) };
   }

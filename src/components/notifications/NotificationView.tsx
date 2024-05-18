@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatarArray } from "../user/UserAvatar";
-import { Notification } from "./Notification";
+import type { Notification } from "./Notification";
 
 export const NotificationView = ({ notification }: { notification: Notification }) => {
   const post = (

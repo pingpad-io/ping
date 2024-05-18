@@ -1,10 +1,11 @@
 import type { NotificationFragment, ProfileFragment } from "@lens-protocol/client";
-import { type Post, lensItemToPost } from "../post/Post";
+import { type AnyLensItem, type Post, lensItemToPost } from "../post/Post";
 import { type User, lensProfileToUser } from "../user/User";
 
 type NotificationType = "Reaction" | "Comment" | "Follow" | "Repost" | "Action" | "Mention" | "Quote";
 
 export type Notification = {
+  __typename: "Notification";
   id: string;
   who: User[];
   actedOn?: Post;
@@ -65,7 +66,8 @@ export function lensNotificationToNative(item: NotificationFragment): Notificati
       reactionType = item.reactions[0].reactions[0].reaction === "UPVOTE" ? "Upvote" : "Downvote";
       break;
   }
-  const who = profiles.map((profile) => lensProfileToUser(profile));
+
+  const who = profiles.map(lensProfileToUser);
   const content = actedOn ? lensItemToPost(actedOn) : undefined;
   const id = item.id;
 
@@ -76,5 +78,6 @@ export function lensNotificationToNative(item: NotificationFragment): Notificati
     actedOn: content,
     reactionType: reactionType,
     createdAt: new Date(createdAt),
+    __typename: "Notification",
   };
 }

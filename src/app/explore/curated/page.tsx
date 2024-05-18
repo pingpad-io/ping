@@ -15,7 +15,7 @@ const exploreCurated = async () => {
 
   return (
     <FeedPageLayout>
-      <InfiniteScroll endpoint={endpoint} initialPosts={posts} initialCursor={nextCursor} />
+      <InfiniteScroll endpoint={endpoint} initialData={posts} initialCursor={nextCursor} />
     </FeedPageLayout>
   );
 };

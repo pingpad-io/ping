@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Feed } from "./Feed";
 import { LoadingSpinner } from "./LoadingIcon";
 
-export const InfiniteScroll = ({ initialPosts, initialCursor, endpoint }) => {
-  const [posts, setPosts] = useState(initialPosts);
+export const InfiniteScroll = ({ initialData, initialCursor, endpoint }) => {
+  const [posts, setPosts] = useState(initialData);
   const [cursor, setCursor] = useState(initialCursor);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

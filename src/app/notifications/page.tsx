@@ -1,27 +1,22 @@
-import { NotificationsFeed } from "~/components/Feed";
+import { FeedPageLayout } from "~/components/FeedPagesLayout";
+import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
-import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
 
+const endpoint = "/api/notifications";
+
 const notifications = async () => {
-  const { client, isAuthenticated } = await getLensClient();
+  const { notifications, nextCursor } = await getInitialFeed();
 
-  if (isAuthenticated) {
-    const data = await client.notifications.fetch({ where: { timeBasedAggregation: true } }).catch((error) => {
-      throw new Error(error.message);
-    });
-
-    if (data.isFailure()) throw new Error(data.error.message);
-
-    const items = data.unwrap().items;
-    const notifications = items?.map((notification) => lensNotificationToNative(notification));
-
-    return (
-      <Card className="z-[30] hover:bg-card p-4 border-0">
-        <NotificationsFeed data={notifications} />
-      </Card>
-    );
+  if (!notifications) {
+    throw new Error("Failed to get notifications (T T)");
   }
+
+  return (
+    <FeedPageLayout>
+      <InfiniteScroll endpoint={endpoint} initialData={notifications} initialCursor={nextCursor} />
+    </FeedPageLayout>
+  );
 };
 
 const getInitialFeed = async () => {
