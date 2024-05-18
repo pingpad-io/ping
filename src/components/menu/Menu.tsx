@@ -1,14 +1,12 @@
-import { AtSign, BellIcon, MailIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
-import { cookies } from "next/headers";
+import { AtSign, BellIcon, BookmarkIcon, GlobeIcon, MailIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
+import { getCookieAuth } from "~/utils/getCookieAuth";
 import { ConnectWalletButton } from "../web3/WalletButtons";
 import { SearchButton } from "./SearchButton";
 
 export default function Menu() {
-  const cookieStore = cookies();
-  const handle = cookieStore.get("handle")?.value;
-  const profileId = cookieStore.get("profileId")?.value;
+  const { handle, profileId } = getCookieAuth();
   const handleOrProfileId = handle ?? profileId;
 
   const logo = (
@@ -46,6 +44,13 @@ export default function Menu() {
 export const MenuAuthed = ({ handle }: { handle: string }) => {
   return (
     <>
+      <Link href={"/explore"}>
+        <Button variant="ghost" size="sm_icon">
+          <div className="hidden sm:flex -mt-1">explore</div>
+          <GlobeIcon className="sm:ml-2" size={21} />
+        </Button>
+      </Link>
+
       <Button variant="ghost" size="sm_icon" disabled>
         <div className="hidden sm:flex -mt-1">messages</div>
         <MailIcon className="sm:ml-2" size={20} />
@@ -55,6 +60,13 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">notifications</div>
           <BellIcon className="sm:ml-2" size={21} />
+        </Button>
+      </Link>
+
+      <Link href={"/bookmarks"}>
+        <Button variant="ghost" size="sm_icon">
+          <div className="hidden sm:flex -mt-1">bookmarks</div>
+          <BookmarkIcon className="sm:ml-2" size={21} />
         </Button>
       </Link>
 
