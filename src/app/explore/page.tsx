@@ -1,7 +1,7 @@
-import exploreLatest from "./latest/page";
+import exploreCurated from "./curated/page";
 
 const explore = async () => {
-  return exploreLatest()
+  return exploreCurated();
 };
 
 export default explore;

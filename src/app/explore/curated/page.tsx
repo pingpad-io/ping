@@ -4,9 +4,9 @@ import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
-const endpoint = "/api/posts/explore?type=best";
+const endpoint = "/api/posts/explore?type=curated";
 
-const exploreBest = async () => {
+const exploreCurated = async () => {
   const { posts, nextCursor } = await getInitialFeed();
 
   if (!posts) {
@@ -34,4 +34,4 @@ const getInitialFeed = async () => {
   throw new Error("Unauthorized TT");
 };
 
-export default exploreBest;
+export default exploreCurated;

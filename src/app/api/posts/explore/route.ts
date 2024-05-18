@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     case "latest":
       orderBy = ExplorePublicationsOrderByType.Latest;
       break;
-    case "best":
+    case "curated":
       orderBy = ExplorePublicationsOrderByType.LensCurated;
       break;
     case "collected":
