@@ -3,7 +3,7 @@ import { EditIcon, LinkIcon, ReplyIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
-import { Post } from "./Post";
+import type { Post } from "./Post";
 
 export const PostMenuContent = ({ post, profileId }: { post: Post; profileId: string }) => {
   const router = useRouter();

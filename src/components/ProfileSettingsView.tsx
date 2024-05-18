@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
-import { User } from "./post/Post";
+import type { User } from "./post/Post";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
@@ -16,7 +16,7 @@ export default function ProfileSettings({ user }: { user: User }) {
   };
   const isLoading = true;
 
-  function onSubmit(values: User) {
+  function onSubmit(_values: User) {
     // const updates = {
     //   id: user.id,
     //   username: values.username,

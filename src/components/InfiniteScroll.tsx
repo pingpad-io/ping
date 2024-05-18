@@ -21,7 +21,6 @@ export const InfiniteScroll = ({ initialData, initialCursor, endpoint }) => {
     try {
       const res = await fetch(`${endpoint}${params}cursor=${cursor}`, {
         method: "GET",
-        
       });
       if (!res.ok) throw new Error(res.statusText);
 

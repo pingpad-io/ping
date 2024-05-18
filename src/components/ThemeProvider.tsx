@@ -8,7 +8,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 
-export function ThemeToggle({ ...props }) {
+export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     theme === "dark" ? setTheme("light") : setTheme("dark");

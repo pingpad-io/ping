@@ -14,8 +14,8 @@ export const UserCard = ({ children, user }: PropsWithChildren & { user: User })
   const name = user?.name;
   const handle = user?.handle;
   const description = user?.description;
-  const avatar = user?.profilePictureUrl;
-  const banner = data?.metadata?.coverPicture?.optimized
+  const _avatar = user?.profilePictureUrl;
+  const _banner = data?.metadata?.coverPicture?.optimized
     ? data?.metadata?.coverPicture?.optimized
     : data?.metadata?.coverPicture?.raw;
 

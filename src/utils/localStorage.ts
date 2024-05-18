@@ -1,4 +1,4 @@
-import { IObservableStorageProvider, StorageProviderSubscriber } from "@lens-protocol/storage";
+import type { IObservableStorageProvider, StorageProviderSubscriber } from "@lens-protocol/storage";
 import { window } from "./globals";
 
 class LocalStorageProvider implements IObservableStorageProvider {
@@ -55,6 +55,7 @@ class LocalStorageProvider implements IObservableStorageProvider {
 
     if (event.key && this.subscribers.has(event.key)) {
       const subscribers = this.subscribers.get(event.key) ?? [];
+      // biome-ignore lint/complexity/noForEach: intended usage
       subscribers.forEach((subscriber) => subscriber(event.newValue, event.oldValue));
     }
   };

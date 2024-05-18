@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor");
 
   try {
-    const { client, isAuthenticated, profileId } = await getLensClient();
+    const { client, isAuthenticated } = await getLensClient();
 
     if (!isAuthenticated) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });

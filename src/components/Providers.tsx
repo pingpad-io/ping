@@ -1,11 +1,11 @@
 "use client";
 
 import { LensProvider } from "@lens-protocol/react-web";
-import { LensConfig, production } from "@lens-protocol/react-web";
+import { type LensConfig, production } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http } from "@wagmi/core";
-import React from "react";
+import type React from "react";
 import { WagmiProvider, createConfig } from "wagmi";
 import { polygon } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
