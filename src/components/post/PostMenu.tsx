@@ -1,5 +1,6 @@
 "use client";
-import { EditIcon, LinkIcon, ReplyIcon, TrashIcon } from "lucide-react";
+import { EditIcon, ExternalLinkIcon, LinkIcon, ReplyIcon, TrashIcon } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
@@ -30,8 +31,15 @@ export const PostMenuContent = ({ post, profileId }: { post: Post; profileId: st
       },
     );
   };
+
   return (
     <>
+      <Link href={postLink} referrerPolicy="no-referrer" target="_blank">
+        <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
+          <ExternalLinkIcon size={12} className="mr-2 h-4 w-4" />
+          open
+        </Button>
+      </Link>
       <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
         <ReplyIcon size={12} className="mr-2 h-4 w-4" />
         reply
