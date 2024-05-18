@@ -19,7 +19,7 @@ export const NotificationView = ({ notification }: { notification: Notification 
     </Link>
   );
 
-  // biome-ignore format: compact
+  // biome-ignore format: keep it compact
   const notificationTextMap = {
     Reaction: <> liked your{post} <HeartIcon className="-mb-0.5" size={16} /></>,
     Comment: <> commented on your{post} <MessageSquareIcon className="-mb-0.5" size={16} /></>,
@@ -30,9 +30,13 @@ export const NotificationView = ({ notification }: { notification: Notification 
     Quote: <> quoted your{post} <MessageSquareQuoteIcon className="-mb-0.5" size={16} /></>,
   };
 
+  const maxUsersPerNotification = 5;
+  const users = notification.who.slice(0, maxUsersPerNotification);
+  const wasTruncated = notification.who.length > maxUsersPerNotification;
+  const amountTruncated = notification.who.length - maxUsersPerNotification;
   const notificationText = notificationTextMap[notification.type];
 
-  const usersText = notification.who.map((profile, i, arr) => {
+  const usersText = users.map((profile, i, arr) => {
     const userName = profile.name || profile.handle;
     const userLink = (
       <Link
@@ -43,10 +47,11 @@ export const NotificationView = ({ notification }: { notification: Notification 
         {userName}
       </Link>
     );
+    const lastText = wasTruncated ? <>{amountTruncated} others</> : <>{userLink}</>;
 
-    if (i === 0) return <span>{userLink}</span>;
+    if (i === 0) return <span key={`${profile.id + notification.id + notification.type}first`}>{userLink}</span>;
     if (i === arr.length - 1)
-      return <span key={`${profile.id + notification.id + notification.type}last`}> and {userLink}</span>;
+      return <span key={`${profile.id + notification.id + notification.type}last`}> and {lastText}</span>;
     return <span key={`${profile.id + notification.id + notification.type}comma`}>, {userLink}</span>;
   });
 
@@ -54,7 +59,7 @@ export const NotificationView = ({ notification }: { notification: Notification 
     <Card>
       <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
         <div className=" shrink-0 grow-0 rounded-full">
-          <UserAvatarArray users={notification.who} />
+          <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />
         </div>
         <div className="flex flex-col w-3/4 shrink group max-w-2xl grow gap-1 place-content-center">
           <div className="flex flex-wrap whitespace-pre-wrap">

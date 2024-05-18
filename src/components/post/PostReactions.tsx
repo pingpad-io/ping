@@ -1,7 +1,7 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import { BookmarkIcon, CirclePlusIcon, HeartIcon, MessageSquareIcon, Repeat2Icon, ThumbsDownIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { Post, PostReactionType } from "./Post";
+import type { Post, PostReactionType } from "./Post";
 
 export function hasReactions(post: Post) {
   return Object.values(post.reactions).some((value) => value !== 0 || value !== undefined);

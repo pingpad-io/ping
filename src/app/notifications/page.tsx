@@ -1,6 +1,7 @@
 import { FeedPageLayout } from "~/components/FeedPagesLayout";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
+import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
 
 const endpoint = "/api/notifications";
@@ -13,9 +14,9 @@ const notifications = async () => {
   }
 
   return (
-    <FeedPageLayout>
+    <Card className="z-[30] hover:bg-card p-4 py-0 border-0">
       <InfiniteScroll endpoint={endpoint} initialData={notifications} initialCursor={nextCursor} />
-    </FeedPageLayout>
+    </Card>
   );
 };
 

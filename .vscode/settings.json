@@ -70,4 +70,7 @@
     "quickfix.biome": "always",
     "source.organizeImports.biome": "always"
   },
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
 }
