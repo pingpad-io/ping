@@ -3,6 +3,7 @@
 import { SessionType, useSession } from "@lens-protocol/react-web";
 import type { PropsWithChildren } from "react";
 
+
 export function SignedIn(props: PropsWithChildren) {
   const { data: session } = useSession();
 

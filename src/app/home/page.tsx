@@ -4,7 +4,7 @@ import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
-const endpoint = "api/posts/feed";
+const endpoint = "/api/posts/feed";
 
 const home = async () => {
   const { posts, nextCursor } = await getInitialFeed();

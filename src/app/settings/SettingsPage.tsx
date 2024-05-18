@@ -3,7 +3,7 @@
 import { LogOutIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAccount, useDisconnect } from "wagmi";
-import { SignedIn, SignedOut } from "~/components/Authenticated";
+import { SignedIn, SignedOut } from "~/components/SignedIn";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";

@@ -1,8 +1,8 @@
 "use client";
-import { PropsWithChildren, useEffect, useState } from "react";
-import { SignedIn } from "../Authenticated";
+import { type PropsWithChildren, useEffect, useState } from "react";
+import { SignedIn } from "../SignedIn";
 import { Card } from "../ui/card";
-import { Post } from "./Post";
+import type { Post } from "./Post";
 import { PostMenuContent } from "./PostMenu";
 
 export const PostContextMenu = (props: PropsWithChildren & { post: Post }) => {

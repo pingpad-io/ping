@@ -6,8 +6,10 @@ export const getCookieAuth = () => {
   const refreshToken = storage.get("refreshToken")?.value;
   const profileId = storage.get("profileId")?.value;
   const handle = storage.get("handle")?.value;
+  const isAuthenticated = refreshToken && profileId && handle;
 
   return {
+    isAuthenticated,
     refreshToken,
     profileId,
     handle,

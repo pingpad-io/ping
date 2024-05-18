@@ -8,6 +8,23 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
+  const type = searchParams.get("type") ?? "latest";
+
+  let orderBy: ExplorePublicationsOrderByType;
+  switch (type) {
+    case "latest":
+      orderBy = ExplorePublicationsOrderByType.Latest;
+      break;
+    case "best":
+      orderBy = ExplorePublicationsOrderByType.LensCurated;
+      break;
+    case "collected":
+      orderBy = ExplorePublicationsOrderByType.TopCollectedOpenAction;
+      break;
+    default:
+      orderBy = ExplorePublicationsOrderByType.Latest;
+      break;
+  }
 
   try {
     const { client, isAuthenticated } = await getLensClient();
@@ -18,8 +35,8 @@ export async function GET(req: NextRequest) {
 
     const data = await client.explore.publications({
       where: { publicationTypes: [ExplorePublicationType.Post] },
-      orderBy: ExplorePublicationsOrderByType.Latest,
-      cursor: cursor,
+      orderBy,
+      cursor,
     });
 
     const posts = data.items.map(lensItemToPost);

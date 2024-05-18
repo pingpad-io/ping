@@ -15,11 +15,15 @@ export const InfiniteScroll = ({ initialPosts, initialCursor, endpoint }) => {
 
     setLoading(true);
 
+    const hasParams = endpoint.includes("?");
+    const params = hasParams ? "&" : "?";
+
     try {
-      const res = await fetch(`${endpoint}?cursor=${cursor}`, {
+      const res = await fetch(`${endpoint}${params}cursor=${cursor}`, {
         method: "GET",
+        
       });
-      if (!res.ok) throw new Error("Network error");
+      if (!res.ok) throw new Error(res.statusText);
 
       const { posts: newPosts, nextCursor } = await res.json();
 
