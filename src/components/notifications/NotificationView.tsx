@@ -30,29 +30,24 @@ export const NotificationView = ({ notification }: { notification: Notification 
     Quote: <> quoted your{post} <MessageSquareQuoteIcon className="-mb-0.5" size={16} /></>,
   };
 
-  // biome-ignore format: keep it compact
-  const notificationTextInverse = {
-    Reaction: <> <HeartIcon className="-mb-0.5" size={16} />liked your{post}</>,
-    Comment: <> <MessageSquareIcon  className="-mb-0.5" size={16} />commented on your{post}</>,
-    Follow:  <> <UserPlusIcon  className="-mb-0.5" size={16} />started following you</>,
-    Mention: <> <AtSignIcon  className="-mb-0.5" size={16} />mentioned you in their{post}</>,
-    Repost: <> <Repeat2Icon  className="-mb-0.5" size={16} />reposted your{post}</>,
-    Action: <> <CirclePlusIcon  className="-mb-0.5" size={16} />acted on your{post}</>,
-    Quote: <> <MessageSquareQuoteIcon  className="-mb-0.5" size={16} />quoted your{post}</>,
-  }
   const notificationText = notificationTextMap[notification.type];
 
   const usersText = notification.who.map((profile, i, arr) => {
     const userName = profile.name || profile.handle;
     const userLink = (
-      <Link key={profile.id + i} className="font-bold hover:underline whitespace-nowrap" href={`/u/${profile.handle}`}>
+      <Link
+        key={profile.id + notification.id + notification.type}
+        className="font-bold hover:underline whitespace-nowrap"
+        href={`/u/${profile.handle}`}
+      >
         {userName}
       </Link>
     );
 
-    if (i === 0) return <>{userLink}</>;
-    if (i === arr.length - 1) return <> and {userLink}</>;
-    return <>, {userLink}</>;
+    if (i === 0) return <span>{userLink}</span>;
+    if (i === arr.length - 1)
+      return <span key={`${profile.id + notification.id + notification.type}last`}> and {userLink}</span>;
+    return <span key={`${profile.id + notification.id + notification.type}comma`}>, {userLink}</span>;
   });
 
   return (

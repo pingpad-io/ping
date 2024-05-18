@@ -16,7 +16,7 @@ export type Notification = {
 
 export function lensNotificationToNative(item: NotificationFragment): Notification {
   let profiles: ProfileFragment[] = [];
-  let actedOn;
+  let actedOn: AnyLensItem;
   let createdAt: string;
   let type: NotificationType;
   let reactionType: "Upvote" | "Downvote";

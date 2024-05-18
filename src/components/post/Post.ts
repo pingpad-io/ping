@@ -18,7 +18,10 @@ export type AnyLensItem =
   | PostFragment
   | QuoteFragment
   | AnyPublication
-  | AnyPublicationFragment;
+  | AnyPublicationFragment
+  | PostFragment
+  | QuoteBaseFragment
+  | CommentBaseFragment;
 
 export type Post = {
   __typename: "Post";
