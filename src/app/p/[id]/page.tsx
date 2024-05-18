@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     .fetch({
       forId: params.id,
     })
-    .catch((err) => {
+    .catch(() => {
       throw new Error("(╥_╥) Post not found");
     });
   const handle = `@${data.by.handle.localName}`;
@@ -29,7 +29,7 @@ const post = async ({ params }: { params: { id: string } }) => {
     .fetch({
       forId: params.id,
     })
-    .catch((err) => {
+    .catch(() => {
       throw new Error("(╥_╥) Post not found");
     });
 
