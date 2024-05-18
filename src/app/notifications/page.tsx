@@ -1,4 +1,3 @@
-import ErrorPage from "~/components/ErrorPage";
 import { NotificationsFeed } from "~/components/Feed";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { Card } from "~/components/ui/card";
@@ -8,9 +7,11 @@ const notifications = async () => {
   const { client, isAuthenticated, profileId } = await getLensClient();
 
   if (isAuthenticated) {
-    const data = await client.notifications.fetch({ where: { timeBasedAggregation: true } });
+    const data = await client.notifications.fetch({ where: { timeBasedAggregation: true } }).catch((error) => {
+      throw new Error(error.message);
+    });
 
-    if (data.isFailure()) return <ErrorPage title={`Couldn't fetch posts: ${data.error} `} />;
+    if (data.isFailure()) throw new Error(data.error.message);
 
     const items = data.unwrap().items;
     const notifications = items?.map((notification) => lensNotificationToNative(notification));

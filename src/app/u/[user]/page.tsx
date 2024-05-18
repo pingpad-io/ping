@@ -2,7 +2,6 @@ import { PublicationType } from "@lens-protocol/client";
 import { CalendarIcon, EditIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { TimeSince } from "~/components/TimeLabel";
 import { lensItemToPost } from "~/components/post/Post";
@@ -27,12 +26,13 @@ const user = async ({ params }: { params: { user: string } }) => {
   const profile = await client.profile.fetch({
     forHandle: `lens/${handle}`,
   });
-  if (!profile) return <ErrorPage title="∑(O_O;) Not Found" />;
+
+  if (!profile) throw new Error("∑(O_O;) Profile not found");
 
   const data = await client.publication.fetchAll({
     where: { from: [profile.id], publicationTypes: [PublicationType.Post] },
   });
-  if (!data) return <ErrorPage title={`Couldn't fetch posts`} />;
+  if (!data) throw new Error(`☆⌒(>。<) Couldn't fetch posts`);
 
   const posts = data.items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
 

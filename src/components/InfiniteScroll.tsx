@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import ErrorPage from "./ErrorPage";
 import { Feed } from "./Feed";
 import { LoadingSpinner } from "./LoadingIcon";
 
@@ -49,7 +48,7 @@ export const InfiniteScroll = ({ initialPosts, initialCursor, endpoint }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loadMorePosts]);
 
-  if (error) return <ErrorPage title={error} />;
+  if (error) throw new Error(error);
 
   return (
     <>

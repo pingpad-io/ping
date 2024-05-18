@@ -12,7 +12,6 @@ export async function GET(req: NextRequest) {
 
   try {
     const { client, isAuthenticated, profileId } = await getLensClient();
-    console.log(client, isAuthenticated, profileId, req);
 
     let data: PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>;
     if (isAuthenticated) {

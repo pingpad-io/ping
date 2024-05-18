@@ -1,10 +1,7 @@
 import { PublicationType } from "@lens-protocol/client";
-import ErrorPage from "~/components/ErrorPage";
 import { FeedPageLayout } from "~/components/FeedPagesLayout";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensItemToPost } from "~/components/post/Post";
-import { getBaseUrl } from "~/utils/getBaseUrl";
-import { getCookieAuth } from "~/utils/getCookieAuth";
 import { getLensClient } from "~/utils/getLensClient";
 
 const endpoint = "api/posts/feed";
@@ -13,8 +10,9 @@ const home = async () => {
   const { posts, nextCursor } = await getInitialFeed();
 
   if (!posts) {
-    return <ErrorPage title={`Couldn't fetch posts`} />;
+    throw new Error("Failed to fetch posts");
   }
+
   return (
     <FeedPageLayout>
       <InfiniteScroll endpoint={endpoint} initialPosts={posts} initialCursor={nextCursor} />

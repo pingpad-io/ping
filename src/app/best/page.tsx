@@ -1,4 +1,3 @@
-import ErrorPage from "~/components/ErrorPage";
 import { FeedPageLayout } from "~/components/FeedPagesLayout";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensItemToPost } from "~/components/post/Post";
@@ -10,7 +9,7 @@ const best = async () => {
   const { posts, nextCursor } = await getInitialFeed();
 
   if (!posts) {
-    return <ErrorPage title={`Couldn't fetch posts`} />;
+    throw new Error("Failed to fetch posts");
   }
   return (
     <FeedPageLayout>
@@ -35,6 +34,7 @@ const getInitialFeed = async () => {
 
     return { posts, nextCursor: items.pageInfo.next };
   }
+  throw new Error("Unauthorized TT");
 };
 
 export default best;

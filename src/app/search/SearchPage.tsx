@@ -4,7 +4,6 @@ import { useSearchPublications } from "@lens-protocol/react-web";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import ErrorPage from "~/components/ErrorPage";
 import { Feed, FeedSuspense } from "~/components/Feed";
 import { SearchBar } from "~/components/SearchBar";
 import { lensItemToPost } from "~/components/post/Post";
@@ -16,7 +15,7 @@ export function SearchPage() {
 
   const { data, loading, error } = useSearchPublications({ query });
 
-  if (error && query) return <ErrorPage title="Couldn't find anything" />;
+  if (error && query) throw new Error(error.message);
 
   const posts = data?.map((item) => lensItemToPost(item)).filter((item) => item);
   const feed = loading ? <FeedSuspense /> : <Feed data={posts} />;

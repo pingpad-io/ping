@@ -1,6 +1,6 @@
 "use client";
 
-import { profileId, useLogin, useProfilesManaged, useSession as useLensSession } from "@lens-protocol/react-web";
+import { profileId, useSession as useLensSession, useLogin, useProfilesManaged } from "@lens-protocol/react-web";
 import { setCookie } from "cookies-next";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
@@ -58,7 +58,11 @@ export function LensProfileSelect() {
   if (!isConnected) return null;
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {

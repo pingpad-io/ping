@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import ErrorPage from "~/components/ErrorPage";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { Card } from "~/components/ui/card";
@@ -7,9 +6,13 @@ import { getLensClient } from "~/utils/getLensClient";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const { client } = await getLensClient();
-  const data = await client.publication.fetch({
-    forId: params.id,
-  });
+  const data = await client.publication
+    .fetch({
+      forId: params.id,
+    })
+    .catch((err) => {
+      throw new Error("(╥_╥) Post not found");
+    });
   const handle = `@${data.by.handle.localName}`;
 
   const title = `${handle}'s post `;
@@ -22,11 +25,16 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 const post = async ({ params }: { params: { id: string } }) => {
   const { client } = await getLensClient();
 
-  const lensPost = await client.publication.fetch({
-    forId: params.id,
-  });
+  const lensPost = await client.publication
+    .fetch({
+      forId: params.id,
+    })
+    .catch((err) => {
+      throw new Error("(╥_╥) Post not found");
+    });
 
-  if (!lensPost) return <ErrorPage title={`Couldn't fetch post`} />;
+  if (!lensPost) throw new Error("(╥_╥) Post not found");
+
   const lensComments = await client.publication.fetchAll({ where: { commentOn: { id: params.id } } });
 
   const post = lensItemToPost(lensPost);

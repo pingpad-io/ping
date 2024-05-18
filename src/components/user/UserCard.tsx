@@ -1,16 +1,15 @@
 "use client";
-import { ProfileId, useLazyProfile } from "@lens-protocol/react-web";
-import { PropsWithChildren } from "react";
+import { type ProfileId, useLazyProfile } from "@lens-protocol/react-web";
+import type { PropsWithChildren } from "react";
 import { LoadingSpinner } from "../LoadingIcon";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
-import { User } from "./User";
+import type { User } from "./User";
 import { UserAvatar } from "./UserAvatar";
 
 export const UserCard = ({ children, user }: PropsWithChildren & { user: User }) => {
   const { data, error, loading, execute } = useLazyProfile();
   const loadCard = () => {
     execute({ forProfileId: user.id as ProfileId });
-    console.log(user);
   };
   const name = user?.name;
   const handle = user?.handle;
