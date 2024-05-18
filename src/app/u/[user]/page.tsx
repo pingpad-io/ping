@@ -29,10 +29,15 @@ const user = async ({ params }: { params: { user: string } }) => {
 
   if (!profile) throw new Error("∑(O_O;) Profile not found");
 
-  const data = await client.publication.fetchAll({
-    where: { from: [profile.id], publicationTypes: [PublicationType.Post] },
-  });
-  if (!data) throw new Error(`☆⌒(>。<) Couldn't fetch posts`);
+  const data = await client.publication
+    .fetchAll({
+      where: { from: [profile.id], publicationTypes: [PublicationType.Post] },
+    })
+    .catch(() => {
+      throw new Error(`☆⌒(>。<) Couldn't get user posts`);
+    });
+
+  if (!data) throw new Error(`☆⌒(>。<) Couldn't get user posts`);
 
   const posts = data.items?.map((publication) => lensItemToPost(publication)).filter((post) => post);
 

@@ -4,7 +4,7 @@ import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
 
 const notifications = async () => {
-  const { client, isAuthenticated, profileId } = await getLensClient();
+  const { client, isAuthenticated } = await getLensClient();
 
   if (isAuthenticated) {
     const data = await client.notifications.fetch({ where: { timeBasedAggregation: true } }).catch((error) => {

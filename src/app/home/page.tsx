@@ -10,7 +10,7 @@ const home = async () => {
   const { posts, nextCursor } = await getInitialFeed();
 
   if (!posts) {
-    throw new Error("Failed to fetch posts");
+    throw new Error("Failed to get posts");
   }
 
   return (
@@ -23,10 +23,17 @@ const home = async () => {
 const getInitialFeed = async () => {
   const { client, isAuthenticated, profileId } = await getLensClient();
   let data: any;
+
   if (isAuthenticated) {
-    data = (await client.feed.fetch({ where: { for: profileId } })).unwrap();
+    data = (
+      await client.feed.fetch({ where: { for: profileId } }).catch(() => {
+        throw new Error("(×_×)⌒☆ Failed to fetch feed");
+      })
+    ).unwrap();
   } else {
-    data = await client.publication.fetchAll({ where: { publicationTypes: [PublicationType.Post] } });
+    data = await client.publication.fetchAll({ where: { publicationTypes: [PublicationType.Post] } }).catch(() => {
+      throw new Error("(×_×)⌒☆ Failed to fetch feed");
+    });
   }
 
   const posts = data.items.map(lensItemToPost);
