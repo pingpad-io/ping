@@ -157,3 +157,5 @@ function getReply(origin: Comment | Quote | LensPost) {
       return;
   }
 }
+
+export type { User };

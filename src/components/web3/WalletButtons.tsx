@@ -2,7 +2,7 @@
 
 import { useLogout } from "@lens-protocol/react-web";
 import { GlobeIcon, LogInIcon, LogOutIcon, UserMinusIcon } from "lucide-react";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
@@ -12,6 +12,7 @@ import { LensProfileSelect } from "./LensProfileSelect";
 import { clearCookies } from "./LogOut";
 
 export function ConnectWalletButton() {
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { connectors, connect } = useConnect();
   const { isConnected: walletConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
@@ -34,9 +35,9 @@ export function ConnectWalletButton() {
   });
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm_icon">
+        <Button size="sm_icon" onClick={(_e) => setDialogOpen(true)}>
           <div className="hidden sm:flex text-xl -mt-1">connect</div>
           <LogInIcon className="sm:ml-2" size={20} />
         </Button>
@@ -54,7 +55,7 @@ export function ConnectWalletButton() {
           )}
         </DialogHeader>
 
-        {!walletConnected ? <>{connectorList}</> : <LensProfileSelect />}
+        {!walletConnected ? <>{connectorList}</> : <LensProfileSelect setDialogOpen={setDialogOpen} />}
       </DialogContent>
     </Dialog>
   );

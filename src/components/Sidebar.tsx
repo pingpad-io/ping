@@ -8,7 +8,7 @@ import { Badge } from "./ui/badge";
 export function Sidebar() {
   const pathname = usePathname();
   return (
-    <div className="flex flex-col gap-3 py-3.5 sm:px-2">
+    <div className="flex flex-col gap-3 py-4 sm:px-2">
       {pathname !== "/search" && <SearchBar defaultText="" />}
       <Accordion className="w-64" type="multiple">
         <AccordionItem value="item-1">

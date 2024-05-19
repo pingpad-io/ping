@@ -5,6 +5,7 @@ import { setCookie } from "cookies-next";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { LoadingSpinner } from "../LoadingIcon";
 import { Button } from "../ui/button";
@@ -12,7 +13,7 @@ import { Label } from "../ui/label";
 import { lensProfileToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 
-export function LensProfileSelect() {
+export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
   const { isConnected, address } = useWagmiAccount();
   const { data: session } = useLensSession();
   const { execute: login, loading: isLoginPending } = useLogin();
@@ -48,8 +49,9 @@ export function LensProfileSelect() {
           sameSite: "lax",
         });
       }
+      setDialogOpen(false);
       router.refresh();
-      console.info(`Welcome ${handle}`);
+      toast.success(`Welcome @${handle}`, { description: "login successful!" });
     } else {
       console.error(result.error.message);
     }

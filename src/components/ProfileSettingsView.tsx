@@ -2,18 +2,13 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 import { z } from "zod";
 import type { User } from "./post/Post";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-
 export default function ProfileSettings({ user }: { user: User }) {
-  const updateProfile = () => {
-    toast.error("Not implemented yet");
-  };
   const isLoading = true;
 
   function onSubmit(_values: User) {
@@ -25,8 +20,6 @@ export default function ProfileSettings({ user }: { user: User }) {
     //   avatar_url: values.avatar_url,
     //   updated_at: new Date(),
     // };
-
-    updateProfile();
   }
 
   const formSchema = z.object({
@@ -62,7 +55,9 @@ export default function ProfileSettings({ user }: { user: User }) {
     <Card>
       <CardHeader>
         <CardTitle>Profile Settings</CardTitle>
+        <Button>Update</Button>
       </CardHeader>
+
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
