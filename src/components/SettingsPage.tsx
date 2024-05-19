@@ -11,10 +11,9 @@ import { Address } from "~/components/web3/Address";
 import { LogoutButton } from "~/components/web3/WalletButtons";
 
 export const SettingsPage = () => {
-  const { setTheme } = useTheme();
   const { isConnected: walletConnected, address } = useAccount();
-  // const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { setTheme } = useTheme();
 
   const ping = () => {
     toast.success("pong!", {

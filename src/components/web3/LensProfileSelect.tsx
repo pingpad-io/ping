@@ -50,7 +50,8 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
         });
       }
       setDialogOpen(false);
-      router.refresh();
+      // router.refresh();
+      window.location.reload();
       toast.success(`Welcome @${handle}`, { description: "login successful!" });
     } else {
       console.error(result.error.message);

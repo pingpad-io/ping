@@ -1,14 +1,14 @@
 import { Suspense } from "react";
 import { ServerSignedIn } from "~/components/ServerSignedIn";
-import { SettingsPage } from "./SettingsPage";
+import { SettingsPage } from "~/components/SettingsPage";
 
 const settings = async () => {
   return (
-    <Suspense>
-      <ServerSignedIn>
+    <ServerSignedIn>
+      <Suspense>
         <SettingsPage />
-      </ServerSignedIn>
-    </Suspense>
+      </Suspense>
+    </ServerSignedIn>
   );
 };
 
