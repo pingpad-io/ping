@@ -1,21 +1,20 @@
 "use client";
 
 import { useLogout } from "@lens-protocol/react-web";
-import { GlobeIcon, LogInIcon, LogOutIcon, UserMinusIcon } from "lucide-react";
+import { GlobeIcon, LogInIcon, UserMinusIcon } from "lucide-react";
 import { type PropsWithChildren, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { Address } from "./Address";
+import ConnectedWalletLabel from "./ConnnectedWalletLabel";
 import { LensProfileSelect } from "./LensProfileSelect";
 import { clearCookies } from "./LogOut";
 
 export function ConnectWalletButton() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { connectors, connect } = useConnect();
-  const { isConnected: walletConnected, address } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { isConnected: walletConnected } = useAccount();
 
   const connectorList = connectors.map((connector) => {
     if (connector.id !== "injected" && connector.id !== "walletConnect") return null;
@@ -45,14 +44,9 @@ export function ConnectWalletButton() {
       <DialogContent className="max-w-sm flex flex-col justify-center">
         <DialogHeader>
           <DialogTitle>{!walletConnected ? "Select a wallet to connect" : "Select a Profile"}</DialogTitle>
-          {walletConnected && (
-            <DialogDescription className="flex flex-row gap-2 items-center">
-              Connected wallet: <Address address={address} />
-              <Button size="icon" className="w-4 h-4" variant="ghost" onClick={(_e) => disconnect()}>
-                <LogOutIcon />
-              </Button>
-            </DialogDescription>
-          )}
+          <DialogDescription>
+            <ConnectedWalletLabel />
+          </DialogDescription>
         </DialogHeader>
 
         {!walletConnected ? <>{connectorList}</> : <LensProfileSelect setDialogOpen={setDialogOpen} />}
@@ -78,12 +72,15 @@ export function DisconnectWalletButton(props: PropsWithChildren) {
 
 export function LogoutButton() {
   const { execute: disconnect } = useLogout();
+  const { isConnected } = useAccount();
 
   return (
     <Button
       variant="destructive"
       onClick={() => {
-        disconnect();
+        if (isConnected) {
+          disconnect();
+        }
         clearCookies();
       }}
     >

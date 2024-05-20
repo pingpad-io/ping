@@ -2,6 +2,7 @@
 
 import { LogOutIcon, MoonIcon, NetworkIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import { useAccount, useDisconnect } from "wagmi";
 import { Button } from "~/components/ui/button";
@@ -9,6 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Address } from "~/components/web3/Address";
 import { LogoutButton } from "~/components/web3/WalletButtons";
+
+const ConnectedWalletLabel = dynamic(() => import("~/components/web3/ConnnectedWalletLabel"), {
+  ssr: false,
+});
 
 export const SettingsPage = () => {
   const { isConnected: walletConnected, address } = useAccount();
@@ -59,14 +64,7 @@ export const SettingsPage = () => {
           <CardTitle>Account</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {walletConnected && (
-            <div className="flex flex-row gap-2 items-center">
-              Connected wallet: <Address address={address} />
-              <Button size="icon" className="w-4 h-4" variant="ghost" onClick={(_e) => disconnect()}>
-                <LogOutIcon />
-              </Button>
-            </div>
-          )}
+          <ConnectedWalletLabel />
           <LogoutButton />
         </CardContent>
       </Card>
