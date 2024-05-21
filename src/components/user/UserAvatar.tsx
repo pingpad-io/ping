@@ -35,7 +35,7 @@ export function UserAvatarArray({ users, amountTruncated }: { users: User[]; amo
       {avatars}
       {amountTruncated ? (
         <div className="w-10 h-10 -ml-4 rounded-full border-2 text-card-foreground text-base backdrop-blur-md border-accent text-center justify-center items-center flex z-10">
-          {formatAmount}
+          +{formatAmount}
         </div>
       ) : null}
     </div>

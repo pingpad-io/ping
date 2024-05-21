@@ -1,4 +1,4 @@
-import { FeedPageLayout } from "~/components/FeedPagesLayout";
+import { BellIcon } from "lucide-react";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { Card } from "~/components/ui/card";
@@ -15,6 +15,9 @@ const notifications = async () => {
 
   return (
     <Card className="z-[30] hover:bg-card p-4 py-0 border-0">
+      <h1 className="text-xl font-bold p-4 flex flex-row gap-2 items-center">
+        <BellIcon className="-mb-1" fill="hsl(var(--foreground))" /> notifications
+      </h1>
       <InfiniteScroll endpoint={endpoint} initialData={notifications} initialCursor={nextCursor} />
     </Card>
   );
