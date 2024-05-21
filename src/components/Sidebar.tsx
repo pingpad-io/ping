@@ -10,8 +10,8 @@ export function Sidebar() {
   return (
     <div className="flex flex-col gap-3 py-4 sm:px-2">
       {pathname !== "/search" && <SearchBar defaultText="" />}
-      <Accordion className="w-64" type="multiple">
-        <AccordionItem value="item-1">
+      <Accordion defaultValue={["beta"]} className="w-64" type="multiple">
+        <AccordionItem value="beta">
           <AccordionTrigger className="py-2">
             <span>
               About Pingpad
