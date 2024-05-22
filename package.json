@@ -11,7 +11,6 @@
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.7.2",
     "@lens-protocol/client": "^2.0.0-alpha.37",
-    "@lens-protocol/metadata": "^1.0.5",
     "@lens-protocol/react-web": "^2.0.0",
     "@lens-protocol/wagmi": "^4.0.0",
     "@next/bundle-analyzer": "^13.5.4",

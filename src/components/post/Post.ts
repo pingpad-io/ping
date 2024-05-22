@@ -6,7 +6,28 @@ import type {
   QuoteBaseFragment,
   QuoteFragment,
 } from "@lens-protocol/client";
-import type { AnyPublication, Comment, FeedItem, Post as LensPost, Quote } from "@lens-protocol/react-web";
+import type {
+  AnyPublication,
+  ArticleMetadataV3,
+  AudioMetadataV3,
+  CheckingInMetadataV3,
+  Comment,
+  EmbedMetadataV3,
+  EventMetadataV3,
+  FeedItem,
+  ImageMetadataV3,
+  Post as LensPost,
+  LinkMetadataV3,
+  LiveStreamMetadataV3,
+  MintMetadataV3,
+  Quote,
+  SpaceMetadataV3,
+  StoryMetadataV3,
+  TextOnlyMetadataV3,
+  ThreeDMetadataV3,
+  TransactionMetadataV3,
+  VideoMetadataV3,
+} from "@lens-protocol/react-web";
 import { type User, lensProfileToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
@@ -23,15 +44,31 @@ export type AnyLensItem =
   | QuoteBaseFragment
   | CommentBaseFragment;
 
+export type AnyLensMetadata =
+  | ArticleMetadataV3
+  | AudioMetadataV3
+  | CheckingInMetadataV3
+  | EmbedMetadataV3
+  | EventMetadataV3
+  | ImageMetadataV3
+  | LinkMetadataV3
+  | LiveStreamMetadataV3
+  | MintMetadataV3
+  | SpaceMetadataV3
+  | StoryMetadataV3
+  | TextOnlyMetadataV3
+  | ThreeDMetadataV3
+  | TransactionMetadataV3
+  | VideoMetadataV3;
+
 export type Post = {
   __typename: "Post";
   id: string;
   platform: PostPlatform;
-  content: string;
   author: User;
   createdAt: Date;
   comments: Post[];
-  metadata: any;
+  metadata: AnyLensMetadata;
   reactions?: Partial<PostReactions>;
   updatedAt?: Date;
   reply?: Post;
@@ -45,7 +82,6 @@ export function lensItemToPost(item: AnyLensItem): Post {
     reply: null,
     comments: [],
     metadata: null,
-    content: "",
     createdAt: new Date(),
     updatedAt: new Date(),
     platform: "lens",
@@ -58,9 +94,6 @@ export function lensItemToPost(item: AnyLensItem): Post {
 
   let origin: Comment | LensPost | Quote;
   switch (normalizedPost.__typename) {
-    case "FeedItem":
-      origin = normalizedPost.root;
-      break;
     case "Post":
       origin = normalizedPost as LensPost;
       break;
@@ -69,6 +102,9 @@ export function lensItemToPost(item: AnyLensItem): Post {
       break;
     case "Quote":
       origin = normalizedPost as Quote;
+      break;
+    case "FeedItem":
+      origin = normalizedPost.root;
       break;
     case "Mirror":
       origin = normalizedPost.mirrorOn as LensPost;
@@ -79,16 +115,18 @@ export function lensItemToPost(item: AnyLensItem): Post {
 
   post.id = origin.id;
   post.author = lensProfileToUser(origin.by);
-  post.content = "content" in origin.metadata ? origin?.metadata?.content : "";
-
   post.reactions = getReactions(origin.stats);
-  post.comments = getComments(normalizedPost, post.content);
+  post.comments = getComments(normalizedPost);
   post.reply = getReply(origin);
-  post.metadata = origin.metadata;
+  post.metadata = getMetadata(origin.metadata);
   post.createdAt = new Date(origin.createdAt);
   post.updatedAt = new Date(origin.createdAt);
 
   return post;
+}
+
+function getMetadata(metadata: AnyLensMetadata): any {
+  return metadata;
 }
 
 function normalizePost(item: AnyLensItem) {
@@ -109,14 +147,13 @@ function getReactions(stats: any) {
   };
 }
 
-function getComments(post: any, content: string) {
+function getComments(post: any) {
   if (post.__typename === "FeedItem") {
     return post.comments.map((comment) => ({
       id: comment.id as string,
       author: lensProfileToUser(comment.by),
       createdAt: new Date(comment.createdAt),
       updatedAt: new Date(comment.createdAt),
-      content,
       comments: [],
       reactions: undefined,
       metadata: comment.metadata,

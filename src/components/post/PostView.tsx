@@ -1,8 +1,7 @@
 "use client";
 import { Edit2Icon, ReplyIcon } from "lucide-react";
 import Link from "next/link";
-import { forwardRef, useRef, useState } from "react";
-import Markdown from "../Markdown";
+import { AwaitedReactNode, type JSX, ReactNode, forwardRef, useRef, useState } from "react";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -10,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { PostContextMenu } from "./PostContextMenu";
+import { TextOnlyView } from "./PostMetadataView";
 import { ReactionsList } from "./PostReactions";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
@@ -39,6 +39,16 @@ export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
+  let metadata: JSX.Element;
+  switch (post.metadata.__typename) {
+    case "TextOnlyMetadataV3":
+      metadata = <TextOnlyView metadata={post.metadata} />;
+      break;
+    default:
+      metadata = null;
+      break;
+  }
+
   return (
     <div
       ref={ref}
@@ -46,15 +56,18 @@ export const PostContent = forwardRef<
         collapsed ? "line-clamp-5" : "line-clamp-none"
       }`}
     >
-      <Markdown content={post.content} />
-      {/* <Metadata metadata={post.metadata} /> */}
+      {metadata}
     </div>
   );
 });
 
 export const ReplyInfo = ({ post }: { post: Post }) => {
   const username = post.reply?.author?.handle;
-  const content = post.reply?.content?.substring(0, 100);
+  let content = "";
+  if (post?.reply?.metadata && "content" in post.reply.metadata) {
+    content = post.reply.metadata.content.substring(0, 100);
+  }
+
   const id = post.reply?.id;
 
   if (!post?.reply) return null;
