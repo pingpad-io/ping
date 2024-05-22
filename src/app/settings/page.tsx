@@ -1,4 +1,4 @@
-import { CogIcon, SettingsIcon } from "lucide-react";
+import { SettingsIcon } from "lucide-react";
 import { ServerSignedIn } from "~/components/ServerSignedIn";
 import { SettingsPage } from "~/components/SettingsPage";
 import { Card } from "~/components/ui/card";

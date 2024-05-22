@@ -6,6 +6,7 @@ export type User = {
   name?: string;
   handle: string;
   address: string;
+  createdAt?: Date;
   namespace: string;
   description?: string;
   profilePictureUrl?: string;
@@ -20,6 +21,7 @@ export function lensProfileToUser(profile: Profile | ProfileFragment): User {
     id: profile.id,
     profilePictureUrl: imageUrl,
     address: profile.ownedBy.address,
+    createdAt: profile.createdAt as unknown as Date,
     description: profile?.metadata?.bio,
     name: profile?.metadata?.displayName,
     handle: profile.handle?.localName ?? profile.id,
