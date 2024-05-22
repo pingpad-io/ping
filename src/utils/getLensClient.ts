@@ -19,7 +19,7 @@ export const getLensClient = async () => {
     .fetch({ forProfileId: profileId })
     .catch(() => null)
     .then((profile) => profile);
-  const handle = profile.handle.localName;
+  const handle = profile?.handle?.localName;
 
   return {
     isAuthenticated,

@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { PostContextMenu } from "./PostContextMenu";
-import { TextOnlyView } from "./PostMetadataView";
+import { TextOnlyView, getPostMetadataView } from "./PostMetadataView";
 import { ReactionsList } from "./PostReactions";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
@@ -39,15 +39,7 @@ export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
-  let metadata: JSX.Element;
-  switch (post.metadata.__typename) {
-    case "TextOnlyMetadataV3":
-      metadata = <TextOnlyView metadata={post.metadata} />;
-      break;
-    default:
-      metadata = null;
-      break;
-  }
+  const metadata = getPostMetadataView(post.metadata);
 
   return (
     <div
