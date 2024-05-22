@@ -20,48 +20,48 @@ export async function generateMetadata({ params }: { params: { user: string } })
 }
 
 const user = async ({ params }: { params: { user: string } }) => {
-  const { client } = await getLensClient();
+  const { client, handle: authenticatedHandle } = await getLensClient();
 
   const handle = params.user;
-  const user = await client.profile.fetch({
-    forHandle: `lens/${handle}`,
-  }).then(((data) => { return lensProfileToUser(data)}));
+  const isUserProfile = handle === authenticatedHandle;
+  const user = await client.profile
+    .fetch({
+      forHandle: `lens/${handle}`,
+    })
+    .then((data) => {
+      return lensProfileToUser(data);
+    });
 
   if (!user) throw new Error("∑(O_O;) Profile not found");
 
-
-  const data = await client.publication
+  const posts = await client.publication
     .fetchAll({
       where: { from: [user.id], publicationTypes: [PublicationType.Post] },
+    })
+    .then((data) => {
+      return data.items.map(lensItemToPost);
     })
     .catch(() => {
       throw new Error(`☆⌒(>。<) Couldn't get user posts`);
     });
 
-  if (!data) throw new Error(`☆⌒(>。<) Couldn't get user posts`);
-
-  const posts = data.items?.map(lensItemToPost);
-  const isUserProfile = false;
-
   return (
     <>
       <div className="sticky top-0 p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 bg-card rounded-b-lg drop-shadow-md">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
-          <UserAvatar user={user} />
+          <UserAvatar card={false} user={user} />
         </div>
 
         <div className="flex flex-col grow place-content-around">
           <div className="flex flex-row gap-2 place-items-center h-6">
             <div className="text-lg font-bold w-fit truncate">{user.name}</div>
+            <div className="text-sm text-base-content font-light">@{user.handle}</div>
             {isUserProfile && (
               <Link className="btn btn-square btn-sm btn-ghost" href="/settings">
                 <EditIcon size={14} />
               </Link>
             )}
           </div>
-          <Link className="grow" href={`/u/${user.handle}`}>
-            <div className="text-sm text-base-content font-light">@{user.handle}</div>
-          </Link>
           <div className="text-sm text-base-content grow">{user.description}</div>
           <div className="text-sm text-base-content flex flex-row gap-1 place-items-center">
             <CalendarIcon size={14} />
