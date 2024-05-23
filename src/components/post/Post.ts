@@ -169,7 +169,6 @@ function getReply(origin: Comment | Quote | LensPost) {
     reactions: undefined,
     platform: "lens",
     comments: [],
-    metadata: origin.metadata,
     createdAt: new Date(origin.createdAt),
     updatedAt: new Date(origin.createdAt),
   } as Post;
@@ -180,6 +179,7 @@ function getReply(origin: Comment | Quote | LensPost) {
         id: origin.root.id,
         author: origin?.commentOn?.by ? lensProfileToUser(origin?.commentOn?.by) : undefined,
         content: "content" in origin.commentOn.metadata ? origin.commentOn.metadata.content : "",
+        metadata: origin.commentOn.metadata,
         ...reply,
       } as Post;
 
@@ -188,6 +188,7 @@ function getReply(origin: Comment | Quote | LensPost) {
         id: origin.quoteOn.id,
         author: origin?.quoteOn?.by ? lensProfileToUser(origin?.quoteOn?.by) : undefined,
         content: "content" in origin.quoteOn.metadata ? origin.quoteOn?.metadata?.content : "",
+        metadata: origin.quoteOn.metadata,
         ...reply,
       } as Post;
     case "Post":
