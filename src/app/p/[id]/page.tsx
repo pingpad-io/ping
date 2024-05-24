@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     .catch(() => {
       throw new Error("(╥_╥) Post not found");
     });
-  const handle = `@${data.by.handle.localName}`;
+  const handle = `${data.by.handle.localName}`;
 
   const title = `${handle}'s post `;
   return {

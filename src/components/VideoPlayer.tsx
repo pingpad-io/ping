@@ -5,6 +5,8 @@ import { Progress } from "./ui/progress";
 
 export const VideoPlayer = ({ url }) => {
   const playerRef = useRef(null);
+  const playerContainerRef = useRef(null);
+  const progressRef = useRef(null);
   const [playing, setPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
 
@@ -16,8 +18,8 @@ export const VideoPlayer = ({ url }) => {
     setProgress(state.played * 100);
   };
 
-  const handleSeekChange = (e) => {
-    playerRef.current.seekTo(e.target.value / 100);
+  const handleSeekChange = (value: number) => {
+    playerRef.current.seekTo(value / 100);
   };
 
   return (
@@ -40,7 +42,8 @@ export const VideoPlayer = ({ url }) => {
           {playing ? <PauseIcon /> : <PlayIcon />}
         </button>
         {/* <input type="range" min="0" max="100" value={progress} onChange={handleSeekChange} className="flex-grow ml-2" /> */}
-        <Progress onClick={handleSeekChange} className="ml-2 h-2" value={progress} />
+
+        <Progress ref={progressRef} onChange={handleSeekChange} className="ml-2 h-2" value={progress} />
       </div>
     </div>
   );
