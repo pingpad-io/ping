@@ -1,13 +1,8 @@
-import { type Notification, lensNotificationToNative } from "./notifications/Notification";
+import type { Notification } from "./notifications/Notification";
 import { NotificationView } from "./notifications/NotificationView";
-import { type Post, lensItemToPost } from "./post/Post";
+import type { Post } from "./post/Post";
 import { PostSuspense } from "./post/PostSuspense";
 import { PostView } from "./post/PostView";
-
-export const FeedSuspense = () => {
-  // biome-ignore lint/suspicious/noArrayIndexKey: intended behavior
-  return [...Array(12)].map((_v, idx) => <PostSuspense key={`suspense-${idx}`} />);
-};
 
 export function Feed({ data }: { data?: Post[] | Notification[] }) {
   if (!data) return <FeedSuspense />;
@@ -23,3 +18,8 @@ export function Feed({ data }: { data?: Post[] | Notification[] }) {
 
   return feed;
 }
+
+export const FeedSuspense = () => {
+  // biome-ignore lint/suspicious/noArrayIndexKey: intended behavior
+  return [...Array(12)].map((_v, idx) => <PostSuspense key={`suspense-${idx}`} />);
+};

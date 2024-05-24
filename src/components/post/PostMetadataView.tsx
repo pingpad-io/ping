@@ -7,6 +7,7 @@ import type {
 } from "@lens-protocol/react-web";
 import Image from "next/image";
 import Markdown from "../Markdown";
+import { VideoPlayer } from "../VideoPlayer";
 import type { AnyLensMetadata } from "./Post";
 
 export const getPostMetadataView = (metadata: AnyLensMetadata) => {
@@ -42,7 +43,6 @@ export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
   return (
     <div>
       <Markdown content={metadata.content} />
-      <h1>{title}</h1>
       <div className="relative mt-2 w-[90%] aspect-square">
         <Image className="object-cover border w-full h-full rounded-xl" src={url} alt={alt} fill />
       </div>
@@ -54,14 +54,15 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
   const url = metadata.asset.video.optimized.uri || metadata.asset.video.raw.uri;
   const mimeType = metadata.asset.video.optimized.mimeType || metadata.asset.video.raw.mimeType;
   const cover = metadata.asset.cover?.optimized.uri || metadata.asset.cover?.raw.uri;
-  console.log(cover, mimeType);
+
   return (
     <div>
       <Markdown content={metadata.content} />
-      <video className="w-full h-auto rounded-lg" autoPlay muted loop playsInline controls poster={cover}>
+      {/* <video className="w-full h-auto rounded-lg" autoPlay muted loop playsInline controls poster={cover}>
         <source src={url} type={mimeType} />
         Your browser does not support the video tag.
-      </video>
+      </video> */}
+      <VideoPlayer url={url} />
     </div>
   );
 };
