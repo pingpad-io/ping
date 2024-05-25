@@ -1,7 +1,7 @@
 "use client";
 
 import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
 import { Progress } from "./ui/video-progress";
@@ -13,6 +13,26 @@ export const VideoPlayer = ({ url }) => {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [muted, setMuted] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(screenfull.isFullscreen);
+
+  useEffect(() => {
+    if (screenfull.isEnabled) {
+      const onFullscreenChange = () => {
+        if (playerWithControlsRef.current && screenfull.element === playerWithControlsRef.current) {
+          setIsFullscreen(screenfull.isFullscreen);
+        } else {
+          setIsFullscreen(false);
+        }
+      };
+      handleFullscreen();
+
+      screenfull.on("change", onFullscreenChange);
+
+      return () => {
+        screenfull.off("change", onFullscreenChange);
+      };
+    }
+  }, []);
 
   const handlePlayPause = () => {
     setPlaying(!playing);
@@ -23,7 +43,7 @@ export const VideoPlayer = ({ url }) => {
     if (!screenfull.isEnabled || !playerWithControlsRef.current) {
       return;
     }
-    const player = playerWithControlsRef.current.wrapper;
+    const player = playerWithControlsRef.current;
     screenfull.toggle(player);
   };
 
@@ -39,10 +59,18 @@ export const VideoPlayer = ({ url }) => {
   return (
     <div
       ref={playerWithControlsRef}
-      className={`relative rounded-xl w-full border ${screenfull.isFullscreen ? "fullscreen" : ""}`}
+      className={`relative w-full h-full flex justify-center items-center rounded-xl border ${
+        isFullscreen ? "fullscreen" : ""
+      }`}
+      onClick={handleFullscreen}
     >
       <div
-        onClick={handlePlayPause}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          handlePlayPause();
+        }}
+        className="w-fit h-fit bg-black/50"
         onKeyDown={(e) => {
           if (e.key === " ") {
             handlePlayPause();
@@ -52,7 +80,10 @@ export const VideoPlayer = ({ url }) => {
         <ReactPlayer
           ref={playerRef}
           playing={playing}
-          style={{ borderRadius: "0.5rem", overflow: "hidden" }}
+          style={{
+            borderRadius: "0.5rem",
+            overflow: "hidden",
+          }}
           onProgress={handleProgress}
           progressInterval={50}
           url={url}
@@ -65,7 +96,17 @@ export const VideoPlayer = ({ url }) => {
         />
       </div>
 
-      <div className="z-10 w-full rounded-b-lg border-t transition-all absolute bottom-0 flex justify-between items-center backdrop-blur-sm text-secondary-foreground p-2 bg-secondary/50 cursor-pointer">
+      <div
+        onKeyDown={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+        className="z-10 w-full rounded-b-lg border-t transition-all absolute bottom-0 flex justify-between items-center backdrop-blur-sm text-secondary-foreground p-2 bg-secondary/50 cursor-pointer"
+      >
         <button type="button" onClick={handlePlayPause}>
           {playing ? <PauseIcon /> : <PlayIcon />}
         </button>
@@ -79,7 +120,7 @@ export const VideoPlayer = ({ url }) => {
         />
         {screenfull.isEnabled && (
           <button type="button" onClick={handleFullscreen}>
-            {screenfull.isFullscreen ? <MinimizeIcon /> : <MaximizeIcon />}
+            {isFullscreen ? <MinimizeIcon /> : <MaximizeIcon />}
           </button>
         )}
       </div>
