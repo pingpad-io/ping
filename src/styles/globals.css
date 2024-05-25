@@ -77,3 +77,22 @@
         }
     }
 }
+
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    box-sizing: border-box;
+    z-index: 9999;
+}
+
+.fullscreen video {
+    padding: 50px;
+    margin: auto;
+    display: block;
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: cover;
+}

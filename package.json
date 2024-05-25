@@ -66,6 +66,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "redux": "^4.2.1",
     "remark-gfm": "^3.0.1",
+    "screenfull": "^6.0.2",
     "simple-swizzle": "^0.2.2",
     "sonner": "^1.4.41",
     "superjson": "1.9.1",
