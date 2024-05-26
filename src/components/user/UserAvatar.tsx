@@ -4,15 +4,21 @@ import type { User } from "./User";
 import { UserCard } from "./UserCard";
 
 export function UserAvatar({ user, link = true, card = true }: { user: User; link?: boolean; card?: boolean }) {
+  const fallback = user?.name.slice(0, 2) || user.handle.slice(0, 2);
+  console.log(user?.profilePictureUrl);
   const avatar = (
     <Avatar className="w-full h-full">
       <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} />
-      <AvatarFallback>
-        <img src={getStampUrl(user.address)} alt={user.handle} />
-      </AvatarFallback>
+      <AvatarFallback>{fallback.toLowerCase()}</AvatarFallback>
     </Avatar>
   );
-  const avatarLink = link ? <Link href={`/u/${user.handle}`}>{avatar}</Link> : avatar;
+  const avatarLink = link ? (
+    <Link className="w-full h-full" href={`/u/${user.handle}`}>
+      {avatar}
+    </Link>
+  ) : (
+    avatar
+  );
   const avatarCard = card ? <UserCard user={user}>{avatarLink}</UserCard> : avatarLink;
 
   return avatarCard;

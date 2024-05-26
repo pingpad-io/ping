@@ -48,7 +48,7 @@ const user = async ({ params }: { params: { user: string } }) => {
   return (
     <>
       <div className="sticky top-0 p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 bg-card rounded-b-lg drop-shadow-md">
-        <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
+        <div className="flex w-12 h-12 sm:w-24 sm:h-24">
           <UserAvatar card={false} user={user} />
         </div>
 
