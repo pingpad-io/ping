@@ -62,7 +62,7 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
         <source src={url} type={mimeType} />
         Your browser does not support the video tag.
       </video> */}
-      <VideoPlayer url={url} />
+      <VideoPlayer url={url} preview={cover} />
     </div>
   );
 };

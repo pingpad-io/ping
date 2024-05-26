@@ -1,12 +1,13 @@
 "use client";
 
 import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
 import { Progress } from "./ui/video-progress";
 
-export const VideoPlayer = ({ url }) => {
+export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) => {
   const playerWithControlsRef = useRef(null);
   const playerRef = useRef(null);
   const progressRef = useRef(null);
@@ -14,6 +15,7 @@ export const VideoPlayer = ({ url }) => {
   const [progress, setProgress] = useState(0);
   const [muted, setMuted] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(screenfull.isFullscreen);
+  const [shown, setShown] = useState(false);
 
   useEffect(() => {
     if (screenfull.isEnabled) {
@@ -44,7 +46,9 @@ export const VideoPlayer = ({ url }) => {
       return;
     }
     const player = playerWithControlsRef.current;
-    screenfull.toggle(player);
+    screenfull.toggle(player, { navigationUI: "hide" }).catch((error) => {
+      console.error("Error toggling fullscreen:", error);
+    });
   };
 
   const handleProgress = (state) => {
@@ -56,6 +60,14 @@ export const VideoPlayer = ({ url }) => {
     setProgress(value);
   };
 
+  const previewImage = (
+    <>
+      <div className="relative mt-2 w-full aspect-square">
+        <Image className="object-cover border w-full h-full rounded-xl" src={preview} alt={"Preview"} fill />
+      </div>
+    </>
+  );
+
   return (
     <div
       ref={playerWithControlsRef}
@@ -63,6 +75,11 @@ export const VideoPlayer = ({ url }) => {
         isFullscreen ? "fullscreen" : ""
       }`}
       onClick={handleFullscreen}
+      onKeyDown={(e) => {
+        if (e.key === "f") {
+          handleFullscreen();
+        }
+      }}
     >
       <div
         onClick={(e) => {
@@ -70,7 +87,7 @@ export const VideoPlayer = ({ url }) => {
           e.preventDefault();
           handlePlayPause();
         }}
-        className="w-fit h-fit bg-black/50"
+        className={shown ? "w-auto h-auto" : "w-full h-full"}
         onKeyDown={(e) => {
           if (e.key === " ") {
             handlePlayPause();
@@ -84,46 +101,49 @@ export const VideoPlayer = ({ url }) => {
             borderRadius: "0.5rem",
             overflow: "hidden",
           }}
+          light={previewImage}
           onProgress={handleProgress}
           progressInterval={50}
-          url={url}
-          width="auto"
-          height="auto"
-          loop
-          light={<div className="bg-black h-64 w-full opacity-50" />}
-          muted={muted}
+          onClickPreview={() => setShown(true)}
           controls={false} // disable default controls to use custom controls
+          muted={muted}
+          height="auto"
+          width="auto"
+          url={url}
+          loop
         />
       </div>
 
-      <div
-        onKeyDown={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-        className="z-10 w-full rounded-b-lg border-t transition-all absolute bottom-0 flex justify-between items-center backdrop-blur-sm text-secondary-foreground p-2 bg-secondary/50 cursor-pointer"
-      >
-        <button type="button" onClick={handlePlayPause}>
-          {playing ? <PauseIcon /> : <PlayIcon />}
-        </button>
-        <Progress
-          ref={progressRef}
-          onChange={handleSeekChange}
-          playing={playing}
-          setPlaying={setPlaying}
-          className="mx-2 h-2"
-          value={progress}
-        />
-        {screenfull.isEnabled && (
-          <button type="button" onClick={handleFullscreen}>
-            {isFullscreen ? <MinimizeIcon /> : <MaximizeIcon />}
+      {shown && (
+        <div
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+          className="z-10 w-full rounded-b-lg border-t transition-all absolute bottom-0 flex justify-between items-center backdrop-blur-sm text-secondary-foreground p-2 bg-secondary/50 cursor-pointer"
+        >
+          <button type="button" onClick={handlePlayPause}>
+            {playing ? <PauseIcon /> : <PlayIcon />}
           </button>
-        )}
-      </div>
+          <Progress
+            ref={progressRef}
+            onChange={handleSeekChange}
+            playing={playing}
+            setPlaying={setPlaying}
+            className="mx-2 h-2"
+            value={progress}
+          />
+          {screenfull.isEnabled && (
+            <button type="button" onClick={handleFullscreen}>
+              {isFullscreen ? <MinimizeIcon /> : <MaximizeIcon />}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
