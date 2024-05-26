@@ -44,8 +44,8 @@ export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
   return (
     <div>
       <Markdown content={metadata.content} />
-      <div className="relative mt-2 w-[90%] aspect-square">
-        <Image className="object-cover border w-full h-full rounded-xl" src={url} alt={alt} fill />
+      <div className="relative mt-2 w-full">
+        <img src={url} alt={alt} className="object-cover border w-full rounded-xl h-auto" />
       </div>
     </div>
   );
@@ -56,6 +56,9 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
   const mimeType = metadata.asset.video.optimized.mimeType || metadata.asset.video.raw.mimeType;
   const cover = metadata.asset.cover?.optimized.uri || metadata.asset.cover?.raw.uri;
   const supported = ReactPlayer.canPlay(url);
+  if (!supported) {
+    console.error(`unsupported video format: ${mimeType} (${url})`);
+  }
 
   return (
     <div>
@@ -64,7 +67,7 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
         <VideoPlayer url={url} preview={cover} />
       ) : (
         <p className="font-bold h-32 rounded-xl border flex items-center justify-center text-center">
-          unsupported video format ({mimeType}) (╥╥﹏╥╥)
+          unsupported video format (╥╥﹏╥╥)
         </p>
       )}
     </div>
