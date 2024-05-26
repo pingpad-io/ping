@@ -6,6 +6,7 @@ import type {
   VideoMetadataV3,
 } from "@lens-protocol/react-web";
 import Image from "next/image";
+import ReactPlayer from "react-player";
 import Markdown from "../Markdown";
 import { VideoPlayer } from "../VideoPlayer";
 import type { AnyLensMetadata } from "./Post";
@@ -54,15 +55,18 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
   const url = metadata.asset.video.optimized.uri || metadata.asset.video.raw.uri;
   const mimeType = metadata.asset.video.optimized.mimeType || metadata.asset.video.raw.mimeType;
   const cover = metadata.asset.cover?.optimized.uri || metadata.asset.cover?.raw.uri;
+  const supported = ReactPlayer.canPlay(url);
 
   return (
     <div>
       <Markdown content={metadata.content} />
-      {/* <video className="w-full h-auto rounded-lg" autoPlay muted loop playsInline controls poster={cover}>
-        <source src={url} type={mimeType} />
-        Your browser does not support the video tag.
-      </video> */}
-      <VideoPlayer url={url} preview={cover} />
+      {supported ? (
+        <VideoPlayer url={url} preview={cover} />
+      ) : (
+        <p className="font-bold h-32 rounded-xl border flex items-center justify-center text-center">
+          unsupported video format ({mimeType}) (╥╥﹏╥╥)
+        </p>
+      )}
     </div>
   );
 };

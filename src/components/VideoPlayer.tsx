@@ -74,7 +74,9 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
       className={`relative w-full h-full flex justify-center items-center rounded-xl border ${
         isFullscreen ? "fullscreen" : ""
       }`}
-      onClick={handleFullscreen}
+      onClick={() => {
+        if (isFullscreen) handleFullscreen();
+      }}
       onKeyDown={(e) => {
         if (e.key === "f") {
           handleFullscreen();
