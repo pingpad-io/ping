@@ -1,6 +1,6 @@
 ---
 name: feature
-about: Pingpad plans or feature suggestions
+about: Pingpad feature suggestions
 title: "[feat]"
 labels: enhancement
 assignees: ''
