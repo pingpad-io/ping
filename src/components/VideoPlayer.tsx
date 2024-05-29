@@ -26,7 +26,6 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
           setIsFullscreen(false);
         }
       };
-      handleFullscreen();
 
       screenfull.on("change", onFullscreenChange);
 
@@ -63,7 +62,7 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
   const previewImage = (
     <>
       <div className="relative mt-2 w-full aspect-square">
-        <Image className="object-cover border w-full h-full rounded-xl" src={preview} alt={"Preview"} fill />
+        <Image className="object-cover border w-full h-full rounded-xl" src={preview} fill alt={""} />
       </div>
     </>
   );

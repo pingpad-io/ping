@@ -37,7 +37,7 @@ export const ArticleView = ({ metadata }: { metadata: ArticleMetadataV3 }) => {
 };
 
 export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
-  const url = metadata.asset.image?.optimized.uri || metadata.asset.image?.raw.uri;
+  const url = metadata.asset.image?.optimized?.uri || metadata.asset.image?.raw.uri;
   const alt = metadata.asset.altTag;
   const title = metadata.title;
 
