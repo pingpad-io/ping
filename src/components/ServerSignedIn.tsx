@@ -1,5 +1,3 @@
-"use server";
-
 import type { PropsWithChildren } from "react";
 import { getCookieAuth } from "~/utils/getCookieAuth";
 

@@ -1,6 +1,6 @@
 import { ExplorePublicationType, ExplorePublicationsOrderByType } from "@lens-protocol/client";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
-import { FeedPageLayout } from "~/components/layout/FeedLayout";
+import { FeedLayout } from "~/components/layout/FeedLayout";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
@@ -14,9 +14,7 @@ const exploreCurated = async () => {
   }
 
   return (
-    <FeedPageLayout>
       <InfiniteScroll endpoint={endpoint} initialData={posts} initialCursor={nextCursor} />
-    </FeedPageLayout>
   );
 };
 

@@ -1,5 +1,5 @@
 import { InfiniteScroll } from "~/components/InfiniteScroll";
-import { FeedPageLayout } from "~/components/layout/FeedLayout";
+import { FeedLayout } from "~/components/layout/FeedLayout";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
@@ -11,11 +11,7 @@ const best = async () => {
   if (!posts) {
     throw new Error("Failed to fetch posts");
   }
-  return (
-    <FeedPageLayout>
-      <InfiniteScroll endpoint={endpoint} initialData={posts} initialCursor={nextCursor} />
-    </FeedPageLayout>
-  );
+  return <InfiniteScroll endpoint={endpoint} initialData={posts} initialCursor={nextCursor} />;
 };
 
 const getInitialFeed = async () => {
