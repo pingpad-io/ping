@@ -1,5 +1,5 @@
-import { FeedPageLayout } from "~/components/FeedPagesLayout";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
+import { FeedPageLayout } from "~/components/layout/FeedLayout";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 

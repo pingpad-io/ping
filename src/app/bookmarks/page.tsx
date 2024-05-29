@@ -1,5 +1,4 @@
 import { BookmarkIcon } from "lucide-react";
-import { FeedPageLayout } from "~/components/FeedPagesLayout";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { lensItemToPost } from "~/components/post/Post";

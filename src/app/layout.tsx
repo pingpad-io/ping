@@ -1,8 +1,8 @@
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Providers from "~/components/Providers";
-import { Sidebar } from "~/components/Sidebar";
-import Menu from "~/components/menu/Menu";
+import Menu from "~/components/layout/Menu";
+import { Sidebar } from "~/components/layout/Sidebar";
 import { quicksand } from "~/styles/fonts";
 import "../styles/globals.css";
 import { Toaster } from "~/components/ui/sonner";

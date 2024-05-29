@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { getCookieAuth } from "~/utils/getCookieAuth";
 import { ConnectWalletButton } from "../web3/WalletButtons";
-import { SearchButton } from "./SearchButton";
+import { SearchButton } from "./Search";
 
 export default function Menu() {
   const { handle, profileId } = getCookieAuth();

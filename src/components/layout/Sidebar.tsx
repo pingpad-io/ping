@@ -1,15 +1,12 @@
-"use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { SearchBar } from "./SearchBar";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
-import { Badge } from "./ui/badge";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import { Badge } from "../ui/badge";
+import { SearchBar } from "./Search";
 
 export function Sidebar() {
-  const pathname = usePathname();
   return (
     <div className="flex flex-col gap-3 py-4 sm:px-2">
-      {pathname !== "/search" && <SearchBar defaultText="" />}
+      <SearchBar defaultText="" />
       <Accordion defaultValue={["beta"]} className="w-64" type="multiple">
         <AccordionItem value="beta">
           <AccordionTrigger className="py-2">
@@ -44,6 +41,7 @@ export function Sidebar() {
     </div>
   );
 }
+
 const Links = () => {
   return (
     <div className="flex flex-col gap-1 text-xs ">
