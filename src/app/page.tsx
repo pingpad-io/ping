@@ -1,4 +1,4 @@
-import home from "./home/page";
+import home from "./(feed)/home/page";
 
 const landing = () => {
   return home();
