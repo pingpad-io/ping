@@ -1,11 +1,51 @@
+import { BellIcon, MailIcon } from "lucide-react";
 import Link from "next/link";
+import { getCookieAuth } from "~/utils/getCookieAuth";
+import { getLensClient } from "~/utils/getLensClient";
+import { ServerSignedIn } from "../ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { lensProfileToUser } from "../user/User";
+import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
+
+const UserBar = async () => {
+  const { handle, profileId } = getCookieAuth();
+  const { client } = await getLensClient();
+  const user = await client.profile.fetch({ forProfileId: profileId }).then((res) => lensProfileToUser(res));
+  const handleOrProfileId = handle ?? profileId;
+
+  return (
+    <div className="flex flex-row gap-2 py-2 border-b items-center justify-between">
+      <div>
+        <Link href={"/notifications"}>
+          <Button variant="ghost" size="icon">
+            <BellIcon size={20} />
+          </Button>
+        </Link>
+
+        <Button variant="ghost" size="icon" disabled>
+          <MailIcon size={20} />
+        </Button>
+      </div>
+
+      <Link href={`/u/${handleOrProfileId}`} className="flex flex-row gap-2 items-center justify-between">
+        <div className="hidden sm:flex">{handleOrProfileId}</div>
+        <div className="w-10 h-10">
+          <UserAvatar link={false} card={false} user={user} />
+        </div>
+      </Link>
+    </div>
+  );
+};
 
 export function Sidebar() {
   return (
     <div className="flex flex-col gap-3 py-4 sm:px-2">
+      <ServerSignedIn>
+        <UserBar />
+      </ServerSignedIn>
       <SearchBar defaultText="" />
       <Accordion defaultValue={["beta"]} className="w-64" type="multiple">
         <AccordionItem value="beta">

@@ -51,11 +51,6 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         </Button>
       </Link>
 
-      <Button variant="ghost" size="sm_icon" disabled>
-        <div className="hidden sm:flex -mt-1">messages</div>
-        <MailIcon className="sm:ml-2" size={20} />
-      </Button>
-
       <Link href={"/notifications"}>
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">notifications</div>
@@ -77,17 +72,11 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         </Button>
       </Link>
 
-      <Link href={`/u/${handle}`}>
-        <Button variant="ghost" size="sm_icon">
-          <div className="hidden sm:flex -mt-1">profile</div>
-          <UserIcon className="sm:ml-2" size={21} />
-        </Button>
-      </Link>
-
       <Button disabled>
         <div className="hidden sm:flex -mt-1">post</div>
         <SendIcon className="sm:ml-2" size={20} />
       </Button>
+
       {/* <Dialog>
         <DialogTrigger asChild>
           <Button>
