@@ -1,16 +1,17 @@
 "use client";
 import { Edit2Icon, ReplyIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { AwaitedReactNode, type JSX, ReactNode, forwardRef, useRef, useState } from "react";
-import { TimeElapsedSince } from "../TimeLabel";
+import { forwardRef, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { PostContextMenu } from "./PostContextMenu";
-import { TextOnlyView, getPostMetadataView } from "./PostMetadataView";
+import { getPostMetadataView } from "./PostMetadataView";
 import { ReactionsList } from "./PostReactions";
+const TimeElapsedSince = dynamic(() => import("../TimeLabel"), { ssr: false });
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const [collapsed, setCollapsed] = useState(true);
@@ -79,7 +80,10 @@ export const PostInfo = ({ post }: { post: Post }) => {
   const handle = author.handle;
 
   return (
-    <div className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
+    <div
+      suppressHydrationWarning
+      className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm"
+    >
       <Link className="flex gap-2" href={`/u/${handle}`}>
         <span className="w-fit truncate font-bold">{author.name}</span>
         <span className="">{`${isLensHandle ? "@" : "#"}${handle}`}</span>

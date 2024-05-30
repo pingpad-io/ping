@@ -16,8 +16,6 @@ const ConnectedWalletLabel = dynamic(() => import("~/components/web3/ConnnectedW
 });
 
 export const SettingsPage = () => {
-  const { isConnected: walletConnected, address } = useAccount();
-  const { disconnect } = useDisconnect();
   const { setTheme } = useTheme();
 
   const ping = () => {
@@ -41,7 +39,7 @@ export const SettingsPage = () => {
   ));
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="space-y-4">
       {/* <ProfileSettings user={undefined} /> */}
 
       <Card className="hover:bg-card">

@@ -5,8 +5,6 @@ import type {
   TextOnlyMetadataV3,
   VideoMetadataV3,
 } from "@lens-protocol/react-web";
-import Image from "next/image";
-import ReactPlayer from "react-player";
 import Markdown from "../Markdown";
 import { VideoPlayer } from "../VideoPlayer";
 import type { AnyLensMetadata } from "./Post";
@@ -45,7 +43,7 @@ export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
     <div>
       <Markdown content={metadata.content} />
       <div className="relative mt-2 w-full">
-        <img src={url} alt={alt} className="object-cover border w-full rounded-xl h-auto" />
+        <img src={url} alt={alt || title} className="object-cover border w-full rounded-xl h-auto" />
       </div>
     </div>
   );
@@ -55,21 +53,11 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
   const url = metadata.asset.video.optimized.uri || metadata.asset.video.raw.uri;
   const mimeType = metadata.asset.video.optimized.mimeType || metadata.asset.video.raw.mimeType;
   const cover = metadata.asset.cover?.optimized.uri || metadata.asset.cover?.raw.uri;
-  const supported = ReactPlayer.canPlay(url);
-  if (!supported) {
-    console.error(`unsupported video format: ${mimeType} (${url})`);
-  }
 
   return (
     <div>
       <Markdown content={metadata.content} />
-      {supported ? (
-        <VideoPlayer url={url} preview={cover} />
-      ) : (
-        <p className="font-bold h-32 rounded-xl border flex items-center justify-center text-center">
-          unsupported video (╥╥﹏╥╥)
-        </p>
-      )}
+      <VideoPlayer url={url} preview={cover} />
     </div>
   );
 };

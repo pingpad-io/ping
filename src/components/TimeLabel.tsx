@@ -35,6 +35,7 @@ export const TimeElapsedSince = ({ date }: { date: Date }) => {
   }
   return <span suppressHydrationWarning>{timeSince}</span>;
 };
+export default TimeElapsedSince;
 
 export const TimeSince = ({ date }: { date: Date }) => {
   const timeSince = dayjs(date).format("MMM YYYY");
