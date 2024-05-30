@@ -32,7 +32,7 @@ const UserBar = async () => {
 
       <Link href={`/u/${handleOrProfileId}`} className="flex flex-row gap-2 items-center justify-between">
         <div className="hidden sm:flex">{handleOrProfileId}</div>
-        <div className="w-10 h-10">
+        <div className="w-8 h-8">
           <UserAvatar link={false} card={false} user={user} />
         </div>
       </Link>
