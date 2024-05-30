@@ -17,7 +17,7 @@ const UserBar = async () => {
   const handleOrProfileId = handle ?? profileId;
 
   return (
-    <div className="flex flex-row gap-2 py-2 border-b items-center justify-between">
+    <div className="flex flex-row gap-2 pb-2 border-b items-center justify-between">
       <div>
         <Link href={"/notifications"}>
           <Button variant="ghost" size="icon">

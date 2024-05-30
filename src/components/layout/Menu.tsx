@@ -2,6 +2,7 @@ import { AtSign, BellIcon, BookmarkIcon, GlobeIcon, MailIcon, SendIcon, Settings
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { getCookieAuth } from "~/utils/getCookieAuth";
+import { ServerSignedIn } from "../ServerSignedIn";
 import { ConnectWalletButton } from "../web3/WalletButtons";
 import { SearchButton } from "./Search";
 
@@ -9,20 +10,16 @@ export default function Menu() {
   const { handle, profileId } = getCookieAuth();
   const handleOrProfileId = handle ?? profileId;
 
-  const logo = (
-    <Link href="/">
-      <Button variant="ghost" size="sm_icon">
-        <span className="hidden sm:flex -mt-1">pingpad</span>
-        <AtSign className="sm:ml-2" size={20} />
-      </Button>
-    </Link>
-  );
-
   if (!profileId) {
     return (
       <span className="flex shrink text-xl p-4 sm:px-2 w-full sm:w-max">
         <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
-          {logo}
+          <Link href="/">
+            <Button variant="ghost" size="sm_icon">
+              <span className="hidden sm:flex -mt-1">pingpad</span>
+              <AtSign className="sm:ml-2" size={20} />
+            </Button>
+          </Link>
           <ConnectWalletButton />
         </span>
       </span>
@@ -32,10 +29,17 @@ export default function Menu() {
   return (
     <span className="flex shrink text-xl p-4 sm:px-2 w-full sm:w-max">
       <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
-        {logo}
+        <Link href="/">
+          <Button variant="ghost" size="sm_icon">
+            <span className="hidden sm:flex -mt-1">pingpad</span>
+            <AtSign className="sm:ml-2" size={20} />
+          </Button>
+        </Link>
         <SearchButton />
 
-        <MenuAuthed handle={handleOrProfileId} />
+        <ServerSignedIn>
+          <MenuAuthed handle={handleOrProfileId} />
+        </ServerSignedIn>
       </span>
     </span>
   );
@@ -51,7 +55,12 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         </Button>
       </Link>
 
-      <Link href={"/notifications"}>
+      <Button variant="ghost" size="sm_icon" className="flex lg:hidden" disabled>
+        <div className="hidden sm:flex -mt-1">messages</div>
+        <MailIcon className="sm:ml-2" size={20} />
+      </Button>
+
+      <Link href={"/notifications"} className="flex lg:hidden">
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">notifications</div>
           <BellIcon className="sm:ml-2" size={21} />
@@ -72,11 +81,17 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         </Button>
       </Link>
 
+      <Link href={`/u/${handle}`} className="flex lg:hidden">
+        <Button variant="ghost" size="sm_icon">
+          <div className="hidden sm:flex -mt-1">profile</div>
+          <UserIcon className="sm:ml-2" size={21} />
+        </Button>
+      </Link>
+
       <Button disabled>
         <div className="hidden sm:flex -mt-1">post</div>
         <SendIcon className="sm:ml-2" size={20} />
       </Button>
-
       {/* <Dialog>
         <DialogTrigger asChild>
           <Button>
