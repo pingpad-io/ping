@@ -1,6 +1,5 @@
 "use client";
 import { Edit2Icon, ReplyIcon } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { forwardRef, useRef, useState } from "react";
 import { Button } from "../ui/button";
@@ -11,7 +10,7 @@ import type { Post } from "./Post";
 import { PostContextMenu } from "./PostContextMenu";
 import { getPostMetadataView } from "./PostMetadataView";
 import { ReactionsList } from "./PostReactions";
-const TimeElapsedSince = dynamic(() => import("../TimeLabel"), { ssr: false });
+import { TimeElapsedSince } from "../TimeLabel";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const [collapsed, setCollapsed] = useState(true);
