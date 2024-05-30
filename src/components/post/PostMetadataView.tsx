@@ -67,7 +67,7 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
         <VideoPlayer url={url} preview={cover} />
       ) : (
         <p className="font-bold h-32 rounded-xl border flex items-center justify-center text-center">
-          unsupported video format (╥╥﹏╥╥)
+          unsupported video (╥╥﹏╥╥)
         </p>
       )}
     </div>

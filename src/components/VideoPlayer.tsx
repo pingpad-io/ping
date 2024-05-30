@@ -61,7 +61,7 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
 
   const previewImage = (
     <>
-      <div className="relative mt-2 w-full aspect-square">
+      <div className="relative w-full aspect-square">
         <Image className="object-cover border w-full h-full rounded-xl" src={preview} fill alt={""} />
       </div>
     </>
@@ -71,7 +71,7 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
     <div
       ref={playerWithControlsRef}
       className={`relative w-full h-full flex justify-center items-center rounded-xl border ${
-        isFullscreen ? "fullscreen" : ""
+        isFullscreen ? "fullscreen" : "mt-2"
       }`}
       onClick={() => {
         if (isFullscreen) handleFullscreen();
