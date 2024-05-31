@@ -1,4 +1,4 @@
-import { type NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 export const config = {
   matcher: [
@@ -24,7 +24,6 @@ export async function middleware(req: NextRequest) {
   //   data: { session },
   // } = await supabase.auth.getSession();
 
-  // console.log(session?.user);
   // // Auth successful
   // if (session?.user) {
   //   if (pathname === "/") {
@@ -36,7 +35,7 @@ export async function middleware(req: NextRequest) {
   // }
 
   // // Allow open routes
-  // if (pathname === "/policy" || pathname === "/conditions" || pathname === "/about") {
+  // if (pathname === "/policy" || pathname === "/tos" || pathname === "/about") {
   //   return res;
   // }
 

@@ -1,18 +1,18 @@
 "use client";
 
 import { LensProvider } from "@lens-protocol/react-web";
-import { LensConfig, production } from "@lens-protocol/react-web";
+import { type LensConfig, production } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http } from "@wagmi/core";
-import { ThemeProvider } from "next-themes";
-import React from "react";
+import type React from "react";
 import { WagmiProvider, createConfig } from "wagmi";
 import { polygon } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { localStorage } from "~/utils/localStorage";
+import { ThemeProvider } from "./ThemeProvider";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();

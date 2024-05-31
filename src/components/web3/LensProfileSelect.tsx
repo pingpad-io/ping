@@ -1,17 +1,24 @@
 "use client";
 
-import { profileId, useLogin, useProfilesManaged, useSession as useLensSession } from "@lens-protocol/react-web";
+import { profileId, useSession as useLensSession, useLogin, useProfilesManaged } from "@lens-protocol/react-web";
+import { setCookie } from "cookies-next";
+import { PlusIcon } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useAccount as useWagmiAccount } from "wagmi";
-import { UserAvatar } from "../UserAvatar";
-import { lensProfileToUser } from "../post/Post";
+import { LoadingSpinner } from "../LoadingIcon";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import { lensProfileToUser } from "../user/User";
+import { UserAvatar } from "../user/UserAvatar";
 
-export function LensProfileSelect() {
+export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
   const { isConnected, address } = useWagmiAccount();
   const { data: session } = useLensSession();
   const { execute: login, loading: isLoginPending } = useLogin();
   const { data: profiles, error, loading } = useProfilesManaged({ for: address, includeOwned: true });
+  const router = useRouter();
 
   const onSubmit = async (profile: string) => {
     const id = profileId(profile);
@@ -22,7 +29,30 @@ export function LensProfileSelect() {
     });
 
     if (result.isSuccess()) {
-      console.info(`Welcome ${String(result.value?.handle?.fullHandle ?? result.value?.id)}`);
+      const handle = result.value?.handle?.localName ?? result.value?.id;
+      if (handle) {
+        setCookie("handle", handle, {
+          secure: true,
+          sameSite: "lax",
+        });
+      }
+      const profileId = result.value?.id;
+      if (profileId)
+        setCookie("profileId", profileId, {
+          secure: true,
+          sameSite: "lax",
+        });
+      const refreshToken = JSON.parse(localStorage.getItem("lens.production.credentials"))?.data?.refreshToken;
+      if (refreshToken) {
+        setCookie("refreshToken", refreshToken, {
+          secure: true,
+          sameSite: "lax",
+        });
+      }
+      setDialogOpen(false);
+      // router.refresh();
+      window.location.reload();
+      toast.success(`Welcome @${handle}`, { description: "login successful!" });
     } else {
       console.error(result.error.message);
     }
@@ -31,16 +61,16 @@ export function LensProfileSelect() {
   if (!isConnected) return null;
 
   if (loading) {
-    return null;
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
     console.error(error.message);
     return null;
-  }
-
-  if (profiles.length === 0) {
-    return <p className="mb-4">No Lens Profiles found in this wallet.</p>;
   }
 
   if (!session || !address) {
@@ -51,8 +81,7 @@ export function LensProfileSelect() {
     <>
       <div className="flex flex-wrap gap-2">
         {profiles.map((profile, idx) => {
-          const handleSplit = profile.handle.fullHandle.split("/");
-          const handle = handleSplit[0] === "lens" ? `${handleSplit[1]}` : `#${profile.id}`;
+          const handle = profile.handle.namespace === "lens" ? `@${profile.handle.localName}` : `#${profile.id}`;
           return (
             <div id={`${idx}`} key={`${profile.id}`}>
               <Button
@@ -71,9 +100,16 @@ export function LensProfileSelect() {
             </div>
           );
         })}
+        <Link href={"https://lens.xyz/mint"} target="_blank">
+          <Button className="flex flex-row h-full w-full items-center gap-2" size="default" variant="outline">
+            <PlusIcon size={22} />
+            New Profile
+          </Button>
+        </Link>
       </div>
 
-      {isLoginPending ? <Label>Sign the message in your wallet</Label> : <></>}
+      {profiles.length === 0 && <Label className="mb-4">No Profiles found.</Label>}
+      {isLoginPending && <Label>Sign a message in your wallet</Label>}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { AtSign, Github, Heart, LogInIcon } from "lucide-react";
+import { AtSign, Github, Heart, InfoIcon, LogInIcon } from "lucide-react";
 import Link from "next/link";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
@@ -7,11 +7,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
-import { quicksand } from "~/styles/fonts";
 
 const LandingPage = () => {
   return (
-    <div className={`flex flex-col mx-auto max-w-5xl min-w-0 ${quicksand.className}`}>
+    <div className={"flex flex-col mx-auto max-w-5xl min-w-0"}>
       <div className="w-full">
         <div className="p-4 rounded-t-none flex place-content-between">
           <Link className="flex flex-row gap-4 items-center " href="/">
@@ -115,11 +114,11 @@ const LandingPage = () => {
               <Github /> github
             </Button>
           </Link>
-          {/* <Link href="/about">
+          <Link href="/about">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <InfoIcon /> About
             </Button>
-          </Link> */}
+          </Link>
           {/* <Link href="https://ping.kualta.dev/policy">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <Cookie /> Privacy

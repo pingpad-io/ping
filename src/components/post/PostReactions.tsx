@@ -1,58 +1,78 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
-import { HeartCrackIcon, HeartIcon } from "lucide-react";
+import { BookmarkIcon, CirclePlusIcon, HeartIcon, MessageSquareIcon, Repeat2Icon, ThumbsDownIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { Post, ReactionType } from "./Post";
+import type { Post, PostReactionType } from "./Post";
+
+export function hasReactions(post: Post) {
+  return Object.values(post.reactions).some((value) => value !== 0 || value !== undefined);
+}
 
 export function ReactionsList({ post }: { post: Post }) {
-  const reactions = post.reactions;
-
-  if (reactions.length === 0) return null;
-
-  const upvotes = reactions.filter((reaction) => reaction.type === "UPVOTE");
-  const downvotes = reactions.filter((reaction) => reaction.type === "DOWNVOTE");
+  if (!hasReactions(post)) return null;
 
   return (
-    <>
-      <ReactionBadge key={`${post.id}-upvotes`} reaction={"UPVOTE"} amount={upvotes.length} />
-      <ReactionBadge key={`${post.id}-downvotes`} reaction={"DOWNVOTE"} amount={downvotes.length} />
-    </>
+    <div className="flex flex-row items-center gap-12 w-full">
+      <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={post.reactions.Comment} />
+      <ReactionBadge key={`${post.id}-reposts`} reaction={"Repost"} amount={post.reactions.Repost} />
+      <ReactionBadge key={`${post.id}-upvotes`} reaction={"Upvote"} amount={post.reactions.Upvote} />
+      <ReactionBadge key={`${post.id}-collects`} reaction={"Collect"} amount={post.reactions.Collect} />
+      <div className="grow" />
+      <div className="flex flex-row opacity-0 group-hover:opacity-100 duration-300 delay-150">
+        <ReactionBadge key={`${post.id}-bookmarks`} reaction={"Bookmark"} amount={post.reactions.Bookmark} />
+      </div>
+    </div>
   );
 }
 
-export const ReactionBadge = ({ reaction, amount }: { reaction: ReactionType; amount: number }) => {
-  const tooltipText = "votes";
-  const isUserReacted = false;
+export const ReactionBadge = ({ reaction, amount }: { reaction: PostReactionType; amount: number }) => {
+  const formatAmount = Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(amount);
+
+  const tooltipText = reaction.toLowerCase() + (amount === 1 ? "" : "s");
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant={isUserReacted ? "accent" : "outline"}
-            size="icon"
-            className={`h-6 ${amount > 0 ? "w-10" : "w-8"}`}
+            type="button"
+            variant="ghost"
+            size="sm"
+            className={"h-max w-12 border-0 px-0 place-content-center items-center"}
             onClick={() => {}}
           >
-            <span className={"flex flex-row gap-1 leading-3"}>
-              {amount > 0 ? amount : <></>}
+            <span className={"flex flex-row gap-1 leading-4 py-1"}>
+              {amount > 0 && formatAmount}
               <ReactionIcon reaction={reaction} />
             </span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{tooltipText}</p>
+          <p>
+            {amount} {tooltipText}
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
 };
 
-export const ReactionIcon = ({ reaction }: { reaction: ReactionType }) => {
+export const ReactionIcon = ({ reaction }: { reaction: PostReactionType }) => {
   switch (reaction) {
-    case "UPVOTE":
-      return <HeartIcon size={14} />;
-    case "DOWNVOTE":
-      return <HeartCrackIcon size={14} />;
+    case "Upvote":
+      return <HeartIcon size={15} />;
+    case "Downvote":
+      return <ThumbsDownIcon size={15} />;
+    case "Repost":
+      return <Repeat2Icon strokeWidth={1.5} size={19} />;
+    case "Comment":
+      return <MessageSquareIcon size={15} />;
+    case "Collect":
+      return <CirclePlusIcon size={16} />;
+    case "Bookmark":
+      return <BookmarkIcon size={16} />;
     default:
       return <></>;
   }

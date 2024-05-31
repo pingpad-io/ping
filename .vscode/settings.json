@@ -1,0 +1,76 @@
+{
+      // git
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.openRepositoryInParentFolders": "never",
+  // vim
+  "vim.leader": "<space>",
+  "vim.easymotion": true,
+  "vim.useSystemClipboard": true,
+  "vim.useCtrlKeys": true,
+  "vim.hlsearch": true,
+  "vim.insertModeKeyBindings": [
+    {
+      "before": [
+        "j",
+        "k"
+      ],
+      "after": [
+        "<Esc>"
+      ]
+    }
+  ],
+  "vim.normalModeKeyBindings": [
+    {
+      "before": [
+        "u"
+      ],
+      "after": [],
+      "commands": [
+        {
+          "command": "undo",
+          "args": []
+        }
+      ]
+    },
+    {
+      "before": [
+        "<C-r>"
+      ],
+      "after": [],
+      "commands": [
+        {
+          "command": "redo",
+          "args": []
+        }
+      ]
+    }
+  ],
+  "vim.handleKeys": {
+    "<C-d>": true,
+    "<C-n>": false,
+    "<C-p>": false
+  },
+  // execute vim in a separate process, increses responsiveness
+  "extensions.experimental.affinity": {
+    "vscodevim.vim": 1
+  },
+  "editor.defaultFormatter": "biomejs.biome",
+  "javascript.inlayHints.parameterNames.enabled": "all",
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "window.menuBarVisibility": "hidden",
+  "editor.lineNumbers": "relative",
+  "editor.minimap.enabled": false,
+  "editor.inlineSuggest.enabled": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "quickfix.biome": "always",
+    "source.organizeImports.biome": "always"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+}

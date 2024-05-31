@@ -2,18 +2,18 @@
 
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Profile, SessionType, useSession } from "@lens-protocol/react-web";
+import { type Profile, SessionType, useSession } from "@lens-protocol/react-web";
 import { MenuIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { UserAvatar } from "~/components/UserAvatar";
+import { UserAvatar } from "~/components/user/UserAvatar";
 import { Textarea } from "../ui/textarea";
-import { lensProfileToUser } from "./Post";
+import { lensProfileToUser } from "../user/User";
 
 export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
-  const { data: session, error, loading } = useSession();
+  const { data: session, loading } = useSession();
   const _router = useRouter();
   const textarea = useRef<HTMLTextAreaElement>(null);
   const placeholderText = replyingTo ? "write a reply..." : "write a new post...";

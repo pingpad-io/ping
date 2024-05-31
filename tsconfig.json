@@ -29,7 +29,8 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
@@ -46,7 +47,7 @@
     "src/components/*.ts",
     "src/components/*.tsx",
     "src/components/**/*.ts",
-    "src/components/**/*.tsx",
+    "src/components/**/*.tsx"
   ],
   "exclude": [
     "src/pages_old/**.ts",

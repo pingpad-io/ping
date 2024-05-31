@@ -1,56 +1,25 @@
-import {
-  ProfileId,
-  PublicationMetadataMainFocusType,
-  PublicationType,
-  useFeed,
-  usePublications,
-} from "@lens-protocol/react-web";
-import ErrorPage from "./ErrorPage";
-import { Post, lensItemToPost } from "./post/Post";
+import type { Notification } from "./notifications/Notification";
+import { NotificationView } from "./notifications/NotificationView";
+import type { Post } from "./post/Post";
+import { PostSuspense } from "./post/PostSuspense";
 import { PostView } from "./post/PostView";
-import { SuspenseView } from "./post/SuspenseView";
 
-export function PublicFeed() {
-  const { data, loading, error } = usePublications({
-    where: {
-      publicationTypes: [PublicationType.Post],
-      metadata: {
-        mainContentFocus: [PublicationMetadataMainFocusType.TextOnly, PublicationMetadataMainFocusType.Article],
-      },
-    },
-  });
+export function Feed({ data }: { data?: Post[] | Notification[] }) {
+  if (!data) return <FeedSuspense />;
 
-  const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
-
-  if (loading) return suspense;
-
-  if (error) return <ErrorPage title="Couldn't fetch posts" />;
-
-  const posts = data.map((publication) => lensItemToPost(publication)).filter((post) => post);
-  return <Feed data={posts} />;
-}
-
-export function PersonalFeed({ profileId }: { profileId?: ProfileId }) {
-  const { data, loading, error } = useFeed({
-    where: {
-      for: profileId,
-    },
-  });
-
-  const suspense = [...Array(12)].map((_v, idx) => <SuspenseView key={`suspense-${idx}`} />);
-
-  if (loading) return suspense;
-
-  if (error) return <ErrorPage title="Couldn't fetch posts" />;
-
-  const posts = data.map((publication) => lensItemToPost(publication)).filter((post) => post);
-  return <Feed data={posts} />;
-}
-
-function Feed({ data }: { data: Post[] }) {
-  const feed = data.map((post, idx) => {
-    return <PostView key={`${post.id}-${idx}`} post={post} />;
+  const feed = data.map((item, idx) => {
+    switch (item.__typename) {
+      case "Post":
+        return <PostView key={`${item.id}-${idx}`} post={item} />;
+      case "Notification":
+        return <NotificationView key={`${item.id}-${idx}`} notification={item} />;
+    }
   });
 
   return feed;
 }
+
+export const FeedSuspense = () => {
+  // biome-ignore lint/suspicious/noArrayIndexKey: intended behavior
+  return [...Array(12)].map((_v, idx) => <PostSuspense key={`suspense-${idx}`} />);
+};

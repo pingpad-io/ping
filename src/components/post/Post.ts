@@ -1,115 +1,199 @@
-import { CommentFields, QuoteFields } from "@lens-protocol/api-bindings";
-import { AnyPublication, FeedItem, Post as LensPost, Profile } from "@lens-protocol/react-web";
+import type {
+  AnyPublicationFragment,
+  CommentBaseFragment,
+  FeedItemFragment,
+  PostFragment,
+  QuoteBaseFragment,
+  QuoteFragment,
+} from "@lens-protocol/client";
+import type {
+  AnyPublication,
+  ArticleMetadataV3,
+  AudioMetadataV3,
+  CheckingInMetadataV3,
+  Comment,
+  EmbedMetadataV3,
+  EventMetadataV3,
+  FeedItem,
+  ImageMetadataV3,
+  Post as LensPost,
+  LinkMetadataV3,
+  LiveStreamMetadataV3,
+  MintMetadataV3,
+  Quote,
+  SpaceMetadataV3,
+  StoryMetadataV3,
+  TextOnlyMetadataV3,
+  ThreeDMetadataV3,
+  TransactionMetadataV3,
+  VideoMetadataV3,
+} from "@lens-protocol/react-web";
+import { type User, lensProfileToUser } from "../user/User";
+
+export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
+export type PostReactions = Record<PostReactionType, number>;
+export type PostPlatform = "lens" | "farcaster";
+export type AnyLensItem =
+  | FeedItem
+  | FeedItemFragment
+  | PostFragment
+  | QuoteFragment
+  | AnyPublication
+  | AnyPublicationFragment
+  | PostFragment
+  | QuoteBaseFragment
+  | CommentBaseFragment;
+
+export type AnyLensMetadata =
+  | ArticleMetadataV3
+  | AudioMetadataV3
+  | CheckingInMetadataV3
+  | EmbedMetadataV3
+  | EventMetadataV3
+  | ImageMetadataV3
+  | LinkMetadataV3
+  | LiveStreamMetadataV3
+  | MintMetadataV3
+  | SpaceMetadataV3
+  | StoryMetadataV3
+  | TextOnlyMetadataV3
+  | ThreeDMetadataV3
+  | TransactionMetadataV3
+  | VideoMetadataV3;
 
 export type Post = {
+  __typename: "Post";
   id: string;
-  platform: "lens" | "farcaster";
-  content: string;
+  platform: PostPlatform;
   author: User;
   createdAt: Date;
+  comments: Post[];
+  metadata: AnyLensMetadata;
+  reactions?: Partial<PostReactions>;
   updatedAt?: Date;
   reply?: Post;
-  reactions: Reaction[];
-  comments: Post[];
-  metadata: any;
 };
 
-export type ReactionType = "UPVOTE" | "DOWNVOTE";
+export function lensItemToPost(item: AnyLensItem): Post {
+  const post: Post = {
+    id: "",
+    author: null,
+    reactions: {},
+    reply: null,
+    comments: [],
+    metadata: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    platform: "lens",
+    __typename: "Post",
+  };
 
-export type Reaction = {
-  createdAt?: Date;
-  type: ReactionType;
-  by: User;
-};
+  if (!item) return post;
 
-export type User = {
-  id: string;
-  name?: string;
-  handle: string;
-  profilePictureUrl?: string;
-};
+  const normalizedPost = normalizePost(item);
 
-export function lensItemToPost(publication: FeedItem | AnyPublication) {
-  // metadata: ArticleMetadataV3 | AudioMetadataV3 | CheckingInMetadataV3 | EmbedMetadataV3 | EventMetadataV3 | ImageMetadataV3 |
-  // LinkMetadataV3 | LiveStreamMetadataV3 | MintMetadataV3 | SpaceMetadataV3 | StoryMetadataV3 | TextOnlyMetadataV3 |
-  // ThreeDMetadataV3 | TransactionMetadataV3 | VideoMetadataV3;
-
-  let root: CommentFields | LensPost | QuoteFields;
-  switch (publication.__typename) {
-    case "FeedItem":
-      root = publication.root;
-      break;
+  let origin: Comment | LensPost | Quote;
+  switch (normalizedPost.__typename) {
     case "Post":
-      root = publication;
+      origin = normalizedPost as LensPost;
       break;
     case "Comment":
-      root = publication.root;
+      origin = normalizedPost as Comment;
       break;
     case "Quote":
-      root = publication.quoteOn;
+      origin = normalizedPost as Quote;
+      break;
+    case "FeedItem":
+      origin = normalizedPost.root;
       break;
     case "Mirror":
-      root = publication.mirrorOn;
+      origin = normalizedPost.mirrorOn as LensPost;
       break;
     default:
-      return null;
+      return post;
   }
-  if (!root.by.metadata || root.metadata.__typename !== "TextOnlyMetadataV3") {
-    return null;
-  }
-  const content = root.metadata.content;
 
-  const reactions: Reaction[] =
-    publication.__typename === "FeedItem"
-      ? publication.reactions.map((reaction) => ({
-          createdAt: reaction.createdAt as unknown as Date,
-          type: reaction.reaction,
-          by: lensProfileToUser(reaction.by),
-        }))
-      : [];
+  post.id = origin.id;
+  post.author = lensProfileToUser(origin.by);
+  post.reactions = getReactions(origin.stats);
+  post.comments = getComments(normalizedPost);
+  post.reply = getReply(origin);
+  post.metadata = getMetadata(origin.metadata);
+  post.createdAt = new Date(origin.createdAt);
+  post.updatedAt = new Date(origin.createdAt);
 
-  const author = lensProfileToUser(root.by);
-
-  const comments: Post[] =
-    publication.__typename === "FeedItem"
-      ? publication.comments.map((comment) => ({
-          id: comment.id as string,
-          author: lensProfileToUser(comment.by),
-          createdAt: new Date(comment.createdAt),
-          updatedAt: new Date(comment.createdAt), // NOT IMPLEMENTED YET
-          content,
-          comments: [],
-          reactions: [],
-          metadata: comment.metadata,
-          platform: "lens",
-        }))
-      : [];
-
-  const createdAt = new Date(root.createdAt);
-
-  if (root.__typename === "Post") {
-    return {
-      id: root.id as string,
-      platform: "lens",
-      author,
-      reactions,
-      comments,
-      metadata: root.metadata,
-      content: root.metadata.content,
-      createdAt,
-      updatedAt: createdAt, // NOT IMPLEMENTED YET
-    } as Post;
-  }
+  return post;
 }
 
-export function lensProfileToUser(profile: Profile): User {
+function getMetadata(metadata: AnyLensMetadata): any {
+  return metadata;
+}
+
+function normalizePost(item: AnyLensItem) {
+  if (!("__typename" in item)) {
+    return { __typename: "FeedItem", ...(item as any as FeedItem) };
+  }
+  return item;
+}
+
+function getReactions(stats: any) {
   return {
-    id: profile.id,
-    name: profile.metadata.displayName,
-    profilePictureUrl:
-      profile.metadata.picture.__typename === "ImageSet"
-        ? profile.metadata?.picture?.optimized?.uri
-        : profile.metadata?.picture?.image.optimized?.uri,
-    handle: profile.handle?.fullHandle ?? profile.handle.id,
+    Upvote: stats?.upvotes,
+    Downvote: stats?.downvotes,
+    Bookmark: stats?.bookmarks,
+    Collect: stats?.collects,
+    Comment: stats?.comments,
+    Repost: stats?.mirrors,
   };
 }
+
+function getComments(post: any) {
+  if (post.__typename === "FeedItem") {
+    return post.comments.map((comment) => ({
+      id: comment.id as string,
+      author: lensProfileToUser(comment.by),
+      createdAt: new Date(comment.createdAt),
+      updatedAt: new Date(comment.createdAt),
+      comments: [],
+      reactions: undefined,
+      metadata: comment.metadata,
+      platform: "lens",
+    }));
+  }
+  return [];
+}
+
+function getReply(origin: Comment | Quote | LensPost) {
+  const reply = {
+    reply: undefined,
+    reactions: undefined,
+    platform: "lens",
+    comments: [],
+    createdAt: new Date(origin.createdAt),
+    updatedAt: new Date(origin.createdAt),
+  } as Post;
+
+  switch (origin.__typename) {
+    case "Comment":
+      return {
+        id: origin.root.id,
+        author: origin?.commentOn?.by ? lensProfileToUser(origin?.commentOn?.by) : undefined,
+        content: "content" in origin.commentOn.metadata ? origin.commentOn.metadata.content : "",
+        metadata: origin.commentOn.metadata,
+        ...reply,
+      } as Post;
+
+    case "Quote":
+      return {
+        id: origin.quoteOn.id,
+        author: origin?.quoteOn?.by ? lensProfileToUser(origin?.quoteOn?.by) : undefined,
+        content: "content" in origin.quoteOn.metadata ? origin.quoteOn?.metadata?.content : "",
+        metadata: origin.quoteOn.metadata,
+        ...reply,
+      } as Post;
+    case "Post":
+      return;
+  }
+}
+
+export type { User };
