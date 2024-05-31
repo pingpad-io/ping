@@ -18,7 +18,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
   const { data: session } = useLensSession();
   const { execute: login, loading: isLoginPending } = useLogin();
   const { data: profiles, error, loading } = useProfilesManaged({ for: address, includeOwned: true });
-  const router = useRouter();
+  const _router = useRouter();
 
   const onSubmit = async (profile: string) => {
     const id = profileId(profile);

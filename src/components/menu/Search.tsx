@@ -33,7 +33,7 @@ export const SearchBar = ({ defaultText = "" }: { defaultText: string }) => {
   const pathname = usePathname();
 
   if (pathname === "/search") {
-    return
+    return;
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,7 +47,6 @@ export const SearchBar = ({ defaultText = "" }: { defaultText: string }) => {
     if (!values) return;
     router.push(`/search?q=${values.input}`);
   };
-
 
   return (
     <div className="w-full">

@@ -1,6 +1,5 @@
 import { ExplorePublicationType, ExplorePublicationsOrderByType } from "@lens-protocol/client";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
-import { FeedLayout } from "~/components/layout/FeedLayout";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
@@ -13,9 +12,7 @@ const exploreCurated = async () => {
     throw new Error("Failed to fetch posts");
   }
 
-  return (
-      <InfiniteScroll endpoint={endpoint} initialData={posts} initialCursor={nextCursor} />
-  );
+  return <InfiniteScroll endpoint={endpoint} initialData={posts} initialCursor={nextCursor} />;
 };
 
 const getInitialFeed = async () => {

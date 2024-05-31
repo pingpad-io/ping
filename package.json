@@ -1,12 +1,12 @@
 {
-  "name": "ping",
-  "version": "0.7.0",
+  "name": "pingpad",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "check": "bunx @biomejs/biome check --apply-unsafe ./src/*"
+    "check": "npx @biomejs/biome check --apply-unsafe ./src/*"
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.7.2",
@@ -56,8 +56,8 @@
     "metascraper-video": "^5.37.1",
     "next-themes": "^0.3.0",
     "pino-pretty": "^11.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.0.0-rc-9d4fba0788-20240530",
+    "react-dom": "^19.0.0-rc-9d4fba0788-20240530",
     "react-hook-form": "^7.51.4",
     "react-infinite-scroll-component": "^6.1.0",
     "react-markdown": "^8.0.7",
@@ -97,7 +97,7 @@
     "autoprefixer": "^10.4.7",
     "eslint": "^8.43.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "next": "^14.2.3",
+    "next": "^15.0.0-rc.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.2.0",
     "typescript": "5.1.6"

@@ -2,6 +2,7 @@
 import { Edit2Icon, ReplyIcon } from "lucide-react";
 import Link from "next/link";
 import { forwardRef, useRef, useState } from "react";
+import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
@@ -10,7 +11,6 @@ import type { Post } from "./Post";
 import { PostContextMenu } from "./PostContextMenu";
 import { getPostMetadataView } from "./PostMetadataView";
 import { ReactionsList } from "./PostReactions";
-import { TimeElapsedSince } from "../TimeLabel";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const [collapsed, setCollapsed] = useState(true);

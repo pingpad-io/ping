@@ -1,11 +1,6 @@
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import Providers from "~/components/Providers";
-import Menu from "~/components/layout/Menu";
-import { Sidebar } from "~/components/layout/Sidebar";
-import { quicksand } from "~/styles/fonts";
+import Menu from "~/components/menu/Menu";
+import { Sidebar } from "~/components/menu/Sidebar";
 import "~/styles/globals.css";
-import { Toaster } from "~/components/ui/sonner";
 
 export default function RootLayout({
   children,
