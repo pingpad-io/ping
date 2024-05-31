@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Cookie, Github } from "lucide-react";
+import { Cookie, FileIcon, Github } from "lucide-react";
 import Link from "next/link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
@@ -82,9 +82,14 @@ const AboutPage = () => {
               <Github /> github
             </Button>
           </Link>
-          <Link href="https://pingpad.io/policy">
+          <Link href="/policy">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
               <Cookie /> Privacy
+            </Button>
+          </Link>
+          <Link href="/tos">
+            <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
+              <FileIcon /> ToS
             </Button>
           </Link>
         </div>
