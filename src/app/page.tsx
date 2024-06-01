@@ -116,7 +116,7 @@ const LandingPage = () => {
           </Link>
           <Link href="/about">
             <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-              <InfoIcon /> About
+              <InfoIcon /> about
             </Button>
           </Link>
           {/* <Link href="https://ping.kualta.dev/policy">

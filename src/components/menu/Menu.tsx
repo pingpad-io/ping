@@ -92,6 +92,7 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         <div className="hidden sm:flex -mt-1">post</div>
         <SendIcon className="sm:ml-2" size={20} />
       </Button>
+
       {/* <Dialog>
         <DialogTrigger asChild>
           <Button>

@@ -37,7 +37,7 @@ export const TimeElapsedSince = ({ date }: { date: Date }) => {
 
   useEffect(() => {
     const onFocus = () => {
-      refresh();
+      setTimeSince(fullDate.fromNow());
     };
 
     window.addEventListener("focus", onFocus);
