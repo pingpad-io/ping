@@ -16,11 +16,12 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     });
   const handle = post.author.handle;
   const content = "content" in post.metadata ? post.metadata.content : "";
-
   const title = `${handle}'s post`;
+  const ending = content.length > 300 ? "..." : "";
+
   return {
     title,
-    description: `${handle}: ${content.slice(0, 150)}...`,
+    description: `${content.slice(0, 300)}${ending}`,
   };
 }
 
