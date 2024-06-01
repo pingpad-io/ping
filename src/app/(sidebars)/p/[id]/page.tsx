@@ -6,19 +6,21 @@ import { getLensClient } from "~/utils/getLensClient";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const { client } = await getLensClient();
-  const data = await client.publication
+  const post = await client.publication
     .fetch({
       forId: params.id,
     })
+    .then((data) => lensItemToPost(data))
     .catch(() => {
       throw new Error("(╥_╥) Post not found");
     });
-  const handle = `${data.by.handle.localName}`;
+  const handle = post.author.handle;
+  const content = "content" in post.metadata ? post.metadata.content : "";
 
-  const title = `${handle}'s post `;
+  const title = `${handle}'s post`;
   return {
     title,
-    description: `@${handle}'post on Pingpad`,
+    description: `${handle}: ${content.slice(0, 150)}...`,
   };
 }
 
