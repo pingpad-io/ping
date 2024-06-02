@@ -1,3 +1,4 @@
+import { LimitType } from "@lens-protocol/client";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
@@ -17,6 +18,7 @@ export async function GET(req: NextRequest) {
     const data = await client.feed.highlights({
       where: { for: profileId },
       cursor,
+      limit: LimitType.TwentyFive,
     });
 
     if (!data || !data.isSuccess()) {

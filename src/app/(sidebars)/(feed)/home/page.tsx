@@ -1,4 +1,4 @@
-import { PublicationType } from "@lens-protocol/client";
+import { LimitType, PublicationType } from "@lens-protocol/client";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
@@ -26,9 +26,11 @@ const getInitialFeed = async () => {
       })
     ).unwrap();
   } else {
-    data = await client.publication.fetchAll({ where: { publicationTypes: [PublicationType.Post] } }).catch(() => {
-      throw new Error("(×_×)⌒☆ Failed to fetch feed");
-    });
+    data = await client.publication
+      .fetchAll({ where: { publicationTypes: [PublicationType.Post] }, limit: LimitType.Ten })
+      .catch(() => {
+        throw new Error("(×_×)⌒☆ Failed to fetch feed");
+      });
   }
 
   const posts = data.items.map(lensItemToPost);

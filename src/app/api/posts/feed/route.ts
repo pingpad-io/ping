@@ -1,5 +1,5 @@
 import type { AnyPublicationFragment, FeedItemFragment, PaginatedResult } from "@lens-protocol/client";
-import { PublicationType } from "@lens-protocol/client";
+import { LimitType, PublicationType } from "@lens-protocol/client";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
@@ -17,7 +17,11 @@ export async function GET(req: NextRequest) {
     if (isAuthenticated) {
       data = (await client.feed.fetch({ where: { for: profileId }, cursor })).unwrap();
     } else {
-      data = await client.publication.fetchAll({ where: { publicationTypes: [PublicationType.Post] }, cursor });
+      data = await client.publication.fetchAll({
+        where: { publicationTypes: [PublicationType.Post] },
+        cursor,
+        limit: LimitType.Ten,
+      });
     }
 
     const posts = data.items.map(lensItemToPost);

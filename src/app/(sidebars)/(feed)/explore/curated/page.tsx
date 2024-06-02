@@ -1,4 +1,4 @@
-import { ExplorePublicationType, ExplorePublicationsOrderByType } from "@lens-protocol/client";
+import { ExplorePublicationType, ExplorePublicationsOrderByType, LimitType } from "@lens-protocol/client";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
@@ -21,6 +21,7 @@ const getInitialFeed = async () => {
     const response = await client.explore.publications({
       where: { publicationTypes: [ExplorePublicationType.Post] },
       orderBy: ExplorePublicationsOrderByType.LensCurated,
+      limit: LimitType.Ten,
     });
 
     const posts = response.items.map(lensItemToPost);

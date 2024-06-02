@@ -1,4 +1,4 @@
-import { ExplorePublicationType, ExplorePublicationsOrderByType } from "@lens-protocol/client";
+import { ExplorePublicationType, ExplorePublicationsOrderByType, LimitType } from "@lens-protocol/client";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
@@ -37,6 +37,7 @@ export async function GET(req: NextRequest) {
       where: { publicationTypes: [ExplorePublicationType.Post] },
       orderBy,
       cursor,
+      limit: LimitType.TwentyFive,
     });
 
     const posts = data.items.map(lensItemToPost);
