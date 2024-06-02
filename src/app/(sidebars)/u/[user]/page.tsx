@@ -1,8 +1,8 @@
-import { PublicationType } from "@lens-protocol/client";
+import { LimitType, PublicationType } from "@lens-protocol/client";
 import { CalendarIcon, EditIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Feed } from "~/components/Feed";
+import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { TimeSince } from "~/components/TimeLabel";
 import { lensItemToPost } from "~/components/post/Post";
 import { Card } from "~/components/ui/card";
@@ -20,30 +20,12 @@ export async function generateMetadata({ params }: { params: { user: string } })
 }
 
 const user = async ({ params }: { params: { user: string } }) => {
-  const { client, handle: authenticatedHandle } = await getLensClient();
-
+  const { handle: authenticatedHandle } = await getLensClient();
   const handle = params.user;
   const isUserProfile = handle === authenticatedHandle;
-  const user = await client.profile
-    .fetch({
-      forHandle: `lens/${handle}`,
-    })
-    .then((data) => {
-      return lensProfileToUser(data);
-    });
+  const { user, posts, nextCursor } = await getInitialData(handle);
 
   if (!user) throw new Error("∑(O_O;) Profile not found");
-
-  const posts = await client.publication
-    .fetchAll({
-      where: { from: [user.id], publicationTypes: [PublicationType.Post] },
-    })
-    .then((data) => {
-      return data.items.map(lensItemToPost);
-    })
-    .catch(() => {
-      throw new Error(`☆⌒(>。<) Couldn't get user posts`);
-    });
 
   return (
     <>
@@ -71,10 +53,37 @@ const user = async ({ params }: { params: { user: string } }) => {
       </div>
 
       <Card className="z-[30] hover:bg-card p-4 border-0">
-        <Feed data={posts} />
+        <InfiniteScroll endpoint={`/api/posts/user?id=${user.id}`} initialData={posts} initialCursor={nextCursor} />
       </Card>
     </>
   );
+};
+
+const getInitialData = async (handle: string) => {
+  const { client } = await getLensClient();
+
+  const user = await client.profile
+    .fetch({
+      forHandle: `lens/${handle}`,
+    })
+    .then((data) => {
+      return lensProfileToUser(data);
+    });
+
+  if (!user) throw new Error("∑(O_O;) Profile not found");
+
+  const data = await client.publication
+    .fetchAll({
+      where: { from: [user.id], publicationTypes: [PublicationType.Post] },
+      limit: LimitType.Ten,
+    })
+    .catch(() => {
+      throw new Error(`☆⌒(>。<) Couldn't get user posts`);
+    });
+
+  const posts = data.items.map(lensItemToPost);
+
+  return { user, posts, nextCursor: data.pageInfo.next };
 };
 
 export default user;
