@@ -1,15 +1,12 @@
 "use client";
-import { MoonIcon, SunIcon } from "lucide-react";
-import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
-import type { ThemeProviderProps } from "next-themes/dist/types";
-import { Button } from "./ui/button";
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
-}
+import { MoonIcon, SunIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "./ui/button";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+
   const toggleTheme = () => {
     theme === "dark" ? setTheme("light") : setTheme("dark");
   };

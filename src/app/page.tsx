@@ -2,7 +2,7 @@ import { AtSign, Github, Heart, InfoIcon, LogInIcon } from "lucide-react";
 import Link from "next/link";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
-import { ThemeToggle } from "~/components/ThemeProvider";
+import { ThemeToggle } from "~/components/ThemeToggle";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
