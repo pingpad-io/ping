@@ -4,8 +4,8 @@ import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/ap
 
 import { randomUUID } from "crypto";
 import { TRPCError } from "@trpc/server";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+// import { Ratelimit } from "@upstash/ratelimit";
+// import { Redis } from "@upstash/redis";
 import type { RouterOutputs } from "~/utils/api";
 import { getMetadata } from "~/utils/getMetadata";
 
@@ -26,11 +26,11 @@ function getURLs(message: string) {
 }
 
 // Create a ratelimiter that allows to post 5 requests per 1 minute
-const postingRatelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, "1 m"),
-  analytics: true,
-});
+// const postingRatelimit = new Ratelimit({
+//   redis: Redis.fromEnv(),
+//   limiter: Ratelimit.slidingWindow(5, "1 m"),
+//   analytics: true,
+// });
 
 export const postsRouter = createTRPCRouter({
   get: publicProcedure
@@ -244,10 +244,10 @@ export const postsRouter = createTRPCRouter({
         });
       }
 
-      const { success } = await postingRatelimit.limit(authorId ?? "");
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await postingRatelimit.limit(authorId ?? "");
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       const id = randomUUID();
       const currentTime = new Date().toISOString();
