@@ -1,4 +1,4 @@
-import { BellIcon, MailIcon } from "lucide-react";
+import { BellIcon, Bookmark, BookmarkIcon, MailIcon } from "lucide-react";
 import Link from "next/link";
 import { getCookieAuth } from "~/utils/getCookieAuth";
 import { getLensClient } from "~/utils/getLensClient";
@@ -22,6 +22,12 @@ const UserBar = async () => {
         <Link href={"/notifications"}>
           <Button variant="ghost" size="icon">
             <BellIcon size={20} />
+          </Button>
+        </Link>
+
+        <Link href={"/bookmarks"}>
+          <Button variant="ghost" size="icon">
+            <BookmarkIcon size={20} />
           </Button>
         </Link>
 

@@ -2,52 +2,20 @@
 
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Profile, SessionType, useSession } from "@lens-protocol/react-web";
-import { MenuIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
-import { UserAvatar } from "~/components/user/UserAvatar";
 import { Textarea } from "../ui/textarea";
-import { lensProfileToUser } from "../user/User";
+import { UserAvatar } from "../user/UserAvatar";
+import type { User } from "../user/User";
+import type { Post } from "./Post";
 
-export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
-  const { data: session, loading } = useSession();
-  const _router = useRouter();
+export default function PostWizard({ user, replyingTo }: { user: User; replyingTo?: Post }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const placeholderText = replyingTo ? "write a reply..." : "write a new post...";
 
-  // const { mutate: createPost, isLoading: isPosting } = api.posts.create.useMutation({
-  //   onSettled: (_e) => {
-  //     updateHeight();
-  //   },
-  //   onSuccess: async () => {
-  //     form.setValue("content", "");
-  //     // await ctx.posts.invalidate();
-  //   },
-  //   onError: (e) => {
-  //     let error = "Something went wrong";
-  //     switch (e.data?.code) {
-  //       case "UNAUTHORIZED":
-  //         error = "You must be logged in to post";
-  //         break;
-  //       case "FORBIDDEN":
-  //         error = "You are not allowed to post";
-  //         break;
-  //       case "TOO_MANY_REQUESTS":
-  //         error = "Slow down! You are posting too fast";
-  //         break;
-  //       case "BAD_REQUEST":
-  //         error = "Invalid request";
-  //         break;
-  //       case "PAYLOAD_TOO_LARGE":
-  //         error = "Your message is too big";
-  //         break;
-  //     }
-  //     toast.error(error);
-  //   },
-  // });
+  if (!user) throw new Error("∑(O_O;) Profile not found");
 
   const FormSchema = z.object({
     content: z.string().max(3000, {
@@ -59,7 +27,8 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(_data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    toast.success(data.content);
     // createPost({
     //   content: data.content,
     //   threadName: thread,
@@ -83,8 +52,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
       onSubmit(form.getValues());
     }
   };
-
-  if (!session || !(session.type === SessionType.WithProfile)) return null;
+  const isPosting = false;
 
   return (
     <div className="w-full">
@@ -94,7 +62,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
           onChange={onChange}
           className="flex flex-row gap-2 w-full h-fit place-items-end"
         >
-          <AvatarMenu profile={session.profile} />
+          <UserAvatar user={user} link={true} card={false} />
           <FormField
             control={form.control}
             name="content"
@@ -105,7 +73,7 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
                     {...field}
                     onKeyDown={onKeyDown}
                     placeholder={placeholderText}
-                    disabled={loading}
+                    disabled={isPosting}
                     className="min-h-12 resize-none px-2 py-3"
                     ref={textarea}
                     rows={1}
@@ -122,17 +90,3 @@ export default function PostWizard({ replyingTo }: { replyingTo?: string }) {
     </div>
   );
 }
-
-export const AvatarMenu = ({ profile }: { profile: Profile }) => {
-  if (!profile)
-    return (
-      <div className="w-10 h-10 shrink-0 grow-0">
-        <MenuIcon />
-      </div>
-    );
-  return (
-    <div className="w-10 h-10 shrink-0 grow-0">
-      <UserAvatar user={lensProfileToUser(profile)} />
-    </div>
-  );
-};

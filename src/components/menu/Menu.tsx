@@ -1,13 +1,16 @@
 import { AtSign, BellIcon, BookmarkIcon, GlobeIcon, MailIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { getCookieAuth } from "~/utils/getCookieAuth";
+import { getLensClient } from "~/utils/getLensClient";
 import { ServerSignedIn } from "../ServerSignedIn";
+import PostWizard from "../post/PostWizard";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import type { User } from "../user/User";
 import { ConnectWalletButton } from "../web3/WalletButtons";
 import { SearchButton } from "./Search";
 
-export default function Menu() {
-  const { handle, profileId } = getCookieAuth();
+export default async function Menu() {
+  const { handle, profileId, user } = await getLensClient();
   const handleOrProfileId = handle ?? profileId;
 
   if (!profileId) {
@@ -38,14 +41,14 @@ export default function Menu() {
         <SearchButton />
 
         <ServerSignedIn>
-          <MenuAuthed handle={handleOrProfileId} />
+          <MenuAuthed handle={handleOrProfileId} user={user} />
         </ServerSignedIn>
       </span>
     </span>
   );
 }
 
-export const MenuAuthed = ({ handle }: { handle: string }) => {
+export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => {
   return (
     <>
       <Link href={"/explore"}>
@@ -67,7 +70,7 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         </Button>
       </Link>
 
-      <Link href={"/bookmarks"}>
+      <Link href={"/bookmarks"} className="flex lg:hidden">
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">bookmarks</div>
           <BookmarkIcon className="sm:ml-2" size={21} />
@@ -88,12 +91,7 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         </Button>
       </Link>
 
-      <Button disabled>
-        <div className="hidden sm:flex -mt-1">post</div>
-        <SendIcon className="sm:ml-2" size={20} />
-      </Button>
-
-      {/* <Dialog>
+      <Dialog>
         <DialogTrigger asChild>
           <Button>
             <div className="hidden sm:flex -mt-1">post</div>
@@ -102,10 +100,10 @@ export const MenuAuthed = ({ handle }: { handle: string }) => {
         </DialogTrigger>
         <DialogContent className="max-w-full sm:max-w-[700px]">
           <div className="p-4">
-            <PostWizard />
+            <PostWizard user={user} />
           </div>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </>
   );
 };

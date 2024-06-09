@@ -66,7 +66,7 @@ export const NotificationView = ({ notification }: { notification: Notification 
             {usersText}
             <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
           </div>
-          <div className="text-muted-foreground text-sm">{notification?.actedOn?.content}</div>
+          <div className="text-muted-foreground text-sm">{notification?.actedOn?.metadata?.content}</div>
         </div>
       </CardContent>
     </Card>

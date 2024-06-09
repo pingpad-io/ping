@@ -1,4 +1,5 @@
 import { LensClient, production } from "@lens-protocol/client";
+import { lensProfileToUser } from "~/components/user/User";
 import { getCookieAuth } from "./getCookieAuth";
 
 export const getLensClient = async () => {
@@ -15,11 +16,12 @@ export const getLensClient = async () => {
   const profileId = await client.authentication.getProfileId();
   const address = await client.authentication.getWalletAddress();
 
-  const profile = await client.profile
+  const user = await client.profile
     .fetch({ forProfileId: profileId })
     .catch(() => null)
-    .then((profile) => profile);
-  const handle = profile?.handle?.localName;
+    .then((profile) => lensProfileToUser(profile));
+
+  const handle = user?.handle;
 
   return {
     isAuthenticated,
@@ -27,5 +29,6 @@ export const getLensClient = async () => {
     address,
     client,
     handle,
+    user,
   };
 };
