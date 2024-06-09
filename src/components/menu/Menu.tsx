@@ -2,8 +2,8 @@ import { AtSign, BellIcon, BookmarkIcon, GlobeIcon, MailIcon, SendIcon, Settings
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { getLensClient } from "~/utils/getLensClient";
+import PostWizard from "../PostWizard";
 import { ServerSignedIn } from "../ServerSignedIn";
-import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import type { User } from "../user/User";
 import { ConnectWalletButton } from "../web3/WalletButtons";
@@ -99,7 +99,7 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-full sm:max-w-[700px]">
-          <div className="p-4">
+          <div className="pr-4">
             <PostWizard user={user} />
           </div>
         </DialogContent>

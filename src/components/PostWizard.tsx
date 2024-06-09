@@ -2,14 +2,16 @@
 
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { textOnly } from "@lens-protocol/metadata";
+import { LoaderIcon, SendHorizontalIcon } from "lucide-react";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import * as z from "zod";
-import { Textarea } from "../ui/textarea";
-import { UserAvatar } from "../user/UserAvatar";
-import type { User } from "../user/User";
-import type { Post } from "./Post";
+import type { Post } from "./post/Post";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import type { User } from "./user/User";
+import { UserAvatar } from "./user/UserAvatar";
 
 export default function PostWizard({ user, replyingTo }: { user: User; replyingTo?: Post }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
@@ -28,12 +30,18 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast.success(data.content);
-    // createPost({
-    //   content: data.content,
-    //   threadName: thread,
-    //   repliedToId: replyingTo,
-    // });
+    const metadata = textOnly({
+      content: data.content,
+      appId: "Ping",
+    });
+
+    const response = fetch("/api/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(metadata),
+    }).then((res) => console.log(res));
   }
 
   const updateHeight = () => {
@@ -62,7 +70,9 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
           onChange={onChange}
           className="flex flex-row gap-2 w-full h-fit place-items-end"
         >
-          <UserAvatar user={user} link={true} card={false} />
+          <div className="w-11 h-11">
+            <UserAvatar user={user} link={true} card={false} />
+          </div>
           <FormField
             control={form.control}
             name="content"
@@ -82,9 +92,9 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
               </FormItem>
             )}
           />
-          {/* <Button disabled={isPosting} size="icon" type="submit">
+          <Button disabled={isPosting} size="icon" type="submit">
             {isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
-          </Button> */}
+          </Button>
         </form>
       </Form>
     </div>

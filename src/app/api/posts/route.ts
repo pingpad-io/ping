@@ -1,10 +1,10 @@
+import { S3 } from "@aws-sdk/client-s3";
 import type { AnyPublicationFragment, FeedItemFragment, PaginatedResult } from "@lens-protocol/client";
 import { LimitType, PublicationType } from "@lens-protocol/client";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
-import { getLensClient } from "~/utils/getLensClient";
-import { S3 } from "@aws-sdk/client-s3";
 import { env } from "~/env.mjs";
+import { getLensClient } from "~/utils/getLensClient";
 
 const accessKeyId = env.STORAGE_ACCESS_KEY;
 const secretAccessKey = env.STORAGE_SECRET_KEY;
@@ -45,13 +45,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: Request) {
   const data = await req.json().catch(() => null);
-  const body = data?.body;
 
-  if (!body) {
+
+  if (!data) {
     return new Response(JSON.stringify({ error: "Bad Request" }), { status: 400 });
   }
-
-  const metadata = body.metadata;
 
   try {
     const { client, isAuthenticated } = await getLensClient();
@@ -60,7 +58,7 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
     }
 
-    const matadataJson = JSON.stringify(metadata);
+    const matadataJson = JSON.stringify(data);
 
     await s3.putObject({
       Bucket: "pingpad-ar",
@@ -80,9 +78,11 @@ export async function POST(req: Request) {
 
     const post = await client.publication.postOnMomoka({ contentURI });
 
-    console.log(post);
+    if (post.isFailure()) {
+      throw new Error(post.error.message);
+    }
 
-    return new Response(JSON.stringify({}), { status: 200 });
+    return new Response("Success", { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify({ error: `Failed to create a post: ${error.message}` }), { status: 500 });
   }
