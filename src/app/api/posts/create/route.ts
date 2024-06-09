@@ -1,8 +1,4 @@
 import { S3 } from "@aws-sdk/client-s3";
-import type { AnyPublicationFragment, FeedItemFragment, PaginatedResult } from "@lens-protocol/client";
-import { LimitType, PublicationType } from "@lens-protocol/client";
-import type { NextRequest } from "next/server";
-import { lensItemToPost } from "~/components/post/Post";
 import { env } from "~/env.mjs";
 import { getLensClient } from "~/utils/getLensClient";
 
@@ -17,44 +13,47 @@ const s3 = new S3({
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const cursor = searchParams.get("cursor");
+export async function GET(req: Request) {
+  const data = await req.json().catch(() => null);
+  const body = data?.body;
+
+  if (!body) {
+    return new Response(JSON.stringify({ error: "Bad Request" }), { status: 400 });
+  }
+
+  const metadata = body.metadata;
 
   try {
-    const { client, isAuthenticated, profileId } = await getLensClient();
+    const { client, isAuthenticated } = await getLensClient();
 
     if (!isAuthenticated) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
     }
 
-    const jsonHelloWorld = {
-      hello: "world",
-    };
+    const matadataJson = JSON.stringify(metadata);
 
-    const data = JSON.stringify(jsonHelloWorld);
-
-    const params = {
-      Bucket: "ar-pingpad",
+    await s3.putObject({
+      Bucket: "pingpad-ar",
       Key: "metadata.json",
+      Body: matadataJson,
       ContentType: "application/json",
-      Body: "data content",
-    };
-
-    s3.putObject(params, (err, data) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Upload success", data);
-      }
     });
 
-    const result = await client.publication.postOnMomoka({
-      contentURI: "",
+    const result = await s3.headObject({
+      Bucket: "pingpad-ar",
+      Key: "metadata.json",
     });
+
+    const cid = result.Metadata["ipfs-hash"];
+    const contentURI = `ipfs://${cid}`;
+    console.log(`Upload success content URI=${contentURI}`);
+
+    const post = await client.publication.postOnMomoka({ contentURI });
+
+    console.log(post);
 
     return new Response(JSON.stringify({}), { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: `Failed to fetch posts: ${error.message}` }), { status: 500 });
+    return new Response(JSON.stringify({ error: `Failed to create a post: ${error.message}` }), { status: 500 });
   }
 }
