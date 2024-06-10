@@ -13,10 +13,13 @@ export type User = {
 };
 
 export function lensProfileToUser(profile: Profile | ProfileFragment): User {
+  if (!profile) return {} as unknown as User;
+
   const imageUrl =
     profile?.metadata?.picture?.__typename === "ImageSet"
       ? profile?.metadata?.picture?.optimized?.uri || profile?.metadata?.picture?.raw?.uri
       : profile?.metadata?.picture.image.optimized?.uri || profile?.metadata?.picture?.image.raw?.uri;
+
   const user = {
     id: profile.id,
     profilePictureUrl: imageUrl,

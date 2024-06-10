@@ -46,36 +46,35 @@ export async function GET(req: NextRequest) {
 export async function POST(req: Request) {
   const data = await req.json().catch(() => null);
 
-
   if (!data) {
     return new Response(JSON.stringify({ error: "Bad Request" }), { status: 400 });
   }
 
   try {
-    const { client, isAuthenticated } = await getLensClient();
+    const { client, isAuthenticated, handle } = await getLensClient();
 
     if (!isAuthenticated) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
     }
 
-    const matadataJson = JSON.stringify(data);
+    const metadata = JSON.stringify(data);
+    const date = new Date().toISOString();
+    const key = `users/${handle}/${date}_metadata.json`;
 
     await s3.putObject({
-      Bucket: "pingpad-ar",
-      Key: "metadata.json",
-      Body: matadataJson,
       ContentType: "application/json",
+      Bucket: "pingpad-ar",
+      Body: metadata,
+      Key: key,
     });
 
     const result = await s3.headObject({
       Bucket: "pingpad-ar",
-      Key: "metadata.json",
+      Key: key,
     });
 
     const cid = result.Metadata["ipfs-hash"];
     const contentURI = `ipfs://${cid}`;
-    console.log(`Upload success content URI=${contentURI}`);
-
     const post = await client.publication.postOnMomoka({ contentURI });
 
     if (post.isFailure()) {

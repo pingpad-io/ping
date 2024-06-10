@@ -6,6 +6,7 @@ import { textOnly } from "@lens-protocol/metadata";
 import { LoaderIcon, SendHorizontalIcon } from "lucide-react";
 import { type KeyboardEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import type { Post } from "./post/Post";
 import { Button } from "./ui/button";
@@ -41,7 +42,14 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
         "Content-Type": "application/json",
       },
       body: JSON.stringify(metadata),
-    }).then((res) => console.log(res));
+    }).then((res) => {
+      if (res.ok) {
+        toast.success("Post created successfully!");
+        return;
+      }
+
+      toast.error(res.statusText);
+    });
   }
 
   const updateHeight = () => {
