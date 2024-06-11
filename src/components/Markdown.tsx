@@ -1,31 +1,27 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { getBaseUrl } from "~/utils/getBaseUrl";
+import { UserHandleCard } from "./user/UserCard";
 
-// import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
-// import dynamic from "next/dynamic";
+const BASE_URL = getBaseUrl();
 
-// const ReactMarkdown = dynamic(() => import("react-markdown"), {
-//   loading: () => <p>Loading...</p>,
-// })
+function replaceHandles(content) {
+  if (!content || typeof content !== "string") {
+    return content;
+  }
 
-// const SyntaxHighlighter = dynamic(() => import("react-syntax-highlighter"), {
-// 	loading: () => <p>Loading...</p>,
-// });
+  const handleRegex = /@(\w+\/\w+|\w+)/g;
+  const processedContent = content.replace(handleRegex, (_, p1) => {
+    const handle = p1.split("/")[1];
+    return `${BASE_URL}u/${handle}`;
+  });
 
-// import { PrismLight  } from "react-syntax-highlighter";
-// import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
-// import rust from "react-syntax-highlighter/dist/esm/languages/prism/rust";
-// import cpp from "react-syntax-highlighter/dist/esm/languages/prism/cpp";
-
-// PrismLight.registerLanguage('typescript', typescript);
-// PrismLight.registerLanguage('rust', rust);
-// PrismLight.registerLanguage('cpp', cpp);
-
-interface MarkdownProps {
-  content: string;
+  return processedContent;
 }
 
-function Markdown({ content }: MarkdownProps) {
+function Markdown({ content }: { content: string }) {
+  const processedContent = replaceHandles(content);
+
   return (
     <ReactMarkdown
       className="prose dark:prose-invert prose-p:m-0 prose-p:inline 
@@ -34,33 +30,17 @@ function Markdown({ content }: MarkdownProps) {
       remarkPlugins={[remarkGfm]}
       components={{
         h1: "h2",
-        // code({ node, inline, className, children, ...props }) {
-        // const match = /language-(\w+)/.exec(className || "");
-        // return !inline && match ? (
-        // 	<SyntaxHighlighter
-        // 		{...props}
-        // 		children={String(children).replace(/\n$/, "")}
-        // 		style={vscDarkPlus}
-        // 		language={match[1]}
-        // 		PreTag="div"
-        // 		customStyle={{
-        // 			display: undefined,
-        // 			overflowX: undefined,
-        // 			padding: undefined,
-        // 			color: undefined,
-        // 			background: undefined,
-        // 		}}
-        // 	/>
-        // ) : (
-
-        // <code {...props} className={className}>
-        // 	{children}
-        // </code>;
-        // );
-        // },
+        a: (props) => {
+          const handle = props.href.split("/u/")[1];
+          return props.href.startsWith(`${BASE_URL}u/`) ? (
+            <UserHandleCard handle={handle}>@{handle}</UserHandleCard>
+          ) : (
+            <a href={props.href}>{props.children}</a>
+          );
+        },
       }}
     >
-      {content}
+      {processedContent}
     </ReactMarkdown>
   );
 }

@@ -50,6 +50,11 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ error: "Bad Request" }), { status: 400 });
   }
 
+
+  if (data && data.length > 140 * 1024) {
+    return new Response(JSON.stringify({ error: "Data too large" }), { status: 400 });
+  }
+
   try {
     const { client, isAuthenticated, handle } = await getLensClient();
 

@@ -3,6 +3,7 @@ import { CalendarIcon, EditIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
+import Markdown from "~/components/Markdown";
 import { TimeSince } from "~/components/TimeLabel";
 import { lensItemToPost } from "~/components/post/Post";
 import { Card } from "~/components/ui/card";
@@ -44,7 +45,9 @@ const user = async ({ params }: { params: { user: string } }) => {
               </Link>
             )}
           </div>
-          <div className="text-sm text-base-content grow">{user.description}</div>
+          <div className="text-sm text-base-content grow">
+            <Markdown content={user.description} />
+          </div>
           <div className="text-sm text-base-content flex flex-row gap-1 place-items-center">
             <CalendarIcon size={14} />
             Joined <TimeSince date={new Date(user.createdAt)} />
