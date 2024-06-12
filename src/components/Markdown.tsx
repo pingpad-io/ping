@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getBaseUrl } from "~/utils/getBaseUrl";
-import { UserHandleCard } from "./user/UserCard";
+import { UserLazyHandle } from "./user/UserLazyHandle";
 
 const BASE_URL = getBaseUrl();
 
@@ -10,7 +10,8 @@ function replaceHandles(content) {
     return content;
   }
 
-  const handleRegex = /(?<!\S)@[\w/]+(?!\S)/g;
+  const handleRegex = /(?<!\/)@[\w^\/]+(?!\/)/g;
+
   const processedContent = content.replace(handleRegex, (match) => {
     const parts = match.slice(1).split("/"); // Remove the leading '@' and split by '/'
     const handle = parts.length > 1 ? parts[1] : parts[0];
@@ -34,7 +35,7 @@ function Markdown({ content }: { content: string }) {
         a: (props) => {
           const handle = props.href.split("/u/")[1];
           return props.href.startsWith(`${BASE_URL}u/`) ? (
-            <UserHandleCard handle={handle}>@{handle}</UserHandleCard>
+            <UserLazyHandle handle={handle} />
           ) : (
             <a href={props.href}>{props.children}</a>
           );

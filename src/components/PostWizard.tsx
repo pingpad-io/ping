@@ -76,9 +76,9 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           onChange={onChange}
-          className="flex flex-row gap-2 w-full h-fit place-items-end"
+          className="flex flex-row gap-2 w-full h-fit place-items-end justify-center"
         >
-          <div className="w-11 h-11">
+          <div className="w-10 h-10">
             <UserAvatar user={user} link={true} card={false} />
           </div>
           <FormField
@@ -92,7 +92,7 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
                     onKeyDown={onKeyDown}
                     placeholder={placeholderText}
                     disabled={isPosting}
-                    className="min-h-12 resize-none px-2 py-3"
+                    className="min-h-8 resize-none px-2 py-2"
                     ref={textarea}
                     rows={1}
                   />
@@ -100,7 +100,7 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
               </FormItem>
             )}
           />
-          <Button disabled={isPosting} size="icon" type="submit">
+          <Button disabled={isPosting} size="icon" type="submit" className="h-10 w-10">
             {isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
           </Button>
         </form>
