@@ -2,7 +2,7 @@
 
 import { type ProfileId, useLazyProfile } from "@lens-protocol/react-web";
 import Link from "next/link";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren, useState } from "react";
 import { LoadingSpinner } from "../LoadingIcon";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { type User, lensProfileToUser } from "./User";
@@ -46,9 +46,14 @@ export const UserCard = ({ children, user }: PropsWithChildren & { user: User })
 
 export const UserHandleCard = ({ children, handle }: PropsWithChildren & { handle: string }) => {
   const { data: profile, error, loading, execute } = useLazyProfile();
+  const [user, setUser] = useState<User | null>(null);
 
   const loadCard = () => {
-    execute({ forHandle: `lens/${handle}` });
+    execute({ forHandle: `lens/${handle}` }).then((res) => {
+      if (res.isSuccess()) {
+        setUser(lensProfileToUser(res.unwrap()));
+      }
+    });
   };
 
   return (
@@ -56,19 +61,19 @@ export const UserHandleCard = ({ children, handle }: PropsWithChildren & { handl
       <HoverCardTrigger asChild>
         <Link href={`/u/${handle}`}>{children}</Link>
       </HoverCardTrigger>
-      <HoverCardContent side="top">
+      <HoverCardContent className="p-3" side="top">
         {loading && !profile && <LoadingSpinner />}
         {error && <div>Error: {error.message}</div>}
-        {profile && (
+        {user && (
           <div className="flex flex-col gap-2">
             <div className="flex flex-row items-center gap-2 text-sm">
-              <div className="w-6 h-6">
-                <UserAvatar user={lensProfileToUser(profile)} />
+              <div className="w-8 h-8">
+                <UserAvatar link={false} card={false} user={user} />
               </div>
-              <span className="font-bold">{profile.metadata.displayName}</span>
-              <span className="font-light">@{handle}</span>
+              <span className="font-bold">{user.name}</span>
+              <span className="font-light">@{user.handle}</span>
             </div>
-            <span className="text-sm">{profile.metadata.bio}</span>
+            <span className="text-sm">{user.description}</span>
           </div>
         )}
       </HoverCardContent>

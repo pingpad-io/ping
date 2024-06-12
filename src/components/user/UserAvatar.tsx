@@ -6,8 +6,8 @@ import { UserCard } from "./UserCard";
 export function UserAvatar({ user, link = true, card = true }: { user: User; link?: boolean; card?: boolean }) {
   const fallback = user?.name?.slice(0, 2) || user.handle.slice(0, 2);
   const avatar = (
-    <Avatar suppressHydrationWarning className="w-full h-full">
-      <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} />
+    <Avatar suppressHydrationWarning className="w-full h-full m-0">
+      <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} className="m-0" />
       <AvatarFallback>{fallback.toLowerCase()}</AvatarFallback>
     </Avatar>
   );

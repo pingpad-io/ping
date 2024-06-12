@@ -10,9 +10,10 @@ function replaceHandles(content) {
     return content;
   }
 
-  const handleRegex = /@(\w+\/\w+|\w+)/g;
-  const processedContent = content.replace(handleRegex, (_, p1) => {
-    const handle = p1.split("/")[1];
+  const handleRegex = /(?<!\S)@[\w/]+(?!\S)/g;
+  const processedContent = content.replace(handleRegex, (match) => {
+    const parts = match.slice(1).split("/"); // Remove the leading '@' and split by '/'
+    const handle = parts.length > 1 ? parts[1] : parts[0];
     return `${BASE_URL}u/${handle}`;
   });
 
