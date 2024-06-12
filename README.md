@@ -1,20 +1,18 @@
 ## Overview
 
-[pingpad.io](https://pingpad.io) is a minimalistic decentralized social platform
+[pingpad](https://pingpad.io) is a minimalistic decentralized social platform, made for **you** and **your community**.
 
-## Features
 
-- Built on [Lens protocol](https://lens.xyz)
-- Full Markdown support
-- Rich embeddings
-- Statically generated beauty
+## Gallery
+<img height="auto" width="700" style="border-radius:50px" src="https://github.com/pingpad-io/ping/assets/72769566/29e2ae6a-f89e-45cc-b17a-4d5c6a4dd841" />
 
-<img height="auto" width="700" style="border-radius:50px" src="https://github.com/pingpad-io/ping/assets/72769566/7bc1765f-af80-4e55-b3da-85f134544045" />
+<img height="auto" width="700" style="border-radius:50px" src="https://github.com/pingpad-io/ping/assets/72769566/4d6ec827-3e13-4119-aa60-63e0fbaf01cd" />
+
 
 ## Contributing
 Thank you for considering contributing to Pingpad!
 
-To contribute you will first need to fork and the repository:
+First, you need to fork and the repository:
 ```sh
 git clone https://github.com/pingpad-io/ping.git && cd ping
 ```
