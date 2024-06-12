@@ -1,8 +1,7 @@
 import { S3 } from "@aws-sdk/client-s3";
 import type { AnyPublicationFragment, FeedItemFragment, PaginatedResult } from "@lens-protocol/client";
 import { LimitType, PublicationType } from "@lens-protocol/client";
-import { profileId } from "@lens-protocol/react-web";
-import type { NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { env } from "~/env.mjs";
 import { getLensClient } from "~/utils/getLensClient";
@@ -38,29 +37,29 @@ export async function GET(req: NextRequest) {
 
     const posts = data.items.map(lensItemToPost);
 
-    return new Response(JSON.stringify({ posts, nextCursor: data.pageInfo.next }), { status: 200 });
+    return NextResponse.json({ posts, nextCursor: data.pageInfo.next }, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch posts: ", error);
-    return new Response(JSON.stringify({ error: `Failed to fetch posts: ${error.message}` }), { status: 500 });
+    return NextResponse.json({ error: `Failed to fetch posts: ${error.message}` }, { status: 500 });
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const data = await req.json().catch(() => null);
   const { client, isAuthenticated, handle } = await getLensClient();
 
   if (!data) {
-    return new Response(JSON.stringify({ error: "Bad Request" }), { status: 400 });
+    return NextResponse.json({ error: "Bad Request: Invalid JSON body" }, { status: 400 });
   }
 
   // Arweave only sponsors <150kb data uploads for now
   if (data && data.length > 149 * 1024) {
-    return new Response(JSON.stringify({ error: "Data too large" }), { status: 400 });
+    return NextResponse.json({ error: "Data too large" }, { status: 400 });
   }
 
   try {
     if (!isAuthenticated) {
-      return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
     const metadata = JSON.stringify(data);
@@ -100,12 +99,13 @@ export async function POST(req: Request) {
       const momokaId = postResult.value.momokaId;
       const proof = postResult.value.proof;
 
-      console.log(`${handle} created a post: ${id}, momokaId: ${momokaId}, proof: ${proof}, cid: ${contentURI}, date: ${date}`);
+      console.log(`${handle} created a post: ${id}, momokaId: ${momokaId}, ipfs: ${contentURI}, date: ${date}`);
+      return NextResponse.json({ id, momokaId, proof }, { status: 200, statusText: "Success" });
     }
 
-    return new Response("Success", { status: 200 });
+    throw new Error("Unknown error. This should never happen.");
   } catch (error) {
     console.error("Failed to create a post: ", error);
-    return new Response(JSON.stringify({ error: `Failed to create a post: ${error.message}` }), { status: 500 });
+    return NextResponse.json({ error: `Failed to create a post: ${error.message}` }, { status: 500 });
   }
 }
