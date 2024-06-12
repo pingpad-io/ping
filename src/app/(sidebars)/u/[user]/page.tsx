@@ -1,5 +1,5 @@
 import { LimitType, PublicationType } from "@lens-protocol/client";
-import { CalendarIcon, EditIcon } from "lucide-react";
+import { CalendarIcon, EditIcon, User2Icon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { InfiniteScroll } from "~/components/InfiniteScroll";
@@ -19,6 +19,30 @@ export async function generateMetadata({ params }: { params: { user: string } })
     description: `@${handle} on Pingpad`,
   };
 }
+
+const getInitialData = async (handle: string) => {
+  const { client } = await getLensClient();
+
+  const profile = await client.profile.fetch({
+    forHandle: `lens/${handle}`,
+  });
+
+  const user = lensProfileToUser(profile);
+  if (!user) throw new Error("∑(O_O;) Profile not found");
+
+  const lensPosts = await client.publication
+    .fetchAll({
+      where: { from: [user.id], publicationTypes: [PublicationType.Post] },
+      limit: LimitType.Ten,
+    })
+    .catch(() => {
+      throw new Error(`☆⌒(>。<) Couldn't get user posts`);
+    });
+
+  const posts = lensPosts.items.map(lensItemToPost);
+
+  return { user, posts, nextCursor: lensPosts.pageInfo.next };
+};
 
 const user = async ({ params }: { params: { user: string } }) => {
   const { handle: authenticatedHandle } = await getLensClient();
@@ -45,12 +69,17 @@ const user = async ({ params }: { params: { user: string } }) => {
               </Link>
             )}
           </div>
-          <div className="text-sm text-base-content grow">
+          <div className="text-sm grow">
             <Markdown content={user.description} />
           </div>
-          <div className="text-sm text-base-content flex flex-row gap-1 place-items-center">
+          <div className="text-sm flex flex-row gap-1 place-items-center">
             <CalendarIcon size={14} />
             Joined <TimeSince date={new Date(user.createdAt)} />
+          </div>
+          <div className="text-sm flex flex-row gap-1 place-items-center">
+            <User2Icon size={14} />
+            Following <b>{user.stats.following}</b>
+            Followers <b>{user.stats.followers}</b>
           </div>
         </div>
       </div>
@@ -60,33 +89,6 @@ const user = async ({ params }: { params: { user: string } }) => {
       </Card>
     </>
   );
-};
-
-const getInitialData = async (handle: string) => {
-  const { client } = await getLensClient();
-
-  const user = await client.profile
-    .fetch({
-      forHandle: `lens/${handle}`,
-    })
-    .then((data) => {
-      return lensProfileToUser(data);
-    });
-
-  if (!user) throw new Error("∑(O_O;) Profile not found");
-
-  const data = await client.publication
-    .fetchAll({
-      where: { from: [user.id], publicationTypes: [PublicationType.Post] },
-      limit: LimitType.Ten,
-    })
-    .catch(() => {
-      throw new Error(`☆⌒(>。<) Couldn't get user posts`);
-    });
-
-  const posts = data.items.map(lensItemToPost);
-
-  return { user, posts, nextCursor: data.pageInfo.next };
 };
 
 export default user;
