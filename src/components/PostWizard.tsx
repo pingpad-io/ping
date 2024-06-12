@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form
 import { zodResolver } from "@hookform/resolvers/zod";
 import { textOnly } from "@lens-protocol/metadata";
 import { LoaderIcon, SendHorizontalIcon } from "lucide-react";
-import { type KeyboardEvent, useRef } from "react";
+import { type KeyboardEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -16,6 +16,7 @@ import { UserAvatar } from "./user/UserAvatar";
 
 export default function PostWizard({ user, replyingTo }: { user: User; replyingTo?: Post }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
+  const [isPosting, setPosting] = useState(false);
   const placeholderText = replyingTo ? "write a reply..." : "write a new post...";
 
   if (!user) throw new Error("∑(O_O;) Profile not found");
@@ -31,6 +32,8 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setPosting(true);
+
     const metadata = textOnly({
       content: data.content,
       appId: "Ping",
@@ -45,12 +48,22 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
     }).then((res) => {
       if (res.ok) {
         toast.success("Post created successfully!");
-        return;
+        form.setValue("content", "");
+        resetHeight();
+      } else {
+        toast.error(res.statusText);
       }
 
-      toast.error(res.statusText);
+      setPosting(false);
     });
   }
+
+  const resetHeight = () => {
+    if (textarea.current) {
+      textarea.current.style.height = "auto";
+      textarea.current.style.height = "38px";
+    }
+  };
 
   const updateHeight = () => {
     if (textarea.current) {
@@ -59,23 +72,18 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
     }
   };
 
-  const onChange = () => {
-    updateHeight();
-  };
-
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.ctrlKey && event.key === "Enter") {
       onSubmit(form.getValues());
     }
   };
-  const isPosting = false;
 
   return (
     <div className="w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          onChange={onChange}
+          onChange={updateHeight}
           className="flex flex-row gap-2 w-full h-fit place-items-end justify-center"
         >
           <div className="w-10 h-10">
