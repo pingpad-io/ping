@@ -27,9 +27,9 @@ export const Navigation = () => {
       <Carousel
         opts={{ dragFree: true, align: "start", watchDrag: true, slidesToScroll: 6, loop: true }}
         plugins={[WheelGesturesPlugin({ active: true })]}
-        className="w-full max-w-lg"
+        className="w-full h-10  max-w-lg"
       >
-        <CarouselPrevious />
+        <CarouselPrevious className="mx-1" />
         <CarouselContent className="-ml-1">
           <NavigationItem href={"/home"}>
             <HomeIcon size={18} />
@@ -108,7 +108,7 @@ export const Navigation = () => {
             builders
           </NavigationItem>
         </CarouselContent>
-        <CarouselNext />
+        <CarouselNext className="mx-1" />
       </Carousel>
     </nav>
   );

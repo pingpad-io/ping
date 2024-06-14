@@ -6,6 +6,7 @@ import { ServerSignedIn } from "../ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 import { lensProfileToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
@@ -17,7 +18,7 @@ const UserBar = async () => {
   const handleOrProfileId = handle ?? profileId;
 
   return (
-    <div className="flex flex-row gap-2 pb-2 border-b items-center justify-between">
+    <div className="flex flex-row gap-2 items-center justify-between">
       <div>
         <Link href={"/notifications"}>
           <Button variant="ghost" size="icon">
@@ -48,9 +49,10 @@ const UserBar = async () => {
 
 export function Sidebar() {
   return (
-    <div className="flex flex-col gap-3 py-4 sm:px-2">
+    <div className="flex flex-col gap-2 py-4 sm:px-2">
       <ServerSignedIn>
         <UserBar />
+        <Separator className="max-w-[150px] mx-auto" />
       </ServerSignedIn>
       <SearchBar defaultText="" />
       <Accordion defaultValue={["beta"]} className="w-64" type="multiple">

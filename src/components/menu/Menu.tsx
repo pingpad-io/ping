@@ -51,7 +51,7 @@ export default async function Menu() {
 export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => {
   return (
     <>
-      <Link href={"/explore"}>
+      <Link href={"/explore"} className="flex lg:hidden">
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">explore</div>
           <GlobeIcon className="sm:ml-2" size={21} />

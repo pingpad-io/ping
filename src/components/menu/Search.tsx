@@ -58,7 +58,7 @@ export const SearchBar = ({ defaultText = "" }: { defaultText: string }) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input type="text" placeholder="Search..." className="pl-8 pr-4 mt-0 h-9" {...field} />
+                  <Input type="text" placeholder="Search..." className="pl-8 pr-4 mt-0 h-10" {...field} />
                 </FormControl>
               </FormItem>
             )}
