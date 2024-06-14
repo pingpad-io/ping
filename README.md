@@ -1,7 +1,11 @@
 ## Overview
 
-[pingpad](https://pingpad.io) is a minimalistic decentralized social platform, made for **you** and **your community**.
+[pingpad](https://pingpad.io) is a minimalistic decentralized social platform, made for you and your community.
 
+**why?**
+- complexity is the enemy.
+- clarity paves the way for brilliance.
+- embrace simplicity by focusing on clear and efficient solutions.
 
 ## Gallery
 <img height="auto" width="700" style="border-radius:50px" src="https://github.com/pingpad-io/ping/assets/72769566/29e2ae6a-f89e-45cc-b17a-4d5c6a4dd841" />
