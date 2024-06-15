@@ -27,7 +27,7 @@ export const Navigation = () => {
       <Carousel
         opts={{ dragFree: true, align: "start", watchDrag: true, slidesToScroll: 6, loop: true }}
         plugins={[WheelGesturesPlugin({ active: true })]}
-        className="w-full h-10  max-w-lg"
+        className="w-full h-10  max-w-lg select-none"
       >
         <CarouselPrevious className="mx-1" />
         <CarouselContent className="-ml-1">
@@ -127,7 +127,7 @@ export const NavigationItem = ({
   return (
     <CarouselItem className="basis-auto pl-1">
       <Link
-        className={`rounded-md border h-10 p-2 overflow-hidden inline-flex gap-1 items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted 
+        className={`rounded-md border h-10 disabled p-2 overflow-hidden inline-flex gap-1 items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted 
   hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 
       ${selectedStyle(href)} ${disabledStyle}`}
         href={href}
