@@ -1,10 +1,10 @@
 "use client";
 
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
-import { HomeIcon, ImagesIcon, MessageCircle, MessageSquare, PlusCircleIcon, SquirrelIcon } from "lucide-react";
+import { ImagesIcon, MessageCircle, MessageSquare, PlusCircleIcon, SquirrelIcon } from "lucide-react";
 import { OtterIcon } from "../Icons";
 import { NavigationItem } from "../menu/Navigation";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from "../ui/carousel";
 
 export const UserNavigation = ({ handle }: { handle: string }) => {
   return (
@@ -20,7 +20,7 @@ export const UserNavigation = ({ handle }: { handle: string }) => {
             <MessageCircle size={18} />
             posts
           </NavigationItem>
-          <NavigationItem href={`/u/${handle}/comments`} disabled>
+          <NavigationItem href={`/u/${handle}/comments`}>
             <MessageSquare size={18} />
             comments
           </NavigationItem>

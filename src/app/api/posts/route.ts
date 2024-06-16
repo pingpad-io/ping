@@ -20,16 +20,36 @@ const s3 = new S3({
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
+  const type = searchParams.get("type");
+  const idFrom = searchParams.get("id");
+
+  let publicationType: PublicationType;
+  switch (type) {
+    case "post":
+      publicationType = PublicationType.Post;
+      break;
+    case "comment":
+      publicationType = PublicationType.Comment;
+      break;
+    case "quote":
+      publicationType = PublicationType.Quote;
+      break;
+    case "repost":
+      publicationType = PublicationType.Mirror;
+      break;
+    default:
+      publicationType = PublicationType.Post;
+  }
 
   try {
     const { client, isAuthenticated, profileId } = await getLensClient();
 
     let data: PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>;
-    if (isAuthenticated) {
+    if (isAuthenticated && !idFrom) {
       data = (await client.feed.fetch({ where: { for: profileId }, cursor })).unwrap();
     } else {
       data = await client.publication.fetchAll({
-        where: { publicationTypes: [PublicationType.Post] },
+        where: { publicationTypes: [publicationType], from: [idFrom] },
         limit: LimitType.Ten,
         cursor,
       });
