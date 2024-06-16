@@ -1,4 +1,15 @@
-import { AtSign, BellIcon, BookmarkIcon, GlobeIcon, MailIcon, SendIcon, SettingsIcon, UserIcon } from "lucide-react";
+import {
+  AtSign,
+  BellIcon,
+  BookmarkIcon,
+  GlobeIcon,
+  MailIcon,
+  PersonStandingIcon,
+  SendIcon,
+  SettingsIcon,
+  UserIcon,
+  UsersIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { getLensClient } from "~/utils/getLensClient";
@@ -51,12 +62,19 @@ export default async function Menu() {
 export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => {
   return (
     <>
-      <Link href={"/explore"} className="flex lg:hidden">
+      <Link href={"/explore"}>
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">explore</div>
           <GlobeIcon className="sm:ml-2" size={21} />
         </Button>
       </Link>
+
+      {/* <Link href={"/c"} > */}
+      <Button variant="ghost" size="sm_icon" disabled>
+        <div className="hidden sm:flex -mt-1">communities</div>
+        <UsersIcon className="sm:ml-2" size={21} />
+      </Button>
+      {/* </Link> */}
 
       <Button variant="ghost" size="sm_icon" className="flex lg:hidden" disabled>
         <div className="hidden sm:flex -mt-1">messages</div>
