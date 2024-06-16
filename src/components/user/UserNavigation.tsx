@@ -1,6 +1,5 @@
 "use client";
 
-import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { ImagesIcon, MessageCircle, MessageSquare, PlusCircleIcon, SquirrelIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

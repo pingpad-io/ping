@@ -1,8 +1,7 @@
 import Menu from "~/components/menu/Menu";
 import { Sidebar } from "~/components/menu/Sidebar";
-import "~/styles/globals.css";
 
-export default function RootLayout({
+export default function SidebarLayout({
   children,
 }: {
   children: React.ReactNode;

@@ -1,4 +1,4 @@
-import { CalendarIcon, EditIcon, User2Icon } from "lucide-react";
+import { CalendarIcon, EditIcon, MessageCircle, MessageCircleIcon, MessageSquareIcon, User2Icon } from "lucide-react";
 import Link from "next/link";
 import Markdown from "~/components/Markdown";
 import { TimeSince } from "~/components/TimeLabel";
@@ -30,6 +30,10 @@ export const UserProfile = ({ user, isUserProfile }: { user: User; isUserProfile
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <CalendarIcon size={14} />
           Joined <TimeSince date={new Date(user.createdAt)} />
+        </div>
+        <div className="text-sm flex flex-row gap-1 place-items-center">
+          <MessageCircleIcon size={14} />
+          {user.stats.posts + user.stats.comments} Posts
         </div>
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <User2Icon size={14} />
