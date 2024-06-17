@@ -1,15 +1,15 @@
 "use client";
 import { Edit2Icon, ReplyIcon } from "lucide-react";
 import Link from "next/link";
-import { forwardRef, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
+import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
-import { getPostMetadataView } from "./PostMetadataView";
 import { ReactionsList } from "./PostReactions";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
@@ -34,24 +34,6 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
     </PostContextMenu>
   );
 };
-
-export const PostContent = forwardRef<
-  HTMLDivElement,
-  { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
->(({ post, collapsed }, ref) => {
-  const metadata = getPostMetadataView(post.metadata);
-
-  return (
-    <div
-      ref={ref}
-      className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
-        collapsed ? "line-clamp-5" : "line-clamp-none"
-      }`}
-    >
-      {metadata}
-    </div>
-  );
-});
 
 export const ReplyInfo = ({ post }: { post: Post }) => {
   const username = post.reply?.author?.handle;

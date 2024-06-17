@@ -19,9 +19,9 @@ const s3 = new S3({
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const cursor = searchParams.get("cursor");
-  const type = searchParams.get("type");
-  const idFrom = searchParams.get("id");
+  const idFrom = searchParams.get("id") || undefined;
+  const cursor = searchParams.get("cursor") || undefined;
+  const type = searchParams.get("type") || "post";
 
   let publicationType: PublicationType;
   switch (type) {
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       data = (await client.feed.fetch({ where: { for: profileId }, cursor })).unwrap();
     } else {
       data = await client.publication.fetchAll({
-        where: { publicationTypes: [publicationType], from: [idFrom] },
+        where: { publicationTypes: [publicationType], from: idFrom ? [idFrom] : undefined },
         limit: LimitType.Ten,
         cursor,
       });
