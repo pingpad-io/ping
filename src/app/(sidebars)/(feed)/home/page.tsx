@@ -3,10 +3,13 @@ import { InfiniteScroll } from "~/components/InfiniteScroll";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
 
-const endpoint = "/api/posts";
+const authenticatedEndpoint = "/api/posts/feed";
+const unauthenticatedEndpoint = "/api/posts";
 
 const home = async () => {
   const { posts, nextCursor } = await getInitialFeed();
+  const { isAuthenticated } = await getLensClient();
+  const endpoint = isAuthenticated ? authenticatedEndpoint : unauthenticatedEndpoint;
 
   if (!posts) {
     throw new Error("Failed to get posts");
