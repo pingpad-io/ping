@@ -31,6 +31,7 @@
     "@radix-ui/react-switch": "latest",
     "@radix-ui/react-tabs": "latest",
     "@radix-ui/react-toast": "latest",
+    "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-tooltip": "latest",
     "@radix-ui/react-use-layout-effect": "latest",
     "@reduxjs/toolkit": "^1.9.5",
