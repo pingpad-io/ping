@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
-import PostWizard from "~/components/PostWizard";
 import { ServerSignedIn } from "~/components/ServerSignedIn";
 import { Navigation } from "~/components/menu/Navigation";
+import PostWizard from "~/components/post/PostWizard";
 import { Card } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 import { getLensClient } from "~/utils/getLensClient";
@@ -12,10 +12,10 @@ export default async function layout({ children }: PropsWithChildren) {
   return (
     <Card className="z-[30] hover:bg-card p-4 py-0 border-0">
       <ServerSignedIn>
-        <div className="pb-2 p-4">
+        <div className="py-4">
           <PostWizard user={user} />
         </div>
-        <Separator className="max-w-sm mx-auto" />
+        {/* <Separator className="max-w-sm mx-auto" /> */}
         <Navigation />
       </ServerSignedIn>
       {children}

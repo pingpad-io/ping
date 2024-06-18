@@ -49,13 +49,13 @@ const UserBar = async () => {
 
 export function Sidebar() {
   return (
-    <div className="flex flex-col gap-2 py-4 sm:px-2">
+    <div className="flex flex-col w-full gap-2 p-4 grow">
       <ServerSignedIn>
         <UserBar />
-        <Separator className="max-w-[150px] mx-auto" />
+        {/* <Separator className="max-w-[150px] mx-auto" /> */}
       </ServerSignedIn>
       <SearchBar defaultText="" />
-      <Accordion defaultValue={["beta"]} className="w-64" type="multiple">
+      <Accordion defaultValue={["beta"]} className="w-full" type="multiple">
         <AccordionItem value="beta">
           <AccordionTrigger className="py-2">
             <span>

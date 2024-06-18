@@ -13,8 +13,8 @@ import {
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { getLensClient } from "~/utils/getLensClient";
-import PostWizard from "../PostWizard";
 import { ServerSignedIn } from "../ServerSignedIn";
+import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import type { User } from "../user/User";
 import { ConnectWalletButton } from "../web3/WalletButtons";
@@ -26,7 +26,7 @@ export default async function Menu() {
 
   if (!profileId) {
     return (
-      <span className="flex shrink text-xl p-4 sm:px-2 w-full sm:w-max">
+      <span className="flex shrink text-xl p-4 w-full sm:w-max">
         <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
           <Link href="/home">
             <Button variant="ghost" size="sm_icon">
@@ -41,7 +41,7 @@ export default async function Menu() {
   }
 
   return (
-    <span className="flex shrink text-xl p-4 sm:px-2 w-full sm:w-max">
+    <span className="flex shrink text-xl p-4 w-full sm:w-max">
       <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
         <Link href="/home">
           <Button variant="ghost" size="sm_icon">
@@ -111,9 +111,9 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button>
-            <div className="hidden sm:flex -mt-1">post</div>
-            <SendIcon className="sm:ml-2" size={20} />
+          <Button className="px-6 sm:px-12">
+            <div className="hidden sm:flex font-bold text-lg -mt-1">post</div>
+            {/* <SendIcon className="sm:ml-2" size={20} /> */}
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-full sm:max-w-[700px]">

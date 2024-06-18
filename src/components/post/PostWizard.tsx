@@ -8,11 +8,11 @@ import { type KeyboardEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import type { Post } from "./post/Post";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
-import type { User } from "./user/User";
-import { UserAvatar } from "./user/UserAvatar";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import type { User } from "../user/User";
+import { UserAvatar } from "../user/UserAvatar";
+import type { Post } from "./Post";
 
 export default function PostWizard({ user, replyingTo }: { user: User; replyingTo?: Post }) {
   const textarea = useRef<HTMLTextAreaElement>(null);

@@ -19,7 +19,7 @@ export default function SidebarLayout({
         {children}
       </div>
 
-      <div className="hidden lg:flex sticky top-0 h-fit max-w-xs w-max">
+      <div className="hidden lg:flex sticky top-0 h-fit max-w-xs w-full">
         <Sidebar />
       </div>
     </div>
