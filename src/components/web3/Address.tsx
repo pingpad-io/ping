@@ -1,3 +1,5 @@
+"use client";
+
 import { truncateEthAddress } from "~/utils/truncateEthAddress";
 
 export const Address = ({ address }: { address: string }) => {

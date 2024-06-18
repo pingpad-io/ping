@@ -7,7 +7,7 @@ import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import ConnectedWalletLabel from "./ConnnectedWalletLabel";
+import { ConnectedWalletLabel } from "./ConnnectedWalletLabel";
 import { LensProfileSelect } from "./LensProfileSelect";
 import { clearCookies } from "./LogOut";
 
@@ -19,7 +19,12 @@ export function ConnectWalletButton() {
   const connectorList = connectors.map((connector) => {
     if (connector.id !== "injected" && connector.id !== "walletConnect") return null;
     const name = connector.id === "injected" ? "Browser Wallet" : "Wallet Connect";
-    const icon = connector.id === "injected" ? <GlobeIcon strokeWidth={1.1} size={26} /> : <WalletConnectIcon />;
+    const icon =
+      connector.id === "injected" ? (
+        <GlobeIcon key={connector.uid} strokeWidth={1.1} size={26} />
+      ) : (
+        <WalletConnectIcon key={connector.uid} />
+      );
     return (
       <Button
         className="w-full flex flex-row justify-between"

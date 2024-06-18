@@ -1,9 +1,11 @@
+"use client";
+
 import { LogOutIcon } from "lucide-react";
 import { useAccount } from "wagmi";
 import { Button } from "../ui/button";
 import { Address } from "./Address";
 
-export default function ConnectedWalletLabel() {
+export const ConnectedWalletLabel = () => {
   const { isConnected: walletConnected, address } = useAccount();
 
   if (!walletConnected) {

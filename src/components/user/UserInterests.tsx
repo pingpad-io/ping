@@ -28,9 +28,8 @@ export const UserInterestList = ({ interests }: { interests: UserInterests[] }) 
       method: "POST",
       body: JSON.stringify({ value }),
     });
-    const data = await result.json();
-    if (!data.ok) {
-      toast.error(data.message);
+    if (!result.ok) {
+      toast.error(result.statusText);
     }
   };
 
