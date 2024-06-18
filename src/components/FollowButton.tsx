@@ -5,21 +5,23 @@ import { toast } from "sonner";
 import type { User } from "./post/Post";
 import { Button } from "./ui/button";
 
-export const FollowButton = ({ user }: {user: User}) => {
+export const FollowButton = ({ user }: { user: User }) => {
   const [following, setFollowing] = useState(user.actions.followed);
 
   const toggleFollow = async () => {
+    const endpoint = following ? "/api/profile/unfollow" : "/api/profile/follow";
+
     setFollowing(!following);
 
-    const result = await fetch(`/api/profile/follow?id=${user.id}`, {
+    const result = await fetch(`${endpoint}?id=${user.id}`, {
       method: "POST",
     });
 
     if (!result.ok) {
       setFollowing(!following);
-      toast.error(`Failed to follow: ${result.statusText} `);
+      toast.error(`${following ? "Unfollow" : "Follow"} action failed: ${result.statusText} `);
     } else {
-      toast.success("Followed successfully!");
+      toast.success(`${following ? "Unfollowed" : "Followed"} Successfully!`);
     }
   };
 
