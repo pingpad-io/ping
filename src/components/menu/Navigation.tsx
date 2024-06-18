@@ -121,7 +121,6 @@ export const NavigationItem = ({
 }: PropsWithChildren<{ href: string; disabled?: boolean }>) => {
   const pathname = usePathname();
   const selectedStyle = href === pathname ? "bg-primary text-primary-foreground" : "";
-  console.log(pathname, href, selectedStyle);
   const disabledStyle = disabled ? "opacity-50 pointer-events-none select-none" : "";
 
   return (
