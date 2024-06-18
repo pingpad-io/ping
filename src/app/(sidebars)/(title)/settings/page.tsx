@@ -1,12 +1,12 @@
 import { Badge, NetworkIcon, PawPrintIcon, SettingsIcon, WalletIcon } from "lucide-react";
 import { ServerSignedIn } from "~/components/ServerSignedIn";
-import { PingButton, SettingsPage } from "~/components/SettingsPage";
+import { PingButton, SettingsPage } from "~/components/SettingsPageItems";
 import { ThemeButtons } from "~/components/ThemeToggle";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
-import { UserInterestList } from "~/components/user/UserInterests";
+import { InterestsList } from "~/components/user/UserInterests";
 import { ConnectedWalletLabel } from "~/components/web3/ConnnectedWalletLabel";
 import { LogoutButton } from "~/components/web3/WalletButtons";
 import { getLensClient } from "~/utils/getLensClient";
@@ -44,7 +44,7 @@ const settings = async () => {
                   </h1>
                 </AccordionTrigger>
                 <AccordionContent className="pl-4">
-                  <UserInterestList interests={user.interests} />
+                  <InterestsList activeInterests={user.interests} />
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="wallet">

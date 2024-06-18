@@ -3,11 +3,13 @@
 import { ProfileInterestTypes } from "@lens-protocol/react-web";
 import { useMemo } from "react";
 import { toast } from "sonner";
+import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
 import { Toggle } from "../ui/toggle";
 import { type UserInterests, capitalize, parseInterests } from "./User";
 
-export const UserInterestList = ({ interests }: { interests: UserInterests[] }) => {
-  const userInterests = interests.map((interest) => interest.value);
+export const InterestsList = ({ activeInterests }: { activeInterests: UserInterests[] }) => {
+  const userInterests = activeInterests.map((interest) => interest.value);
 
   const groupedInterests = useMemo(() => {
     const interests = parseInterests(Object.values(ProfileInterestTypes));
@@ -51,6 +53,37 @@ export const UserInterestList = ({ interests }: { interests: UserInterests[] }) 
                 >
                   {item.label}
                 </Toggle>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export const UserInterestsList = ({ interests }: { interests: UserInterests[] }) => {
+  const interestValues = interests.map((interest) => interest.value);
+
+  const groupedInterests = useMemo(() => {
+    return interests.reduce(
+      (acc, interest) => {
+        acc[interest.category] = acc[interest.category] || [];
+        acc[interest.category].push(interest);
+        return acc;
+      },
+      {} as Record<string, UserInterests[]>,
+    );
+  }, []);
+
+  return (
+    <div className="flex flex-wrap gap-4">
+      {Object.entries(groupedInterests).map(([category, items]) => {
+        return (
+          <div key={category}>
+            <div className="flex flex-wrap gap-2">
+              {items.map((item) => (
+                <Label key={item.value}>{item.label}</Label>
               ))}
             </div>
           </div>

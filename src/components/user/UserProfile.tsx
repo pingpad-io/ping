@@ -1,10 +1,11 @@
-import { CalendarIcon, EditIcon, MessageCircle, MessageCircleIcon, MessageSquareIcon, User2Icon } from "lucide-react";
+import { CalendarIcon, EditIcon, MessageCircleIcon, PawPrintIcon, User2Icon } from "lucide-react";
 import Link from "next/link";
 import Markdown from "~/components/Markdown";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
 import type { User } from "./User";
-import { UserInterestList } from "./UserInterests";
+import { UserInterestsList } from "./UserInterests";
 
 export const UserProfile = ({ user, isUserProfile }: { user: User; isUserProfile: boolean }) => {
   if (!user) throw new Error("∑(O_O;) Profile not found");
@@ -35,6 +36,16 @@ export const UserProfile = ({ user, isUserProfile }: { user: User; isUserProfile
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <MessageCircleIcon size={14} />
           {user.stats.posts + user.stats.comments} Posts
+        </div>
+        <div className="text-sm flex flex-row gap-1 place-items-center">
+          <PawPrintIcon size={14} />
+          <Dialog>
+            <DialogTrigger>{user.interests.length} Interests</DialogTrigger>
+            <DialogContent>
+              <DialogHeader className="text-lg font-bold">{user.handle}'s interests</DialogHeader>
+              <UserInterestsList interests={user.interests} />
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <User2Icon size={14} />
