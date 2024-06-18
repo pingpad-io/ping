@@ -49,7 +49,7 @@ const UserBar = async () => {
 
 export function Sidebar() {
   return (
-    <div className="flex flex-col w-full gap-2 p-4 grow">
+    <div className="flex flex-col w-full gap-4 p-4 grow">
       <ServerSignedIn>
         <UserBar />
         {/* <Separator className="max-w-[150px] mx-auto" /> */}
