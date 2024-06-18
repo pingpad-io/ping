@@ -23,13 +23,13 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 export const Navigation = () => {
   return (
-    <nav className="z-[40] w-full max-w-2xl  flex flex-row justify-center items-center py-2 px-4 sticky top-0 bg-background/50 backdrop-blur-lg rounded-b-lg">
+    <nav className="z-[40] w-full max-w-2xl flex flex-row justify-center items-center p-4 sticky top-0 bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
       <Carousel
         opts={{ dragFree: true, align: "start", watchDrag: true, slidesToScroll: 6, loop: true }}
         plugins={[WheelGesturesPlugin({ active: true })]}
-        className="w-full h-10 max-w-xl select-none"
+        className="w-full h-10 max-w-[35rem] select-none"
       >
-        <CarouselPrevious className="mx-1" />
+        <CarouselPrevious variant="ghost" className="hover:bg-transparent" />
         <CarouselContent className="-ml-1">
           <NavigationCarouselItem href={"/home"}>
             <HomeIcon size={18} />
@@ -108,7 +108,7 @@ export const Navigation = () => {
             builders
           </NavigationCarouselItem>
         </CarouselContent>
-        <CarouselNext className="mx-1" />
+        <CarouselNext variant="ghost" className="hover:bg-transparent" />
       </Carousel>
     </nav>
   );

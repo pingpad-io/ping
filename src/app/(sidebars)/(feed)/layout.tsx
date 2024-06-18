@@ -14,7 +14,7 @@ export default async function layout({ children }: PropsWithChildren) {
       <ServerSignedIn>
         {/* <Separator className="max-w-sm mx-auto" /> */}
         <Navigation />
-        <div className="py-4">
+        <div className="pb-4">
           <PostWizard user={user} />
         </div>
       </ServerSignedIn>
