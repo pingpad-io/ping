@@ -63,8 +63,6 @@ export const InterestsList = ({ activeInterests }: { activeInterests: UserIntere
 };
 
 export const UserInterestsList = ({ interests }: { interests: UserInterests[] }) => {
-  const interestValues = interests.map((interest) => interest.value);
-
   const groupedInterests = useMemo(() => {
     return interests.reduce(
       (acc, interest) => {

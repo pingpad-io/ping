@@ -31,82 +31,82 @@ export const Navigation = () => {
       >
         <CarouselPrevious className="mx-1" />
         <CarouselContent className="-ml-1">
-          <NavigationItem href={"/home"}>
+          <NavigationCarouselItem href={"/home"}>
             <HomeIcon size={18} />
             home
-          </NavigationItem>
-          <NavigationItem href={"/best"}>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/best"}>
             <CrownIcon size={18} />
             best
-          </NavigationItem>
-          <NavigationItem href={"/explore/curated"}>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/explore/curated"}>
             <NewspaperIcon size={18} />
             explore
-          </NavigationItem>
-          <NavigationItem href={"/explore/collected"}>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/explore/collected"}>
             <PlusCircleIcon size={18} />
             collect
-          </NavigationItem>
-          <NavigationItem href={"/explore/latest"}>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/explore/latest"}>
             <ClockIcon size={18} />
             latest
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <Globe2Icon size={18} />
             community 1
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <SquirrelIcon size={18} />
             community 2
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <DogIcon size={18} />
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <BirdIcon size={18} />
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <TelescopeIcon size={18} />
             community 3
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <FishIcon size={18} />
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <WormIcon size={18} />
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <HammerIcon size={18} />
             community 4
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <Globe2Icon size={18} />
             community 5
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <SquirrelIcon size={18} />
             wow comunity 6
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <DogIcon size={18} />
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <BirdIcon size={18} />
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <TelescopeIcon size={18} />
             telescope
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <FishIcon size={18} />
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <WormIcon size={18} />
-          </NavigationItem>
-          <NavigationItem href={"/home"} disabled>
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/home"} disabled>
             <HammerIcon size={18} />
             builders
-          </NavigationItem>
+          </NavigationCarouselItem>
         </CarouselContent>
         <CarouselNext className="mx-1" />
       </Carousel>
@@ -120,17 +120,31 @@ export const NavigationItem = ({
   disabled = false,
 }: PropsWithChildren<{ href: string; disabled?: boolean }>) => {
   const pathname = usePathname();
-  const selectedStyle = href === pathname ? "bg-primary text-primary-foreground" : "";
+  const selectedStyle = (path: string) => (path === pathname ? "font-bold bg-accent text-accent-foreground" : "");
   const disabledStyle = disabled ? "opacity-50 pointer-events-none select-none" : "";
 
   return (
+    <Link
+      className={`rounded-md w-max h-10 disabled p-2 overflow-hidden inline-flex gap-1 items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted 
+        hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 
+      ${selectedStyle(href)} ${disabledStyle}`}
+      href={href}
+    >
+      {children}
+    </Link>
+  );
+};
+
+export const NavigationCarouselItem = ({
+  children,
+  href,
+  disabled = false,
+}: PropsWithChildren<{ href: string; disabled?: boolean }>) => {
+  return (
     <CarouselItem className="basis-auto pl-1">
-      <Link
-        className={`rounded-md h-10 p-2 overflow-hidden inline-flex gap-1 items-center justify-center text-sm transition-all bg-muted/50 hover:bg-muted hover:text-muted-foreground focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${selectedStyle} ${disabledStyle}`}
-        href={href}
-      >
+      <NavigationItem href={href} disabled={disabled}>
         {children}
-      </Link>
+      </NavigationItem>
     </CarouselItem>
   );
 };
