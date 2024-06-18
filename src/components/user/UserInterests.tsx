@@ -34,23 +34,28 @@ export const UserInterestList = ({ interests }: { interests: UserInterests[] }) 
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      {Object.entries(groupedInterests).map(([category, items]) => (
-        <div key={category}>
-          <h4>{capitalize(category.replace(/_/g, " "))}</h4>
-          <div>
-            {items.map((item) => (
-              <Toggle
-                key={item.value}
-                defaultPressed={userInterests.includes(item.value)}
-                onClick={() => handleClick(item.value)}
-              >
-                {item.label}
-              </Toggle>
-            ))}
+    <div className="flex flex-col gap-4">
+      {Object.entries(groupedInterests).map(([category, items]) => {
+        const categoryTitle = category.split("_")[0];
+
+        return (
+          <div key={category}>
+            <h1 className="text-lg font-bold">{capitalize(categoryTitle.replace(/_/g, " "))}</h1>
+            <div className="flex flex-wrap gap-2">
+              {items.map((item) => (
+                <Toggle
+                  size="sm"
+                  key={item.value}
+                  defaultPressed={userInterests.includes(item.value)}
+                  onClick={() => handleClick(item.value)}
+                >
+                  {item.label}
+                </Toggle>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

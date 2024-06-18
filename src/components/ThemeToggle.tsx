@@ -36,5 +36,5 @@ export const ThemeButtons = () => {
     );
   });
 
-  return <div>{buttons}</div>;
+  return buttons;
 };
