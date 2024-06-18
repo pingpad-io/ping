@@ -17,6 +17,12 @@ export type UserStats = {
   score: number;
 };
 
+export type UserActions = {
+  followed: boolean;
+  following: boolean;
+  blocked: boolean;
+};
+
 export type User = {
   id: string;
   name?: string;
@@ -24,6 +30,7 @@ export type User = {
   handle: string;
   address: string;
   namespace: string;
+  actions?: UserActions;
   interests?: UserInterests[];
   createdAt?: Date;
   description?: string;
@@ -50,6 +57,12 @@ export function lensProfileToUser(profile: Profile | ProfileFragment): User {
 
   const interests = parseInterests(profile.interests as ProfileInterestTypes[]);
 
+  const actions = {
+    followed: profile.operations.isFollowedByMe.value,
+    following: profile.operations.isFollowingMe.value,
+    blocked: profile.operations.isBlockedByMe.value,
+  };
+
   const user = {
     id: profile.id,
     profilePictureUrl: imageUrl,
@@ -57,6 +70,7 @@ export function lensProfileToUser(profile: Profile | ProfileFragment): User {
     createdAt: profile.createdAt as unknown as Date,
     description: profile?.metadata?.bio,
     interests,
+    actions,
     name: profile?.metadata?.displayName,
     handle: profile.handle?.localName ?? profile.id,
     namespace: profile.handle?.namespace ?? "wallet",

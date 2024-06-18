@@ -3,12 +3,18 @@ import Link from "next/link";
 import Markdown from "~/components/Markdown";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
+import { FollowButton } from "../FollowButton";
+import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
 import type { User } from "./User";
 import { UserInterestsList } from "./UserInterests";
 
 export const UserProfile = ({ user, isUserProfile }: { user: User; isUserProfile: boolean }) => {
   if (!user) throw new Error("∑(O_O;) Profile not found");
+
+  const follow = () => {
+    console.log("Follow");
+  };
 
   return (
     <div className="sticky top-0 p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 bg-card rounded-b-lg drop-shadow-md">
@@ -17,14 +23,17 @@ export const UserProfile = ({ user, isUserProfile }: { user: User; isUserProfile
       </div>
 
       <div className="flex flex-col grow place-content-around">
-        <div className="flex flex-row gap-2 place-items-center h-6">
-          <div className="text-lg font-bold w-fit truncate">{user.name}</div>
-          <div className="text-sm text-base-content font-light">@{user.handle}</div>
-          {isUserProfile && (
-            <Link className="btn btn-square btn-sm btn-ghost" href="/settings">
-              <EditIcon size={14} />
-            </Link>
-          )}
+        <div className="flex flex-row gap-2 items-center justify-between h-6">
+          <span className="flex flex-row gap-2 items-center">
+            <div className="text-lg font-bold w-fit truncate">{user.name}</div>
+            <div className="text-sm text-base-content font-light">@{user.handle}</div>
+            {isUserProfile && (
+              <Link className="btn btn-square btn-sm btn-ghost" href="/settings">
+                <EditIcon size={14} />
+              </Link>
+            )}
+          </span>
+          <FollowButton user={user} />
         </div>
         <div className="text-sm grow">
           <Markdown content={user.description} />
