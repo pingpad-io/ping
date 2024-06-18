@@ -1,16 +1,14 @@
 "use client";
-import { Edit2Icon, ReplyIcon } from "lucide-react";
-import Link from "next/link";
+
 import { useRef, useState } from "react";
-import { TimeElapsedSince } from "../TimeLabel";
-import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
+import { PostBadges } from "./PostBadges";
 import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
-import { ReactionsList } from "./PostReactions";
+import { PostInfo } from "./PostInfo";
+import { ReplyInfo } from "./PostReplyInfo";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
   const [collapsed, setCollapsed] = useState(true);
@@ -34,78 +32,3 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
     </PostContextMenu>
   );
 };
-
-export const ReplyInfo = ({ post }: { post: Post }) => {
-  const username = post.reply?.author?.handle;
-  let content = "";
-  if (post?.reply?.metadata && "content" in post.reply.metadata) {
-    content = post.reply.metadata.content.substring(0, 100);
-  }
-
-  const id = post.reply?.id;
-
-  if (!post?.reply) return null;
-
-  return (
-    <Link href={`/p/${id ?? ""}`} className="flex flex-row items-center gap-1 -mt-2 text-xs font-light leading-3">
-      <ReplyIcon size={14} className="shrink-0 scale-x-[-1] transform" />
-      <span className="pb-0.5">@{username}:</span>
-      <span className="truncate pb-0.5 ">{content}</span>
-    </Link>
-  );
-};
-
-export const PostInfo = ({ post }: { post: Post }) => {
-  const author = post.author;
-  const isLensHandle = author.namespace === "lens";
-  const handle = author.handle;
-
-  return (
-    <div
-      suppressHydrationWarning
-      className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm"
-    >
-      <Link className="flex gap-2" href={`/u/${handle}`}>
-        <span className="w-fit truncate font-bold">{author.name}</span>
-        <span className="">{`${isLensHandle ? "@" : "#"}${handle}`}</span>
-      </Link>
-      <span>{"·"}</span>
-      <TimeElapsedSince date={post.createdAt} />
-    </div>
-  );
-};
-
-export const PostBadges = ({ post }: { post: Post }) => {
-  // const editedIndicator = EditedIndicator({ post });
-  const existingReactions = ReactionsList({ post });
-
-  const hasButtons = existingReactions;
-
-  return (
-    <div className="flex grow flex-row  grow justify-around w-full items-center -mb-2 -ml-2 mt-2">
-      {hasButtons && <ReactionsList post={post} />}
-    </div>
-  );
-};
-
-export function EditedIndicator({ post }: { post: Post }) {
-  const lastUpdated = post.updatedAt ? post.updatedAt.toLocaleString() : post.createdAt.toLocaleString();
-  const tooltipText = `last updated at ${lastUpdated}`;
-
-  if (post.createdAt.toUTCString() === post.updatedAt.toUTCString()) return null;
-
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="icon" className="w-10 h-6 flex flex-row gap-1 leading-3 ">
-            <Edit2Icon size={14} className="shrink-0 scale-x-[-1] transform" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{tooltipText}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-}
