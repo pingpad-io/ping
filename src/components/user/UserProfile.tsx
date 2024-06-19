@@ -23,7 +23,7 @@ export const UserProfile = ({ user, isUserProfile }: { user: User; isUserProfile
       </div>
 
       <div className="flex flex-col grow place-content-around">
-        <div className="flex flex-row gap-2 items-center justify-between h-6">
+        <div className="flex flex-row gap-2 items-center justify-between h-10">
           <span className="flex flex-row gap-2 items-center">
             <div className="text-lg font-bold w-fit truncate">{user.name}</div>
             <div className="text-sm text-base-content font-light">@{user.handle}</div>

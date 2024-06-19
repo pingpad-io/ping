@@ -10,7 +10,6 @@ export const FollowButton = ({ user }: { user: User }) => {
   const [following, setFollowing] = useState(user.actions.followed);
   const [showEffect, setShowEffect] = useState(false);
 
-  console.log(following);
   const toggleFollow = async () => {
     const endpoint = following ? "/api/profile/unfollow" : "/api/profile/follow";
 
@@ -50,14 +49,14 @@ export const FollowButton = ({ user }: { user: User }) => {
           size="sm"
           variant={following ? "outline" : "default"}
           onClick={() => toggleFollow()}
-          className="font-bold text-sm z-10 absolute"
+          className="font-bold text-sm z-10 absolute right-0 top-0"
         >
           {following ? "Following" : "Follow"}
         </Button>
 
         {showEffect && (
           <Explosion
-            className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[5] select-none "
+            className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[5] select-none pointer-events-none"
             width={1000}
             height={1000}
             globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
