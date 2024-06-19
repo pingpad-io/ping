@@ -3,14 +3,23 @@ import Link from "next/link";
 import Markdown from "~/components/Markdown";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
+import { getLensClient } from "~/utils/getLensClient";
 import { FollowButton } from "../FollowButton";
-import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
-import type { User } from "./User";
+import { Separator } from "../ui/separator";
+import { type User, parseInterests } from "./User";
 import { UserInterestsList } from "./UserInterests";
 
-export const UserProfile = ({ user, isUserProfile }: { user: User; isUserProfile: boolean }) => {
+export const UserProfile = async ({ user }: { user: User }) => {
   if (!user) throw new Error("∑(O_O;) Profile not found");
+
+  const { user: authedUser } = await getLensClient();
+  const isUserProfile = user.id === authedUser.id;
+
+  const commonInterestTypes = user.interests
+    .map((interest) => interest.value)
+    .filter((interest) => authedUser.interests.map((interest) => interest.value).includes(interest));
+  const commonInterests = parseInterests(commonInterestTypes);
 
   return (
     <div className="sticky top-0 p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 bg-card rounded-b-lg drop-shadow-md">
@@ -45,10 +54,22 @@ export const UserProfile = ({ user, isUserProfile }: { user: User; isUserProfile
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <PawPrintIcon size={14} />
           <Dialog>
-            <DialogTrigger>{user.interests.length} Interests</DialogTrigger>
+            <DialogTrigger>
+              {user.interests.length} Interests
+              {!isUserProfile && <> ({commonInterestTypes.length} in common)</>}
+            </DialogTrigger>
             <DialogContent>
               <DialogHeader className="text-lg font-bold">{user.handle}'s interests</DialogHeader>
               <UserInterestsList interests={user.interests} />
+              {commonInterests.length > 0 && !isUserProfile && (
+                <>
+                  <Separator />
+                  <DialogHeader className="text-lg font-bold">
+                    {commonInterests.length} interests in common:
+                  </DialogHeader>
+                  <UserInterestsList interests={commonInterests} />
+                </>
+              )}
             </DialogContent>
           </Dialog>
         </div>

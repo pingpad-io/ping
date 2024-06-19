@@ -19,7 +19,7 @@ export default async function layout({
   if (!user) throw new Error("∑(O_O;) Profile not found");
   return (
     <>
-      <UserProfile user={user} isUserProfile={isUserProfile} />
+      <UserProfile user={user} />
       <UserNavigation handle={handle} />
 
       <Card className="z-[30] hover:bg-card p-4 border-0">{children}</Card>
