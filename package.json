@@ -63,6 +63,7 @@
     "next-themes": "^0.3.0",
     "pino-pretty": "^11.0.0",
     "react": "^18.2.0",
+    "react-canvas-confetti": "^2.0.7",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.4",
     "react-in-viewport": "^1.0.0-beta.2",

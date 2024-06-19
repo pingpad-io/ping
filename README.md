@@ -10,7 +10,7 @@ clarity paves the way for brilliance. pingpad is focusing on clear and efficient
 
 **how?**
 
-built on top of [lens](https://lens.xyz) network
+built on top of [lens network](https://lens.xyz), media is shared using [ipfs](https://ipfs.io) and backed up on [arweave](https://arweave.org)
 
 ## Gallery
 <img height="auto" width="700" style="border-radius:50px" src="https://github.com/pingpad-io/ping/assets/72769566/29e2ae6a-f89e-45cc-b17a-4d5c6a4dd841" />
