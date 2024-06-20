@@ -20,6 +20,7 @@ import type {
   LinkMetadataV3,
   LiveStreamMetadataV3,
   MintMetadataV3,
+  PublicationStats,
   Quote,
   SpaceMetadataV3,
   StoryMetadataV3,
@@ -31,7 +32,13 @@ import type {
 import { type User, lensProfileToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
-export type PostReactions = Record<PostReactionType, number>;
+export type PostReactions = Record<PostReactionType, number> & {
+  isUpvoted?: boolean;
+  isDownvoted?: boolean;
+  isBookmarked?: boolean;
+  isCollected?: boolean;
+  isReposted?: boolean;
+};
 export type PostPlatform = "lens" | "farcaster";
 export type AnyLensItem =
   | FeedItem
@@ -115,7 +122,7 @@ export function lensItemToPost(item: AnyLensItem): Post {
 
   post.id = origin.id;
   post.author = lensProfileToUser(origin.by);
-  post.reactions = getReactions(origin.stats);
+  post.reactions = getReactions(origin);
   post.comments = getComments(normalizedPost);
   post.reply = getReply(origin);
   post.metadata = getMetadata(origin.metadata);
@@ -136,14 +143,19 @@ function normalizePost(item: AnyLensItem) {
   return item;
 }
 
-function getReactions(stats: any) {
+function getReactions(post: LensPost | Comment | Quote): Partial<PostReactions> {
   return {
-    Upvote: stats?.upvotes,
-    Downvote: stats?.downvotes,
-    Bookmark: stats?.bookmarks,
-    Collect: stats?.collects,
-    Comment: stats?.comments,
-    Repost: stats?.mirrors,
+    Upvote: post.stats.upvotes,
+    Downvote: post.stats?.downvotes,
+    Bookmark: post.stats?.bookmarks,
+    Collect: post.stats?.collects,
+    Comment: post.stats?.comments,
+    Repost: post.stats?.mirrors,
+    isUpvoted: post.operations.hasUpvoted,
+    isDownvoted: post.operations.hasDownvoted,
+    isBookmarked: post.operations.hasBookmarked,
+    isCollected: post.operations.hasCollected.value,
+    isReposted: post.operations.hasMirrored,
   };
 }
 

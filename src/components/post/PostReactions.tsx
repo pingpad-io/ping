@@ -20,10 +20,10 @@ export function hasReactions(post: Post) {
 }
 
 export function ReactionsList({ post }: { post: Post }) {
-  const [isLiked, setIsLiked] = useState(false);
-  const [isReposted, setIsReposted] = useState(false);
-  const [isCollected, setIsCollected] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
+  const [isReposted, setIsReposted] = useState(post.reactions.isReposted);
+  const [isCollected, setIsCollected] = useState(post.reactions.isCollected);
+  const [isBookmarked, setIsBookmarked] = useState(post.reactions.isBookmarked);
 
   if (!hasReactions(post)) return null;
 
