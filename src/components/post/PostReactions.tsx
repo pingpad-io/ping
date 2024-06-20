@@ -57,6 +57,11 @@ export function ReactionsList({ post }: { post: Post }) {
 
   const onBookmark = async () => {
     setIsBookmarked(!isBookmarked);
+    const response = await fetch(`/api/posts/${post.id}/bookmark`, {
+      method: "POST",
+    });
+    const result = (await response.json()).result;
+    setIsBookmarked(result);
   };
 
   return (
