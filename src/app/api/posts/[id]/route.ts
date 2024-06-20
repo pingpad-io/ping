@@ -4,15 +4,14 @@ import { getLensClient } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const postId = searchParams.get("id") || undefined;
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const id = params.id;
 
   try {
     const { client } = await getLensClient();
 
     const lensPost = await client.publication.fetch({
-      forId: postId,
+      forId: id,
     });
 
     const nativePost = lensItemToPost(lensPost);

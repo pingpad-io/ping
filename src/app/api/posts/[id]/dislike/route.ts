@@ -10,9 +10,8 @@ import { getLensClient } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const id = searchParams.get("id") || undefined;
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  const id = params.id;
 
   if (!id) {
     return NextResponse.json({ error: "Missing publication id" }, { status: 400 });
@@ -26,21 +25,21 @@ export async function POST(req: NextRequest) {
     });
 
     if (publication.__typename === "Mirror") {
-      return NextResponse.json({ error: "Cannot like a share publication" }, { status: 400 });
+      return NextResponse.json({ error: "Cannot dislike a share publication" }, { status: 400 });
     }
 
-    const reactionExists = publication.operations.hasUpvoted;
+    const reactionExists = publication.operations.hasDownvoted;
 
     let result: Result<void, CredentialsExpiredError | NotAuthenticatedError>;
     if (reactionExists) {
       result = await client.publication.reactions.remove({
         for: id,
-        reaction: PublicationReactionType.Upvote,
+        reaction: PublicationReactionType.Downvote,
       });
     } else {
       result = await client.publication.reactions.add({
         for: id,
-        reaction: PublicationReactionType.Upvote,
+        reaction: PublicationReactionType.Downvote,
       });
     }
 
