@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { set } from "zod";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
 
@@ -26,18 +25,30 @@ export function ReactionsList({ post }: { post: Post }) {
   const [isCollected, setIsCollected] = useState(post.reactions.isCollected);
   const [isBookmarked, setIsBookmarked] = useState(post.reactions.isBookmarked);
 
+  const [likes, setLikes] = useState(post.reactions.Upvote);
+  const [reposts, setReposts] = useState(post.reactions.Repost);
+  const [comments, setComments] = useState(post.reactions.Comment);
+  const [collects, setCollects] = useState(post.reactions.Collect);
+  const [bookmarks, setBookmarks] = useState(post.reactions.Bookmark);
+
   if (!hasReactions(post)) return null;
 
   const onLike = async () => {
-    setIsLiked(!isLiked);
+    const isLikedNow = !isLiked;
+    setIsLiked(isLikedNow);
+    setLikes(isLikedNow ? likes + 1 : likes - 1);
     const response = await fetch(`/api/posts/${post.id}/like`, {
       method: "POST",
     });
     const result = (await response.json()).result;
     setIsLiked(result);
+    if (!result) {
+      setLikes(likes - 1);
+    }
   };
 
   const onRepost = async () => {
+    setReposts(reposts + 1);
     setIsReposted(true);
     const response = await fetch(`/api/posts/${post.id}/repost`, {
       method: "POST",
@@ -47,6 +58,7 @@ export function ReactionsList({ post }: { post: Post }) {
   };
 
   const onCollect = async () => {
+    setCollects(collects + 1);
     setIsCollected(true);
     const respone = await fetch(`/api/posts/${post.id}/collect`, {
       method: "POST",
@@ -56,6 +68,7 @@ export function ReactionsList({ post }: { post: Post }) {
   };
 
   const onBookmark = async () => {
+    setBookmarks(bookmarks + 1);
     setIsBookmarked(!isBookmarked);
     const response = await fetch(`/api/posts/${post.id}/bookmark`, {
       method: "POST",
@@ -67,7 +80,7 @@ export function ReactionsList({ post }: { post: Post }) {
   return (
     <div className="flex flex-row items-center gap-12 w-full">
       <Link href={`/p/${post.id}`}>
-        <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={post.reactions.Comment} />
+        <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={comments} />
       </Link>
       <Button
         size="sm"
@@ -75,12 +88,7 @@ export function ReactionsList({ post }: { post: Post }) {
         onClick={onRepost}
         className="h-max w-12 border-0 px-0 place-content-center items-center"
       >
-        <ReactionBadge
-          pressed={isReposted}
-          key={`${post.id}-reposts`}
-          reaction={"Repost"}
-          amount={post.reactions.Repost}
-        />
+        <ReactionBadge pressed={isReposted} key={`${post.id}-reposts`} reaction={"Repost"} amount={reposts} />
       </Button>
       <Button
         size="sm"
@@ -88,12 +96,7 @@ export function ReactionsList({ post }: { post: Post }) {
         onClick={onLike}
         className="h-max w-12 border-0 px-0 place-content-center items-center"
       >
-        <ReactionBadge
-          pressed={isLiked}
-          key={`${post.id}-upvotes`}
-          reaction={"Upvote"}
-          amount={post.reactions.Upvote}
-        />
+        <ReactionBadge pressed={isLiked} key={`${post.id}-upvotes`} reaction={"Upvote"} amount={likes} />
       </Button>
       <Button
         size="sm"
@@ -101,12 +104,7 @@ export function ReactionsList({ post }: { post: Post }) {
         onClick={onCollect}
         className="h-max w-12 border-0 px-0 place-content-center items-center"
       >
-        <ReactionBadge
-          pressed={isCollected}
-          key={`${post.id}-collects`}
-          reaction={"Collect"}
-          amount={post.reactions.Collect}
-        />
+        <ReactionBadge pressed={isCollected} key={`${post.id}-collects`} reaction={"Collect"} amount={collects} />
       </Button>
       <div className="grow" />
       <div className="flex flex-row opacity-0 group-hover:opacity-100 duration-300 delay-150">
@@ -116,12 +114,7 @@ export function ReactionsList({ post }: { post: Post }) {
           onClick={onBookmark}
           className="h-max w-12 border-0 px-0 place-content-center items-center"
         >
-          <ReactionBadge
-            pressed={isBookmarked}
-            key={`${post.id}-bookmarks`}
-            reaction={"Bookmark"}
-            amount={post.reactions.Bookmark}
-          />
+          <ReactionBadge pressed={isBookmarked} key={`${post.id}-bookmarks`} reaction={"Bookmark"} amount={bookmarks} />
         </Button>
       </div>
     </div>
