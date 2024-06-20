@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { set } from "zod";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
 
@@ -32,19 +33,26 @@ export function ReactionsList({ post }: { post: Post }) {
     const response = await fetch(`/api/posts/${post.id}/like`, {
       method: "POST",
     });
-    const data = await response.json();
+    const result = (await response.json()).result;
+    setIsLiked(result);
   };
 
   const onRepost = async () => {
-    setIsReposted(!isReposted);
-    // const response = await fetch(`/api/posts/${post.id}/repost`, {
-    //   method: "POST",
-    // });
-    // const data = await response.json();
+    setIsReposted(true);
+    const response = await fetch(`/api/posts/${post.id}/repost`, {
+      method: "POST",
+    });
+    const result = (await response.json()).result;
+    setIsReposted(result);
   };
 
   const onCollect = async () => {
-    setIsCollected(!isCollected);
+    setIsCollected(true);
+    const respone = await fetch(`/api/posts/${post.id}/collect`, {
+      method: "POST",
+    });
+    const result = (await respone.json()).result;
+    setIsCollected(result);
   };
 
   const onBookmark = async () => {
