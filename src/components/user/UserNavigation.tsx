@@ -1,12 +1,16 @@
 "use client";
 
-import { ImagesIcon, MessageCircle, MessageSquare, PlusCircleIcon } from "lucide-react";
+import { ImagesIcon, MessageCircle, MessageCircleCode, MessageSquare, PlusCircleIcon } from "lucide-react";
 import { NavigationItem } from "../menu/Navigation";
 
 export const UserNavigation = ({ handle }: { handle: string }) => {
   return (
     <nav className="z-[40] flex flex-row justify-start items-center gap-2 pt-2 px-4">
       <NavigationItem href={`/u/${handle}`}>
+        <MessageCircleCode size={18} />
+        all
+      </NavigationItem>
+      <NavigationItem href={`/u/${handle}/posts`}>
         <MessageCircle size={18} />
         posts
       </NavigationItem>

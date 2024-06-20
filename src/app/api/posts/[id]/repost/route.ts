@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: "Cannot repost a share publication", result: false }, { status: 400 });
     }
 
-    const result = await client.publication.mirrorOnMomoka({
+    const result = await client.publication.mirrorOnchain({
       mirrorOn: id,
     });
 
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: result.value.reason, result: false }, { status: 500 });
     }
 
-    if (result.value.__typename === "CreateMomokaPublicationResult") {
+    if (result.value.__typename === "RelaySuccess") {
       return NextResponse.json({ result: true }, { status: 200 });
     }
   } catch (error) {

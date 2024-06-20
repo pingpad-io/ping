@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const idFrom = searchParams.get("id") || undefined;
   const cursor = searchParams.get("cursor") || undefined;
-  const type = searchParams.get("type") || "post";
+  const type = searchParams.get("type") || "any";
 
   let publicationType: PublicationType;
   switch (type) {
@@ -36,6 +36,10 @@ export async function GET(req: NextRequest) {
       break;
     case "repost":
       publicationType = PublicationType.Mirror;
+      break;
+    case "any":
+      publicationType =
+        PublicationType.Post || PublicationType.Comment || PublicationType.Quote || PublicationType.Mirror;
       break;
     default:
       publicationType = PublicationType.Post;

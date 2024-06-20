@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: { user: string } })
   const title = `${handle}`;
   return {
     title,
-    description: `@${handle} on Pingpad`,
+    description: `@${handle}'s comments on Pingpad`,
   };
 }
 
@@ -18,7 +18,9 @@ const user = async ({ params }: { params: { user: string } }) => {
   const handle = params.user;
   const { user, posts, nextCursor } = await getInitialData(handle);
 
-  return <InfiniteScroll endpoint={`/api/posts?id=${user.id}`} initialData={posts} initialCursor={nextCursor} />;
+  return (
+    <InfiniteScroll endpoint={`/api/posts?id=${user.id}&type=post`} initialData={posts} initialCursor={nextCursor} />
+  );
 };
 
 const getInitialData = async (handle: string) => {
@@ -27,7 +29,7 @@ const getInitialData = async (handle: string) => {
 
   const lensPosts = await client.publication
     .fetchAll({
-      where: { from: [user.id] },
+      where: { from: [user.id], publicationTypes: [PublicationType.Post] },
       limit: LimitType.Ten,
     })
     .catch(() => {
