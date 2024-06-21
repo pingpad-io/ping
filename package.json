@@ -41,6 +41,8 @@
     "@vercel/speed-insights": "^1.0.10",
     "@wagmi/connectors": "^4.1.24",
     "@wagmi/core": "^2.6.15",
+    "i18next": "^23.2.3",
+    "react-i18next": "^13.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cookies-next": "^4.1.1",
