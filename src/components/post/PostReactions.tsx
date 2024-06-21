@@ -1,6 +1,7 @@
 "use client";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
+import confetti from "canvas-confetti";
 import {
   Bookmark,
   BookmarkIcon,
@@ -18,6 +19,12 @@ import type { Post, PostReactionType } from "./Post";
 
 export function hasReactions(post: Post) {
   return Object.values(post.reactions).some((value) => value !== 0 || value !== undefined);
+}
+
+interface PathShape {
+  type: "path";
+  path: string;
+  matrix: DOMMatrix;
 }
 
 export function ReactionsList({ post }: { post: Post }) {
@@ -90,6 +97,9 @@ export function ReactionsList({ post }: { post: Post }) {
     setIsBookmarked(result);
   };
 
+  const heartPath =
+    "M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z";
+
   return (
     <div className="flex flex-row items-center gap-12 w-full">
       <Link href={`/p/${post.id}`}>
@@ -121,10 +131,11 @@ export function ReactionsList({ post }: { post: Post }) {
             ...defaultOptions,
             colors: ["#fff", "#ccc", "#555"],
             scalar: 1,
-            particleCount: 30,
-            ticks: 50,
-            startVelocity: 10,
-            shapes: ["square", "circle"],
+            particleCount: 20,
+            ticks: 60,
+            startVelocity: 7,
+            // shapes: [confetti.shapeFromPath({ path: heartPath, matrix: new DOMMatrix() })],
+            shapes: ["star", "circle", "square"],
           })}
         />
       </Button>
