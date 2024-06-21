@@ -14,9 +14,9 @@ export const UserCard = ({ children, user }: PropsWithChildren & { user: User })
   const loadCard = () => {
     execute({ forProfileId: user.id as ProfileId });
   };
-  const name = user?.name;
+  const name = user?.name ?? "";
   const handle = user?.handle;
-  const description = user?.description;
+  const description = user?.description ?? "";
   // const _avatar = user?.profilePictureUrl;
   // const _banner = data?.metadata?.coverPicture?.optimized
   //   ? data?.metadata?.coverPicture?.optimized

@@ -42,18 +42,6 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
     }
   };
 
-  const decorateOptions = (defaultOptions) => {
-    return {
-      ...defaultOptions,
-      colors: ["#fff", "#ccc", "#555"],
-      scalar: 1,
-      particleCount: 20,
-      ticks: 75,
-      startVelocity: 20,
-      shapes: ["star", "circle"],
-    };
-  };
-
   return (
     <>
       <div className="relative z-0 items-center justify-center">
@@ -83,7 +71,15 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
           width={1000}
           height={1000}
           globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
-          decorateOptions={decorateOptions}
+          decorateOptions={(defaultOptions) => ({
+            ...defaultOptions,
+            colors: ["#fff", "#ccc", "#555"],
+            scalar: 1,
+            particleCount: 20,
+            ticks: 75,
+            startVelocity: 20,
+            shapes: ["star", "circle"],
+          })}
         />
       </div>
     </>

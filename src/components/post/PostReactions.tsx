@@ -11,7 +11,8 @@ import {
   ThumbsDownIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Explosion from "react-canvas-confetti/dist/presets/explosion";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
 
@@ -31,20 +32,32 @@ export function ReactionsList({ post }: { post: Post }) {
   const [collects, setCollects] = useState(post.reactions.Collect);
   const [bookmarks, setBookmarks] = useState(post.reactions.Bookmark);
 
+  const explosionController = useRef<any>();
+
   if (!hasReactions(post)) return null;
 
   const onLike = async () => {
     const isLikedNow = !isLiked;
     setIsLiked(isLikedNow);
     setLikes(isLikedNow ? likes + 1 : likes - 1);
+    isLikedNow ? shootEffect() : null;
+
     const response = await fetch(`/api/posts/${post.id}/like`, {
       method: "POST",
     });
     const result = (await response.json()).result;
-    setIsLiked(result);
     if (!result) {
       setLikes(likes - 1);
     }
+  };
+
+  const onInitHandler = ({ conductor }) => {
+    explosionController.current = conductor;
+  };
+
+  const shootEffect = () => {
+    if (!explosionController.current) return;
+    explosionController.current.shoot();
   };
 
   const onRepost = async () => {
@@ -94,9 +107,26 @@ export function ReactionsList({ post }: { post: Post }) {
         size="sm"
         variant="ghost"
         onClick={onLike}
-        className="h-max w-12 border-0 px-0 place-content-center items-center"
+        className="h-max w-12 border-0 px-0 place-content-center items-center relative"
       >
         <ReactionBadge pressed={isLiked} key={`${post.id}-upvotes`} reaction={"Upvote"} amount={likes} />
+
+        <Explosion
+          onInit={onInitHandler}
+          className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[5] select-none pointer-events-none"
+          width={1000}
+          height={1000}
+          globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
+          decorateOptions={(defaultOptions) => ({
+            ...defaultOptions,
+            colors: ["#fff", "#ccc", "#555"],
+            scalar: 1,
+            particleCount: 30,
+            ticks: 50,
+            startVelocity: 10,
+            shapes: ["square", "circle"],
+          })}
+        />
       </Button>
       <Button
         size="sm"
