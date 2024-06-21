@@ -5,7 +5,9 @@ import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
 import { getLensClient } from "~/utils/getLensClient";
 import { FollowButton } from "../FollowButton";
+import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
+import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { type User, parseInterests } from "./User";
 import { UserInterestsList } from "./UserInterests";
@@ -15,6 +17,7 @@ export const UserProfile = async ({ user }: { user: User }) => {
 
   const { user: authedUser } = await getLensClient();
   const isUserProfile = user.id === authedUser.id;
+  const isFollowingMe = user.actions.following;
 
   const commonInterestTypes = user.interests
     .map((interest) => interest.value)
@@ -23,8 +26,10 @@ export const UserProfile = async ({ user }: { user: User }) => {
 
   return (
     <div className="sticky top-0 p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 bg-card rounded-b-lg drop-shadow-md">
-      <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
-        <UserAvatar card={false} user={user} />
+      <div className="flex flex-col gap-2">
+        <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
+          <UserAvatar card={false} user={user} />
+        </div>
       </div>
 
       <div className="flex flex-col grow place-content-around">
@@ -37,6 +42,7 @@ export const UserProfile = async ({ user }: { user: User }) => {
                 <EditIcon size={14} />
               </Link>
             )}
+            {isFollowingMe && <Badge variant="secondary">Follows you</Badge>}
           </span>
           {!isUserProfile && <FollowButton user={user} />}
         </div>

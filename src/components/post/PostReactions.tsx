@@ -27,7 +27,7 @@ export function ReactionsList({ post }: { post: Post }) {
 
   const [likes, setLikes] = useState(post.reactions.Upvote);
   const [reposts, setReposts] = useState(post.reactions.Repost);
-  const [comments, setComments] = useState(post.reactions.Comment);
+  const [comments] = useState(post.reactions.Comment);
   const [collects, setCollects] = useState(post.reactions.Collect);
   const [bookmarks, setBookmarks] = useState(post.reactions.Bookmark);
 

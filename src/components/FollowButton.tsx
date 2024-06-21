@@ -6,8 +6,9 @@ import { toast } from "sonner";
 import type { User } from "./post/Post";
 import { Button } from "./ui/button";
 
-export const FollowButton = ({ user }: { user: User }) => {
+export const FollowButton = ({ user, className }: { user: User; className?: string }) => {
   const [following, setFollowing] = useState(user.actions.followed);
+  const followsMe = user.actions.following;
   const controller = useRef<any>();
 
   const onInitHandler = ({ conductor }) => {
@@ -55,15 +56,26 @@ export const FollowButton = ({ user }: { user: User }) => {
 
   return (
     <>
-      <div className="relative z-0 h-10 w-24 items-center justify-center">
+      <div className="relative z-0 items-center justify-center">
         <Button
           size="sm"
           variant={following ? "outline" : "default"}
           onClick={() => toggleFollow()}
-          className="font-bold text-sm z-10 absolute right-0 top-0"
+          className={`font-bold text-sm z-10 absolute right-0 top-0 ${className}`}
         >
-          {following ? "Following" : "Follow"}
+          {following ? "Following" : followsMe ? "Follow back" : "Follow"}
         </Button>
+
+        {/* Hidden button to stretch the parent */}
+        <Button
+          size="sm"
+          variant={following ? "outline" : "default"}
+          onClick={() => {}}
+          className={`font-bold text-sm right-0 top-0 ${className} display-none`}
+        >
+          {following ? "Following" : followsMe ? "Follow back" : "Follow"}
+        </Button>
+        {/* Hidden button to stretch the parent */}
 
         <Explosion
           onInit={onInitHandler}
