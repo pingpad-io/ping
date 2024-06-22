@@ -23,13 +23,13 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 export const Navigation = () => {
   return (
-    <nav className="z-[40] w-full max-w-2xl flex flex-row justify-center items-center p-4 sticky top-0 bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
+    <nav className="z-[40] w-full max-w-2xl flex flex-row justify-center items-center p-4 px-0 sticky top-0 bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
       <Carousel
         opts={{ dragFree: true, align: "start", watchDrag: true, slidesToScroll: 6, loop: true }}
         plugins={[WheelGesturesPlugin({ active: true })]}
-        className="w-full h-10 max-w-[35rem] select-none"
+        className="w-full h-10 max-w-[32rem] select-none"
       >
-        <CarouselPrevious variant="ghost" className="hover:bg-transparent" />
+        <CarouselPrevious variant="ghost" />
         <CarouselContent className="-ml-1">
           <NavigationCarouselItem href={"/home"}>
             <HomeIcon size={18} />
@@ -108,7 +108,7 @@ export const Navigation = () => {
             builders
           </NavigationCarouselItem>
         </CarouselContent>
-        <CarouselNext variant="ghost" className="hover:bg-transparent" />
+        <CarouselNext variant="ghost" />
       </Carousel>
     </nav>
   );
@@ -120,7 +120,7 @@ export const NavigationItem = ({
   disabled = false,
 }: PropsWithChildren<{ href: string; disabled?: boolean }>) => {
   const pathname = usePathname();
-  const selectedStyle = (path: string) => (path === pathname ? "font-bold bg-accent text-accent-foreground" : "");
+  const selectedStyle = (path: string) => (path === pathname ? "font-bold bg-secondary text-secondary-foreground" : "");
   const disabledStyle = disabled ? "opacity-50 pointer-events-none select-none" : "";
 
   return (

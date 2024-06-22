@@ -131,9 +131,9 @@ export function ReactionsList({ post }: { post: Post }) {
             ...defaultOptions,
             colors: ["#fff", "#ccc", "#555"],
             scalar: 1,
-            particleCount: 20,
+            particleCount: 15,
             ticks: 60,
-            startVelocity: 7,
+            startVelocity: 8,
             // shapes: [confetti.shapeFromPath({ path: heartPath, matrix: new DOMMatrix() })],
             shapes: ["star", "circle", "square"],
           })}
