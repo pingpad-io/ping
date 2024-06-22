@@ -21,12 +21,6 @@ export function hasReactions(post: Post) {
   return Object.values(post.reactions).some((value) => value !== 0 || value !== undefined);
 }
 
-interface PathShape {
-  type: "path";
-  path: string;
-  matrix: DOMMatrix;
-}
-
 export function ReactionsList({ post }: { post: Post }) {
   const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
   const [isReposted, setIsReposted] = useState(post.reactions.isReposted);
@@ -97,8 +91,8 @@ export function ReactionsList({ post }: { post: Post }) {
     setIsBookmarked(result);
   };
 
-  const heartPath =
-    "M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z";
+  // const heartPath =
+  //   "M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z";
 
   return (
     <div className="flex flex-row items-center gap-12 w-full">
@@ -209,9 +203,9 @@ export const ReactionIcon = ({ reaction, pressed }: { reaction: PostReactionType
       );
     case "Repost":
       return pressed ? (
-        <Repeat2Icon strokeWidth={3.5} color="hsl(var(--accent-foreground))" size={17} />
+        <Repeat2Icon strokeWidth={3.5} color="hsl(var(--accent-foreground))" size={18} />
       ) : (
-        <Repeat2Icon size={17} />
+        <Repeat2Icon strokeWidth={1.8} size={18} />
       );
     case "Comment":
       return <MessageSquareIcon size={15} />;
