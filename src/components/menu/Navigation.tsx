@@ -3,15 +3,27 @@
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import {
   BirdIcon,
+  Bitcoin,
+  CameraIcon,
+  CircleSlashIcon,
   ClockIcon,
   CrownIcon,
   DogIcon,
   FishIcon,
+  FrameIcon,
   Globe2Icon,
+  GlobeIcon,
   HammerIcon,
   HomeIcon,
+  LaughIcon,
+  LibraryIcon,
+  LineChartIcon,
+  MusicIcon,
   NewspaperIcon,
+  PaletteIcon,
+  PartyPopperIcon,
   PlusCircleIcon,
+  SproutIcon,
   SquirrelIcon,
   TelescopeIcon,
   WormIcon,
@@ -51,61 +63,76 @@ export const Navigation = () => {
             <ClockIcon size={18} />
             latest
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <Globe2Icon size={18} />
-            community 1
+          <NavigationCarouselItem href={"/c/orbcommunitieslens"}>
+            <SproutIcon size={18} />
+            orb/lens
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <SquirrelIcon size={18} />
-            community 2
+          <NavigationCarouselItem href={"/c/orbcommunitiesart"}>
+            <PaletteIcon size={18} />
+            orb/art
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <DogIcon size={18} />
+          <NavigationCarouselItem href={"/c/orbcommunitiestrading"}>
+            <LineChartIcon size={18} />
+            orb/trading
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <BirdIcon size={18} />
+          <NavigationCarouselItem href={"/c/orbcommunitiesraave"}>
+            <PartyPopperIcon size={18} />
+            orb/raave
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <TelescopeIcon size={18} />
-            community 3
+          <NavigationCarouselItem href={"/c/orbcommunitiesafk"}>
+            <PartyPopperIcon size={18} />
+            orb/afk
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
+          <NavigationCarouselItem href={"/c/orbcommunitiestouchgrass"}>
+            <PartyPopperIcon size={18} />
+            orb/touchgrass
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitiesphotography"}>
+            <CameraIcon size={18} />
+            orb/photography
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitiesbonsai"}>
             <FishIcon size={18} />
+            orb/bonsai
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
+          <NavigationCarouselItem href={"/c/orbcommunitiesdefi"}>
+            <Bitcoin size={18} />
+            orb/defi
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitieszk"}>
+            <CircleSlashIcon size={18} />
+            orb/zk
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitieslips"}>
+            <SproutIcon fill="hsl(var(--primary))" size={18} />
+            orb/LIPs
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitiesmetaverse"}>
+            <GlobeIcon size={18} />
+            orb/metaverse
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitiesdesign"}>
+            <FrameIcon size={18} />
+            orb/design
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitiesvinylandmusic"}>
+            <MusicIcon size={18} />
+            orb/music
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitiesmemes"}>
+            <LaughIcon size={18} />
+            orb/memes
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitiesbooks"}>
+            <LibraryIcon size={18} />
+            orb/books
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/c/orbcommunitiesdevelopers"}>
             <WormIcon size={18} />
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
+          <NavigationCarouselItem href={"/c/orbcommunitiesbuild"}>
             <HammerIcon size={18} />
-            community 4
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <Globe2Icon size={18} />
-            community 5
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <SquirrelIcon size={18} />
-            wow comunity 6
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <DogIcon size={18} />
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <BirdIcon size={18} />
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <TelescopeIcon size={18} />
-            telescope
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <FishIcon size={18} />
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <WormIcon size={18} />
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/home"} disabled>
-            <HammerIcon size={18} />
-            builders
+            orb/build
           </NavigationCarouselItem>
         </CarouselContent>
         <CarouselNext variant="ghost" />
