@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const idFrom = searchParams.get("id") || undefined;
   const cursor = searchParams.get("cursor") || undefined;
+  const community = searchParams.get("community") || undefined;
   const type = searchParams.get("type") || "any";
 
   let publicationType: PublicationType;
@@ -50,10 +51,22 @@ export async function GET(req: NextRequest) {
 
     let data: PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>;
     if (isAuthenticated && !idFrom) {
-      data = (await client.feed.fetch({ where: { for: profileId }, cursor })).unwrap();
+      data = (
+        await client.feed.fetch({
+          where: {
+            for: profileId,
+            metadata: { tags: { oneOf: [community] } },
+          },
+          cursor,
+        })
+      ).unwrap();
     } else {
       data = await client.publication.fetchAll({
-        where: { publicationTypes: [publicationType], from: idFrom ? [idFrom] : undefined },
+        where: {
+          publicationTypes: [publicationType],
+          from: idFrom ? [idFrom] : undefined,
+          metadata: { tags: { oneOf: [community] } },
+        },
         limit: LimitType.Ten,
         cursor,
       });
@@ -70,6 +83,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const data = await req.json().catch(() => null);
+
   const { client, isAuthenticated, handle } = await getLensClient();
 
   if (!data) {
