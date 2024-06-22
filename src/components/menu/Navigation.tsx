@@ -15,7 +15,10 @@ import {
   GlobeIcon,
   HammerIcon,
   HomeIcon,
+  KeyboardIcon,
+  KeyboardOffIcon,
   LaughIcon,
+  LeafIcon,
   LibraryIcon,
   LineChartIcon,
   MusicIcon,
@@ -26,7 +29,9 @@ import {
   SproutIcon,
   SquirrelIcon,
   TelescopeIcon,
+  TreeDeciduousIcon,
   WormIcon,
+  WrenchIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -80,11 +85,11 @@ export const Navigation = () => {
             orb/raave
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/c/orbcommunitiesafk"}>
-            <PartyPopperIcon size={18} />
+            <KeyboardOffIcon size={18} />
             orb/afk
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/c/orbcommunitiestouchgrass"}>
-            <PartyPopperIcon size={18} />
+            <LeafIcon size={18} />
             orb/touchgrass
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/c/orbcommunitiesphotography"}>
@@ -92,7 +97,7 @@ export const Navigation = () => {
             orb/photography
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/c/orbcommunitiesbonsai"}>
-            <FishIcon size={18} />
+            <TreeDeciduousIcon size={18} />
             orb/bonsai
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/c/orbcommunitiesdefi"}>
@@ -128,7 +133,8 @@ export const Navigation = () => {
             orb/books
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/c/orbcommunitiesdevelopers"}>
-            <WormIcon size={18} />
+            <WrenchIcon size={18} />
+            orb/developers
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/c/orbcommunitiesbuild"}>
             <HammerIcon size={18} />

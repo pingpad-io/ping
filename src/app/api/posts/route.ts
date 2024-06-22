@@ -50,12 +50,12 @@ export async function GET(req: NextRequest) {
     const { client, isAuthenticated, profileId } = await getLensClient();
 
     let data: PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>;
-    if (isAuthenticated && !idFrom) {
+
+    if (isAuthenticated && !idFrom && !community) {
       data = (
         await client.feed.fetch({
           where: {
             for: profileId,
-            metadata: { tags: { oneOf: [community] } },
           },
           cursor,
         })
