@@ -1,5 +1,5 @@
 "use client";
-import { EditIcon, ExternalLinkIcon, LinkIcon, ReplyIcon, TrashIcon } from "lucide-react";
+import { EditIcon, ExternalLinkIcon, LinkIcon, MaximizeIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -34,16 +34,16 @@ export const PostMenuContent = ({ post, profileId }: { post: Post; profileId: st
 
   return (
     <>
+      <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
+        <MaximizeIcon size={12} className="mr-2 h-4 w-4" />
+        expand
+      </Button>
       <Link href={postLink} referrerPolicy="no-referrer" target="_blank">
         <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
           <ExternalLinkIcon size={12} className="mr-2 h-4 w-4" />
-          open
+          open in new tab
         </Button>
       </Link>
-      <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
-        <ReplyIcon size={12} className="mr-2 h-4 w-4" />
-        reply
-      </Button>
       <Button size="context" variant="ghost" onClick={copyLink}>
         <LinkIcon size={12} className="mr-2 h-4 w-4" />
         copy link
