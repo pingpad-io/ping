@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
         where: {
           publicationTypes: [publicationType],
           from: idFrom ? [idFrom] : undefined,
-          metadata: { tags: { oneOf: [community] } },
+          metadata: community ? { tags: { oneOf: [community] } } : undefined,
         },
         limit: LimitType.Ten,
         cursor,
