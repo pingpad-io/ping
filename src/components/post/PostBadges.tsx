@@ -5,14 +5,9 @@ import type { Post } from "./Post";
 import { ReactionsList } from "./PostReactions";
 
 export const PostBadges = ({ post }: { post: Post }) => {
-  // const editedIndicator = EditedIndicator({ post });
-  const existingReactions = ReactionsList({ post });
-
-  const hasButtons = existingReactions;
-
   return (
     <div className="flex grow flex-row  grow justify-around w-full items-center -mb-2 -ml-2 mt-2">
-      {hasButtons && <ReactionsList post={post} />}
+      <ReactionsList post={post} />
     </div>
   );
 };

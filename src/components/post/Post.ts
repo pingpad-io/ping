@@ -20,7 +20,6 @@ import type {
   LinkMetadataV3,
   LiveStreamMetadataV3,
   MintMetadataV3,
-  PublicationStats,
   Quote,
   SpaceMetadataV3,
   StoryMetadataV3,
@@ -38,6 +37,11 @@ export type PostReactions = Record<PostReactionType, number> & {
   isBookmarked?: boolean;
   isCollected?: boolean;
   isReposted?: boolean;
+  canComment: boolean;
+  canRepost: boolean;
+  canCollect: boolean;
+  canQuote: boolean;
+  canDecrypt: boolean;
 };
 export type PostPlatform = "lens" | "farcaster";
 export type AnyLensItem =
@@ -67,6 +71,12 @@ export type AnyLensMetadata =
   | ThreeDMetadataV3
   | TransactionMetadataV3
   | VideoMetadataV3;
+
+export type PostActions = {
+  canComment: boolean;
+  canRepost: boolean;
+  canCollect: boolean;
+};
 
 export type Post = {
   __typename: "Post";
@@ -156,6 +166,11 @@ function getReactions(post: LensPost | Comment | Quote): Partial<PostReactions> 
     isBookmarked: post.operations.hasBookmarked,
     isCollected: post.operations.hasCollected.value,
     isReposted: post.operations.hasMirrored,
+    canCollect: post.operations.canCollect === "YES",
+    canComment: post.operations.canComment === "YES",
+    canRepost: post.operations.canMirror === "YES",
+    canQuote: post.operations.canQuote === "YES",
+    canDecrypt: post.operations.canDecrypt.result,
   };
 }
 

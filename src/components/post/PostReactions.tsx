@@ -102,7 +102,7 @@ export function ReactionsList({ post }: { post: Post }) {
 
   return (
     <div className="flex flex-row items-center gap-12 w-full">
-      <Link href={`/p/${post.id}`}>
+      <Link className={post.reactions.canComment ? "" : "opacity-50 pointer-events-none"} href={`/p/${post.id}`}>
         <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={comments} />
       </Link>
       <Button
@@ -110,6 +110,7 @@ export function ReactionsList({ post }: { post: Post }) {
         variant="ghost"
         onClick={onRepost}
         className="h-max w-12 border-0 px-0 place-content-center items-center"
+        disabled={!post.reactions.canRepost}
       >
         <ReactionBadge pressed={isReposted} key={`${post.id}-reposts`} reaction={"Repost"} amount={reposts} />
       </Button>
@@ -143,7 +144,9 @@ export function ReactionsList({ post }: { post: Post }) {
         size="sm"
         variant="ghost"
         onClick={onCollect}
-        className="h-max w-12 border-0 px-0 place-content-center items-center"
+        className={`h-max w-12 border-0 px-0 place-content-center items-center ${
+          post.reactions.canCollect ? "" : "opacity-0 pointer-events-none"
+        }`}
       >
         <ReactionBadge pressed={isCollected} key={`${post.id}-collects`} reaction={"Collect"} amount={collects} />
       </Button>
