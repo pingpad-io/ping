@@ -4,14 +4,15 @@ import { useRef, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
-import { PostBadges } from "./PostBadges";
 import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
 import { PostInfo } from "./PostInfo";
+import { ReactionsList } from "./PostReactions";
 import { ReplyInfo } from "./PostReplyInfo";
 
 export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?: boolean }) => {
-  const [collapsed, setCollapsed] = useState(true);
+  const content = "content" in post.metadata ? post.metadata.content : "";
+  const [collapsed, setCollapsed] = useState(content.length > 400);
   const postContentRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -25,7 +26,7 @@ export const PostView = ({ post, showBadges = true }: { post: Post; showBadges?:
             <ReplyInfo post={post} />
             <PostInfo post={post} />
             <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-            {showBadges && <PostBadges post={post} />}
+            {showBadges && <ReactionsList collapsed={collapsed} post={post} />}
           </div>
         </CardContent>
       </Card>

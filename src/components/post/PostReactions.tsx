@@ -1,10 +1,9 @@
 "use client";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
-import confetti from "canvas-confetti";
 import {
-  Bookmark,
   BookmarkIcon,
+  ChevronDownIcon,
   CirclePlusIcon,
   HeartIcon,
   MessageSquareIcon,
@@ -21,7 +20,7 @@ export function hasReactions(post: Post) {
   return Object.values(post.reactions).some((value) => value !== 0 || value !== undefined);
 }
 
-export function ReactionsList({ post }: { post: Post }) {
+export function ReactionsList({ post, collapsed }: { post: Post; collapsed: boolean }) {
   const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
   const [isReposted, setIsReposted] = useState(post.reactions.isReposted);
   const [isCollected, setIsCollected] = useState(post.reactions.isCollected);
@@ -95,65 +94,82 @@ export function ReactionsList({ post }: { post: Post }) {
   //   "M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z";
 
   return (
-    <div className="flex flex-row items-center gap-12 w-full">
-      <Link className={post.reactions.canComment ? "" : "opacity-50 pointer-events-none"} href={`/p/${post.id}`}>
-        <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={comments} />
-      </Link>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={onRepost}
-        className="h-max w-12 border-0 px-0 place-content-center items-center"
-        disabled={!post.reactions.canRepost}
-      >
-        <ReactionBadge pressed={isReposted} key={`${post.id}-reposts`} reaction={"Repost"} amount={reposts} />
-      </Button>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={onLike}
-        className="h-max w-12 border-0 px-0 place-content-center items-center relative"
-      >
-        <ReactionBadge pressed={isLiked} key={`${post.id}-upvotes`} reaction={"Upvote"} amount={likes} />
-
-        <Explosion
-          onInit={onInitHandler}
-          className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[5] select-none pointer-events-none"
-          width={1000}
-          height={1000}
-          globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
-          decorateOptions={(defaultOptions) => ({
-            ...defaultOptions,
-            colors: ["#fff", "#ccc", "#555"],
-            scalar: 1,
-            particleCount: 15,
-            ticks: 60,
-            startVelocity: 8,
-            // shapes: [confetti.shapeFromPath({ path: heartPath, matrix: new DOMMatrix() })],
-            shapes: ["star", "circle", "square"],
-          })}
-        />
-      </Button>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={onCollect}
-        className={`h-max w-12 border-0 px-0 place-content-center items-center ${
-          post.reactions.canCollect ? "" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <ReactionBadge pressed={isCollected} key={`${post.id}-collects`} reaction={"Collect"} amount={collects} />
-      </Button>
-      <div className="grow" />
-      <div className="flex flex-row opacity-0 group-hover:opacity-100 duration-300 delay-150">
+    <div className="flex grow flex-row  grow justify-around w-full items-center -mb-2 -ml-2 mt-2">
+      <div className="flex flex-row items-center gap-12 w-full">
+        <Link className={post.reactions.canComment ? "" : "opacity-50 pointer-events-none"} href={`/p/${post.id}`}>
+          <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={comments} />
+        </Link>
         <Button
           size="sm"
           variant="ghost"
-          onClick={onBookmark}
+          onClick={onRepost}
           className="h-max w-12 border-0 px-0 place-content-center items-center"
+          disabled={!post.reactions.canRepost}
         >
-          <ReactionBadge pressed={isBookmarked} key={`${post.id}-bookmarks`} reaction={"Bookmark"} amount={bookmarks} />
+          <ReactionBadge pressed={isReposted} key={`${post.id}-reposts`} reaction={"Repost"} amount={reposts} />
         </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onLike}
+          className="h-max w-12 border-0 px-0 place-content-center items-center relative"
+        >
+          <ReactionBadge pressed={isLiked} key={`${post.id}-upvotes`} reaction={"Upvote"} amount={likes} />
+
+          <Explosion
+            onInit={onInitHandler}
+            className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[5] select-none pointer-events-none"
+            width={1000}
+            height={1000}
+            globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
+            decorateOptions={(defaultOptions) => ({
+              ...defaultOptions,
+              colors: ["#fff", "#ccc", "#555"],
+              scalar: 1,
+              particleCount: 15,
+              ticks: 60,
+              startVelocity: 8,
+              // shapes: [confetti.shapeFromPath({ path: heartPath, matrix: new DOMMatrix() })],
+              shapes: ["star", "circle", "square"],
+            })}
+          />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onCollect}
+          className={`h-max w-12 border-0 px-0 place-content-center items-center ${
+            post.reactions.canCollect ? "" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          <ReactionBadge pressed={isCollected} key={`${post.id}-collects`} reaction={"Collect"} amount={collects} />
+        </Button>
+        <div className="grow" />
+        <div className="flex flex-row items-center gap-2 ">
+          <div className="flex flex-row opacity-0 group-hover:opacity-100 duration-300 delay-150">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onBookmark}
+              className="h-max w-12 border-0 px-0 place-content-center items-center"
+            >
+              <ReactionBadge
+                pressed={isBookmarked}
+                key={`${post.id}-bookmarks`}
+                reaction={"Bookmark"}
+                amount={bookmarks}
+              />
+            </Button>
+          </div>
+          {collapsed && <Button
+            size="sm"
+            variant="ghost"
+            onClick={onCollect}
+            className={"h-max w-12 border-0 px-0 place-content-center items-center"}
+          >
+            <ChevronDownIcon className="h-5" />
+          </Button>}
+        </div>
       </div>
     </div>
   );
