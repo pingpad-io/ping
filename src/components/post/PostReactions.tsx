@@ -16,10 +16,6 @@ import Explosion from "react-canvas-confetti/dist/presets/explosion";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
 
-export function hasReactions(post: Post) {
-  return Object.values(post.reactions).some((value) => value !== 0 || value !== undefined);
-}
-
 export function ReactionsList({ post, collapsed }: { post: Post; collapsed: boolean }) {
   const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
   const [isReposted, setIsReposted] = useState(post.reactions.isReposted);
@@ -34,9 +30,18 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
 
   const explosionController = useRef<any>();
 
-  if (!hasReactions(post)) return null;
+  const onInitHandler = ({ conductor }) => {
+    explosionController.current = conductor;
+  };
 
-  const onLike = async () => {
+  const shootEffect = () => {
+    if (!explosionController.current) return;
+    explosionController.current.shoot();
+  };
+
+  const onLike = async (e: any) => {
+    e.stopPropagation();
+
     const isLikedNow = !isLiked;
     setIsLiked(isLikedNow);
     setLikes(isLikedNow ? likes + 1 : likes - 1);
@@ -47,20 +52,13 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
     });
     const result = (await response.json()).result;
     if (!result) {
+      setIsLiked(!isLiked);
       setLikes(likes - 1);
     }
   };
 
-  const onInitHandler = ({ conductor }) => {
-    explosionController.current = conductor;
-  };
-
-  const shootEffect = () => {
-    if (!explosionController.current) return;
-    explosionController.current.shoot();
-  };
-
-  const onRepost = async () => {
+  const onRepost = async (e: any) => {
+    e.stopPropagation();
     setReposts(reposts + 1);
     setIsReposted(true);
     const response = await fetch(`/api/posts/${post.id}/repost`, {
@@ -70,9 +68,13 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
     setIsReposted(result);
   };
 
-  const onCollect = async () => {
-    setCollects(collects + 1);
-    setIsCollected(true);
+  const onCollect = async (e: any) => {
+    e.stopPropagation();
+
+    const isCollectedNow = !isCollected;
+    setIsCollected(isCollectedNow);
+    isCollectedNow ? setCollects(collects - 1) : null;
+
     const respone = await fetch(`/api/posts/${post.id}/collect`, {
       method: "POST",
     });
@@ -80,18 +82,19 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
     setIsCollected(result);
   };
 
-  const onBookmark = async () => {
-    setBookmarks(bookmarks + 1);
-    setIsBookmarked(!isBookmarked);
+  const onBookmark = async (e: any) => {
+    e.stopPropagation();
+
+    const isBookmarkedNow = !isBookmarked;
+    setIsBookmarked(isBookmarkedNow);
+    isBookmarkedNow ? setBookmarks(bookmarks - 1) : null;
+
     const response = await fetch(`/api/posts/${post.id}/bookmark`, {
       method: "POST",
     });
     const result = (await response.json()).result;
     setIsBookmarked(result);
   };
-
-  // const heartPath =
-  //   "M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z";
 
   return (
     <div className="flex grow flex-row  grow justify-around w-full items-center -mb-2 -ml-2 mt-2">
@@ -129,7 +132,6 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
               particleCount: 15,
               ticks: 60,
               startVelocity: 8,
-              // shapes: [confetti.shapeFromPath({ path: heartPath, matrix: new DOMMatrix() })],
               shapes: ["star", "circle", "square"],
             })}
           />
@@ -161,14 +163,16 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
               />
             </Button>
           </div>
-          {collapsed && <Button
-            size="sm"
-            variant="ghost"
-            onClick={onCollect}
-            className={"h-max w-12 border-0 px-0 place-content-center items-center"}
-          >
-            <ChevronDownIcon className="h-5" />
-          </Button>}
+          {collapsed && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onCollect}
+              className={"h-max w-12 border-0 px-0 place-content-center items-center"}
+            >
+              <ChevronDownIcon className="h-5" />
+            </Button>
+          )}
         </div>
       </div>
     </div>
