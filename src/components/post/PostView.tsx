@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { Card, CardContent } from "../ui/card";
-import { Separator } from "../ui/separator";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { PostComments } from "./PostComments";

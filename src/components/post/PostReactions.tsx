@@ -149,27 +149,24 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
         <div className="grow" />
         <div className="flex flex-row items-center gap-2 ">
           <div className="flex flex-row opacity-0 group-hover:opacity-100 duration-300 delay-150">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={onBookmark}
-              className="h-max w-12 border-0 px-0 place-content-center items-center"
-            >
-              <ReactionBadge
-                pressed={isBookmarked}
-                key={`${post.id}-bookmarks`}
-                reaction={"Bookmark"}
-                amount={bookmarks}
-              />
-            </Button>
+            {!collapsed && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={onBookmark}
+                className="h-max w-12 border-0 px-0 place-content-center items-center"
+              >
+                <ReactionBadge
+                  pressed={isBookmarked}
+                  key={`${post.id}-bookmarks`}
+                  reaction={"Bookmark"}
+                  amount={bookmarks}
+                />
+              </Button>
+            )}
           </div>
           {collapsed && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={onCollect}
-              className={"h-max w-12 border-0 px-0 place-content-center items-center"}
-            >
+            <Button size="sm" variant="ghost" className={"h-max w-12 border-0 px-0 place-content-center items-center"}>
               <ChevronDownIcon className="h-5" />
             </Button>
           )}
