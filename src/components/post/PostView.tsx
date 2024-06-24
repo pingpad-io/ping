@@ -15,6 +15,7 @@ import { ReplyInfo } from "./PostReplyInfo";
 type PostViewSettings = {
   showBadges?: boolean;
   isComment?: boolean;
+  isLastComment?: boolean;
 };
 
 export const PostView = ({
@@ -26,17 +27,19 @@ export const PostView = ({
   const postContentRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={"flex flex-col gap-2 w-full"}>
+    <li className={"flex flex-col gap-2 w-full"}>
       <PostContextMenu post={post}>
         <Card onClick={() => setCollapsed(false)}>
-          <CardContent className="flex flex-row gap-4 p-2 sm:p-4">
+          <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
             <span className="min-h-full flex flex-col justify-start items-center relative">
-              {/* {settings.isComment && (
-                <Separator orientation="vertical" className="h-[150%] absolute border-text-foreground left-5 -top-4" />
-              )} */}
-              <div className="w-10 h-10 shrink-0 grow-0 rounded-full">
+              <div className={`shrink-0 grow-0 rounded-full" ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
                 <UserAvatar user={post.author} />
               </div>
+              {settings.isComment && (
+                <div
+                  className={`-mt-4 -mr-6 w-full h-[90%] border-l ${settings.isLastComment && "rounded-full h-[98%]"} ${settings.isComment && !settings.isLastComment && "min-h-[130%]"} `}
+                />
+              )}
             </span>
             <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
               <ReplyInfo post={post} />
@@ -48,6 +51,6 @@ export const PostView = ({
         </Card>
       </PostContextMenu>
       <PostComments post={post} />
-    </div>
+    </li>
   );
 };
