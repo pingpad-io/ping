@@ -22,19 +22,12 @@ const LandingPage = () => {
           <div className="flex gap-4 items-center ">
             <ThemeToggle />
             <div className="dark:drop-shadow-glow drop-shadow-md ">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button disabled variant="default" size="sm_icon">
-                    <div className="hidden sm:flex mr-2 disabled">Closed Beta</div>
-                    <LogInIcon />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[350px]">
-                  <DialogTitle>
-                    <h3 className="text-center">Sign in to Ping </h3>
-                  </DialogTitle>
-                </DialogContent>
-              </Dialog>
+              <Link href="/home">
+                <Button variant="default" size="sm_icon">
+                  <div className="hidden sm:flex mr-2">Open Beta</div>
+                  <LogInIcon />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -75,7 +68,7 @@ const LandingPage = () => {
         <FadeIn className="duration-[3000ms] delay-[4500ms]">
           <div className="w-full p-8 mt-16 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
             <div className=" text-xl flex flex-col gap-4">
-              Join Waitlist
+              Join v1.0 waitlist
               <EmailSubscription />
             </div>
           </div>
@@ -92,24 +85,19 @@ const LandingPage = () => {
                   <AccordionItem value="item-1">
                     <AccordionTrigger>Current status?</AccordionTrigger>
                     <AccordionContent>
-                      In development. Ping (centralized version) has retired, and Pingpad is currently being built.{" "}
-                      <br /> <br />
+                      In open beta. We are currently fixing bugs and adding new features before the v1.0 release. <br />{" "}
+                      <br />
+                      We are waiting for your
                       <a className="underline" href="https://github.com/pingpad-io/ping">
-                        Contributions
-                      </a>{" "}
-                      are welcome.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-2">
-                    <AccordionTrigger>When open for all?</AccordionTrigger>
-                    <AccordionContent>
-                      Pingpad in currently in closed Beta, gathering feedback and improving the experience. <br />
-                      <br /> Subscribe to the newsletter above to get in early.
+                        feedback
+                      </a>
                     </AccordionContent>
                   </AccordionItem>
                   <AccordionItem value="item-3">
                     <AccordionTrigger>Is it any good?</AccordionTrigger>
-                    <AccordionContent>Yes.</AccordionContent>
+                    <AccordionContent>
+                      Yes. <Link href={"/home"}>check it out</Link> for yourself.
+                    </AccordionContent>
                   </AccordionItem>
                 </Accordion>
               </div>
