@@ -182,9 +182,11 @@ function getReactions(post: LensPost | Comment | Quote): Partial<PostReactions> 
   };
 }
 
-function getComments(post: any) {
+function getComments(post: AnyLensItem) {
   let comments = [];
-  if ("__typename" in post && post.__typename === "FeedItem") {
+  if (!("__typename" in post)) return comments;
+
+  if (post.__typename === "FeedItem") {
     comments = post.comments.map((comment: Comment | Quote | LensPost) => ({
       id: comment.id as string,
       author: lensProfileToUser(comment.by),
