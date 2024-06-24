@@ -23,10 +23,11 @@ export const PostView = ({
 }: { post: Post; settings?: PostViewSettings }) => {
   const content = "content" in post.metadata ? post.metadata.content : "";
   const [collapsed, setCollapsed] = useState(content.length > 400);
+  const [isReplyOpen, setReplyOpen] = useState(false);
   const postContentRef = useRef<HTMLDivElement>(null);
 
   return (
-    <li className={"flex flex-col gap-2 w-full"}>
+    <div className={"flex flex-col gap-2 w-full"}>
       <PostContextMenu post={post}>
         <Card onClick={() => setCollapsed(false)}>
           <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
@@ -44,12 +45,12 @@ export const PostView = ({
               <ReplyInfo post={post} />
               <PostInfo post={post} />
               <PostContent ref={postContentRef} post={post} collapsed={collapsed} setCollapsed={setCollapsed} />
-              {settings?.showBadges && <ReactionsList collapsed={collapsed} post={post} />}
+              {settings?.showBadges && <ReactionsList collapsed={collapsed} setReplyOpen={setReplyOpen} post={post} />}
             </div>
           </CardContent>
         </Card>
       </PostContextMenu>
-      <PostComments post={post} />
-    </li>
+      <PostComments isWizardOpen={isReplyOpen} post={post} />
+    </div>
   );
 };

@@ -1,5 +1,5 @@
 import { S3 } from "@aws-sdk/client-s3";
-import type { AnyPublicationFragment, FeedItemFragment, PaginatedResult } from "@lens-protocol/client";
+import type { AnyPublicationFragment, CredentialsExpiredError, FeedItemFragment, LensProfileManagerRelayErrorFragment, NotAuthenticatedError, PaginatedResult, RelaySuccessFragment, Result } from "@lens-protocol/client";
 import { LimitType, PublicationType } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
@@ -82,6 +82,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
+  const replyingTo = searchParams.get("replyingTo") || undefined;
+
   const data = await req.json().catch(() => null);
 
   const { client, isAuthenticated, handle } = await getLensClient();
@@ -122,7 +125,13 @@ export async function POST(req: NextRequest) {
 
     const cid = result.Metadata["ipfs-hash"];
     const contentURI = `ipfs://${cid}`;
-    const postResult = await client.publication.postOnMomoka({ contentURI });
+
+    let postResult: Result<RelaySuccessFragment | LensProfileManagerRelayErrorFragment, CredentialsExpiredError | NotAuthenticatedError>;
+    if (replyingTo) {
+      postResult = await client.publication.commentOnchain({ contentURI, commentOn: replyingTo } );
+    } else {
+      postResult = await client.publication.postOnchain({ contentURI } );
+    }
 
     if (postResult.isFailure()) {
       throw new Error(postResult.error.message);
@@ -132,13 +141,12 @@ export async function POST(req: NextRequest) {
       throw new Error(postResult.value.reason);
     }
 
-    if (postResult.value.__typename === "CreateMomokaPublicationResult") {
-      const id = postResult.value.id;
-      const momokaId = postResult.value.momokaId;
-      const proof = postResult.value.proof;
+    if (postResult.value.__typename === "RelaySuccess") {
+      const id = postResult.value.txId;
+      const hash = postResult.value.txHash;
 
-      console.log(`${handle} created a post: ${id}, momokaId: ${momokaId}, ipfs: ${contentURI}, date: ${date}`);
-      return NextResponse.json({ id, momokaId, proof }, { status: 200, statusText: "Success" });
+      console.log(`${handle} created a post: ${id}, hash: ${hash}, ipfs: ${contentURI}, date: ${date}`);
+      return NextResponse.json({ id, hash }, { status: 200, statusText: "Success" });
     }
 
     throw new Error("Unknown error. This should never happen.");

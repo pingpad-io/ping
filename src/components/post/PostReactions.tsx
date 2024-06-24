@@ -16,7 +16,11 @@ import Explosion from "react-canvas-confetti/dist/presets/explosion";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
 
-export function ReactionsList({ post, collapsed }: { post: Post; collapsed: boolean }) {
+export function ReactionsList({
+  post,
+  collapsed,
+  setReplyOpen,
+}: { post: Post; collapsed: boolean; setReplyOpen: (open: boolean) => void }) {
   const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
   const [isReposted, setIsReposted] = useState(post.reactions.isReposted);
   const [isCollected, setIsCollected] = useState(post.reactions.isCollected);
@@ -99,9 +103,18 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
   return (
     <div className="flex grow flex-row  grow justify-around w-full items-center -mb-2 -ml-2 mt-2">
       <div className="flex flex-row items-center gap-12 w-full">
-        <Link className={post.reactions.canComment ? "" : "opacity-50 pointer-events-none"} href={`/p/${post.id}`}>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={(e) => {
+            e.stopPropagation();
+            setReplyOpen(true);
+          }}
+          className="h-max w-12 border-0 px-0 place-content-center items-center"
+          disabled={!post.reactions.canComment}
+        >
           <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={comments} />
-        </Link>
+        </Button>
         <Button
           size="sm"
           variant="ghost"

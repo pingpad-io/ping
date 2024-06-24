@@ -87,7 +87,7 @@ const LandingPage = () => {
                     <AccordionContent>
                       In open beta. We are currently fixing bugs and adding new features before the v1.0 release. <br />{" "}
                       <br />
-                      We are waiting for your
+                      We are waiting for your{" "}
                       <a className="underline" href="https://github.com/pingpad-io/ping">
                         feedback
                       </a>

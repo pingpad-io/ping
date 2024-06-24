@@ -14,12 +14,10 @@ import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 
-export default function PostWizard({ user, replyingTo }: { user: User; replyingTo?: Post }) {
+export default function PostWizard({ user, replyingTo }: { user?: User; replyingTo?: Post }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const [isPosting, setPosting] = useState(false);
   const placeholderText = replyingTo ? "write a reply..." : "write a new post...";
-
-  if (!user) throw new Error("∑(O_O;) Profile not found");
 
   const FormSchema = z.object({
     content: z.string().max(3000, {
@@ -39,7 +37,7 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
       appId: "Ping",
     });
 
-    const response = fetch("/api/posts", {
+    const response = fetch(`/api/posts?${replyingTo ? `replyingTo=${replyingTo.id}&` : ""}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,9 +84,10 @@ export default function PostWizard({ user, replyingTo }: { user: User; replyingT
           onChange={updateHeight}
           className="flex flex-row gap-2 w-full h-fit place-items-end justify-center"
         >
-          <div className="w-10 h-10">
+          {user && (
+            <div className="w-10 h-10">
             <UserAvatar user={user} link={true} card={false} />
-          </div>
+          </div>)}
           <FormField
             control={form.control}
             name="content"
