@@ -32,6 +32,7 @@ import { type User, lensProfileToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number> & {
+  totalReactions: number;
   isUpvoted?: boolean;
   isDownvoted?: boolean;
   isBookmarked?: boolean;
@@ -171,23 +172,35 @@ function getReactions(post: LensPost | Comment | Quote): Partial<PostReactions> 
     canRepost: post.operations.canMirror === "YES",
     canQuote: post.operations.canQuote === "YES",
     canDecrypt: post.operations.canDecrypt.result,
+    totalReactions:
+      post.stats.upvotes +
+      post.stats.downvotes +
+      post.stats.bookmarks +
+      post.stats.collects +
+      post.stats.comments +
+      post.stats.mirrors,
   };
 }
 
 function getComments(post: any) {
-  if (post.__typename === "FeedItem") {
-    return post.comments.map((comment) => ({
+  let comments = [];
+  if ("__typename" in post && post.__typename === "FeedItem") {
+    comments = post.comments.map((comment: Comment | Quote | LensPost) => ({
       id: comment.id as string,
       author: lensProfileToUser(comment.by),
       createdAt: new Date(comment.createdAt),
       updatedAt: new Date(comment.createdAt),
       comments: [],
-      reactions: undefined,
+      reactions: getReactions(comment),
       metadata: comment.metadata,
       platform: "lens",
     }));
   }
-  return [];
+
+  comments.sort((a, b) => b.reactions.totalReactions - a.reactions.totalReactions);
+  comments.slice(0, 3);
+
+  return comments;
 }
 
 function getReply(origin: Comment | Quote | LensPost) {

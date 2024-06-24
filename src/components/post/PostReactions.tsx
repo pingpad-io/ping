@@ -87,7 +87,7 @@ export function ReactionsList({ post, collapsed }: { post: Post; collapsed: bool
 
     const isBookmarkedNow = !isBookmarked;
     setIsBookmarked(isBookmarkedNow);
-    isBookmarkedNow ? setBookmarks(bookmarks - 1) : null;
+    isBookmarkedNow ? setBookmarks(bookmarks + 1) : setBookmarks(bookmarks - 1);
 
     const response = await fetch(`/api/posts/${post.id}/bookmark`, {
       method: "POST",
