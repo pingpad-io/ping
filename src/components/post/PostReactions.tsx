@@ -19,8 +19,9 @@ import type { Post, PostReactionType } from "./Post";
 export function ReactionsList({
   post,
   collapsed,
-  setReplyOpen,
-}: { post: Post; collapsed: boolean; setReplyOpen: (open: boolean) => void }) {
+  setCommentsOpen,
+  isCommentsOpen,
+}: { post: Post; collapsed: boolean; setCommentsOpen: (open: boolean) => void; isCommentsOpen: boolean }) {
   const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
   const [isReposted, setIsReposted] = useState(post.reactions.isReposted);
   const [isCollected, setIsCollected] = useState(post.reactions.isCollected);
@@ -108,7 +109,7 @@ export function ReactionsList({
           variant="ghost"
           onClick={(e) => {
             e.stopPropagation();
-            setReplyOpen(true);
+            setCommentsOpen(!isCommentsOpen);
           }}
           className="h-max w-12 border-0 px-0 place-content-center items-center"
           disabled={!post.reactions.canComment}

@@ -17,7 +17,7 @@ import type { Post } from "./Post";
 export default function PostWizard({ user, replyingTo }: { user?: User; replyingTo?: Post }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const [isPosting, setPosting] = useState(false);
-  const placeholderText = replyingTo ? "write a reply..." : "write a new post...";
+  const placeholderText = replyingTo ? "write your reply..." : "write a new post...";
 
   const FormSchema = z.object({
     content: z.string().max(3000, {
