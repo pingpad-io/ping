@@ -7,13 +7,17 @@ export const PostInfo = ({ post }: { post: Post }) => {
   const isLensHandle = author.namespace === "lens";
   const handle = author.handle;
   const tags = post.metadata.tags || [];
-  let community = null;
+
+  let communityText = null;
+  let community = "";
   tags.map((tag) => {
     if (tag.includes("orbcommunities")) {
-      community = `orb/${tag.replace("orbcommunities", "")}`;
+      communityText = `orb/${tag.replace("orbcommunities", "")}`;
+      community = tag;
     }
     if (tag.includes("channel")) {
-      community = `channel/${tag.split("-")[1]}`;
+      communityText = `channel/${tag.split("-")[1]}`;
+      community = tag;
     }
   });
 
@@ -26,10 +30,10 @@ export const PostInfo = ({ post }: { post: Post }) => {
         <span className="w-fit truncate font-bold">{author.name}</span>
         <span className="">{`${isLensHandle ? "@" : "#"}${handle}`}</span>
       </Link>
-      {community && (
+      {communityText && (
         <>
           <span>{"·"}</span>
-          <span>{community}</span>
+          <Link href={`/c/${community}`}>{communityText}</Link>
         </>
       )}
       <span>{"·"}</span>
