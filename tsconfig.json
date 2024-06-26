@@ -47,7 +47,8 @@
     "src/components/*.ts",
     "src/components/*.tsx",
     "src/components/**/*.ts",
-    "src/components/**/*.tsx"
+    "src/components/**/*.tsx",
+    "src/middleware.ts"
   ],
   "exclude": [
     "src/pages_old/**.ts",

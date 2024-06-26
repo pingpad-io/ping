@@ -7,7 +7,6 @@ import { FadeIn } from "~/components/Transitions";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 
 const LandingPage = () => {
   return (

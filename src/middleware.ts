@@ -1,53 +1,22 @@
+import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getLensClient } from "~/utils/getLensClient";
+
+export async function middleware(request: NextRequest) {
+  // Only run this middleware for the base URL
+  if (request.nextUrl.pathname === "/") {
+    const { isAuthenticated } = await getLensClient();
+
+    if (isAuthenticated) {
+      // If authenticated, redirect to /home
+      return NextResponse.redirect(new URL("/home", request.url));
+    }
+  }
+
+  // For all other routes, continue as normal
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-    "/",
-    "/#(.*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
-
-export async function middleware(req: NextRequest) {
-  const _pathname = req.nextUrl.pathname;
-  // const res = NextResponse.next();
-  // const supabase = createMiddlewareSupabaseClient({ req, res });
-
-  // const {
-  //   data: { session },
-  // } = await supabase.auth.getSession();
-
-  // // Auth successful
-  // if (session?.user) {
-  //   if (pathname === "/") {
-  //     return NextResponse.redirect(new URL("/home", req.url));
-  //   }
-
-  //   // Forward request to protected route.
-  //   return res;
-  // }
-
-  // // Allow open routes
-  // if (pathname === "/policy" || pathname === "/tos" || pathname === "/about") {
-  //   return res;
-  // }
-
-  // // Individual posts are open too
-  // if (pathname.match(/^\/p\/.*/)) {
-  //   return res;
-  // }
-
-  // // Auth condition not met, redirect to landing
-  // if (pathname === "/") {
-  //   return res;
-  // }
-
-  // return res
-}
