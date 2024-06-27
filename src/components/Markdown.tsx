@@ -22,7 +22,7 @@ function replaceHandles(content) {
 }
 
 function Markdown({ content }: { content: string }) {
-  const processedContent = replaceHandles(content);
+  const textWithHandles = replaceHandles(content);
 
   return (
     <ReactMarkdown
@@ -42,7 +42,7 @@ function Markdown({ content }: { content: string }) {
         },
       }}
     >
-      {processedContent}
+      {textWithHandles}
     </ReactMarkdown>
   );
 }
