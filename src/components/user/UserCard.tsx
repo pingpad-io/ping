@@ -8,6 +8,7 @@ import { Badge } from "../ui/badge";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import type { User } from "./User";
 import { UserAvatar } from "./UserAvatar";
+import Link from "next/link";
 
 export const UserCard = ({ children, user }: PropsWithChildren & { user: User }) => {
   const { data, error, loading, execute } = useLazyProfile();
@@ -32,9 +33,10 @@ export const UserCard = ({ children, user }: PropsWithChildren & { user: User })
         {error && <div>Error: {error.message}</div>}
         {data && (
           <div className="flex flex-col gap-2">
+            <Link href={`/u/${user.handle}`}>
             <div className="flex flex-row items-center gap-2 text-sm">
               <div className="w-10 h-10">
-                <UserAvatar user={user} />
+                <UserAvatar card={false} link={true} user={user} />
               </div>
               <span className="font-bold truncate">{name}</span>
               <span className="font-light truncate">@{handle}</span>
@@ -47,6 +49,7 @@ export const UserCard = ({ children, user }: PropsWithChildren & { user: User })
                 )}
               </span>
             </div>
+            </Link>
             <span className="text-sm">{descriptionTruncated}</span>
             <span className="flex items-center justify-start pt-2">
               <FollowButton className="text-sm h-fit w-fit p-1 px-3" user={user} />
