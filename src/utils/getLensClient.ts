@@ -7,9 +7,12 @@ export const getLensClient = async () => {
   const { refreshToken } = getCookieAuth();
   const client = new LensClient({
     environment: production,
+    headers: {
+      origin: "https://pingpad.io",
+    },
     storage: window?.localStorage,
   });
-  console.log(window, window?.localStorage);
+
 
   if (refreshToken) {
     await client.authentication.authenticateWith({ refreshToken });

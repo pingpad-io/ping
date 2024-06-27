@@ -10,7 +10,7 @@ export const InfiniteScroll = ({ initialData, initialCursor, endpoint }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const loadMorePosts = useCallback(async () => {
+  const loadMorePosts = async () => {
     if (loading || !cursor) return;
 
     setLoading(true);
@@ -33,7 +33,7 @@ export const InfiniteScroll = ({ initialData, initialCursor, endpoint }) => {
     } finally {
       setLoading(false);
     }
-  }, [cursor, loading]);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +49,7 @@ export const InfiniteScroll = ({ initialData, initialCursor, endpoint }) => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loadMorePosts]);
+  }, []);
 
   if (error) throw new Error(error);
 
