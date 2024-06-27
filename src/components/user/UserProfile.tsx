@@ -5,6 +5,7 @@ import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
 import { getLensClient } from "~/utils/getLensClient";
 import { FollowButton } from "../FollowButton";
+import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
 import { Label } from "../ui/label";
@@ -47,7 +48,7 @@ export const UserProfile = async ({ user }: { user: User }) => {
           {!isUserProfile && <FollowButton user={user} />}
         </div>
         <div className="text-sm grow">
-          <Markdown content={user.description} />
+          <TruncatedText text={user.description} maxLength={300} isMarkdown={true} />
         </div>
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <CalendarIcon size={14} />

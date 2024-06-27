@@ -1,12 +1,15 @@
 import { LensClient, production } from "@lens-protocol/client";
 import { lensProfileToUser } from "~/components/user/User";
 import { getCookieAuth } from "./getCookieAuth";
+import { window } from "./globals";
 
 export const getLensClient = async () => {
   const { refreshToken } = getCookieAuth();
   const client = new LensClient({
     environment: production,
+    storage: window?.localStorage,
   });
+  console.log(window, window?.localStorage);
 
   if (refreshToken) {
     await client.authentication.authenticateWith({ refreshToken });
