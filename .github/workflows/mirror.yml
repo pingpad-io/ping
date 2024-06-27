@@ -1,0 +1,21 @@
+name: Mirror and run GitLab CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Mirror + trigger CI
+      uses: SvanBoxel/gitlab-mirror-and-ci-action@master
+      with:
+        args: "https://gitlab.com/kualta/ping"
+      env:
+        FOLLOW_TAGS: "false"
+        FORCE_PUSH: "false"
+        GITLAB_HOSTNAME: "gitlab.com"
+        GITLAB_USERNAME: "kualta"
+        GITLAB_PASSWORD: ${{ secrets.GITLAB_PASSWORD }}
+        GITLAB_PROJECT_ID: "59342522"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
