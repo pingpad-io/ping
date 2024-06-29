@@ -1,5 +1,15 @@
 import { S3 } from "@aws-sdk/client-s3";
-import type { AnyPublicationFragment, CredentialsExpiredError, FeedItemFragment, LensProfileManagerRelayErrorFragment, NotAuthenticatedError, PaginatedResult, RelaySuccessFragment, Result } from "@lens-protocol/client";
+import type {
+  AnyPublicationFragment,
+  CredentialsExpiredError,
+  FeedItemFragment,
+  LensClient,
+  LensProfileManagerRelayErrorFragment,
+  NotAuthenticatedError,
+  PaginatedResult,
+  RelaySuccessFragment,
+  Result,
+} from "@lens-protocol/client";
 import { LimitType, PublicationType } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
@@ -10,6 +20,8 @@ export const dynamic = "force-dynamic";
 
 const accessKeyId = env.STORAGE_ACCESS_KEY;
 const secretAccessKey = env.STORAGE_SECRET_KEY;
+const MAX_DATA_SIZE = 149 * 1024; // 149KB
+const BUCKET_NAME = "pingpad-ar";
 
 const s3 = new S3({
   endpoint: "https://endpoint.4everland.co",
@@ -18,60 +30,12 @@ const s3 = new S3({
 });
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const idFrom = searchParams.get("id") || undefined;
-  const cursor = searchParams.get("cursor") || undefined;
-  const community = searchParams.get("community") || undefined;
-  const type = searchParams.get("type") || "any";
-
-  let publicationType: PublicationType;
-  switch (type) {
-    case "post":
-      publicationType = PublicationType.Post;
-      break;
-    case "comment":
-      publicationType = PublicationType.Comment;
-      break;
-    case "quote":
-      publicationType = PublicationType.Quote;
-      break;
-    case "repost":
-      publicationType = PublicationType.Mirror;
-      break;
-    case "any":
-      publicationType =
-        PublicationType.Post || PublicationType.Comment || PublicationType.Quote || PublicationType.Mirror;
-      break;
-    default:
-      publicationType = PublicationType.Post;
-  }
-
   try {
+    const params = extractQueryParams(req);
     const { client, isAuthenticated, profileId } = await getLensClient();
+    const publicationType = getPublicationType(params.type);
 
-    let data: PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>;
-
-    if (isAuthenticated && !idFrom && !community) {
-      data = (
-        await client.feed.fetch({
-          where: {
-            for: profileId,
-          },
-          cursor,
-        })
-      ).unwrap();
-    } else {
-      data = await client.publication.fetchAll({
-        where: {
-          publicationTypes: [publicationType],
-          from: idFrom ? [idFrom] : undefined,
-          metadata: community ? { tags: { oneOf: [community] } } : undefined,
-        },
-        limit: LimitType.Ten,
-        cursor,
-      });
-    }
-
+    const data = await fetchData(client, isAuthenticated, profileId, params, publicationType);
     const posts = data.items.map(lensItemToPost);
 
     return NextResponse.json({ posts, nextCursor: data.pageInfo.next }, { status: 200 });
@@ -81,77 +45,145 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {
+function extractQueryParams(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const replyingTo = searchParams.get("replyingTo") || undefined;
+  return {
+    idFrom: searchParams.get("id") || undefined,
+    cursor: searchParams.get("cursor") || undefined,
+    community: searchParams.get("community") || undefined,
+    type: searchParams.get("type") || "any",
+  };
+}
 
-  const data = await req.json().catch(() => null);
+function getPublicationType(type: string): PublicationType | PublicationType[] {
+  const typeMap: Record<string, PublicationType | PublicationType[]> = {
+    post: PublicationType.Post,
+    comment: PublicationType.Comment,
+    quote: PublicationType.Quote,
+    repost: PublicationType.Mirror,
+    any: [PublicationType.Post, PublicationType.Comment, PublicationType.Quote, PublicationType.Mirror],
+  };
 
-  const { client, isAuthenticated, handle } = await getLensClient();
+  return typeMap[type] || PublicationType.Post;
+}
 
-  if (!data) {
-    return NextResponse.json({ error: "Bad Request: Invalid JSON body" }, { status: 400 });
+async function fetchData(
+  client: any,
+  isAuthenticated: boolean,
+  profileId: string,
+  params: ReturnType<typeof extractQueryParams>,
+  publicationType: PublicationType | PublicationType[],
+): Promise<PaginatedResult<FeedItemFragment> | PaginatedResult<AnyPublicationFragment>> {
+  if (isAuthenticated && !params.idFrom && !params.community) {
+    return (
+      await client.feed.fetch({
+        where: { for: profileId },
+        cursor: params.cursor,
+      })
+    ).unwrap();
   }
 
-  // Arweave only sponsors <150kb data uploads for now
-  if (data && data.length > 149 * 1024) {
-    return NextResponse.json({ error: "Data too large" }, { status: 400 });
-  }
+  return await client.publication.fetchAll({
+    where: {
+      publicationTypes: Array.isArray(publicationType) ? publicationType : [publicationType],
+      from: params.idFrom ? [params.idFrom] : undefined,
+      metadata: params.community ? { tags: { oneOf: [params.community] } } : undefined,
+    },
+    limit: LimitType.Ten,
+    cursor: params.cursor,
+  });
+}
 
+export async function POST(req: NextRequest) {
   try {
-    if (!isAuthenticated) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
+    const { searchParams } = req.nextUrl;
+    const replyingTo = searchParams.get("replyingTo") || undefined;
+    const data = await parseRequestBody(req);
+    const { client, isAuthenticated, handle } = await getLensClient();
 
-    const metadata = JSON.stringify(data);
-    const date = new Date().toISOString();
-    const key = `users/${handle}/${date}_metadata.json`;
+    validateAuthentication(isAuthenticated);
+    validateDataSize(data, handle);
 
-    const uploadResult = await s3.putObject({
-      ContentType: "application/json",
-      Bucket: "pingpad-ar",
-      Body: metadata,
-      Key: key,
-    });
+    const contentURI = await uploadMetadata(data, handle);
+    const postResult = await createPost(client, contentURI, replyingTo);
 
-    if (!uploadResult) {
-      throw new Error("Failed to upload metadata to S3");
-    }
-
-    const result = await s3.headObject({
-      Bucket: "pingpad-ar",
-      Key: key,
-    });
-
-    const cid = result.Metadata["ipfs-hash"];
-    const contentURI = `ipfs://${cid}`;
-
-    let postResult: Result<RelaySuccessFragment | LensProfileManagerRelayErrorFragment, CredentialsExpiredError | NotAuthenticatedError>;
-    if (replyingTo) {
-      postResult = await client.publication.commentOnchain({ contentURI, commentOn: replyingTo } );
-    } else {
-      postResult = await client.publication.postOnchain({ contentURI } );
-    }
-
-    if (postResult.isFailure()) {
-      throw new Error(postResult.error.message);
-    }
-
-    if (postResult.value.__typename === "LensProfileManagerRelayError") {
-      throw new Error(postResult.value.reason);
-    }
-
-    if (postResult.value.__typename === "RelaySuccess") {
-      const id = postResult.value.txId;
-      const hash = postResult.value.txHash;
-
-      console.log(`${handle} created a post: ${id}, hash: ${hash}, ipfs: ${contentURI}, date: ${date}`);
-      return NextResponse.json({ id, hash }, { status: 200, statusText: "Success" });
-    }
-
-    throw new Error("Unknown error. This should never happen.");
+    return handlePostResult(postResult, handle, contentURI);
   } catch (error) {
     console.error("Failed to create a post: ", error);
     return NextResponse.json({ error: `Failed to create a post: ${error.message}` }, { status: 500 });
   }
+}
+
+async function parseRequestBody(req: NextRequest) {
+  const data = await req.json().catch(() => null);
+  if (!data) {
+    throw new Error("Bad Request: Invalid JSON body");
+  }
+  return data;
+}
+
+function validateAuthentication(isAuthenticated: boolean) {
+  if (!isAuthenticated) {
+    throw new Error("Not authenticated");
+  }
+}
+
+function validateDataSize(data: any, handle: string) {
+  if (data && JSON.stringify(data).length > MAX_DATA_SIZE) {
+    throw new Error(`Data too large for ${handle}`);
+  }
+}
+
+async function uploadMetadata(data: any, handle: string) {
+  const metadata = JSON.stringify(data);
+  const date = new Date().toISOString();
+  const key = `users/${handle}/${date}_metadata.json`;
+
+  await s3.putObject({
+    ContentType: "application/json",
+    Bucket: BUCKET_NAME,
+    Body: metadata,
+    Key: key,
+  });
+
+  const result = await s3.headObject({
+    Bucket: BUCKET_NAME,
+    Key: key,
+  });
+
+  const cid = result.Metadata["ipfs-hash"];
+  return `ipfs://${cid}`;
+}
+
+async function createPost(client: LensClient, contentURI: string, replyingTo?: string) {
+  if (replyingTo) {
+    return await client.publication.commentOnchain({ contentURI, commentOn: replyingTo });
+  }
+  return await client.publication.postOnchain({ contentURI });
+}
+
+function handlePostResult(
+  postResult: Result<
+    RelaySuccessFragment | LensProfileManagerRelayErrorFragment,
+    CredentialsExpiredError | NotAuthenticatedError
+  >,
+  handle: string,
+  contentURI: string,
+) {
+  if (postResult.isFailure()) {
+    throw new Error(postResult.error.message);
+  }
+
+  if (postResult.value.__typename === "LensProfileManagerRelayError") {
+    throw new Error(postResult.value.reason);
+  }
+
+  if (postResult.value.__typename === "RelaySuccess") {
+    const { txId: id, txHash: hash } = postResult.value;
+    const date = new Date().toISOString();
+    console.log(`${handle} created a post: ${id}, hash: ${hash}, ipfs: ${contentURI}, date: ${date}`);
+    return NextResponse.json({ id, hash }, { status: 200, statusText: "Success" });
+  }
+
+  throw new Error("Unknown error. This should never happen.");
 }
