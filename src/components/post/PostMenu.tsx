@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
 
-export const PostMenuContent = ({ post, profileId }: { post: Post; profileId: string }) => {
+export const PostMenu = ({ post, profileId }: { post: Post; profileId: string }) => {
   const router = useRouter();
   const author = post.author;
 

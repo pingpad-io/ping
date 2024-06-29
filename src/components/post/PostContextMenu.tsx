@@ -1,9 +1,8 @@
 "use client";
 import { type PropsWithChildren, useEffect, useState } from "react";
-import { ServerSignedIn } from "../ServerSignedIn";
 import { Card } from "../ui/card";
 import type { Post } from "./Post";
-import { PostMenuContent } from "./PostMenu";
+import { PostMenu } from "./PostMenu";
 
 export const PostContextMenu = (props: PropsWithChildren & { post: Post }) => {
   const [clicked, setClicked] = useState(false);
@@ -35,7 +34,7 @@ export const PostContextMenu = (props: PropsWithChildren & { post: Post }) => {
       {clicked && (
         <div className="z-[40] absolute" style={{ top: `${points.y}px`, left: `${points.x}px` }}>
           <Card className="flex flex-col w-max gap-1 p-1 hover:bg-card border">
-            <PostMenuContent post={props.post} profileId="" />
+            <PostMenu post={props.post} profileId="" />
           </Card>
         </div>
       )}

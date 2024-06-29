@@ -94,6 +94,43 @@ async function fetchData(
   });
 }
 
+export async function DELETE(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
+  const id = searchParams.get("id") || undefined;
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  }
+
+  try {
+    const { client, isAuthenticated, profileId } = await getLensClient();
+
+    if (!isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    const post = await client.publication.fetch({ forId: id });
+
+    if (post.by.id !== profileId) {
+      throw new Error("Not authorized");
+    }
+
+    let result: Result<void, CredentialsExpiredError | NotAuthenticatedError>;
+    if (!post.isHidden) {
+      result = await client.publication.hide({ for: id });
+    }
+
+    if (result.isFailure()) {
+      throw new Error(result.error.message);
+    }
+
+    return NextResponse.json({ result }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: `Failed to delete post: ${error.message}` }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
