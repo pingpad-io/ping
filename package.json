@@ -39,7 +39,7 @@
     "@types/got": "^9.6.12",
     "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.10",
-    "@wagmi/connectors": "^2.4.0",
+    "@wagmi/connectors": "^2.7.0",
     "@wagmi/core": "^1.4.13",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
