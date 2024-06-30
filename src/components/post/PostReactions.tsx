@@ -57,8 +57,7 @@ export function ReactionsList({
     });
     const result = (await response.json()).result;
     if (!result) {
-      setIsLiked(!isLiked);
-      setLikes(likes - 1);
+      console.error("Failed to like post");
     }
   };
 
