@@ -41,7 +41,7 @@ export default async function Menu() {
   }
 
   return (
-    <span className="flex shrink text-xl p-4 w-full sm:w-max">
+    <span className="flex shrink text-xl p-4 pb-0 sm:pb-4 w-full sm:w-max">
       <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
         <Link href="/home">
           <Button variant="ghost" size="sm_icon">
@@ -70,18 +70,18 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
       </Link>
 
       {/* <Link href={"/c"} > */}
-      <Button variant="ghost" size="sm_icon" disabled>
+      <Button variant="ghost" size="sm_icon" className="hidden sm:flex" disabled>
         <div className="hidden sm:flex -mt-1">communities</div>
         <UsersIcon className="sm:ml-2" size={21} />
       </Button>
       {/* </Link> */}
 
-      <Button variant="ghost" size="sm_icon" className="flex lg:hidden" disabled>
+      <Button variant="ghost" size="sm_icon" className="hidden sm:flex lg:hidden" disabled>
         <div className="hidden sm:flex -mt-1">messages</div>
         <MailIcon className="sm:ml-2" size={20} />
       </Button>
 
-      <Link href={"/notifications"} className="flex lg:hidden">
+      <Link href={"/notifications"} className="sm:flex lg:hidden">
         <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">notifications</div>
           <BellIcon className="sm:ml-2" size={21} />
@@ -111,8 +111,8 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="px-6 sm:px-12">
-            <div className="hidden sm:flex font-bold text-lg -mt-1">post</div>
+          <Button className="px-6 sm:px-12 hidden sm:flex">
+            <div className="font-bold text-lg -mt-1">post</div>
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-full sm:max-w-[700px]">

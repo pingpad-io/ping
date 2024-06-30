@@ -23,7 +23,7 @@ const LandingPage = () => {
             <div className="dark:drop-shadow-glow drop-shadow-md ">
               <Link href="/home">
                 <Button variant="default" size="sm_icon">
-                  <div className="hidden sm:flex mr-2">Open Beta</div>
+                  <div className="hidden sm:flex mr-2">Join Beta</div>
                   <LogInIcon />
                 </Button>
               </Link>
@@ -74,7 +74,7 @@ const LandingPage = () => {
         </FadeIn>
 
         <FadeIn className="duration-[3000ms] delay-[5000ms]">
-          <Card className="hover:bg-card flex flex-col gap-4 place-items-center mx-auto max-w-3xl p-4 my-32">
+          <Card className="hover:bg-card flex flex-col gap-4 place-items-center mx-auto w-full p-4 my-32">
             <CardHeader>
               <CardTitle> FAQ </CardTitle>
             </CardHeader>
@@ -105,7 +105,7 @@ const LandingPage = () => {
         </FadeIn>
 
         <FadeIn className="duration-[3000ms] delay-[5500ms]">
-          <div className="flex flex-col md:flex-row gap-4 md:gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">
+          <div className="flex flex-col md:flex-row gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">
             <Link href="https://kualta.dev">
               <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
                 <Heart /> by kualta

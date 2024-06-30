@@ -36,7 +36,7 @@ export const Navigation = () => {
       <Carousel
         opts={{ dragFree: true, watchDrag: true, slidesToScroll: 6, loop: true, active: true, align: "start" }}
         plugins={[WheelGesturesPlugin({ active: true })]}
-        className="w-full h-10 max-w-[32rem] select-none"
+        className="w-full h-10 max-w-[24rem] sm:max-w-[32rem] select-none"
       >
         <CarouselPrevious variant="ghost" />
         <CarouselContent className="-ml-1">
