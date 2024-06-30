@@ -21,8 +21,6 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
   };
 
   const toggleFollow = async () => {
-    const endpoint = following ? "/api/profile/unfollow" : "/api/profile/follow";
-
     const followingNow = !following;
     setFollowing(!following);
 
@@ -30,13 +28,13 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
       shootEffect();
     }
 
-    const result = await fetch(`${endpoint}?id=${user.id}`, {
+    const result = await fetch(`/api/profile/follow?id=${user.id}`, {
       method: "POST",
     });
 
     if (!result.ok) {
+      toast.error(`${followingNow ? "Follow" : "Unfollow"} action failed: ${result.statusText} `);
       setFollowing(!following); // Revert to the original state
-      toast.error(`${followingNow ? "Unfollow" : "Follow"} action failed: ${result.statusText} `);
     } else {
       toast.success(`${followingNow ? "Followed" : "Unfollowed"} Successfully!`, { description: "Finalized on-chain" });
     }

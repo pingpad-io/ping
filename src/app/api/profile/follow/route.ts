@@ -1,4 +1,11 @@
-import { LensTransactionStatusType } from "@lens-protocol/client";
+import {
+  type CredentialsExpiredError,
+  type LensProfileManagerRelayErrorFragment,
+  LensTransactionStatusType,
+  type NotAuthenticatedError,
+  type RelaySuccessFragment,
+  type Result,
+} from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { getLensClient } from "~/utils/getLensClient";
 
@@ -9,11 +16,25 @@ export async function POST(req: NextRequest) {
   const id = searchParams.get("id") || undefined;
 
   try {
-    const { client } = await getLensClient();
+    const { client, profileId: ownProfile } = await getLensClient();
 
-    const result = await client.profile.follow({
-      follow: [{ profileId: id }],
-    });
+    const profile = await client.profile.fetch({ forProfileId: id });
+
+    const isFollowing = profile.operations.isFollowedByMe;
+
+    let result: Result<
+      RelaySuccessFragment | LensProfileManagerRelayErrorFragment,
+      CredentialsExpiredError | NotAuthenticatedError
+    >;
+    if (isFollowing) {
+      result = await client.profile.unfollow({
+        unfollow: [id],
+      });
+    } else {
+      result = await client.profile.follow({
+        follow: [{ profileId: id }],
+      });
+    }
 
     if (result.isFailure()) {
       return NextResponse.json({ error: result.error.message }, { status: 500 });
@@ -31,7 +52,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: completion.reason, extra: completion.extraInfo }, { status: 500 });
     }
 
-    return NextResponse.json({ result: result.value }, { status: 200 });
+    return NextResponse.json({ result: result.value  }, { status: 200 });
   } catch (error) {
     console.error("Failed to follow profile: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });
