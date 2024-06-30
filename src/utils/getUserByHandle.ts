@@ -8,10 +8,9 @@ export const getUserByHandle = async (handle: string): Promise<User | null> => {
     forHandle: `lens/${handle}`,
   });
 
-  if (!profile) return null
+  if (!profile) return null;
 
   const user = lensProfileToUser(profile);
-  if (!user) throw new Error("∑(O_O;) Profile not found");
 
   return user;
-}
+};

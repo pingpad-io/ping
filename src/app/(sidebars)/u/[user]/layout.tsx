@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { Card } from "~/components/ui/card";
 import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
@@ -13,8 +14,8 @@ export default async function layout({
   const handle = params.user;
   const user = await getUserByHandle(handle);
 
-  if (!user) throw new Error("∑(O_O;) Profile not found");
-  console.log(user);
+  if (!user) return notFound();
+
   return (
     <>
       <UserProfile user={user} />

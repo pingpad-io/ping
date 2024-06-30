@@ -1,5 +1,6 @@
 import { CalendarIcon, EditIcon, MessageCircleIcon, PawPrintIcon, User2Icon } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
 import { getLensClient } from "~/utils/getLensClient";
@@ -11,8 +12,8 @@ import { Separator } from "../ui/separator";
 import { type User, parseInterests } from "./User";
 import { UserInterestsList } from "./UserInterests";
 
-export const UserProfile = async ({ user }: { user: User }) => {
-  if (!user) throw new Error("Profile not found");
+export const UserProfile = async ({ user }: { user?: User }) => {
+  if (!user) return notFound();
 
   const { user: authedUser } = await getLensClient();
   const isUserProfile = user.id === authedUser.id;
