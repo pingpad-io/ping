@@ -4,6 +4,9 @@ import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
 import { getUserByHandle } from "~/utils/getUserByHandle";
 
+
+export const maxDuration = 60
+
 export default async function layout({
   children,
   params,

@@ -13,7 +13,7 @@ export const metadata = {
   description: "reach your people on pingpad",
 };
 
-export const maxDuration = 60;
+export const maxDuration = 60
 
 export default function RootLayout({
   children,
