@@ -13,7 +13,7 @@ jobs:
         args: "https://gitlab.com/kualta/ping"
       env:
         FORCE_PUSH: "true"
-        FOLLOW_TAGS: "true"
+        FOLLOW_TAGS: "false"
         GITLAB_USERNAME: "kualta"
         GITLAB_HOSTNAME: "gitlab.com"
         GITLAB_PROJECT_ID: "59342522"
