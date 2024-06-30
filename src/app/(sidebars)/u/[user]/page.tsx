@@ -27,6 +27,10 @@ const getInitialData = async (handle: string) => {
   const { client } = await getLensClient();
   const user = await getUserByHandle(handle);
 
+  if (!user) {
+    throw new Error("☆⌒(>。<) User not found");
+  }
+  
   const lensPosts = await client.publication
     .fetchAll({
       where: { from: [user.id], publicationTypes: [PublicationType.Post] },

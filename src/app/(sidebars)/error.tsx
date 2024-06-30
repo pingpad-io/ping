@@ -10,7 +10,7 @@ export default function error({ error, reset }: { error: Error & { digest?: stri
   return (
     <div className="max-w-screen-xl px-4 py-16">
       <div className="max-w-screen-sm text-center">
-        <h2 className="text-2xl font-bold">Σ(O_O) Something went wrong</h2>
+        <h2 className="text-2xl font-bold">Something went wrong</h2>
 
         {message && <p className="text-base mx-auto text-muted-foreground p-4 w-[50%]">{message}</p>}
         <div className="flex flex-row gap-4 items-center justify-center mt-10">

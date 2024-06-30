@@ -1,7 +1,6 @@
 import { Card } from "~/components/ui/card";
 import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
-import { getLensClient } from "~/utils/getLensClient";
 import { getUserByHandle } from "~/utils/getUserByHandle";
 
 export default async function layout({
@@ -11,12 +10,11 @@ export default async function layout({
   children: React.ReactNode;
   params: { user: string };
 }) {
-  const { handle: authenticatedHandle } = await getLensClient();
   const handle = params.user;
-  const isUserProfile = handle === authenticatedHandle;
   const user = await getUserByHandle(handle);
 
   if (!user) throw new Error("∑(O_O;) Profile not found");
+  console.log(user);
   return (
     <>
       <UserProfile user={user} />

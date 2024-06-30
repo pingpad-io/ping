@@ -1,6 +1,5 @@
 import { CalendarIcon, EditIcon, MessageCircleIcon, PawPrintIcon, User2Icon } from "lucide-react";
 import Link from "next/link";
-import Markdown from "~/components/Markdown";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
 import { getLensClient } from "~/utils/getLensClient";
@@ -8,13 +7,12 @@ import { FollowButton } from "../FollowButton";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
-import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { type User, parseInterests } from "./User";
 import { UserInterestsList } from "./UserInterests";
 
 export const UserProfile = async ({ user }: { user: User }) => {
-  if (!user) throw new Error("∑(O_O;) Profile not found");
+  if (!user) throw new Error("Profile not found");
 
   const { user: authedUser } = await getLensClient();
   const isUserProfile = user.id === authedUser.id;
@@ -22,7 +20,7 @@ export const UserProfile = async ({ user }: { user: User }) => {
 
   const commonInterestTypes = user.interests
     .map((interest) => interest.value)
-    .filter((interest) => authedUser.interests.map((interest) => interest.value).includes(interest));
+    .filter((interest) => authedUser?.interests?.map((interest) => interest.value).includes(interest));
   const commonInterests = parseInterests(commonInterestTypes);
 
   return (

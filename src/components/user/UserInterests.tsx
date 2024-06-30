@@ -4,7 +4,6 @@ import { ProfileInterestTypes } from "@lens-protocol/react-web";
 import { useMemo } from "react";
 import { toast } from "sonner";
 import { Label } from "../ui/label";
-import { Separator } from "../ui/separator";
 import { Toggle } from "../ui/toggle";
 import { type UserInterests, capitalize, parseInterests } from "./User";
 
