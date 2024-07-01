@@ -91,6 +91,10 @@ export function Sidebar() {
 }
 
 const Links = () => {
+  const version = process.env.npm_package_version ?? "0.8";
+  const git = process.env.VERCEL_GIT_COMMIT_SHA ?? "0000000";
+  const gitSliced = git.slice(0, 7);
+
   return (
     <div className="flex flex-col gap-1 text-xs ">
       <div className="flex flex-wrap h-fit w-fit gap-1 overflow-auto">
@@ -110,7 +114,9 @@ const Links = () => {
           About
         </Link>
       </div>
-      <span className="select-none">© 2024 Pingpad</span>
+      <span className="select-none">
+        © 2024 Pingpad v{version}.{gitSliced}
+      </span>
     </div>
   );
 };

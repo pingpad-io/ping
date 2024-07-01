@@ -1,6 +1,6 @@
 {
   "name": "pingpad",
-  "version": "0.8.0",
+  "version": "0.8",
   "private": true,
   "scripts": {
     "build": "next build",
