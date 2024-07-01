@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const id = searchParams.get("id") || undefined;
 
   try {
-    const { client, profileId: ownProfile } = await getLensClient();
+    const { client } = await getLensClient();
 
     const profile = await client.profile.fetch({ forProfileId: id });
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       RelaySuccessFragment | LensProfileManagerRelayErrorFragment,
       CredentialsExpiredError | NotAuthenticatedError
     >;
-    if (isFollowing) {
+    if (isFollowing.value) {
       result = await client.profile.unfollow({
         unfollow: [id],
       });
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: completion.reason, extra: completion.extraInfo }, { status: 500 });
     }
 
-    return NextResponse.json({ result: result.value  }, { status: 200 });
+    return NextResponse.json({ result: result.value }, { status: 200 });
   } catch (error) {
     console.error("Failed to follow profile: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });
