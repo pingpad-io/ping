@@ -96,7 +96,7 @@ const Links = () => {
   const gitSliced = git.slice(0, 7);
 
   return (
-    <div className="flex flex-col gap-1 text-xs ">
+    <div className="flex flex-col gap-1 text-xs">
       <div className="flex flex-wrap h-fit w-fit gap-1 overflow-auto">
         <Link className="hover:underline" href={"/tos"}>
           ToS
@@ -115,7 +115,12 @@ const Links = () => {
         </Link>
       </div>
       <span className="select-none">
-        © 2024 Pingpad v{version}.{gitSliced}
+        © 2024 Pingpad v{version}{" "}
+        <Badge variant="outline" className="text-[10px] p-0.5 px-2 ml-2">
+          <Link className="hover:underline" href={`https://github.com/pingpad-io/ping/commit/${gitSliced}`}>
+            {gitSliced}
+          </Link>
+        </Badge>
       </span>
     </div>
   );
