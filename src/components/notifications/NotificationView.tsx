@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AtSignIcon,
   CirclePlusIcon,
@@ -54,7 +56,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     return <span key={`${profile.id + item.id + item.type}comma`}>, {userLink}</span>;
   });
 
-  const content = "content" in item.actedOn.metadata ? item?.actedOn?.metadata?.content : "";
+  const content = item?.actedOn?.metadata && "content" in item.actedOn.metadata ? item?.actedOn?.metadata?.content : "";
 
   return (
     <Card>
