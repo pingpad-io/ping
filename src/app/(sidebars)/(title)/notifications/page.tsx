@@ -1,7 +1,6 @@
-import { BellIcon } from "lucide-react";
-import { InfiniteScroll } from "~/components/InfiniteScroll";
+import { Feed } from "~/components/Feed";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
-import { Card } from "~/components/ui/card";
+import { NotificationView } from "~/components/notifications/NotificationView";
 import { getLensClient } from "~/utils/getLensClient";
 
 const endpoint = "/api/notifications";
@@ -13,7 +12,9 @@ const notifications = async () => {
     throw new Error("Failed to get notifications (T T)");
   }
 
-  return <InfiniteScroll endpoint={endpoint} initialData={notifications} initialCursor={nextCursor} />;
+  return (
+    <Feed ItemView={NotificationView} endpoint={endpoint} initialData={notifications} initialCursor={nextCursor} />
+  );
 };
 
 const getInitialFeed = async () => {

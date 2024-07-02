@@ -1,4 +1,4 @@
-import { FeedSuspense } from "~/components/Feed";
+import { FeedSuspense } from "~/components/FeedSuspense";
 
 export default function loading() {
   return <FeedSuspense />;

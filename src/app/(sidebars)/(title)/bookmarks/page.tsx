@@ -1,17 +1,18 @@
-import { InfiniteScroll } from "~/components/InfiniteScroll";
+import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
+import { PostView } from "~/components/post/PostView";
 import { getLensClient } from "~/utils/getLensClient";
 
 const endpoint = "/api/bookmarks";
 
-const notifications = async () => {
+const bookmarks = async () => {
   const { bookmarks, nextCursor } = await getInitialFeed();
 
   if (!bookmarks) {
     throw new Error("Failed to get bookmarks (╥_╥)");
   }
 
-  return <InfiniteScroll endpoint={endpoint} initialData={bookmarks} initialCursor={nextCursor} />;
+  return <Feed ItemView={PostView} endpoint={endpoint} initialData={bookmarks} initialCursor={nextCursor} />;
 };
 
 const getInitialFeed = async () => {
@@ -31,4 +32,4 @@ const getInitialFeed = async () => {
   throw new Error("Unauthorized TT");
 };
 
-export default notifications;
+export default bookmarks;

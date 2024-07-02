@@ -38,7 +38,7 @@ export const PostComments = ({ post, isExpanded }: { post: Post; isExpanded: boo
   const commentElements = comments.map((comment, index) => (
     <PostView
       key={comment.id}
-      post={comment}
+      item={comment}
       settings={{
         isComment: true,
         showBadges: true,

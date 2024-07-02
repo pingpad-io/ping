@@ -1,25 +1,69 @@
-import type { Notification } from "./notifications/Notification";
-import { NotificationView } from "./notifications/NotificationView";
-import type { Post } from "./post/Post";
-import { PostSuspense } from "./post/PostSuspense";
-import { PostView } from "./post/PostView";
+"use client";
 
-export function Feed({ data }: { data?: Post[] | Notification[] }) {
+import { useCallback, useEffect, useState } from "react";
+import { FeedSuspense } from "./FeedSuspense";
+import { LoadingSpinner } from "./LoadingIcon";
+
+export const Feed = ({ ItemView, initialData, initialCursor, endpoint }) => {
+  const [data, setPosts] = useState(initialData);
+  const [cursor, setCursor] = useState(initialCursor);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const loadMorePosts = useCallback(async () => {
+    if (loading || !cursor) return;
+
+    setLoading(true);
+
+    const hasParams = endpoint.includes("?");
+    const params = hasParams ? "&" : "?";
+
+    try {
+      const res = await fetch(`${endpoint}${params}cursor=${cursor}`, {
+        method: "GET",
+      });
+      if (!res.ok) throw new Error(res.statusText);
+
+      const { posts: newPosts, nextCursor } = await res.json();
+
+      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+      setCursor(nextCursor);
+    } catch (err) {
+      setError(`Could not fetch posts: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [cursor, loading]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      /// FIXME: There's probably a better way to do this
+      const threshold = 10000;
+      if (
+        window.innerHeight + document.documentElement.scrollTop + threshold >= document.documentElement.offsetHeight &&
+        !loading
+      ) {
+        loadMorePosts();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loadMorePosts]);
+
+  if (error) throw new Error(error);
   if (!data) return <FeedSuspense />;
 
-  const feed = data.map((item, idx) => {
-    switch (item.__typename) {
-      case "Post":
-        return <PostView key={`${item.id}-${idx}`} post={item} />;
-      case "Notification":
-        return <NotificationView key={`${item.id}-${idx}`} notification={item} />;
-    }
-  });
+  const list = data.map((item) => <ItemView key={item.id} item={item} />);
 
-  return feed;
-}
-
-export const FeedSuspense = () => {
-  // biome-ignore lint/suspicious/noArrayIndexKey: intended behavior
-  return [...Array(12)].map((_v, idx) => <PostSuspense key={`suspense-${idx}`} />);
+  return (
+    <>
+      {list}
+      {loading && (
+        <div className="w-full h-12 flex justify-center items-center">
+          <LoadingSpinner />
+        </div>
+      )}
+    </>
+  );
 };

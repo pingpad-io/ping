@@ -1,7 +1,8 @@
 import { LimitType, PublicationType } from "@lens-protocol/client";
 import type { Metadata } from "next";
-import { InfiniteScroll } from "~/components/InfiniteScroll";
+import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
+import { PostView } from "~/components/post/PostView";
 import { getLensClient } from "~/utils/getLensClient";
 import { getUserByHandle } from "~/utils/getUserByHandle";
 
@@ -19,7 +20,12 @@ const user = async ({ params }: { params: { user: string } }) => {
   const { user, posts, nextCursor } = await getInitialData(handle);
 
   return (
-    <InfiniteScroll endpoint={`/api/posts?id=${user.id}&type=post`} initialData={posts} initialCursor={nextCursor} />
+    <Feed
+      ItemView={PostView}
+      endpoint={`/api/posts?id=${user.id}&type=post`}
+      initialData={posts}
+      initialCursor={nextCursor}
+    />
   );
 };
 

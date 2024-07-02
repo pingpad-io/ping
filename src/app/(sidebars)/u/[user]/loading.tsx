@@ -1,4 +1,4 @@
-import { FeedSuspense } from "~/components/Feed";
+import { FeedSuspense } from "~/components/FeedSuspense";
 import { Card } from "~/components/ui/card";
 
 export default function loading() {

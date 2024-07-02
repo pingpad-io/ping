@@ -4,21 +4,21 @@ import { useSearchPublications } from "@lens-protocol/react-web";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Feed, FeedSuspense } from "~/components/Feed";
+import { FeedSuspense } from "~/components/FeedSuspense";
 import { SearchBar } from "~/components/menu/Search";
 import { lensItemToPost } from "~/components/post/Post";
 import { Button } from "~/components/ui/button";
 
-export function SearchPage() {
+export function Search() {
   const params = useSearchParams();
   const query = params.get("q");
 
   const { data, loading, error } = useSearchPublications({ query });
 
   if (error && query) throw new Error(error.message);
+  if (loading) return <FeedSuspense />;
 
-  const posts = data?.map((item) => lensItemToPost(item)).filter((item) => item);
-  const feed = loading ? <FeedSuspense /> : <Feed data={posts} />;
+  const posts = data?.map((item) => lensItemToPost(item));
 
   return (
     <>
@@ -30,7 +30,7 @@ export function SearchPage() {
         </Link>
         <SearchBar defaultText={query} />
       </div>
-      {query && feed}
+      {query && posts}
     </>
   );
 }

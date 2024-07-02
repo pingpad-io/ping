@@ -1,6 +1,7 @@
 import { LimitType, PublicationType } from "@lens-protocol/client";
-import { InfiniteScroll } from "~/components/InfiniteScroll";
+import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
+import { PostView } from "~/components/post/PostView";
 import { getLensClient } from "~/utils/getLensClient";
 
 const endpoint = "/api/posts";
@@ -14,7 +15,8 @@ const home = async ({ params }: { params: { community: string } }) => {
   }
 
   return (
-    <InfiniteScroll
+    <Feed
+      ItemView={PostView}
       endpoint={`${endpoint}?community=${params.community}`}
       initialData={posts}
       initialCursor={nextCursor}

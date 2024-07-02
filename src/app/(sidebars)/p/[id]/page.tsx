@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { Card } from "~/components/ui/card";
@@ -47,7 +46,7 @@ const post = async ({ params }: { params: { id: string } }) => {
 
   return (
     <Card className="z-[30] hover:bg-card p-4 border-0">
-      <PostView post={post} />
+      <PostView item={post} />
     </Card>
   );
 };
