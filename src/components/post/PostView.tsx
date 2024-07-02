@@ -6,8 +6,9 @@ import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { PostComments } from "./PostComments";
 import { PostContent } from "./PostContent";
-import { PostContextMenu } from "./PostContextMenu";
+import { ContextMenu } from "./PostContextMenu";
 import { PostInfo } from "./PostInfo";
+import { PostMenu } from "./PostMenu";
 import { ReactionsList } from "./PostReactions";
 import { ReplyInfo } from "./PostReplyInfo";
 
@@ -28,7 +29,7 @@ export const PostView = ({
 
   return (
     <div className={"flex flex-col gap-2 w-full"}>
-      <PostContextMenu post={item}>
+      <ContextMenu post={item}>
         <Card onClick={() => setCollapsed(false)}>
           <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
             <span className="min-h-full flex flex-col justify-start items-center relative">
@@ -56,7 +57,7 @@ export const PostView = ({
             </div>
           </CardContent>
         </Card>
-      </PostContextMenu>
+      </ContextMenu>
       <PostComments isExpanded={isCommentsOpen} post={item} />
     </div>
   );

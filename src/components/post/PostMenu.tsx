@@ -18,7 +18,6 @@ export const PostMenu = ({ post, profileId }: { post: Post; profileId: string })
   };
 
   const deletePost = () => {
-    toast.error("Not implemented yet");
   };
 
   const copyLink = () => {
@@ -50,7 +49,7 @@ export const PostMenu = ({ post, profileId }: { post: Post; profileId: string })
       </Button>
       {profileId === author.id && (
         <>
-          <Button size="context" variant="ghost" onClick={setEditingQuery}>
+          <Button size="context" variant="ghost" onClick={setEditingQuery} disabled>
             <EditIcon size={12} className="mr-2 h-4 w-4" />
             edit post
           </Button>

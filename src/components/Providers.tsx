@@ -6,12 +6,14 @@ import { bindings } from "@lens-protocol/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import type React from "react";
-import { WagmiProvider, createConfig, http } from "wagmi";
+import { http, WagmiProvider, createConfig } from "wagmi";
 import { polygon } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
+import { getLensClient } from "~/utils/getLensClient";
 import { localStorage } from "~/utils/localStorage";
+import { UserProvider } from "./user/UserContext";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
@@ -67,12 +69,17 @@ const lensConfig: LensConfig = {
   storage: localStorage(),
 };
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+
+
+
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <LensProvider config={lensConfig}>{children}</LensProvider>
+          <LensProvider config={lensConfig}>
+            {children}
+          </LensProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </ThemeProvider>
