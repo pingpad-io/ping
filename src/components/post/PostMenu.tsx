@@ -17,7 +17,18 @@ export const PostMenu = ({ post, profileId }: { post: Post; profileId: string })
     toast.error("Not implemented yet");
   };
 
-  const deletePost = () => {
+  const deletePost = async () => {
+    // TODO: add confirmation dialog
+    const result = await fetch(`/api/posts?id=${post.id}`, {
+      method: "DELETE",
+    });
+    const data = await result.json();
+
+    if (result.ok) {
+      toast.success("Post deleted successfully!");
+    } else {
+      toast.error(`${data.error}`);
+    }
   };
 
   const copyLink = () => {
