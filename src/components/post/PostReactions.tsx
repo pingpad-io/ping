@@ -21,7 +21,12 @@ export function ReactionsList({
   collapsed,
   setCommentsOpen,
   isCommentsOpen,
-}: { post: Post; collapsed: boolean; setCommentsOpen: (open: boolean) => void; isCommentsOpen: boolean }) {
+}: {
+  post: Post;
+  collapsed: boolean;
+  setCommentsOpen: ({ click, hover }) => void;
+  isCommentsOpen: { click: boolean; hover: boolean };
+}) {
   const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
   const [isReposted, setIsReposted] = useState(post.reactions.isReposted);
   const [isCollected, setIsCollected] = useState(post.reactions.isCollected);
@@ -106,9 +111,13 @@ export function ReactionsList({
         <Button
           size="sm"
           variant="ghost"
+          onMouseOver={(e) => {
+            e.stopPropagation();
+            setCommentsOpen({ hover: true, click: isCommentsOpen.click });
+          }}
           onClick={(e) => {
             e.stopPropagation();
-            setCommentsOpen(!isCommentsOpen);
+            setCommentsOpen({ hover: isCommentsOpen.hover, click: !isCommentsOpen.click });
           }}
           className="h-max w-12 border-0 px-0 place-content-center items-center"
           disabled={!post.reactions.canComment}

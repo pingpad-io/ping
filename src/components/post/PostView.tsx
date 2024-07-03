@@ -24,7 +24,7 @@ export const PostView = ({
 }: { item: Post; settings?: PostViewSettings }) => {
   const content = "content" in item.metadata ? item.metadata.content : "";
   const [collapsed, setCollapsed] = useState(content.length > 400);
-  const [isCommentsOpen, setCommentsOpen] = useState(false);
+  const [isCommentsOpen, setCommentsOpen] = useState({ click: false, hover: false });
   const postContentRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -58,7 +58,7 @@ export const PostView = ({
           </CardContent>
         </Card>
       </ContextMenu>
-      <PostComments isExpanded={isCommentsOpen} post={item} />
+      <PostComments isOpen={isCommentsOpen} post={item} />
     </div>
   );
 };

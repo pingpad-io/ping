@@ -6,15 +6,15 @@ import type { Post } from "./Post";
 import { PostView } from "./PostView";
 import PostWizard from "./PostWizard";
 
-export const PostComments = ({ post, isExpanded }: { post: Post; isExpanded: boolean }) => {
+export const PostComments = ({ post, isOpen }: { post: Post; isOpen: { click: boolean; hover: boolean } }) => {
   const [comments, setComments] = useState(post.comments);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [cursor, setCursor] = useState(undefined);
 
   useEffect(() => {
-    isExpanded ? loadMoreComments() : setComments(post.comments);
-  }, [isExpanded]);
+    isOpen.hover ? loadMoreComments() : setComments(post.comments);
+  }, [isOpen.hover]);
 
   const loadMoreComments = useCallback(async () => {
     if (loading) return;
@@ -52,15 +52,15 @@ export const PostComments = ({ post, isExpanded }: { post: Post; isExpanded: boo
   return (
     <div className="w-full flex flex-col items-end justify-center gap-2 text-xs sm:text-sm">
       <div className="w-[90%] gap-2">
-        {isExpanded && (
+        {isOpen.click && (
           <div className="my-2">
             <PostWizard replyingTo={post} />
           </div>
         )}
         <ul>{commentElements}</ul>
         {loading && <LoadingSpinner className="p-4" />}
-        {isExpanded && cursor && !loading && (
-          <Button variant="ghost" onClick={loadMoreComments} disabled={loading}>
+        {isOpen.hover && cursor && !loading && (
+          <Button variant="ghost" onMouseEnter={loadMoreComments} disabled={loading} className="cursor-pointer">
             <PlusIcon /> Load more Comments
           </Button>
         )}

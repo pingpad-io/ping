@@ -25,7 +25,7 @@ const getInitialFeed = async () => {
 
   if (isAuthenticated) {
     data = (
-      await client.feed.fetch({ where: { for: profileId } }).catch(() => {
+      await client.feed.fetch({ where: { for: profileId }  }).catch(() => {
         throw new Error("(×_×)⌒☆ Failed to fetch feed");
       })
     ).unwrap();
