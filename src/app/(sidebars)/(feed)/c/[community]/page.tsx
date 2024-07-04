@@ -8,7 +8,6 @@ const endpoint = "/api/posts";
 
 const home = async ({ params }: { params: { community: string } }) => {
   const { posts, nextCursor } = await getInitialFeed(params.community);
-  const { isAuthenticated } = await getLensClient();
 
   if (!posts) {
     throw new Error("Failed to get posts");
@@ -25,7 +24,7 @@ const home = async ({ params }: { params: { community: string } }) => {
 };
 
 const getInitialFeed = async (community: string) => {
-  const { client, isAuthenticated, profileId } = await getLensClient();
+  const { client } = await getLensClient();
 
   const data = await client.publication
     .fetchAll({

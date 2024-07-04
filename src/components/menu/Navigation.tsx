@@ -2,6 +2,7 @@
 
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import {
+  AtSignIcon,
   Bitcoin,
   CameraIcon,
   CircleSlashIcon,
@@ -23,6 +24,7 @@ import {
   PlusCircleIcon,
   SproutIcon,
   TreeDeciduousIcon,
+  TrendingUpIcon,
   WrenchIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -48,17 +50,9 @@ export const Navigation = () => {
             <CrownIcon size={18} />
             best
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/explore/curated"}>
-            <NewspaperIcon size={18} />
-            explore
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/explore/collected"}>
-            <PlusCircleIcon size={18} />
-            collect
-          </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/explore/latest"}>
-            <ClockIcon size={18} />
-            latest
+          <NavigationCarouselItem href={"/c/pingpad"}>
+            <AtSignIcon size={18} />
+            pingpad
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/c/orbcommunitieslens"}>
             <SproutIcon size={18} />
@@ -139,6 +133,29 @@ export const Navigation = () => {
   );
 };
 
+export const ExploreNavigation = () => {
+  return (
+    <nav className="z-[40] flex flex-row justify-start items-center gap-2 p-4 px-0 sticky top-0 bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
+      <NavigationItem href={"/explore/curated"}>
+        <NewspaperIcon size={18} />
+        explore
+      </NavigationItem>
+      <NavigationItem href={"/explore/collected"}>
+        <PlusCircleIcon size={18} />
+        collected
+      </NavigationItem>
+      <NavigationItem href={"/explore/latest"}>
+        <ClockIcon size={18} />
+        latest
+      </NavigationItem>
+      <NavigationItem href={"/explore/trends"} disabled>
+        <TrendingUpIcon size={18} />
+        trending
+      </NavigationItem>
+    </nav>
+  );
+};
+
 export const NavigationItem = ({
   children,
   href,
@@ -166,7 +183,7 @@ export const NavigationCarouselItem = ({
   disabled = false,
 }: PropsWithChildren<{ href: string; disabled?: boolean }>) => {
   return (
-    <CarouselItem className="basis-auto pl-1">
+    <CarouselItem className="basis-1/3 pl-1">
       <NavigationItem href={href} disabled={disabled}>
         {children}
       </NavigationItem>
