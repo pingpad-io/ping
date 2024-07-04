@@ -1,12 +1,23 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getLensClient } from "~/utils/getLensClient";
 import { getCookieAuth } from "./utils/getCookieAuth";
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Check for the specific pattern in the URL
+  const namespace = /^\/u\/lens\/(.+)$/;
+  const match = pathname.match(namespace);
+
+  if (match) {
+    const username = match[1];
+    // Redirect to the new URL
+    return NextResponse.redirect(new URL(`/u/${username}`, request.url));
+  }
+
   // Only run this middleware for the base URL
-  if (request.nextUrl.pathname === "/") {
-    const { isAuthenticated } = await getCookieAuth();
+  if (pathname === "/") {
+    const { isAuthenticated } = getCookieAuth();
 
     if (isAuthenticated) {
       // If authenticated, redirect to /home
