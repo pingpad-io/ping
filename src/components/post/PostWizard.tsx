@@ -39,7 +39,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
     const metadata = textOnly({
       content: data.content,
       tags: [community],
-      appId: "Ping",
+      appId: "ping",
     });
 
     const response = fetch(`/api/posts?${replyingTo ? `replyingTo=${replyingTo.id}&` : ""}`, {
