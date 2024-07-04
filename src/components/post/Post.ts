@@ -187,16 +187,18 @@ function getComments(post: AnyLensItem) {
   if (!("__typename" in post)) return comments;
 
   if (post.__typename === "FeedItem") {
-    comments = post.comments.map((comment: Comment | Quote | LensPost) => ({
-      id: comment.id as string,
-      author: lensProfileToUser(comment.by),
-      createdAt: new Date(comment.createdAt),
-      updatedAt: new Date(comment.createdAt),
-      comments: [],
-      reactions: getReactions(comment),
-      metadata: comment.metadata,
-      platform: "lens",
-    }));
+    comments = post.comments
+      .filter((comment) => comment.commentOn.id === post.root.id) // only render direct comments in feed
+      .map((comment: Comment | Quote | LensPost) => ({
+        id: comment.id as string,
+        author: lensProfileToUser(comment.by),
+        createdAt: new Date(comment.createdAt),
+        updatedAt: new Date(comment.createdAt),
+        comments: [],
+        reactions: getReactions(comment),
+        metadata: comment.metadata,
+        platform: "lens",
+      }));
   }
 
   comments.sort((a, b) => b.reactions.totalReactions - a.reactions.totalReactions);
