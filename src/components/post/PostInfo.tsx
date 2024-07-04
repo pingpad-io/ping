@@ -8,15 +8,19 @@ export const PostInfo = ({ post }: { post: Post }) => {
   const handle = author.handle;
   const tags = post.metadata.tags || [];
 
-  let communityText = null;
+  let communityName = null;
   let community = "";
   tags.map((tag) => {
     if (tag.includes("orbcommunities")) {
-      communityText = `orb/${tag.replace("orbcommunities", "")}`;
+      communityName = `orb/${tag.replace("orbcommunities", "")}`;
       community = tag;
     }
     if (tag.includes("channel")) {
-      communityText = `channel/${tag.split("-")[1]}`;
+      communityName = `channel/${tag.split("-")[1]}`;
+      community = tag;
+    }
+    if (tag.includes("pingpad")) {
+      communityName = "ping";
       community = tag;
     }
   });
@@ -30,10 +34,10 @@ export const PostInfo = ({ post }: { post: Post }) => {
         <span className="w-fit truncate font-bold">{author.name}</span>
         <span className="">{`${isLensHandle ? "@" : "#"}${handle}`}</span>
       </Link>
-      {communityText && (
+      {communityName && (
         <>
           <span>{"·"}</span>
-          <Link href={`/c/${community}`}>{communityText}</Link>
+          <Link href={`/c/${community}`}>{communityName}</Link>
         </>
       )}
       <span>{"·"}</span>
