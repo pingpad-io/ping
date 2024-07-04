@@ -4,6 +4,7 @@ import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form
 import { zodResolver } from "@hookform/resolvers/zod";
 import { textOnly } from "@lens-protocol/metadata";
 import { LoaderIcon, SendHorizontalIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { type KeyboardEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -18,6 +19,9 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
   const textarea = useRef<HTMLTextAreaElement>(null);
   const [isPosting, setPosting] = useState(false);
   const placeholderText = replyingTo ? "write your reply..." : "write a new post...";
+
+  const pathname = usePathname().split("/");
+  const community = pathname[1] === "c" ? pathname[2] : "global";
 
   const FormSchema = z.object({
     content: z.string().max(3000, {
@@ -34,6 +38,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
 
     const metadata = textOnly({
       content: data.content,
+      tags: [community],
       appId: "Ping",
     });
 
@@ -86,8 +91,9 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
         >
           {user && (
             <div className="w-10 h-10">
-            <UserAvatar user={user} link={true} card={false} />
-          </div>)}
+              <UserAvatar user={user} link={true} card={false} />
+            </div>
+          )}
           <FormField
             control={form.control}
             name="content"

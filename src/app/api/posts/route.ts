@@ -135,7 +135,9 @@ export async function POST(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
     const replyingTo = searchParams.get("replyingTo") || undefined;
+
     const data = await parseRequestBody(req);
+
     const { client, isAuthenticated, handle } = await getLensClient();
 
     validateAuthentication(isAuthenticated);
