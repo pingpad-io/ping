@@ -183,7 +183,7 @@ export const NavigationCarouselItem = ({
   disabled = false,
 }: PropsWithChildren<{ href: string; disabled?: boolean }>) => {
   return (
-    <CarouselItem className="basis-1/3 pl-1">
+    <CarouselItem className="basis-auto pl-1">
       <NavigationItem href={href} disabled={disabled}>
         {children}
       </NavigationItem>
