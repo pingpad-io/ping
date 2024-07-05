@@ -1,5 +1,5 @@
 "use client";
-import { BellIcon, BookmarkIcon, HomeIcon, SettingsIcon } from "lucide-react";
+import { BellIcon, BookmarkIcon, HomeIcon, SettingsIcon, UsersIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export const RouteTitle = () => {
@@ -22,6 +22,8 @@ const getRouteIcon = (route: string) => {
       return <SettingsIcon strokeWidth={2.5} className="-mb-1" />;
     case "/notifications":
       return <BellIcon strokeWidth={2.5} className="-mb-1" />;
+    case "/communities":
+      return <UsersIcon strokeWidth={2.5} className="-mb-1" />;
     default:
       return <HomeIcon strokeWidth={2.5} className="-mb-1" />;
   }

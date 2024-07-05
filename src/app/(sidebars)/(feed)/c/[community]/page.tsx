@@ -6,7 +6,7 @@ import { getLensClient } from "~/utils/getLensClient";
 
 const endpoint = "/api/posts";
 
-const home = async ({ params }: { params: { community: string } }) => {
+const community = async ({ params }: { params: { community: string } }) => {
   const { posts, nextCursor } = await getInitialFeed(params.community);
 
   if (!posts) {
@@ -39,4 +39,4 @@ const getInitialFeed = async (community: string) => {
   return { posts, nextCursor: data.pageInfo.next };
 };
 
-export default home;
+export default community;

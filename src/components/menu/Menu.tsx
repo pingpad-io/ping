@@ -2,6 +2,7 @@ import {
   AtSign,
   BellIcon,
   BookmarkIcon,
+  GavelIcon,
   GlobeIcon,
   MailIcon,
   PersonStandingIcon,
@@ -69,10 +70,17 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
         </Button>
       </Link>
 
-      {/* <Link href={"/c"} > */}
+      <Link href={"/communities"}>
+        <Button variant="ghost" size="sm_icon" className="hidden sm:flex">
+          <div className="hidden sm:flex -mt-1">communities</div>
+          <UsersIcon className="sm:ml-2" size={21} />
+        </Button>
+      </Link>
+
+      {/* <Link href={"/gov"}> */}
       <Button variant="ghost" size="sm_icon" className="hidden sm:flex" disabled>
-        <div className="hidden sm:flex -mt-1">communities</div>
-        <UsersIcon className="sm:ml-2" size={21} />
+        <div className="hidden sm:flex -mt-1">governance</div>
+        <GavelIcon className="sm:ml-2" size={21} />
       </Button>
       {/* </Link> */}
 
