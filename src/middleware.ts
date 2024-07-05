@@ -5,13 +5,13 @@ import { getCookieAuth } from "./utils/getCookieAuth";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Check for the specific pattern in the URL
+  // Check for the namespace 
   const namespace = /^\/u\/lens\/(.+)$/;
   const match = pathname.match(namespace);
 
   if (match) {
     const username = match[1];
-    // Redirect to the new URL
+    // Redirect to profile page
     return NextResponse.redirect(new URL(`/u/${username}`, request.url));
   }
 
