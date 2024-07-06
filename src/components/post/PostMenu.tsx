@@ -1,5 +1,5 @@
 "use client";
-import { EditIcon, ExternalLinkIcon, LinkIcon, MaximizeIcon, TrashIcon } from "lucide-react";
+import { EditIcon, ExternalLinkIcon, LinkIcon, MaximizeIcon, Share2Icon, ShareIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ export const PostMenu = ({ post, profileId }: { post: Post; profileId: string })
 
   const origin = typeof window !== "undefined" && window.location.origin ? window.location.origin : "";
   const postLink = `${origin}/p/${post.id}`;
+  const shareLink = `https://share.lens.xyz/p/${post.id}`;
 
   const setEditingQuery = () => {
     toast.error("Not implemented yet");
@@ -31,8 +32,8 @@ export const PostMenu = ({ post, profileId }: { post: Post; profileId: string })
     }
   };
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(postLink).then(
+  const share = () => {
+    navigator.clipboard.writeText(shareLink).then(
       () => {
         toast.success("Copied link to clipboard");
       },
@@ -54,9 +55,9 @@ export const PostMenu = ({ post, profileId }: { post: Post; profileId: string })
           open in new tab
         </Button>
       </Link>
-      <Button size="context" variant="ghost" onClick={copyLink}>
-        <LinkIcon size={12} className="mr-2 h-4 w-4" />
-        copy link
+      <Button size="context" variant="ghost" onClick={share}>
+        <Share2Icon size={12} className="mr-2 h-4 w-4" />
+        share
       </Button>
       {profileId === author.id && (
         <>
