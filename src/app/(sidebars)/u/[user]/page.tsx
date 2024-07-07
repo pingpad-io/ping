@@ -1,5 +1,6 @@
 import { LimitType, PublicationType } from "@lens-protocol/client";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
@@ -19,6 +20,8 @@ const user = async ({ params }: { params: { user: string } }) => {
   const handle = params.user;
   const { user, posts, nextCursor } = await getInitialData(handle);
 
+  if (!user) return notFound();
+
   return (
     <Feed
       ItemView={PostView}
@@ -32,6 +35,10 @@ const user = async ({ params }: { params: { user: string } }) => {
 const getInitialData = async (handle: string) => {
   const { client } = await getLensClient();
   const user = await getUserByHandle(handle);
+
+  if (!user) {
+    return null;
+  }
 
   const lensPosts = await client.publication
     .fetchAll({
