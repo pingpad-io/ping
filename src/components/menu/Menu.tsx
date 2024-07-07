@@ -42,7 +42,7 @@ export default async function Menu() {
   }
 
   return (
-    <span className="flex shrink text-xl p-4 pb-0 sm:pb-4 w-full sm:w-max">
+    <span className="flex shrink text-xl p-2 sm:p-4 w-full sm:w-max">
       <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
         <Link href="/home">
           <Button variant="ghost" size="sm_icon">
@@ -70,8 +70,8 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
         </Button>
       </Link>
 
-      <Link href={"/communities"}>
-        <Button variant="ghost" size="sm_icon" className="hidden sm:flex">
+      <Link href={"/communities"} className="hidden sm:flex">
+        <Button variant="ghost" size="sm_icon" >
           <div className="hidden sm:flex -mt-1">communities</div>
           <UsersIcon className="sm:ml-2" size={21} />
         </Button>
