@@ -68,17 +68,20 @@ export function Sidebar() {
           <AccordionContent>
             <p>Welcome to pingpad!</p>
             <p>This is a beta, some things might be broken</p>
+            <p>We would love to hear what you think!</p>
             <p>
-              We would love to hear your feedback here:{" "}
+              Leave your feedback here:{" "}
               <Link className="underline underline-offset-2" href={"/c/pingpad"}>
                 /pingpad
               </Link>
             </p>
+            <br />
             <p>
-              big love,{" "}
-              <Link className="underline underline-offset-2" href={"/u/kualta"}>
-                @kualta
-              </Link>
+              - big love,{" "}
+              <Link className="underline underline-offset-2" href={"/u/pingpad"}>
+                @pingpad
+              </Link>{" "}
+              team
             </p>
           </AccordionContent>
         </AccordionItem>
