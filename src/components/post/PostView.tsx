@@ -30,7 +30,7 @@ export const PostView = ({
   return (
     <div className={"flex flex-col gap-2 w-full"}>
       <PostContextMenu post={item}>
-        <Card onClick={() => setCollapsed(false)} className="hover:bg-card">
+        <Card onClick={() => setCollapsed(false)}>
           <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
             <span className="min-h-full flex flex-col justify-start items-center relative">
               <div className={`shrink-0 grow-0 rounded-full" ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
