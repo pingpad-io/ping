@@ -37,7 +37,7 @@ const getInitialData = async (handle: string) => {
   const user = await getUserByHandle(handle);
 
   if (!user) {
-    return null;
+    return { user: null, posts: null, nextCursor: null };
   }
 
   const lensPosts = await client.publication
