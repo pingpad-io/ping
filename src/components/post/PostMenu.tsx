@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
+import { useUser } from "../user/UserContext";
 
-export const PostMenu = ({ post, profileId }: { post: Post; profileId: string }) => {
+export const PostMenu = ({ post}: { post: Post}) => {
   const router = useRouter();
   const author = post.author;
+  const { user } = useUser();
 
   const origin = typeof window !== "undefined" && window.location.origin ? window.location.origin : "";
   const postLink = `${origin}/p/${post.id}`;
@@ -59,7 +61,7 @@ export const PostMenu = ({ post, profileId }: { post: Post; profileId: string })
         <Share2Icon size={12} className="mr-2 h-4 w-4" />
         share
       </Button>
-      {profileId === author.id && (
+      {user.id === author.id && (
         <>
           <Button size="context" variant="ghost" onClick={setEditingQuery} disabled>
             <EditIcon size={12} className="mr-2 h-4 w-4" />

@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { TimeElapsedSince } from "../TimeLabel";
+import { Button } from "../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import type { Post } from "./Post";
+import { PostMenu } from "./PostMenu";
 
 export const PostInfo = ({ post }: { post: Post }) => {
   const author = post.author;
@@ -42,6 +45,16 @@ export const PostInfo = ({ post }: { post: Post }) => {
       )}
       <span>{"·"}</span>
       <TimeElapsedSince date={post.createdAt} />
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="text-xs font-light leading-4 text-base-content sm:text-sm h-6">
+            {"···"}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="flex flex-col w-max gap-1 p-1 hover:bg-card border">
+          <PostMenu post={post} />
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
