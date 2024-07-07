@@ -66,21 +66,19 @@ export function Sidebar() {
             </span>
           </AccordionTrigger>
           <AccordionContent>
-            <p>Welcome and thank you for being here so early!</p>
+            <p>Welcome to pingpad!</p>
+            <p>This is a beta, some things might be broken</p>
             <p>
-              We would love to hear what you think! leave feedback on{" "}
-              <a
-                className="underline "
-                href="https://github.com/pingpad-io/ping/issues"
-                target="_blank"
-                rel="noreferrer"
-              >
-                github
-              </a>{" "}
-              or{" "}
-              <a className="underline " href="https://discord.gg/DhMeQAXW4F" target="_blank" rel="noreferrer">
-                discord
-              </a>
+              We would love to hear your feedback here:{" "}
+              <Link className="underline underline-offset-2" href={"/c/pingpad"}>
+                /pingpad
+              </Link>
+            </p>
+            <p>
+              big love,{" "}
+              <Link className="underline underline-offset-2" href={"/u/kualta"}>
+                @kualta
+              </Link>
             </p>
           </AccordionContent>
         </AccordionItem>
