@@ -8,6 +8,7 @@ import { FeedSuspense } from "~/components/FeedSuspense";
 import { SearchBar } from "~/components/menu/Search";
 import { lensItemToPost } from "~/components/post/Post";
 import { Button } from "~/components/ui/button";
+import { PostView } from "./post/PostView";
 
 export function Search() {
   const params = useSearchParams();
@@ -18,7 +19,7 @@ export function Search() {
   if (error && query) throw new Error(error.message);
   if (loading) return <FeedSuspense />;
 
-  const posts = data?.map((item) => lensItemToPost(item));
+  const posts = data?.map(lensItemToPost).map((post) => <PostView key={post.id} item={post} />);
 
   return (
     <>

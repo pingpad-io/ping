@@ -146,7 +146,28 @@ export async function POST(req: NextRequest) {
     const contentURI = await uploadMetadata(data, handle);
     const postResult = await createPost(client, contentURI, replyingTo);
 
-    return handlePostResult(postResult, handle, contentURI);
+    if (postResult.isFailure()) {
+      throw new Error(postResult.error.message);
+    }
+
+    if (postResult.value.__typename === "LensProfileManagerRelayError") {
+      throw new Error(postResult.value.reason);
+    }
+
+    if (postResult.value.__typename === "RelaySuccess") {
+      const { txId: id, txHash: hash } = postResult.value;
+      const date = new Date().toISOString();
+      console.log(`${handle} created a post: ${id}, hash: ${hash}, ipfs: ${contentURI}, date: ${date}`);
+      return NextResponse.json({ id, hash }, { status: 200, statusText: "Success" });
+    }
+
+    if (postResult.value.__typename === "CreateMomokaPublicationResult") {
+      const date = new Date().toISOString();
+      console.log(`${handle} created a momoka post: ${postResult.value.id}, date: ${date}`);
+      return NextResponse.json({ id: postResult.value.id }, { status: 200, statusText: "Success" });
+    }
+
+    throw new Error("Unknown error. This should never happen.");
   } catch (error) {
     console.error("Failed to create a post: ", error);
     return NextResponse.json({ error: `Failed to create a post: ${error.message}` }, { status: 500 });
@@ -196,6 +217,12 @@ async function uploadMetadata(data: any, handle: string) {
 
 async function createPost(client: LensClient, contentURI: string, replyingTo?: string) {
   if (replyingTo) {
+    const [, , da] = replyingTo.split("-");
+    const isOnMomoka = da === "DA";
+
+    if (isOnMomoka) {
+      return await client.publication.commentOnMomoka({ contentURI, commentOn: replyingTo });
+    }
     return await client.publication.commentOnchain({ contentURI, commentOn: replyingTo });
   }
   return await client.publication.postOnchain({ contentURI });
@@ -208,21 +235,4 @@ function handlePostResult(
   >,
   handle: string,
   contentURI: string,
-) {
-  if (postResult.isFailure()) {
-    throw new Error(postResult.error.message);
-  }
-
-  if (postResult.value.__typename === "LensProfileManagerRelayError") {
-    throw new Error(postResult.value.reason);
-  }
-
-  if (postResult.value.__typename === "RelaySuccess") {
-    const { txId: id, txHash: hash } = postResult.value;
-    const date = new Date().toISOString();
-    console.log(`${handle} created a post: ${id}, hash: ${hash}, ipfs: ${contentURI}, date: ${date}`);
-    return NextResponse.json({ id, hash }, { status: 200, statusText: "Success" });
-  }
-
-  throw new Error("Unknown error. This should never happen.");
-}
+) {}
