@@ -1,4 +1,4 @@
-import { BellIcon, Bookmark, BookmarkIcon, MailIcon } from "lucide-react";
+import { BellIcon, BookmarkIcon, MailIcon } from "lucide-react";
 import Link from "next/link";
 import { getCookieAuth } from "~/utils/getCookieAuth";
 import { getLensClient } from "~/utils/getLensClient";
@@ -6,7 +6,6 @@ import { ServerSignedIn } from "../ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
 import { lensProfileToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
@@ -52,7 +51,6 @@ export function Sidebar() {
     <div className="flex flex-col w-full gap-4 p-4 grow">
       <ServerSignedIn>
         <UserBar />
-        {/* <Separator className="max-w-[150px] mx-auto" /> */}
       </ServerSignedIn>
       <SearchBar defaultText="" />
       <Accordion defaultValue={["beta"]} className="w-full" type="multiple">

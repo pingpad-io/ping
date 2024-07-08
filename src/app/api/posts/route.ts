@@ -227,12 +227,3 @@ async function createPost(client: LensClient, contentURI: string, replyingTo?: s
   }
   return await client.publication.postOnchain({ contentURI });
 }
-
-function handlePostResult(
-  postResult: Result<
-    RelaySuccessFragment | LensProfileManagerRelayErrorFragment,
-    CredentialsExpiredError | NotAuthenticatedError
-  >,
-  handle: string,
-  contentURI: string,
-) {}

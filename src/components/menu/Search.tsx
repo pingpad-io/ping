@@ -28,11 +28,11 @@ export const SearchButton = () => {
 };
 
 export const SearchBar = ({ defaultText = "" }: { defaultText: string }) => {
-  const router = useRouter();
   const formSchema = z.object({ input: z.string() });
   const pathname = usePathname();
+  const router = useRouter();
 
-  if (pathname === "/search") {
+  if (pathname === "/search" && defaultText === "") {
     return;
   }
 
