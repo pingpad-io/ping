@@ -15,6 +15,7 @@ import type {
   TransactionMetadataV3,
   VideoMetadataV3,
 } from "@lens-protocol/react-web";
+import { AudioPlayer } from "../AudioPlayer";
 import Markdown from "../Markdown";
 import { VideoPlayer } from "../VideoPlayer";
 import { Badge } from "../ui/badge";
@@ -86,7 +87,6 @@ export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
 
 export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
   const url = metadata.asset.video.optimized.uri || metadata.asset.video.raw.uri;
-  const _mimeType = metadata.asset.video.optimized.mimeType || metadata.asset.video.raw.mimeType;
   const cover = metadata.asset.cover?.optimized.uri || metadata.asset.cover?.raw.uri;
 
   return (
@@ -98,14 +98,24 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
 };
 
 export const AudioView = ({ metadata }: { metadata: AudioMetadataV3 }) => {
-  return <ContentView content={metadata.content} />;
+  const url = metadata.asset.audio.optimized.uri || metadata.asset.audio.raw.uri;
+  const cover = metadata.asset.cover?.optimized.uri || metadata.asset.cover?.raw.uri;
+  const artist = metadata.asset.artist;
+  const title = metadata.title;
+
+  return (
+    <div>
+      <ContentView content={metadata.content} />
+      <AudioPlayer url={url} cover={cover} author={artist} title={title} />
+    </div>
+  );
 };
 
 export const LinkView = ({ metadata }: { metadata: LinkMetadataV3 }) => {
   return (
     <div>
       <ContentView content={metadata.content} />
-      <Badge>{metadata.sharingLink}</Badge>
+      <Badge className="p-2">{metadata.sharingLink}</Badge>
     </div>
   );
 };
