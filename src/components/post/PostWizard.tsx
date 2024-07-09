@@ -4,14 +4,18 @@ import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form
 import { zodResolver } from "@hookform/resolvers/zod";
 import { textOnly } from "@lens-protocol/metadata";
 import { useSearchProfiles } from "@lens-protocol/react-web";
-import { LoaderIcon, SendHorizontalIcon } from "lucide-react";
+import EmojiPicker, { Theme } from "emoji-picker-react";
+import { LoaderIcon, SendHorizontalIcon, SmileIcon } from "lucide-react";
+import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { LoadingSpinner } from "../LoadingIcon";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Textarea } from "../ui/textarea";
 import type { User } from "../user/User";
 import { lensProfileToUser } from "../user/User";
@@ -92,6 +96,9 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      content: "",
+    },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -199,6 +206,28 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
     }
   };
 
+  const handleEmojiClick = useCallback(
+    (emoji) => {
+      const { content } = form.getValues();
+      const cursorPosition = textarea.current.selectionStart;
+      const textBeforeCursor = content.slice(0, cursorPosition);
+      const textAfterCursor = content.slice(cursorPosition);
+      const newContent = textBeforeCursor + emoji.emoji + textAfterCursor;
+
+      form.setValue("content", newContent, { shouldValidate: true });
+
+      // Update cursor position
+      setTimeout(() => {
+        const newCursorPosition = cursorPosition + emoji.emoji.length;
+        textarea.current.setSelectionRange(newCursorPosition, newCursorPosition);
+      }, 0);
+    },
+    [form],
+  );
+
+  const [isEmojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const { theme } = useTheme();
+
   return (
     <div className="w-full">
       <Form {...form}>
@@ -228,6 +257,26 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
                     rows={1}
                   />
                 </FormControl>
+
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger className="absolute right-[3px] bottom-[3px]" asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="p-0 m-0 rounded-full w-8 h-8"
+                      onClick={() => setEmojiPickerOpen(!isEmojiPickerOpen)}
+                    >
+                      <SmileIcon className="h-5 w-5 text-base-content" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <EmojiPicker
+                      theme={theme as Theme}
+                      className="bg-card text-card-foreground"
+                      onEmojiClick={handleEmojiClick}
+                    />
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 {showPopup && (
                   <UserSearchPopup
                     query={searchQuery}
@@ -240,7 +289,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
             )}
           />
           <Button disabled={isPosting} size="icon" type="submit" className="h-10 w-10">
-            {isPosting ? <LoaderIcon /> : <SendHorizontalIcon />}
+            {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon />}
           </Button>
         </form>
       </Form>
