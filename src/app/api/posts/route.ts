@@ -138,9 +138,12 @@ export async function POST(req: NextRequest) {
 
     const data = await parseRequestBody(req);
 
-    const { client, isAuthenticated, handle } = await getLensClient();
+    const { client, handle, profileId } = await getLensClient();
 
-    validateAuthentication(isAuthenticated);
+    if (!profileId) {
+      throw new Error("Not authenticated");
+    }
+
     validateDataSize(data, handle);
 
     const contentURI = await uploadMetadata(data, handle);
@@ -180,12 +183,6 @@ async function parseRequestBody(req: NextRequest) {
     throw new Error("Bad Request: Invalid JSON body");
   }
   return data;
-}
-
-function validateAuthentication(isAuthenticated: boolean) {
-  if (!isAuthenticated) {
-    throw new Error("Not authenticated");
-  }
 }
 
 function validateDataSize(data: any, handle: string) {

@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { ConnectedWalletLabel } from "./ConnnectedWalletLabel";
 import { LensProfileSelect } from "./LensProfileSelect";
-import { clearCookies } from "./LogOut";
+import { clearCookies } from "../../utils/clearCookies";
 
 export function ConnectWalletButton() {
   const [dialogOpen, setDialogOpen] = useState(false);

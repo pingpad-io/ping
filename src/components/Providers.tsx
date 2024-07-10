@@ -11,9 +11,7 @@ import { polygon } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
-import { getLensClient } from "~/utils/getLensClient";
 import { localStorage } from "~/utils/localStorage";
-import { UserProvider } from "./user/UserContext";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
@@ -68,9 +66,6 @@ const lensConfig: LensConfig = {
   environment: production,
   storage: localStorage(),
 };
-
-
-
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

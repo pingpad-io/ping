@@ -1,6 +1,5 @@
 import { BellIcon, BookmarkIcon, MailIcon } from "lucide-react";
 import Link from "next/link";
-import { getCookieAuth } from "~/utils/getCookieAuth";
 import { getLensClient } from "~/utils/getLensClient";
 import { ServerSignedIn } from "../ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
@@ -11,8 +10,7 @@ import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
 
 const UserBar = async () => {
-  const { handle, profileId } = getCookieAuth();
-  const { client } = await getLensClient();
+  const { handle, profileId, client } = await getLensClient();
   const user = await client.profile.fetch({ forProfileId: profileId }).then((res) => lensProfileToUser(res));
   const handleOrProfileId = handle ?? profileId;
 
@@ -75,7 +73,7 @@ export function Sidebar() {
             </p>
             <br />
             <p>
-              - big love,{" "}
+              big love,{" "}
               <Link className="underline underline-offset-2" href={"/u/pingpad"}>
                 @pingpad
               </Link>{" "}

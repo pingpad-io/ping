@@ -7,7 +7,7 @@ import { getLensClient } from "~/utils/getLensClient";
 import { FollowButton } from "../FollowButton";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { type User, parseInterests } from "./User";
 import { UserInterestsList } from "./UserInterests";
@@ -65,7 +65,7 @@ export const UserProfile = async ({ user }: { user?: User }) => {
               {!isUserProfile && <> ({commonInterestTypes.length} in common)</>}
             </DialogTrigger>
             <DialogContent>
-              <DialogHeader className="text-lg font-bold">{user.handle}'s interests</DialogHeader>
+              <DialogTitle className="text-lg font-bold">{user.handle}'s interests</DialogTitle>
               <UserInterestsList interests={user.interests} />
               {commonInterests.length > 0 && !isUserProfile && (
                 <>

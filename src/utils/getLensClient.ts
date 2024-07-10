@@ -5,6 +5,7 @@ import { window } from "./globals";
 
 export const getLensClient = async () => {
   const { refreshToken } = getCookieAuth();
+
   const client = new LensClient({
     environment: production,
     headers: {
@@ -13,12 +14,10 @@ export const getLensClient = async () => {
     storage: window?.localStorage,
   });
 
-
   if (refreshToken) {
     await client.authentication.authenticateWith({ refreshToken });
   }
 
-  const isAuthenticated = await client.authentication.isAuthenticated();
   const profileId = await client.authentication.getProfileId();
   const address = await client.authentication.getWalletAddress();
 
@@ -30,7 +29,7 @@ export const getLensClient = async () => {
   const handle = user?.handle;
 
   return {
-    isAuthenticated,
+    isAuthenticated: !!profileId,
     profileId,
     address,
     client,

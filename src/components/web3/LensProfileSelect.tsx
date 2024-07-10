@@ -4,7 +4,6 @@ import { profileId, useSession as useLensSession, useLogin, useProfilesManaged }
 import { setCookie } from "cookies-next";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { LoadingSpinner } from "../LoadingIcon";
@@ -18,7 +17,6 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
   const { data: session } = useLensSession();
   const { execute: login, loading: isLoginPending } = useLogin();
   const { data: profiles, error, loading } = useProfilesManaged({ for: address, includeOwned: true });
-  const _router = useRouter();
 
   const onSubmit = async (profile: string) => {
     const id = profileId(profile);
@@ -30,18 +28,6 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
 
     if (result.isSuccess()) {
       const handle = result.value?.handle?.localName ?? result.value?.id;
-      if (handle) {
-        setCookie("handle", handle, {
-          secure: true,
-          sameSite: "lax",
-        });
-      }
-      const profileId = result.value?.id;
-      if (profileId)
-        setCookie("profileId", profileId, {
-          secure: true,
-          sameSite: "lax",
-        });
       const refreshToken = JSON.parse(localStorage.getItem("lens.production.credentials"))?.data?.refreshToken;
       if (refreshToken) {
         setCookie("refreshToken", refreshToken, {
@@ -50,8 +36,8 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
         });
       }
       setDialogOpen(false);
-      // router.refresh();
       window.location.reload();
+
       toast.success(`Welcome @${handle}`, { description: "login successful!" });
     } else {
       console.error(result.error.message);
