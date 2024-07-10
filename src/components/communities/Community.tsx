@@ -27,28 +27,17 @@ export type Community = {
 };
 
 export const stringToCommunity = (community: string) => {
-  let communityName = community;
-  if (community.includes("orbcommunities")) {
-    communityName = `orb/${community.replace("orbcommunities", "")}`;
-  }
-  if (community.includes("channel")) {
-    communityName = `channel/${community.split("-")[1]}`;
-  }
-  if (community.includes("pingpad")) {
-    communityName = "ping";
-  }
   return {
     id: community,
-    name: communityName,
+    name: `/${community}`,
     description: null,
     image: null,
   };
 };
 
-export const getCommunityTags = (tag: string) => {
+export const getCommunityTags = (community: string) => {
   const prefixes = ["", "interest-", "community-", "orbcommunities", "channel-", "topic-"];
-  const tags = prefixes.map((prefix) => `${prefix}${tag}`);
-  tags.push("KairaTopic");
+  const tags = prefixes.map((prefix) => `${prefix}${community}`);
 
   return tags;
 };
@@ -59,58 +48,61 @@ export const getCommunityIcon = (community: string) => {
     case "pingpad":
       icon = <AtSignIcon size={18} />;
       break;
-    case "orbcommunitieslens":
+    case "ping":
+      icon = <AtSignIcon size={18} />;
+      break;
+    case "lens":
       icon = <SproutIcon size={18} />;
       break;
-    case "orbcommunitiesart":
+    case "art":
       icon = <PaletteIcon size={18} />;
       break;
-    case "orbcommunitiestrading":
+    case "trading":
       icon = <LineChartIcon size={18} />;
       break;
-    case "orbcommunitiesraave":
+    case "raave":
       icon = <PartyPopperIcon size={18} />;
       break;
-    case "orbcommunitiesafk":
+    case "afk":
       icon = <KeyboardOffIcon size={18} />;
       break;
-    case "orbcommunitiestouchgrass":
+    case "touchgrass":
       icon = <LeafIcon size={18} />;
       break;
-    case "orbcommunitiesphotography":
+    case "photography":
       icon = <CameraIcon size={18} />;
       break;
-    case "orbcommunitiesbonsai":
+    case "bonsai":
       icon = <TreeDeciduousIcon size={18} />;
       break;
-    case "orbcommunitiesdefi":
+    case "defi":
       icon = <Bitcoin size={18} />;
       break;
-    case "orbcommunitieszk":
+    case "zk":
       icon = <CircleSlashIcon size={18} />;
       break;
-    case "orbcommunitieslips":
+    case "lips":
       icon = <SproutIcon fill="hsl(var(--primary))" size={18} />;
       break;
-    case "orbcommunitiesmetaverse":
+    case "metaverse":
       icon = <GlobeIcon size={18} />;
       break;
-    case "orbcommunitiesdesign":
+    case "design":
       icon = <FrameIcon size={18} />;
       break;
-    case "orbcommunitiesvinylandmusic":
+    case "vinylandmusic":
       icon = <MusicIcon size={18} />;
       break;
-    case "orbcommunitiesmemes":
+    case "memes":
       icon = <LaughIcon size={18} />;
       break;
-    case "orbcommunitiesbooks":
+    case "books":
       icon = <LibraryIcon size={18} />;
       break;
-    case "orbcommunitiesdevelopers":
+    case "developers":
       icon = <WrenchIcon size={18} />;
       break;
-    case "orbcommunitiesbuild":
+    case "build":
       icon = <HammerIcon size={18} />;
       break;
     default:

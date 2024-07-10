@@ -54,77 +54,77 @@ export const Navigation = () => {
             <AtSignIcon size={18} />
             pingpad
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitieslens"}>
+          <NavigationCarouselItem href={"/c/lens"}>
             <SproutIcon size={18} />
-            orb/lens
+            lens
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesart"}>
+          <NavigationCarouselItem href={"/c/art"}>
             <PaletteIcon size={18} />
-            orb/art
+            art
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiestrading"}>
+          <NavigationCarouselItem href={"/c/trading"}>
             <LineChartIcon size={18} />
-            orb/trading
+            trading
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesraave"}>
+          <NavigationCarouselItem href={"/c/raave"}>
             <PartyPopperIcon size={18} />
-            orb/raave
+            raave
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesafk"}>
+          <NavigationCarouselItem href={"/c/afk"}>
             <KeyboardOffIcon size={18} />
-            orb/afk
+            afk
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiestouchgrass"}>
+          <NavigationCarouselItem href={"/c/touchgrass"}>
             <LeafIcon size={18} />
-            orb/touchgrass
+            touchgrass
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesphotography"}>
+          <NavigationCarouselItem href={"/c/photography"}>
             <CameraIcon size={18} />
-            orb/photography
+            photography
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesbonsai"}>
+          <NavigationCarouselItem href={"/c/bonsai"}>
             <TreeDeciduousIcon size={18} />
-            orb/bonsai
+            bonsai
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesdefi"}>
+          <NavigationCarouselItem href={"/c/defi"}>
             <Bitcoin size={18} />
-            orb/defi
+            defi
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitieszk"}>
+          <NavigationCarouselItem href={"/c/zk"}>
             <CircleSlashIcon size={18} />
-            orb/zk
+            zk
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitieslips"}>
+          <NavigationCarouselItem href={"/c/lips"}>
             <SproutIcon fill="hsl(var(--primary))" size={18} />
-            orb/LIPs
+            LIPs
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesmetaverse"}>
+          <NavigationCarouselItem href={"/c/metaverse"}>
             <GlobeIcon size={18} />
-            orb/metaverse
+            metaverse
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesdesign"}>
+          <NavigationCarouselItem href={"/c/design"}>
             <FrameIcon size={18} />
-            orb/design
+            design
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesvinylandmusic"}>
+          <NavigationCarouselItem href={"/c/music"}>
             <MusicIcon size={18} />
-            orb/music
+            music
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesmemes"}>
+          <NavigationCarouselItem href={"/c/memes"}>
             <LaughIcon size={18} />
-            orb/memes
+            memes
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesbooks"}>
+          <NavigationCarouselItem href={"/c/books"}>
             <LibraryIcon size={18} />
-            orb/books
+            books
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesdevelopers"}>
+          <NavigationCarouselItem href={"/c/developers"}>
             <WrenchIcon size={18} />
-            orb/developers
+            developers
           </NavigationCarouselItem>
-          <NavigationCarouselItem href={"/c/orbcommunitiesbuild"}>
+          <NavigationCarouselItem href={"/c/build"}>
             <HammerIcon size={18} />
-            orb/build
+            build
           </NavigationCarouselItem>
         </CarouselContent>
         <CarouselNext variant="ghost" />
