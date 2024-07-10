@@ -5,8 +5,6 @@ import {
   GavelIcon,
   GlobeIcon,
   MailIcon,
-  PersonStandingIcon,
-  SendIcon,
   SettingsIcon,
   UserIcon,
   UsersIcon,
@@ -14,7 +12,7 @@ import {
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { getLensClient } from "~/utils/getLensClient";
-import { ServerSignedIn } from "../ServerSignedIn";
+import { ServerSignedIn } from "../auth/ServerSignedIn";
 import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
 import type { User } from "../user/User";
@@ -71,7 +69,7 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
       </Link>
 
       <Link href={"/communities"} className="hidden sm:flex">
-        <Button variant="ghost" size="sm_icon" >
+        <Button variant="ghost" size="sm_icon">
           <div className="hidden sm:flex -mt-1">communities</div>
           <UsersIcon className="sm:ml-2" size={21} />
         </Button>
@@ -124,9 +122,7 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-full sm:max-w-[700px]">
-          <DialogTitle className="text-center" >
-            What's going on?
-          </DialogTitle>
+          <DialogTitle className="text-center">What's going on?</DialogTitle>
           <div className="pr-4">
             <PostWizard user={user} />
           </div>

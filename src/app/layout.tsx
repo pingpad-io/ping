@@ -1,11 +1,14 @@
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { quicksand } from "~/styles/fonts";
-import "../styles/globals.css";
+import dynamic from "next/dynamic";
 import { Providers } from "~/components/Providers";
 import { Toaster } from "~/components/ui/sonner";
 import { UserProvider } from "~/components/user/UserContext";
+import { quicksand } from "~/styles/fonts";
 import { getLensClient } from "~/utils/getLensClient";
+import "../styles/globals.css";
+
+const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
 
 export const metadata = {
   title: {
@@ -27,6 +30,7 @@ export default async function RootLayout({ children }) {
           <UserProvider user={user}>
             <SpeedInsights />
             <Analytics />
+            <AuthWatcher />
             <Toaster position="top-right" offset={16} />
 
             {children}

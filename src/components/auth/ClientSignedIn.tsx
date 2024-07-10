@@ -3,7 +3,7 @@
 import { SessionType, useSession } from "@lens-protocol/react-web";
 import type { PropsWithChildren } from "react";
 
-export function SignedIn(props: PropsWithChildren) {
+export function ClientSignedIn(props: PropsWithChildren) {
   const { data: session } = useSession();
 
   if (!session || !(session.type === SessionType.WithProfile)) {
@@ -13,7 +13,7 @@ export function SignedIn(props: PropsWithChildren) {
   return <>{props.children}</>;
 }
 
-export function SignedOut(props: PropsWithChildren) {
+export function ClientSignedOut(props: PropsWithChildren) {
   const { data: session } = useSession();
 
   if (session?.authenticated) {

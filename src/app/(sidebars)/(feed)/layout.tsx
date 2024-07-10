@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { ServerSignedIn } from "~/components/ServerSignedIn";
+import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
 import { Navigation } from "~/components/menu/Navigation";
 import PostWizard from "~/components/post/PostWizard";
 import { Card } from "~/components/ui/card";

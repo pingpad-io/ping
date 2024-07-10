@@ -1,9 +1,8 @@
-import { Badge, NetworkIcon, PawPrintIcon, SettingsIcon, WalletIcon } from "lucide-react";
-import { ServerSignedIn } from "~/components/ServerSignedIn";
-import { PingButton, SettingsPage } from "~/components/SettingsPageItems";
+import { PawPrintIcon, WalletIcon } from "lucide-react";
+import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
+import { PingButton } from "~/components/SettingsPageItems";
 import { ThemeButtons } from "~/components/ThemeToggle";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
-import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { InterestsList } from "~/components/user/UserInterests";

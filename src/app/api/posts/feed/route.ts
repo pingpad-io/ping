@@ -1,4 +1,4 @@
-import { LimitType, PublicationType } from "@lens-protocol/client";
+import { PublicationType } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getLensClient } from "~/utils/getLensClient";
