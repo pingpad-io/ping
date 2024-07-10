@@ -45,6 +45,14 @@ export const stringToCommunity = (community: string) => {
   };
 };
 
+export const getCommunityTags = (tag: string) => {
+  const prefixes = ["", "interest-", "community-", "orbcommunities", "channel-", "topic-"];
+  const tags = prefixes.map((prefix) => `${prefix}${tag}`);
+  tags.push("KairaTopic");
+
+  return tags;
+};
+
 export const getCommunityIcon = (community: string) => {
   let icon = null;
   switch (community) {

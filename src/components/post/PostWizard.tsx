@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { LoadingSpinner } from "../LoadingIcon";
+import { getCommunityTags } from "../communities/Community";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -103,11 +104,15 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setPosting(true);
+
+    const tags = getCommunityTags(community);
+
     const metadata = textOnly({
       content: data.content,
-      tags: [community],
       appId: "ping",
+      tags: tags,
     });
+
     fetch(`/api/posts?${replyingTo ? `replyingTo=${replyingTo.id}&` : ""}`, {
       method: "POST",
       headers: {
@@ -297,47 +302,29 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
   );
 }
 
-// Helper function to get caret coordinates
 function getCaretCoordinates(element, position) {
   const div = document.createElement("div");
   const styles = getComputedStyle(element);
-  const properties = [
-    "direction",
-    "boxSizing",
-    "width",
-    "height",
-    "overflowX",
-    "overflowY",
-    "borderTopWidth",
-    "borderRightWidth",
-    "borderBottomWidth",
-    "borderLeftWidth",
-    "borderStyle",
-    "paddingTop",
-    "paddingRight",
-    "paddingBottom",
-    "paddingLeft",
-    "fontStyle",
-    "fontVariant",
-    "fontWeight",
-    "fontStretch",
-    "fontSize",
-    "fontSizeAdjust",
-    "lineHeight",
+  const essentialProperties = [
     "fontFamily",
-    "textAlign",
-    "textTransform",
-    "textIndent",
-    "textDecoration",
-    "letterSpacing",
+    "fontSize",
+    "fontWeight",
     "wordSpacing",
-    "tabSize",
-    "MozTabSize",
+    "letterSpacing",
+    "paddingLeft",
+    "paddingTop",
+    "borderLeftWidth",
+    "borderTopWidth",
+    "boxSizing",
+    "lineHeight",
   ];
 
   div.style.position = "absolute";
   div.style.visibility = "hidden";
-  for (const prop of properties) {
+  div.style.whiteSpace = "pre-wrap";
+  div.style.width = `${element.offsetWidth}px`;
+
+  for (const prop of essentialProperties) {
     div.style[prop] = styles[prop];
   }
 
@@ -348,8 +335,8 @@ function getCaretCoordinates(element, position) {
 
   document.body.appendChild(div);
   const coordinates = {
-    top: span.offsetTop + Number.parseInt(styles.borderTopWidth),
-    left: span.offsetLeft + Number.parseInt(styles.borderLeftWidth),
+    top: span.offsetTop + parseInt(styles.borderTopWidth),
+    left: span.offsetLeft + parseInt(styles.borderLeftWidth),
   };
   document.body.removeChild(div);
 
