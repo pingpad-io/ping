@@ -10,7 +10,6 @@ import {
   Repeat2Icon,
   ThumbsDownIcon,
 } from "lucide-react";
-import Link from "next/link";
 import { useRef, useState } from "react";
 import Explosion from "react-canvas-confetti/dist/presets/explosion";
 import { Button } from "../ui/button";

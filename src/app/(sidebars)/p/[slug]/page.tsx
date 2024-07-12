@@ -4,11 +4,18 @@ import { PostView } from "~/components/post/PostView";
 import { Card } from "~/components/ui/card";
 import { getLensClient } from "~/utils/getLensClient";
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+/**
+ * This route resolves to universal id of the post passed in the [slug]
+ *
+ * @param slug - id of the post (0x04359b-0x6c)
+ */
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { client } = await getLensClient();
+
+  const id = params.slug;
   const post = await client.publication
     .fetch({
-      forId: params.id,
+      forId: id,
     })
     .then((data) => lensItemToPost(data))
     .catch(() => {
@@ -25,12 +32,13 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-const post = async ({ params }: { params: { id: string } }) => {
+const post = async ({ params }: { params: { slug: string } }) => {
   const { client } = await getLensClient();
 
+  const id = params.slug;
   const lensPost = await client.publication
     .fetch({
-      forId: params.id,
+      forId: id,
     })
     .catch(() => {
       throw new Error("(╥_╥) Post not found");
@@ -38,7 +46,7 @@ const post = async ({ params }: { params: { id: string } }) => {
 
   if (!lensPost) throw new Error("(╥_╥) Post not found");
 
-  const lensComments = await client.publication.fetchAll({ where: { commentOn: { id: params.id } } });
+  const lensComments = await client.publication.fetchAll({ where: { commentOn: { id } } });
 
   const post = lensItemToPost(lensPost);
   const comments = lensComments.items.map((comment) => lensItemToPost(comment));

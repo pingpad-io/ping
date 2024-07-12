@@ -16,10 +16,10 @@ import type {
   EventMetadataV3,
   FeedItem,
   ImageMetadataV3,
-  Post as LensPost,
   LinkMetadataV3,
   LiveStreamMetadataV3,
   MintMetadataV3,
+  Post as LensPost,
   Quote,
   SpaceMetadataV3,
   StoryMetadataV3,
@@ -92,21 +92,8 @@ export type Post = {
   reply?: Post;
 };
 
-export function lensItemToPost(item: AnyLensItem): Post {
-  const post: Post = {
-    id: "",
-    author: null,
-    reactions: {},
-    reply: null,
-    comments: [],
-    metadata: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    platform: "lens",
-    __typename: "Post",
-  };
-
-  if (!item) return post;
+export function lensItemToPost(item: AnyLensItem): Post | null {
+  if (!item) return null;
 
   const normalizedPost = normalizePost(item);
 
@@ -128,17 +115,27 @@ export function lensItemToPost(item: AnyLensItem): Post {
       origin = normalizedPost.mirrorOn as LensPost;
       break;
     default:
-      return post;
+      return null;
   }
 
-  post.id = origin.id;
-  post.author = lensProfileToUser(origin.by);
-  post.reactions = getReactions(origin);
-  post.comments = getComments(normalizedPost);
-  post.reply = getReply(origin);
-  post.metadata = getMetadata(origin.metadata);
-  post.createdAt = new Date(origin.createdAt);
-  post.updatedAt = new Date(origin.createdAt);
+  let post: Post;
+  try {
+    post = {
+      id: origin.id,
+      author: lensProfileToUser(origin.by),
+      reactions: getReactions(origin),
+      comments: getComments(normalizedPost),
+      reply: getReply(origin),
+      metadata: getMetadata(origin.metadata),
+      createdAt: new Date(origin.createdAt),
+      updatedAt: new Date(origin.createdAt),
+      platform: "lens",
+      __typename: "Post",
+    };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 
   return post;
 }
