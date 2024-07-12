@@ -90,7 +90,7 @@ export const getCommunityIcon = (community: string) => {
     case "design":
       icon = <FrameIcon size={18} />;
       break;
-    case "vinylandmusic":
+    case "music":
       icon = <MusicIcon size={18} />;
       break;
     case "memes":

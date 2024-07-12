@@ -87,7 +87,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const placeholderText = replyingTo ? "write your reply..." : "write a new post...";
   const pathname = usePathname().split("/");
-  const community = pathname[1] === "c" ? pathname[2] : "global";
+  const community = pathname[1] === "c" ? pathname[2] : "";
 
   const FormSchema = z.object({
     content: z.string().max(3000, {
@@ -302,7 +302,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
   );
 }
 
-function getCaretCoordinates(element, position) {
+function getCaretCoordinates(element: HTMLTextAreaElement, position: number) {
   const div = document.createElement("div");
   const styles = getComputedStyle(element);
   const essentialProperties = [

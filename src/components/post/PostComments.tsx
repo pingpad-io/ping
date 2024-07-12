@@ -1,20 +1,19 @@
 import { PlusIcon } from "lucide-react";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { LoadingSpinner } from "../LoadingIcon";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
 import { PostView } from "./PostView";
-import PostWizard from "./PostWizard";
 
-export const PostComments = ({ post, isOpen }: { post: Post; isOpen: { click: boolean; hover: boolean } }) => {
+export const PostComments = ({ post, isOpen }: { post: Post; isOpen: boolean }) => {
   const [comments, setComments] = useState(post.comments);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [cursor, setCursor] = useState(undefined);
 
   useEffect(() => {
-    isOpen.hover ? loadMoreComments() : setComments(post.comments);
-  }, [isOpen.hover]);
+    isOpen ? loadMoreComments() : setComments(post.comments);
+  }, [isOpen]);
 
   const loadMoreComments = useCallback(async () => {
     if (loading) return;
@@ -52,14 +51,9 @@ export const PostComments = ({ post, isOpen }: { post: Post; isOpen: { click: bo
   return (
     <div className="w-full flex flex-col items-end justify-center gap-2 text-xs sm:text-sm">
       <div className="w-[90%] gap-2">
-        {isOpen.click && (
-          <div className="my-2">
-            <PostWizard replyingTo={post} />
-          </div>
-        )}
         <ul>{commentElements}</ul>
         {loading && <LoadingSpinner className="p-4" />}
-        {isOpen.hover && cursor && !loading && (
+        {isOpen && cursor && !loading && (
           <Button variant="ghost" onMouseEnter={loadMoreComments} disabled={loading} className="cursor-pointer">
             <PlusIcon /> Load more Comments
           </Button>
