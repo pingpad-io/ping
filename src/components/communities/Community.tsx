@@ -36,6 +36,8 @@ export const stringToCommunity = (community: string) => {
 };
 
 export const getCommunityTags = (community: string) => {
+  if (community === "" || !community) return [];
+
   const prefixes = ["", "interest-", "community-", "orbcommunities", "channel-", "topic-"];
   const tags = prefixes.map((prefix) => `${prefix}${community}`);
 

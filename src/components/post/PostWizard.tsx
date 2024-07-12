@@ -107,11 +107,18 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
 
     const tags = getCommunityTags(community);
 
-    const metadata = textOnly({
-      content: data.content,
-      appId: "ping",
-      tags: tags,
-    });
+    let metadata;
+    try {
+      metadata = textOnly({
+        content: data.content,
+        appId: "ping",
+        tags: tags,
+      });
+    } catch (error) {
+      toast.error(error.message);
+      setPosting(false);
+      return;
+    }
 
     fetch(`/api/posts?${replyingTo ? `replyingTo=${replyingTo.id}&` : ""}`, {
       method: "POST",
