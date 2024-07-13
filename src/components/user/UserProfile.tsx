@@ -25,7 +25,7 @@ export const UserProfile = async ({ user }: { user?: User }) => {
   const commonInterests = parseInterests(commonInterestTypes);
 
   return (
-    <div className="sticky top-0 p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 bg-card rounded-b-lg drop-shadow-md">
+    <div className="p-4 z-20 flex w-full flex-row gap-4 border-b border-base-300 bg-base-200/30 bg-card rounded-b-lg drop-shadow-md">
       <div className="flex flex-col gap-2">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
           <UserAvatar card={false} user={user} />
