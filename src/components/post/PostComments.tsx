@@ -35,16 +35,21 @@ export const PostComments = ({ post, level, isOpen }: { post: Post; level: numbe
   }, [cursor, loading, post.id]);
 
   const commentElements = comments.map((comment, index) => (
-    <PostView
+    <li
       key={comment.id}
-      item={comment}
-      settings={{
-        level,
-        isComment: true,
-        showBadges: true,
-        isLastComment: index === comments.length - 1,
-      }}
-    />
+      className="animate-in slide-in-from-top-5 duration-500 ease-in-out"
+      // style={{ animationDelay: `${index * 100}ms` }}
+    >
+      <PostView
+        item={comment}
+        settings={{
+          level,
+          isComment: true,
+          showBadges: true,
+          isLastComment: index === comments.length - 1,
+        }}
+      />
+    </li>
   ));
 
   if (error) throw new Error(error);
@@ -53,7 +58,7 @@ export const PostComments = ({ post, level, isOpen }: { post: Post; level: numbe
     <div className="w-full flex flex-col items-end justify-center gap-2 text-xs sm:text-sm">
       <div className={`gap-2 ${level === 2 ? "w-[90%]" : "w-[94%]"}`}>
         <ul>{commentElements}</ul>
-        {loading && <LoadingSpinner className="p-4" />}
+        {loading && <LoadingSpinner className="animate-in fade-in slide-in-from-top-5 duration-500 ease-in-out p-4" />}
         {isOpen && cursor && !loading && (
           <Button variant="ghost" onMouseEnter={loadMoreComments} disabled={loading} className="cursor-pointer">
             <PlusIcon /> Load more Comments

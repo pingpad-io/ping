@@ -68,7 +68,7 @@ export const PostView = ({
           </CardContent>
         </Card>
       </PostContextMenu>
-      <PostReplyWizard isOpen={isReplyWizardOpen} post={item} />
+      <PostReplyWizard level={settings.level + 1} isOpen={isReplyWizardOpen} post={item} />
       <PostComments level={settings.level + 1} isOpen={isCommentsOpen} post={item} />
     </div>
   );
