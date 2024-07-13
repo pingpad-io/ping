@@ -16,11 +16,12 @@ type PostViewSettings = {
   showBadges?: boolean;
   isComment?: boolean;
   isLastComment?: boolean;
+  level?: number;
 };
 
 export const PostView = ({
   item,
-  settings = { isComment: false, showBadges: true },
+  settings = { isComment: false, showBadges: true, level: 1 },
 }: { item: Post; settings?: PostViewSettings }) => {
   const content = "content" in item.metadata ? item.metadata.content : "";
   const [collapsed, setCollapsed] = useState(content.length > 400);
@@ -68,7 +69,7 @@ export const PostView = ({
         </Card>
       </PostContextMenu>
       <PostReplyWizard isOpen={isReplyWizardOpen} post={item} />
-      <PostComments isOpen={isCommentsOpen} post={item} />
+      <PostComments level={settings.level + 1} isOpen={isCommentsOpen} post={item} />
     </div>
   );
 };

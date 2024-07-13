@@ -23,7 +23,7 @@ export function ReactionsList({
 }: {
   post: Post;
   collapsed: boolean;
-  isReplyWizardOpen:boolean;
+  isReplyWizardOpen: boolean;
   setReplyWizardOpen: (open: boolean) => void;
 }) {
   const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
@@ -117,7 +117,7 @@ export function ReactionsList({
           className="h-max w-12 border-0 px-0 place-content-center items-center"
           disabled={!post.reactions.canComment}
         >
-          <ReactionBadge key={`${post.id}-comments`} reaction={"Comment"} amount={comments} />
+          <ReactionBadge reaction={"Comment"} amount={comments} />
         </Button>
         <Button
           size="sm"
@@ -126,7 +126,7 @@ export function ReactionsList({
           className="h-max w-12 border-0 px-0 place-content-center items-center"
           disabled={!post.reactions.canRepost}
         >
-          <ReactionBadge pressed={isReposted} key={`${post.id}-reposts`} reaction={"Repost"} amount={reposts} />
+          <ReactionBadge pressed={isReposted} reaction={"Repost"} amount={reposts} />
         </Button>
         <Button
           size="sm"
@@ -134,7 +134,7 @@ export function ReactionsList({
           onClick={onLike}
           className="h-max w-12 border-0 px-0 place-content-center items-center relative"
         >
-          <ReactionBadge pressed={isLiked} key={`${post.id}-upvotes`} reaction={"Upvote"} amount={likes} />
+          <ReactionBadge pressed={isLiked} reaction={"Upvote"} amount={likes} />
 
           <Explosion
             onInit={onInitHandler}
@@ -161,7 +161,7 @@ export function ReactionsList({
             post.reactions.canCollect ? "" : "opacity-0 pointer-events-none"
           }`}
         >
-          <ReactionBadge pressed={isCollected} key={`${post.id}-collects`} reaction={"Collect"} amount={collects} />
+          <ReactionBadge pressed={isCollected} reaction={"Collect"} amount={collects} />
         </Button>
         <div className="grow" />
         <div className="flex flex-row items-center gap-2 ">
@@ -173,12 +173,7 @@ export function ReactionsList({
                 onClick={onBookmark}
                 className="h-max w-12 border-0 px-0 place-content-center items-center"
               >
-                <ReactionBadge
-                  pressed={isBookmarked}
-                  key={`${post.id}-bookmarks`}
-                  reaction={"Bookmark"}
-                  amount={bookmarks}
-                />
+                <ReactionBadge pressed={isBookmarked} reaction={"Bookmark"} amount={bookmarks} />
               </Button>
             )}
           </div>

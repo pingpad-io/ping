@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import type { Post } from "./Post";
 import { PostView } from "./PostView";
 
-export const PostComments = ({ post, isOpen }: { post: Post; isOpen: boolean }) => {
+export const PostComments = ({ post, level, isOpen }: { post: Post; level: number; isOpen: boolean }) => {
   const [comments, setComments] = useState(post.comments);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -39,6 +39,7 @@ export const PostComments = ({ post, isOpen }: { post: Post; isOpen: boolean }) 
       key={comment.id}
       item={comment}
       settings={{
+        level,
         isComment: true,
         showBadges: true,
         isLastComment: index === comments.length - 1,
@@ -50,7 +51,7 @@ export const PostComments = ({ post, isOpen }: { post: Post; isOpen: boolean }) 
 
   return (
     <div className="w-full flex flex-col items-end justify-center gap-2 text-xs sm:text-sm">
-      <div className="w-[90%] gap-2">
+      <div className={`gap-2 ${level === 2 ? "w-[90%]" : "w-[94%]"}`}>
         <ul>{commentElements}</ul>
         {loading && <LoadingSpinner className="p-4" />}
         {isOpen && cursor && !loading && (

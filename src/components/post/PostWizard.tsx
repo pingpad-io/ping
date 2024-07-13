@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { textOnly } from "@lens-protocol/metadata";
 import { useSearchProfiles } from "@lens-protocol/react-web";
 import EmojiPicker, { Theme } from "emoji-picker-react";
-import { LoaderIcon, SendHorizontalIcon, SmileIcon } from "lucide-react";
+import { SendHorizontalIcon, SmileIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
