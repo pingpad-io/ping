@@ -60,16 +60,16 @@ export const NotificationView = ({ item }: { item: Notification }) => {
 
   return (
     <Card>
-      <CardContent className="flex h-fit flex-row gap-4 p-2 sm:p-4">
-        <div className=" shrink-0 grow-0 rounded-full">
+      <CardContent className="flex h-fit w-full flex-row gap-4 p-2 sm:p-4">
+        <div className="shrink-0 grow-0 rounded-full">
           <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />
         </div>
-        <div className="flex flex-col w-3/4 shrink group max-w-2xl grow gap-1 place-content-center">
-          <div className="flex flex-wrap whitespace-pre-wrap">
+        <div className="flex flex-col shrink group max-w-sm grow gap-1 place-content-center">
+          <div className="flex flex-wrap whitespace-pre-wrap truncate text-ellipsis overflow-hidden">
             {usersText}
             <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
           </div>
-          <div className="text-muted-foreground text-sm">{content}</div>
+          <div className="text-muted-foreground text-sm line-clamp-1 text-ellipsis overflow-hidden">{content}</div>
         </div>
       </CardContent>
     </Card>
