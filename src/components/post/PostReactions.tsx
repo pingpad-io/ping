@@ -1,9 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
-import Explosion from "react-canvas-confetti/dist/presets/explosion";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
-import { Button } from "../ui/button";
 import {
   ArrowBigDown,
   ArrowBigUp,
@@ -14,6 +11,9 @@ import {
   MessageSquareIcon,
   Repeat2Icon,
 } from "lucide-react";
+import { useRef, useState } from "react";
+import Explosion from "react-canvas-confetti/dist/presets/explosion";
+import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
 
 type ReactionState = {
@@ -70,7 +70,7 @@ export function ReactionsList({
         const isActive = isUpvote ? prev.isUpvoted : prev.isDownvoted;
         const otherIsActive = isUpvote ? prev.isDownvoted : prev.isUpvoted;
         let scoreDelta = isActive ? -1 : 1;
-        
+
         if (otherIsActive) {
           scoreDelta *= 2;
         }
@@ -138,11 +138,7 @@ export function ReactionsList({
               />
             </span>
           ) : (
-            <ReactionButton
-              reactionType="Like"
-              reaction={reactions.Like}
-              onClick={() => updateReaction("Like")}
-            />
+            <ReactionButton reactionType="Like" reaction={reactions.Like} onClick={() => updateReaction("Like")} />
           )}
           <Explosion
             onInit={onInitHandler}
@@ -209,17 +205,9 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactionType, reaction,
     disabled={disabled}
   >
     {reactionType !== "Upvote" && reactionType !== "Downvote" && (
-      <ReactionCount
-        isPressed={reaction.isActive}
-        amount={reaction.count}
-        persistent={reactionType === "Comment"}
-      />
+      <ReactionCount isPressed={reaction.isActive} amount={reaction.count} persistent={false} />
     )}
-    <ReactionBadge
-      isPressed={reaction.isActive}
-      reaction={reactionType}
-      amount={reaction.count}
-    />
+    <ReactionBadge isPressed={reaction.isActive} reaction={reactionType} amount={reaction.count} />
   </Button>
 );
 
@@ -233,17 +221,13 @@ export const ReactionCount = ({
   persistent: boolean;
 }) => {
   if (amount <= 0 && !persistent) return null;
-  
+
   const formattedAmount = Intl.NumberFormat("en-US", {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(amount);
 
-  return (
-    <span className={isPressed ? "font-semibold text-accent-foreground" : ""}>
-      {formattedAmount}
-    </span>
-  );
+  return <span className={isPressed ? "font-semibold text-accent-foreground" : ""}>{formattedAmount}</span>;
 };
 
 export const ReactionBadge = ({
@@ -273,9 +257,21 @@ export const ReactionIcon = ({ reaction, pressed }: { reaction: PostReactionType
     Like: <HeartIcon size={15} {...iconProps} />,
     Upvote: <ArrowBigUp size={20} {...iconProps} />,
     Downvote: <ArrowBigDown size={20} {...iconProps} />,
-    Repost: <Repeat2Icon size={18} strokeWidth={pressed ? 3.5 : 1.8} color={pressed ? "hsl(var(--accent-foreground))" : undefined} />,
+    Repost: (
+      <Repeat2Icon
+        size={18}
+        strokeWidth={pressed ? 3.5 : 1.8}
+        color={pressed ? "hsl(var(--accent-foreground))" : undefined}
+      />
+    ),
     Comment: <MessageSquareIcon size={15} />,
-    Collect: <CirclePlusIcon size={16} strokeWidth={pressed ? 3.5 : 1.8} color={pressed ? "hsl(var(--accent-foreground))" : undefined} />,
+    Collect: (
+      <CirclePlusIcon
+        size={16}
+        strokeWidth={pressed ? 3.5 : 1.8}
+        color={pressed ? "hsl(var(--accent-foreground))" : undefined}
+      />
+    ),
     Bookmark: <BookmarkIcon size={16} {...iconProps} />,
   };
 

@@ -1,16 +1,15 @@
 import {
   type CredentialsExpiredError,
-  LensTransactionStatusType,
   type NotAuthenticatedError,
   PublicationReactionType,
   type Result,
 } from "@lens-protocol/client";
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getLensClient } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST({ params }: { params: { id: string } }) {
   const id = params.id;
 
   if (!id) {
