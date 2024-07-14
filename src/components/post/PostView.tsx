@@ -58,6 +58,7 @@ export const PostView = ({
               <PostContent ref={postContentRef} post={item} collapsed={collapsed} setCollapsed={setCollapsed} />
               {settings?.showBadges && (
                 <ReactionsList
+                  isComment={settings.isComment}
                   isReplyWizardOpen={isReplyWizardOpen}
                   setReplyWizardOpen={setReplyWizardOpen}
                   collapsed={collapsed}

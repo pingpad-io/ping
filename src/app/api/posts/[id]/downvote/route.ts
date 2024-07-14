@@ -1,6 +1,5 @@
 import {
   type CredentialsExpiredError,
-  LensTransactionStatusType,
   type NotAuthenticatedError,
   PublicationReactionType,
   type Result,
@@ -25,7 +24,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     });
 
     if (publication.__typename === "Mirror") {
-      return NextResponse.json({ error: "Cannot dislike a share publication" }, { status: 400 });
+      return NextResponse.json({ error: "Cannot downvote a share publication" }, { status: 400 });
     }
 
     const reactionExists = publication.operations.hasDownvoted;
@@ -49,7 +48,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     return NextResponse.json({ result: !reactionExists }, { status: 200 });
   } catch (error) {
-    console.error("Failed to follow profile: ", error.message);
+    console.error("Failed to downvote publication: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });
   }
 }

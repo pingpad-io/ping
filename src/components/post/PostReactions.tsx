@@ -2,6 +2,8 @@
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import {
+  ArrowBigDown,
+  ArrowBigUp,
   BookmarkIcon,
   ChevronDownIcon,
   CirclePlusIcon,
@@ -18,20 +20,26 @@ import type { Post, PostReactionType } from "./Post";
 export function ReactionsList({
   post,
   collapsed,
+  isComment,
   isReplyWizardOpen,
   setReplyWizardOpen,
 }: {
   post: Post;
   collapsed: boolean;
+  isComment: boolean;
   isReplyWizardOpen: boolean;
   setReplyWizardOpen: (open: boolean) => void;
 }) {
-  const [isLiked, setIsLiked] = useState(post.reactions.isUpvoted);
+  const [isUpvoted, setIsUpvoted] = useState(post.reactions.isUpvoted);
+  const [isDownvoted, setIsDownvoted] = useState(post.reactions.isDownvoted);
   const [isReposted, setIsReposted] = useState(post.reactions.isReposted);
   const [isCollected, setIsCollected] = useState(post.reactions.isCollected);
   const [isBookmarked, setIsBookmarked] = useState(post.reactions.isBookmarked);
 
-  const [likes, setLikes] = useState(post.reactions.Upvote);
+  const [upvotes, setUpvotes] = useState(post.reactions.Upvote);
+  const [downvotes, setDownvotes] = useState(post.reactions.Downvote);
+  const [score, setScore] = useState(upvotes - downvotes);
+
   const [reposts, setReposts] = useState(post.reactions.Repost);
   const [comments] = useState(post.reactions.Comment);
   const [collects, setCollects] = useState(post.reactions.Collect);
@@ -48,20 +56,39 @@ export function ReactionsList({
     explosionController.current.shoot();
   };
 
-  const onLike = async (e: any) => {
+  const onUpvote = async (e: any) => {
     e.stopPropagation();
 
-    const isLikedNow = !isLiked;
-    setIsLiked(isLikedNow);
-    setLikes(isLikedNow ? likes + 1 : likes - 1);
+    const isLikedNow = !isUpvoted;
+    setIsUpvoted(isLikedNow);
+    setUpvotes(isLikedNow ? upvotes + 1 : upvotes - 1);
+    setScore(isLikedNow ? score + 1 : score - 1);
     isLikedNow ? shootEffect() : null;
 
-    const response = await fetch(`/api/posts/${post.id}/like`, {
+    const response = await fetch(`/api/posts/${post.id}/upvote`, {
       method: "POST",
     });
     const result = (await response.json()).result;
-    if (!result) {
-      console.error("Failed to like post");
+    if (result === undefined) {
+      console.error("Failed to toggle upvote");
+    }
+  };
+
+  const onDownvote = async (e: any) => {
+    e.stopPropagation();
+
+    const isDownvotedNow = !isDownvoted;
+    setIsDownvoted(isDownvotedNow);
+    setDownvotes(isDownvotedNow ? downvotes + 1 : downvotes - 1);
+    setScore(isDownvotedNow ? score - 1 : score + 1);
+    // isDownvotedNow ? shootEffect() : null;
+
+    const response = await fetch(`/api/posts/${post.id}/downvote`, {
+      method: "POST",
+    });
+    const result = (await response.json()).result;
+    if (result === undefined) {
+      console.error("Failed to toggle downvote");
     }
   };
 
@@ -114,28 +141,56 @@ export function ReactionsList({
             e.stopPropagation();
             setReplyWizardOpen(!isReplyWizardOpen);
           }}
-          className="h-max w-12 border-0 px-0 place-content-center items-center"
+          className="w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full"
           disabled={!post.reactions.canComment}
         >
+          <ReactionCount isPressed={false} amount={comments} persistent={false} />
           <ReactionBadge reaction={"Comment"} amount={comments} />
         </Button>
         <Button
           size="sm"
           variant="ghost"
           onClick={onRepost}
-          className="h-max w-12 border-0 px-0 place-content-center items-center"
+          className="w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full"
           disabled={!post.reactions.canRepost}
         >
-          <ReactionBadge pressed={isReposted} reaction={"Repost"} amount={reposts} />
+          <ReactionCount isPressed={isReposted} amount={reposts} persistent={false} />
+          <ReactionBadge isPressed={isReposted} reaction={"Repost"} amount={reposts} />
         </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={onLike}
-          className="h-max w-12 border-0 px-0 place-content-center items-center relative"
-        >
-          <ReactionBadge pressed={isLiked} reaction={"Upvote"} amount={likes} />
+        <span className="relative">
+          {isComment ? (
+            <span className="flex flex-row gap-1 h-full ">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={onUpvote}
+                className="h-max w-12 border-0 px-0 place-content-center items-center relative"
+              >
+                <ReactionBadge isPressed={isUpvoted} reaction={"Upvote"} amount={upvotes} />
+              </Button>
 
+              <ReactionCount isPressed={isUpvoted || isDownvoted} amount={score} persistent={true} />
+
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={onDownvote}
+                className="h-max w-12 border-0 px-0 place-content-center items-center relative"
+              >
+                <ReactionBadge isPressed={isDownvoted} reaction={"Downvote"} amount={downvotes} />
+              </Button>
+            </span>
+          ) : (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onUpvote}
+              className="w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full"
+            >
+              <ReactionCount isPressed={isUpvoted} amount={upvotes} persistent={false} />
+              <ReactionBadge isPressed={isUpvoted} reaction={"Like"} amount={upvotes} />
+            </Button>
+          )}
           <Explosion
             onInit={onInitHandler}
             className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[30] select-none pointer-events-none"
@@ -152,16 +207,17 @@ export function ReactionsList({
               shapes: ["star", "circle", "square"],
             })}
           />
-        </Button>
+        </span>
         <Button
           size="sm"
           variant="ghost"
           onClick={onCollect}
-          className={`h-max w-12 border-0 px-0 place-content-center items-center ${
+          className={`w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full ${
             post.reactions.canCollect ? "" : "opacity-0 pointer-events-none"
           }`}
         >
-          <ReactionBadge pressed={isCollected} reaction={"Collect"} amount={collects} />
+          <ReactionCount isPressed={isCollected} amount={collects} persistent={false} />
+          <ReactionBadge isPressed={isCollected} reaction={"Collect"} amount={collects} />
         </Button>
         <div className="grow" />
         <div className="flex flex-row items-center gap-2 ">
@@ -173,7 +229,7 @@ export function ReactionsList({
                 onClick={onBookmark}
                 className="h-max w-12 border-0 px-0 place-content-center items-center"
               >
-                <ReactionBadge pressed={isBookmarked} reaction={"Bookmark"} amount={bookmarks} />
+                <ReactionBadge isPressed={isBookmarked} reaction={"Bookmark"} amount={bookmarks} />
               </Button>
             )}
           </div>
@@ -188,27 +244,35 @@ export function ReactionsList({
   );
 }
 
-export const ReactionBadge = ({
-  reaction,
+export const ReactionCount = ({
   amount,
-  pressed,
-}: { reaction: PostReactionType; amount: number; pressed?: boolean }) => {
-  const formatAmount = Intl.NumberFormat("en-US", {
+  isPressed,
+  persistent = false,
+}: { amount: number; isPressed: boolean; persistent: boolean }) => {
+  if (amount <= 0 && !persistent) {
+    return <></>;
+  }
+  const formattedAmount = Intl.NumberFormat("en-US", {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(amount);
 
+  const pressedStyle = isPressed ? "font-semibold text-accent-foreground" : "";
+  return <span className={`${pressedStyle}`}>{formattedAmount}</span>;
+};
+
+export const ReactionBadge = ({
+  reaction,
+  amount,
+  isPressed,
+}: { reaction: PostReactionType | "Like"; amount: number; isPressed?: boolean }) => {
   const tooltipText = reaction.toLowerCase() + (amount === 1 ? "" : "s");
-  const pressedStyle = pressed ? "font-semibold text-accent-foreground" : "";
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className={`flex flex-row gap-1 leading-4 py-1 ${pressedStyle}`}>
-            {amount > 0 && formatAmount}
-            <ReactionIcon pressed={pressed} reaction={reaction} />
-          </span>
+          <ReactionIcon pressed={isPressed} reaction={reaction} />
         </TooltipTrigger>
         <TooltipContent>
           <p>
@@ -220,15 +284,17 @@ export const ReactionBadge = ({
   );
 };
 
-export const ReactionIcon = ({ reaction, pressed }: { reaction: PostReactionType; pressed?: boolean }) => {
+export const ReactionIcon = ({ reaction, pressed }: { reaction: PostReactionType | "Like"; pressed?: boolean }) => {
   switch (reaction) {
-    case "Upvote":
+    case "Like":
       return pressed ? <HeartIcon strokeWidth={3.5} fill="hsl(var(--primary))" size={15} /> : <HeartIcon size={15} />;
+    case "Upvote":
+      return pressed ? <ArrowBigUp strokeWidth={3.5} fill="hsl(var(--primary))" size={20} /> : <ArrowBigUp size={20} />;
     case "Downvote":
       return pressed ? (
-        <ThumbsDownIcon strokeWidth={3.5} fill="hsl(var(--primary))" size={15} />
+        <ArrowBigDown strokeWidth={3.5} fill="hsl(var(--primary))" size={20} />
       ) : (
-        <ThumbsDownIcon size={15} />
+        <ArrowBigDown size={20} />
       );
     case "Repost":
       return pressed ? (
