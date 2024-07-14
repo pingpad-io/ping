@@ -154,11 +154,11 @@ function normalizePost(item: AnyLensItem) {
 function getReactions(post: LensPost | Comment | Quote): Partial<PostReactions> {
   return {
     Upvote: post.stats.upvotes,
-    Downvote: post.stats?.downvotes,
-    Bookmark: post.stats?.bookmarks,
-    Collect: post.stats?.collects,
-    Comment: post.stats?.comments,
-    Repost: post.stats?.mirrors,
+    Downvote: post.stats.downvotes,
+    Bookmark: post.stats.bookmarks,
+    Collect: post.stats.collects,
+    Comment: post.stats.comments,
+    Repost: post.stats.mirrors,
     isUpvoted: post.operations.hasUpvoted,
     isDownvoted: post.operations.hasDownvoted,
     isBookmarked: post.operations.hasBookmarked,

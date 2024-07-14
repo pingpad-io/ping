@@ -9,7 +9,7 @@ import { getLensClient } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
-export async function POST({ params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: { id: string } }) {
   const id = params.id;
 
   if (!id) {

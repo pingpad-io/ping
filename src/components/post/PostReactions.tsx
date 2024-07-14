@@ -17,14 +17,12 @@ import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
 
 type ReactionState = {
-  [key in Exclude<PostReactionType, "Upvote" | "Downvote"> | "Like"]: {
+  [key in PostReactionType | "Like"]: {
     count: number;
     isActive: boolean;
   };
 } & {
   score: number;
-  isUpvoted: boolean;
-  isDownvoted: boolean;
 };
 
 export function ReactionsList({
@@ -42,8 +40,8 @@ export function ReactionsList({
 }) {
   const [reactions, setReactions] = useState<ReactionState>({
     score: post.reactions.Upvote - post.reactions.Downvote,
-    isUpvoted: post.reactions.isUpvoted,
-    isDownvoted: post.reactions.isDownvoted,
+    Upvote: { count: post.reactions.Upvote, isActive: post.reactions.isUpvoted },
+    Downvote: { count: post.reactions.Downvote, isActive: post.reactions.isDownvoted },
     Repost: { count: post.reactions.Repost, isActive: post.reactions.isReposted },
     Comment: { count: post.reactions.Comment, isActive: false },
     Collect: { count: post.reactions.Collect, isActive: post.reactions.isCollected },
@@ -67,8 +65,8 @@ export function ReactionsList({
     if (reactionType === "Upvote" || reactionType === "Downvote") {
       setReactions((prev) => {
         const isUpvote = reactionType === "Upvote";
-        const isActive = isUpvote ? prev.isUpvoted : prev.isDownvoted;
-        const otherIsActive = isUpvote ? prev.isDownvoted : prev.isUpvoted;
+        const isActive = isUpvote ? prev.Upvote.isActive : prev.Downvote.isActive;
+        const otherIsActive = isUpvote ? prev.Downvote.isActive : prev.Upvote.isActive;
         let scoreDelta = isActive ? -1 : 1;
 
         if (otherIsActive) {
@@ -78,8 +76,15 @@ export function ReactionsList({
         return {
           ...prev,
           score: prev.score + (isUpvote ? scoreDelta : -scoreDelta),
-          isUpvoted: isUpvote ? !isActive : false,
-          isDownvoted: !isUpvote ? !isActive : false,
+          Upvote: {
+            count: prev.Upvote.count + (isUpvote ? (isActive ? -1 : 1) : 0),
+            isActive: isUpvote && !isActive
+          },
+          Downvote: {
+            count: prev.Downvote.count + (!isUpvote ? (isActive ? -1 : 1) : 0),
+            isActive: !isUpvote && !isActive
+          },
+
         };
       });
     } else {
@@ -93,6 +98,7 @@ export function ReactionsList({
     }
 
     if (!reactions[reactionType]?.isActive) shootEffect();
+    console.log(post.id, `/api/posts/${post.id}/${reactionType.toLowerCase()}`);
 
     const response = await fetch(`/api/posts/${post.id}/${reactionType.toLowerCase()}`, {
       method: "POST",
@@ -123,17 +129,17 @@ export function ReactionsList({
             <span className="flex flex-row gap-1 h-full">
               <ReactionButton
                 reactionType="Upvote"
-                reaction={{ count: reactions.score, isActive: reactions.isUpvoted }}
+                reaction={{ count: reactions.score, isActive: reactions.Upvote.isActive }}
                 onClick={() => updateReaction("Upvote")}
               />
               <ReactionCount
-                isPressed={reactions.isUpvoted || reactions.isDownvoted}
+                isPressed={reactions.Upvote.isActive || reactions.Downvote.isActive}
                 amount={reactions.score}
                 persistent={true}
               />
               <ReactionButton
                 reactionType="Downvote"
-                reaction={{ count: reactions.score, isActive: reactions.isDownvoted }}
+                reaction={{ count: reactions.score, isActive: reactions.Downvote.isActive }}
                 onClick={() => updateReaction("Downvote")}
               />
             </span>
