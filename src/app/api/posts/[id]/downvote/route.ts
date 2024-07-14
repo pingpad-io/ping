@@ -27,15 +27,22 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: "Cannot downvote a share publication" }, { status: 400 });
     }
 
-    const reactionExists = publication.operations.hasDownvoted;
+    const isDownvoted = publication.operations.hasDownvoted;
+    const isUpvoted = publication.operations.hasUpvoted;
 
     let result: Result<void, CredentialsExpiredError | NotAuthenticatedError>;
-    if (reactionExists) {
+    if (isDownvoted) {
       result = await client.publication.reactions.remove({
         for: id,
         reaction: PublicationReactionType.Downvote,
       });
     } else {
+      if (isUpvoted) {
+        await client.publication.reactions.remove({
+          for: id,
+          reaction: PublicationReactionType.Upvote,
+        });
+      }
       result = await client.publication.reactions.add({
         for: id,
         reaction: PublicationReactionType.Downvote,
@@ -46,7 +53,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: result.error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ result: !reactionExists }, { status: 200 });
+    return NextResponse.json({ result: !isDownvoted }, { status: 200 });
   } catch (error) {
     console.error("Failed to downvote publication: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });

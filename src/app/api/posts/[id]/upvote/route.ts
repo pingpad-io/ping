@@ -28,15 +28,22 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: "Cannot like a share publication" }, { status: 400 });
     }
 
-    const reactionExists = publication.operations.hasUpvoted;
+    const isUpvoted = publication.operations.hasUpvoted;
+    const isDownvoted = publication.operations.hasDownvoted;
 
     let result: Result<void, CredentialsExpiredError | NotAuthenticatedError>;
-    if (reactionExists) {
+    if (isUpvoted) {
       result = await client.publication.reactions.remove({
         for: id,
         reaction: PublicationReactionType.Upvote,
       });
     } else {
+      if (isDownvoted) {
+        await client.publication.reactions.remove({
+          for: id,
+          reaction: PublicationReactionType.Downvote,
+        });
+      }
       result = await client.publication.reactions.add({
         for: id,
         reaction: PublicationReactionType.Upvote,
@@ -47,7 +54,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: result.error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ result: !reactionExists }, { status: 200 });
+    return NextResponse.json({ result: !isUpvoted }, { status: 200 });
   } catch (error) {
     console.error("Failed to follow profile: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });
