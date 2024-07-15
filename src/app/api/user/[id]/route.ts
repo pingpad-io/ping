@@ -4,15 +4,17 @@ import { getLensClient } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const handle = searchParams.get("handle") || undefined;
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const id = params.id;
+  if (!id) {
+    return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  }
 
   try {
     const { client } = await getLensClient();
 
     const lensProfile = await client.profile.fetch({
-      forHandle: handle
+      forProfileId: id,
     });
 
     const profile = lensProfileToUser(lensProfile);

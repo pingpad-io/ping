@@ -25,7 +25,7 @@ export const InterestsList = ({ activeInterests }: { activeInterests: UserIntere
   }, []);
 
   const handleClick = async (value: ProfileInterestTypes) => {
-    const result = await fetch(`/api/profile/interests?interest=${value}`, {
+    const result = await fetch(`/api/user/interests?interest=${value}`, {
       method: "POST",
       body: JSON.stringify({ value }),
     });

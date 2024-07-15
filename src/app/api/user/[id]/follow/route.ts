@@ -11,9 +11,11 @@ import { getLensClient } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const id = searchParams.get("id") || undefined;
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  const id = params.id;
+  if (!id) {
+    return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  }
 
   try {
     const { client } = await getLensClient();

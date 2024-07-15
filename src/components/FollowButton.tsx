@@ -28,7 +28,7 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
       shootEffect();
     }
 
-    const result = await fetch(`/api/profile/follow?id=${user.id}`, {
+    const result = await fetch(`/api/user/${user.id}/follow`, {
       method: "POST",
     });
 
