@@ -7,6 +7,8 @@ import { PostView } from "~/components/post/PostView";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { getUserByHandle } from "~/utils/getUserByHandle";
 
+export const maxDuration = 60;
+
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {
   const handle = params.user;
   const title = `${handle}`;
