@@ -32,7 +32,7 @@ export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null
       refreshToken,
     };
   } catch (error) {
-    console.error("Error decoding jwt token:", error);
+    console.log("Error decoding jwt token:", error);
     return {
       isValid: false,
       refreshToken: null,
