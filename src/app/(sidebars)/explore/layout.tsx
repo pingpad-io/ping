@@ -3,10 +3,10 @@ import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
 import { ExploreNavigation } from "~/components/menu/Navigation";
 import PostWizard from "~/components/post/PostWizard";
 import { Card } from "~/components/ui/card";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export default async function layout({ children }: PropsWithChildren) {
-  const { user } = await getLensClient();
+  const { user } = await getServerAuth();
 
   return (
     <Card className="z-[30] hover:bg-card p-4 py-0 border-0">

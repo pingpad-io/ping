@@ -1,17 +1,17 @@
 import { PawPrintIcon, WalletIcon } from "lucide-react";
-import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
 import { PingButton } from "~/components/SettingsPageItems";
 import { ThemeButtons } from "~/components/ThemeToggle";
+import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { InterestsList } from "~/components/user/UserInterests";
 import { ConnectedWalletLabel } from "~/components/web3/ConnnectedWalletLabel";
 import { LogoutButton } from "~/components/web3/WalletButtons";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 const settings = async () => {
-  const { user } = await getLensClient();
+  const { user } = await getServerAuth();
 
   return (
     <ServerSignedIn>

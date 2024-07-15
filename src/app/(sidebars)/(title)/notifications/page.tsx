@@ -1,7 +1,7 @@
 import { Feed } from "~/components/Feed";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { NotificationView } from "~/components/notifications/NotificationView";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 const endpoint = "/api/notifications";
 
@@ -18,7 +18,7 @@ const notifications = async () => {
 };
 
 const getInitialFeed = async () => {
-  const { client, isAuthenticated } = await getLensClient();
+  const { client, isAuthenticated } = await getServerAuth();
   if (isAuthenticated) {
     const data = await client.notifications.fetch({ where: { timeBasedAggregation: true } }).catch((error) => {
       throw new Error(error.message);

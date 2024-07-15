@@ -5,7 +5,7 @@ import {
   type Result,
 } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   try {
-    const { client } = await getLensClient();
+    const { client } = await getServerAuth();
 
     const publication = await client.publication.fetch({
       forId: id,
@@ -44,6 +44,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
   } catch (error) {
     console.error("Failed to follow profile: ", error.message);
-    return NextResponse.json({ error: `${error.message}`, result: false  }, { status: 500 });
+    return NextResponse.json({ error: `${error.message}`, result: false }, { status: 500 });
   }
 }

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { Card } from "~/components/ui/card";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export async function generateMetadata({ params }: { params: { slug: string; number: number } }): Promise<Metadata> {
   const post = await postFromHandleWithCount(params.slug, params.number);
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: { slug: string; num
  */
 
 const post = async ({ params }: { params: { slug: string; number: number } }) => {
-  const { client } = await getLensClient();
+  const { client } = await getServerAuth();
   const post = await postFromHandleWithCount(params.slug, params.number);
 
   if (!post) return notFound();
@@ -47,7 +47,7 @@ const post = async ({ params }: { params: { slug: string; number: number } }) =>
 };
 
 const postFromHandleWithCount = async (handle: string, count: number) => {
-  const { client } = await getLensClient();
+  const { client } = await getServerAuth();
 
   const namespace = "lens";
   const postNumberDecimal = Number(count);

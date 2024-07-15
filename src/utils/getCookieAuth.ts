@@ -10,6 +10,7 @@ export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null
     const currentTimestamp = Math.floor(Date.now() / 1000);
 
     if (decodedToken.exp && decodedToken.exp < currentTimestamp) {
+      console.log(currentTimestamp, decodedToken.exp, decodedToken.exp < currentTimestamp);
       return {
         isValid: false,
         refreshToken: null,

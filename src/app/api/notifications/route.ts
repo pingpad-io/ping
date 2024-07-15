@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor");
 
   try {
-    const { client, isAuthenticated } = await getLensClient();
+    const { client, isAuthenticated } = await getServerAuth();
 
     if (!isAuthenticated) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });

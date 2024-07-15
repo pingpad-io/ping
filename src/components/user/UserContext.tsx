@@ -4,7 +4,7 @@ import React, { createContext, useContext, type ReactNode } from "react";
 import type { User } from "./User";
 
 interface UserContextType {
-  user: User;
+  user: User | null;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

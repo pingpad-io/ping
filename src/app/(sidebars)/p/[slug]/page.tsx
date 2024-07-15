@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { Card } from "~/components/ui/card";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 /**
  * This route resolves to universal id of the post passed in the [slug]
@@ -10,7 +10,7 @@ import { getLensClient } from "~/utils/getLensClient";
  * @param slug - id of the post (0x04359b-0x6c)
  */
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { client } = await getLensClient();
+  const { client } = await getServerAuth();
 
   const id = params.slug;
   const post = await client.publication
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 const post = async ({ params }: { params: { slug: string } }) => {
-  const { client } = await getLensClient();
+  const { client } = await getServerAuth();
 
   const id = params.slug;
   const lensPost = await client.publication

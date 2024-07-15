@@ -14,7 +14,7 @@ import { LimitType, PublicationType } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { env } from "~/env.mjs";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +32,7 @@ const s3 = new S3({
 export async function GET(req: NextRequest) {
   try {
     const params = extractQueryParams(req);
-    const { client, isAuthenticated, profileId } = await getLensClient();
+    const { client, isAuthenticated, profileId } = await getServerAuth();
     const publicationType = getPublicationType(params.type);
 
     const data = await fetchData(client, isAuthenticated, profileId, params, publicationType);
@@ -103,7 +103,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    const { client, isAuthenticated, profileId } = await getLensClient();
+    const { client, isAuthenticated, profileId } = await getServerAuth();
 
     if (!isAuthenticated) {
       throw new Error("Not authenticated");
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
 
     const data = await parseRequestBody(req);
 
-    const { client, handle, profileId } = await getLensClient();
+    const { client, handle, profileId } = await getServerAuth();
 
     if (!profileId) {
       throw new Error("Not authenticated");

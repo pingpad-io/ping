@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
@@ -20,7 +20,7 @@ import { ConnectWalletButton } from "../web3/WalletButtons";
 import { SearchButton } from "./Search";
 
 export default async function Menu() {
-  const { handle, profileId, user } = await getLensClient();
+  const { handle, profileId, user } = await getServerAuth();
   const handleOrProfileId = handle ?? profileId;
 
   if (!profileId) {

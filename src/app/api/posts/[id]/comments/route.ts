@@ -1,7 +1,7 @@
 import { LimitType } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 
   try {
-    const { client } = await getLensClient();
+    const { client } = await getServerAuth();
 
     const comments = await client.publication.fetchAll({
       where: { commentOn: { id } },

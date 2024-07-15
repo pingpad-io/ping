@@ -4,7 +4,7 @@ import {
   type SimpleCollectOpenActionSettingsFragment,
 } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 type CollectActionModuleSettings =
   | SimpleCollectOpenActionSettingsFragment
   | MultirecipientFeeCollectOpenActionSettingsFragment;
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   try {
-    const { client } = await getLensClient();
+    const { client } = await getServerAuth();
 
     const publication = await client.publication.fetch({
       forId: id,
@@ -55,7 +55,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     if (completion.status === LensTransactionStatusType.Complete) {
       return NextResponse.json({ result: true }, { status: 200 });
     }
-    
   } catch (error) {
     console.error("Failed to follow profile: ", error.message);
     return NextResponse.json({ error: `${error.message}`, result: false }, { status: 500 });

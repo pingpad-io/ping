@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "~/components/Link";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 import { FollowButton } from "../FollowButton";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
@@ -15,8 +15,8 @@ import { UserInterestsList } from "./UserInterests";
 export const UserProfile = async ({ user }: { user?: User }) => {
   if (!user) return notFound();
 
-  const { user: authedUser } = await getLensClient();
-  const isUserProfile = user.id === authedUser.id;
+  const { user: authedUser } = await getServerAuth();
+  const isUserProfile = user.id === authedUser?.id;
   const isFollowingMe = user.actions.following;
 
   const commonInterestTypes = user.interests

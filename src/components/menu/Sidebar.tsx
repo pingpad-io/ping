@@ -1,6 +1,6 @@
 import { BellIcon, BookmarkIcon, MailIcon } from "lucide-react";
 import Link from "~/components/Link";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
@@ -10,7 +10,7 @@ import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
 
 const UserBar = async () => {
-  const { handle, profileId, client } = await getLensClient();
+  const { handle, profileId, client } = await getServerAuth();
   const user = await client.profile.fetch({ forProfileId: profileId }).then((res) => lensProfileToUser(res));
   const handleOrProfileId = handle ?? profileId;
 

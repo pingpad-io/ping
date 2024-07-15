@@ -5,7 +5,7 @@ import {
   type Result,
 } from "@lens-protocol/client";
 import { NextResponse } from "next/server";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   }
 
   try {
-    const { client } = await getLensClient();
+    const { client } = await getServerAuth();
 
     const publication = await client.publication.fetch({
       forId: id,

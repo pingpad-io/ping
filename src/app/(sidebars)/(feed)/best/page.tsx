@@ -2,7 +2,7 @@ import { LimitType } from "@lens-protocol/client";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 const endpoint = "api/posts/best";
 
@@ -17,7 +17,7 @@ const best = async () => {
 };
 
 const getInitialFeed = async () => {
-  const { client, isAuthenticated, profileId } = await getLensClient();
+  const { client, isAuthenticated, profileId } = await getServerAuth();
   if (isAuthenticated) {
     const data = await client.feed.highlights({
       where: { for: profileId },

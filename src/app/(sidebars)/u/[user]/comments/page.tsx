@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 import { getUserByHandle } from "~/utils/getUserByHandle";
 
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {
@@ -30,7 +30,7 @@ const user = async ({ params }: { params: { user: string } }) => {
 };
 
 const getInitialData = async (handle: string) => {
-  const { client } = await getLensClient();
+  const { client } = await getServerAuth();
   const user = await getUserByHandle(handle);
 
   const lensPosts = await client.publication

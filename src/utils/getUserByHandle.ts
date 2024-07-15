@@ -1,8 +1,8 @@
 import { type User, lensProfileToUser } from "~/components/user/User";
-import { getLensClient } from "./getLensClient";
+import { getServerAuth } from "./getLensClient";
 
 export const getUserByHandle = async (handle: string): Promise<User | null> => {
-  const { client } = await getLensClient();
+  const { client } = await getServerAuth();
 
   const profile = await client.profile.fetch({
     forHandle: `lens/${handle}`,

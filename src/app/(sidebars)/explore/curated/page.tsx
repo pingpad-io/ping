@@ -2,7 +2,7 @@ import { ExplorePublicationType, ExplorePublicationsOrderByType, LimitType } fro
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 const endpoint = "/api/posts/explore?type=curated";
 
@@ -17,7 +17,7 @@ const exploreCurated = async () => {
 };
 
 const getInitialFeed = async () => {
-  const { client, isAuthenticated } = await getLensClient();
+  const { client, isAuthenticated } = await getServerAuth();
   if (isAuthenticated) {
     const response = await client.explore.publications({
       where: { publicationTypes: [ExplorePublicationType.Post] },

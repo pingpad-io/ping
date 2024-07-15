@@ -1,7 +1,7 @@
 import { ExplorePublicationType, ExplorePublicationsOrderByType, LimitType } from "@lens-protocol/client";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { client, isAuthenticated } = await getLensClient();
+    const { client, isAuthenticated } = await getServerAuth();
 
     if (!isAuthenticated) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });

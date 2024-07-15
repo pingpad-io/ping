@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { lensProfileToUser } from "~/components/user/User";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 
   try {
-    const { client } = await getLensClient();
+    const { client } = await getServerAuth();
 
     const lensProfile = await client.profile.fetch({
       forProfileId: id,

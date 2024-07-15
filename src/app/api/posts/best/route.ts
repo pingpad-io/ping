@@ -1,7 +1,7 @@
 import { LimitType } from "@lens-protocol/client";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor");
 
   try {
-    const { client, isAuthenticated, profileId } = await getLensClient();
+    const { client, isAuthenticated, profileId } = await getServerAuth();
 
     if (!isAuthenticated) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });

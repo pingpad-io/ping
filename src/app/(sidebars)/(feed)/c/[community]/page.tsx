@@ -1,9 +1,9 @@
 import { LimitType, PublicationType } from "@lens-protocol/client";
-import { getCommunityTags } from "~/components/communities/Community";
 import { Feed } from "~/components/Feed";
+import { getCommunityTags } from "~/components/communities/Community";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 const endpoint = "/api/posts";
 
@@ -25,12 +25,12 @@ const community = async ({ params }: { params: { community: string } }) => {
 };
 
 const getInitialFeed = async (community: string) => {
-  const { client } = await getLensClient();
+  const { client } = await getServerAuth();
   const tags = getCommunityTags(community);
 
   const data = await client.publication
     .fetchAll({
-      where: { publicationTypes: [PublicationType.Post], metadata: { tags: {  oneOf: tags } } },
+      where: { publicationTypes: [PublicationType.Post], metadata: { tags: { oneOf: tags } } },
       limit: LimitType.Ten,
     })
     .catch(() => {

@@ -5,7 +5,7 @@ import type {
   Result,
 } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   if (!interest) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
 
   try {
-    const { client, user } = await getLensClient();
+    const { client, user } = await getServerAuth();
     const userInterestValues = user.interests.map((interest) => interest.value);
 
     let response: Result<void, CredentialsExpiredError | NotAuthenticatedError>;

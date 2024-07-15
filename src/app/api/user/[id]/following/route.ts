@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getLensClient } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getLensClient";
 
 export const dynamic = "force-dynamic";
 
@@ -7,7 +7,7 @@ export async function GET({ params }: { params: { id: string } }) {
   const id = params.id;
 
   try {
-    const { client, profileId: authedProfileId } = await getLensClient();
+    const { client, profileId: authedProfileId } = await getServerAuth();
 
     const followers = await client.profile.following({
       for: id,

@@ -61,7 +61,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
         <Share2Icon size={12} className="mr-2 h-4 w-4" />
         share
       </Button>
-      {user.id === author.id && (
+      {user?.id === author.id && (
         <>
           <Button size="context" variant="ghost" onClick={setEditingQuery} disabled>
             <EditIcon size={12} className="mr-2 h-4 w-4" />
