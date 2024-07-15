@@ -1,8 +1,6 @@
 import Menu from "~/components/menu/Menu";
 import { Sidebar } from "~/components/menu/Sidebar";
 
-export const maxDuration = 60;
-
 export default function SidebarLayout({
   children,
 }: {

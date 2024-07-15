@@ -21,7 +21,7 @@ export const metadata = {
 export const maxDuration = 60;
 
 export default async function RootLayout({ children }) {
-  const { user, isAuthenticated } = await getServerAuth();
+  const { user } = await getServerAuth();
 
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans overflow-y-scroll`} lang="en">
