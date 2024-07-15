@@ -4,6 +4,10 @@ import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
 import { getUserByHandle } from "~/utils/getUserByHandle";
 
+export const maxDuration = 60;
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
+
 export default async function layout({
   children,
   params,

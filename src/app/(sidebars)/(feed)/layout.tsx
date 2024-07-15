@@ -5,7 +5,9 @@ import PostWizard from "~/components/post/PostWizard";
 import { Card } from "~/components/ui/card";
 import { getServerAuth } from "~/utils/getServerAuth";
 
-export const maxDuration = 60
+export const maxDuration = 60;
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export default async function layout({ children }: PropsWithChildren) {
   const { user } = await getServerAuth();

@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Define routes that are always accessible
-  const publicRoutes = ['/home', '/u', '/p'];
+  const publicRoutes = ["/home", "/u", "/p"];
 
   // Handle redirects
   if (pathname === "/") {
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
 
   if (!isAuthTokenValid) {
     // If not authenticated and trying to access a protected route, redirect to /home
-    if (!publicRoutes.some(route => pathname.startsWith(route))) {
+    if (!publicRoutes.some((route) => pathname.startsWith(route))) {
       return NextResponse.redirect(new URL("/home", request.url));
     }
   }
