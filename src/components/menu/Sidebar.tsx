@@ -1,5 +1,5 @@
 import { BellIcon, BookmarkIcon, MailIcon } from "lucide-react";
-import Link from "next/link";
+import Link from "~/components/Link";
 import { getLensClient } from "~/utils/getLensClient";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";

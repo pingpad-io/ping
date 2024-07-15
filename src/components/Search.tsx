@@ -2,9 +2,9 @@
 
 import { useSearchPublications } from "@lens-protocol/react-web";
 import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { FeedSuspense } from "~/components/FeedSuspense";
+import Link from "~/components/Link";
 import { SearchBar } from "~/components/menu/Search";
 import { lensItemToPost } from "~/components/post/Post";
 import { Button } from "~/components/ui/button";

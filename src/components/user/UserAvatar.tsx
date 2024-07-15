@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
-import Link from "next/link";
+import Link from "~/components/Link";
 import type { User } from "./User";
 import { UserCard } from "./UserCard";
 

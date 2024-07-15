@@ -1,8 +1,8 @@
 "use client";
 
 import { useLazyProfile } from "@lens-protocol/react-web";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "~/components/Link";
 import { LoadingSpinner } from "../LoadingIcon";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { type User, lensProfileToUser } from "./User";

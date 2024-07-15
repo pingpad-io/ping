@@ -27,9 +27,9 @@ import {
   TrendingUpIcon,
   WrenchIcon,
 } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
+import Link from "~/components/Link";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 
 export const Navigation = () => {

@@ -9,7 +9,7 @@ import {
   UserIcon,
   UsersIcon,
 } from "lucide-react";
-import Link from "next/link";
+import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
 import { getLensClient } from "~/utils/getLensClient";
 import { ServerSignedIn } from "../auth/ServerSignedIn";

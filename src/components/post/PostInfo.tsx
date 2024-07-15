@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "~/components/Link";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -11,7 +11,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
   const handle = author.handle;
   const tags = post.metadata.tags || [];
 
-  let community = null
+  let community = null;
   tags.map((tag) => {
     if (tag.includes("orbcommunities")) {
       community = tag.replace("orbcommunities", "");

@@ -1,6 +1,6 @@
 import { ReplyIcon } from "lucide-react";
+import Link from "~/components/Link";
 import type { Post } from "./Post";
-import Link from "next/link";
 
 export const ReplyInfo = ({ post }: { post: Post }) => {
   const username = post.reply?.author?.handle;

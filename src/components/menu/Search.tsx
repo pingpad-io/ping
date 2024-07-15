@@ -8,8 +8,8 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Link from "~/components/Link";
 import { Button } from "../ui/button";
 
 export const SearchButton = () => {

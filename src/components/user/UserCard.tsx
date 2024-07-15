@@ -1,8 +1,8 @@
 "use client";
 
 import { type ProfileId, useLazyProfile } from "@lens-protocol/react-web";
-import Link from "next/link";
 import type { PropsWithChildren } from "react";
+import Link from "~/components/Link";
 import { FollowButton } from "../FollowButton";
 import { LoadingSpinner } from "../LoadingIcon";
 import { TruncatedText } from "../TruncatedText";

@@ -1,13 +1,13 @@
 "use client";
 import { EditIcon, ExternalLinkIcon, LinkIcon, MaximizeIcon, Share2Icon, ShareIcon, TrashIcon } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "~/components/Link";
 import { Button } from "../ui/button";
-import type { Post } from "./Post";
 import { useUser } from "../user/UserContext";
+import type { Post } from "./Post";
 
-export const PostMenu = ({ post}: { post: Post}) => {
+export const PostMenu = ({ post }: { post: Post }) => {
   const router = useRouter();
   const author = post.author;
   const { user } = useUser();

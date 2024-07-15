@@ -9,7 +9,7 @@ import {
   Repeat2Icon,
   UserPlusIcon,
 } from "lucide-react";
-import Link from "next/link";
+import Link from "~/components/Link";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatarArray } from "../user/UserAvatar";
 import type { Notification } from "./Notification";

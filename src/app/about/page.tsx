@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Cookie, FileIcon, Github } from "lucide-react";
-import Link from "next/link";
+import Link from "~/components/Link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";

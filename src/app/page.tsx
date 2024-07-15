@@ -1,7 +1,7 @@
 import { AtSign, Github, Heart, InfoIcon, LogInIcon } from "lucide-react";
-import Link from "next/link";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
+import Link from "~/components/Link";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { FadeIn } from "~/components/Transitions";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";

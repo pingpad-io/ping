@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeftIcon, RotateCcwIcon } from "lucide-react";
-import Link from "next/link";
+import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
 
 export default function error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {

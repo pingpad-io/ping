@@ -1,6 +1,6 @@
 import { CalendarIcon, EditIcon, MessageCircleIcon, PawPrintIcon, User2Icon } from "lucide-react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import Link from "~/components/Link";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
 import { getLensClient } from "~/utils/getLensClient";
