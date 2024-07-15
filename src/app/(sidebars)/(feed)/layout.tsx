@@ -3,7 +3,7 @@ import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
 import { Navigation } from "~/components/menu/Navigation";
 import PostWizard from "~/components/post/PostWizard";
 import { Card } from "~/components/ui/card";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export default async function layout({ children }: PropsWithChildren) {
   const { user } = await getServerAuth();

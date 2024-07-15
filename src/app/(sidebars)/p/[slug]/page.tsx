@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { Card } from "~/components/ui/card";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 /**
  * This route resolves to universal id of the post passed in the [slug]

@@ -1,7 +1,7 @@
 import { Feed } from "~/components/Feed";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { NotificationView } from "~/components/notifications/NotificationView";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 const endpoint = "/api/notifications";
 

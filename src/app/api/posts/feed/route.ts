@@ -1,7 +1,7 @@
 import { PublicationType } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 

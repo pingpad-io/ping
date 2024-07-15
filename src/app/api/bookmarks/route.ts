@@ -2,7 +2,7 @@ import { LimitType } from "@lens-protocol/client";
 import type { NextRequest } from "next/server";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { lensItemToPost } from "~/components/post/Post";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 

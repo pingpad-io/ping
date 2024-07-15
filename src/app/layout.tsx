@@ -5,7 +5,7 @@ import { Providers } from "~/components/Providers";
 import { Toaster } from "~/components/ui/sonner";
 import { UserProvider } from "~/components/user/UserContext";
 import { quicksand } from "~/styles/fonts";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
 
 const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
@@ -21,7 +21,7 @@ export const metadata = {
 export const maxDuration = 60;
 
 export default async function RootLayout({ children }) {
-  const { user } = await getServerAuth();
+  const { user, isAuthenticated } = await getServerAuth();
 
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans overflow-y-scroll`} lang="en">

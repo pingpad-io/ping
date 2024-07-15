@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";

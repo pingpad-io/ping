@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 

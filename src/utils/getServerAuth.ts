@@ -1,5 +1,6 @@
 import { LensClient, production } from "@lens-protocol/client";
 import { User, lensProfileToUser } from "~/components/user/User";
+import { clearCookies } from "./clearCookies";
 import { getCookieAuth } from "./getCookieAuth";
 
 interface ServerAuthResult {
@@ -9,7 +10,7 @@ interface ServerAuthResult {
   handle: string | null;
   client: LensClient;
   user: User | null;
-};
+}
 
 export const getServerAuth = async (): Promise<ServerAuthResult> => {
   const { refreshToken, isValid } = getCookieAuth();

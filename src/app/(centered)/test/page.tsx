@@ -1,7 +1,7 @@
 import { FollowButton } from "~/components/FollowButton";
 import Markdown from "~/components/Markdown";
 import { lensProfileToUser } from "~/components/user/User";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 const test = async () => {
   const { user, client } = await getServerAuth();

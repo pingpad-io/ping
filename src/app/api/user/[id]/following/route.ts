@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 

@@ -1,6 +1,6 @@
 import { BellIcon, BookmarkIcon, MailIcon } from "lucide-react";
 import Link from "~/components/Link";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";

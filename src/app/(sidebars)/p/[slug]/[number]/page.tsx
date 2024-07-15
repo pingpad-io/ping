@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { Card } from "~/components/ui/card";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export async function generateMetadata({ params }: { params: { slug: string; number: number } }): Promise<Metadata> {
   const post = await postFromHandleWithCount(params.slug, params.number);

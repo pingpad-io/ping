@@ -8,7 +8,7 @@ import { Label } from "~/components/ui/label";
 import { InterestsList } from "~/components/user/UserInterests";
 import { ConnectedWalletLabel } from "~/components/web3/ConnnectedWalletLabel";
 import { LogoutButton } from "~/components/web3/WalletButtons";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 const settings = async () => {
   const { user } = await getServerAuth();

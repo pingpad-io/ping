@@ -4,7 +4,7 @@ import {
   type SimpleCollectOpenActionSettingsFragment,
 } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
-import { getServerAuth } from "~/utils/getLensClient";
+import { getServerAuth } from "~/utils/getServerAuth";
 type CollectActionModuleSettings =
   | SimpleCollectOpenActionSettingsFragment
   | MultirecipientFeeCollectOpenActionSettingsFragment;

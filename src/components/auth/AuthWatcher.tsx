@@ -3,21 +3,25 @@
 import { useRefreshToken, useSession } from "@lens-protocol/react-web";
 import { setCookie } from "cookies-next";
 import { useEffect } from "react";
+import { getCookie, deleteCookie } from "cookies-next";
 
 export default function AuthWatcher() {
   const { data: session } = useSession();
   const refreshToken = useRefreshToken();
+  const currentRefreshToken = getCookie("refreshToken");
 
   useEffect(() => {
     const handleRefresh = async () => {
       if (session?.authenticated) {
-        const currentRefreshToken = JSON.parse(localStorage.getItem("lens.production.credentials"))?.data?.refreshToken;
         if (refreshToken && currentRefreshToken !== refreshToken) {
           setCookie("refreshToken", refreshToken, {
             secure: true,
             sameSite: "lax",
           });
-          console.log("Updated auth credentials");
+        }
+      } else {
+        if (currentRefreshToken) {
+          deleteCookie("refreshToken");
         }
       }
     };
