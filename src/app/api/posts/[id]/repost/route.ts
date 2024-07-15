@@ -1,8 +1,13 @@
 import {
+  CreateMomokaPublicationResultFragment,
   type CredentialsExpiredError,
+  Failure,
+  LensProfileManagerRelayErrorFragment,
   type NotAuthenticatedError,
   PublicationReactionType,
+  RelaySuccessFragment,
   type Result,
+  Success,
 } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -27,9 +32,22 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: "Cannot repost a share publication", result: false }, { status: 400 });
     }
 
-    const result = await client.publication.mirrorOnchain({
-      mirrorOn: id,
-    });
+    const [, , da] = id.split("-");
+    const isOnMomoka = da === "DA";
+
+    let result:
+      | Success<CreateMomokaPublicationResultFragment | LensProfileManagerRelayErrorFragment>
+      | Failure<CredentialsExpiredError | NotAuthenticatedError>
+      | Success<LensProfileManagerRelayErrorFragment | RelaySuccessFragment>;
+    if (isOnMomoka) {
+      result = await client.publication.mirrorOnMomoka({
+        mirrorOn: id,
+      });
+    } else {
+      result = await client.publication.mirrorOnchain({
+        mirrorOn: id,
+      });
+    }
 
     if (result.isFailure()) {
       return NextResponse.json({ error: result.error.message, result: false }, { status: 500 });
@@ -40,6 +58,13 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     if (result.value.__typename === "RelaySuccess") {
+      return NextResponse.json({ result: true }, { status: 200 });
+    }
+
+    if (result.value.__typename === "CreateMomokaPublicationResult") {
+      const { id, momokaId, proof } = result.value;
+      const date = new Date().toISOString();
+      console.log(`Momoka mirror created: ${id}, momokaId: ${momokaId}, proof: ${proof}, date: ${date}`);
       return NextResponse.json({ result: true }, { status: 200 });
     }
   } catch (error) {
