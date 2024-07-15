@@ -1,6 +1,5 @@
 import { LensClient, production } from "@lens-protocol/client";
 import { User, lensProfileToUser } from "~/components/user/User";
-import { clearCookies } from "./clearCookies";
 import { getCookieAuth } from "./getCookieAuth";
 
 interface ServerAuthResult {
