@@ -1,5 +1,5 @@
-import NextLink from 'next/link'
+import NextLink from "next/link";
 
-export  default function Link(props) {
-  return <NextLink {...props} prefetch={props.prefetch ?? false}/>
+export default function Link(props) {
+  return <NextLink {...props} prefetch={props.prefetch ?? true} />;
 }
