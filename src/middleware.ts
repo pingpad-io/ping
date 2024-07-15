@@ -4,6 +4,7 @@ import { getCookieAuth } from "./utils/getCookieAuth";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const { isValid: isAuthTokenValid } = getCookieAuth();
 
   // Check for the .lens postfix
   const lensNamespace = /^\/u\/(.+)\.lens$/;
@@ -23,8 +24,7 @@ export async function middleware(request: NextRequest) {
 
   // Only run this middleware for the base URL
   if (pathname === "/") {
-    const { isAuthenticated } = getCookieAuth();
-    if (isAuthenticated) {
+    if (isAuthTokenValid) {
       // If authenticated, redirect to /home
       return NextResponse.redirect(new URL("/home", request.url));
     }

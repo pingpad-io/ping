@@ -51,6 +51,7 @@
     "eslint-config-next": "latest",
     "got": "^13.0.0",
     "i18next": "^23.2.3",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.396.0",
     "metascraper": "^5.37.1",
     "metascraper-author": "^5.37.1",

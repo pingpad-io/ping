@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { getCookieAuth } from "~/utils/getCookieAuth";
 
 export async function ServerSignedIn(props: PropsWithChildren) {
-  const { isAuthenticated } = getCookieAuth();
+  const { isValid: isAuthenticated } = getCookieAuth();
 
   if (!isAuthenticated) {
     return null;
@@ -12,7 +12,7 @@ export async function ServerSignedIn(props: PropsWithChildren) {
 }
 
 export async function ServerSignedOut(props: PropsWithChildren) {
-  const { isAuthenticated } = getCookieAuth();
+  const { isValid: isAuthenticated } = getCookieAuth();
 
   if (isAuthenticated) {
     return null;
