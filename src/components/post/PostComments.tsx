@@ -35,11 +35,7 @@ export const PostComments = ({ post, level, isOpen }: { post: Post; level: numbe
   }, [cursor, loading, post.id]);
 
   const commentElements = comments.map((comment, index) => (
-    <li
-      key={comment.id}
-      className="animate-in slide-in-from-top-5 duration-500 ease-in-out"
-      // style={{ animationDelay: `${index * 100}ms` }}
-    >
+    <li key={comment.id} className="animate-in slide-in-from-top-3 duration-300 ease-in-out">
       <PostView
         item={comment}
         settings={{

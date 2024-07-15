@@ -78,13 +78,12 @@ export function ReactionsList({
           score: prev.score + (isUpvote ? scoreDelta : -scoreDelta),
           Upvote: {
             count: prev.Upvote.count + (isUpvote ? (isActive ? -1 : 1) : 0),
-            isActive: isUpvote && !isActive
+            isActive: isUpvote && !isActive,
           },
           Downvote: {
             count: prev.Downvote.count + (!isUpvote ? (isActive ? -1 : 1) : 0),
-            isActive: !isUpvote && !isActive
+            isActive: !isUpvote && !isActive,
           },
-
         };
       });
     } else {
@@ -100,7 +99,7 @@ export function ReactionsList({
     if (!reactions[reactionType]?.isActive) shootEffect();
     console.log(post.id, `/api/posts/${post.id}/${reactionType.toLowerCase()}`);
 
-    const route = reactionType === "Like" ? "upvote" : reactionType.toLowerCase()
+    const route = reactionType === "Like" ? "upvote" : reactionType.toLowerCase();
     const response = await fetch(`/api/posts/${post.id}/${route}`, {
       method: "POST",
     });
@@ -259,27 +258,15 @@ export const ReactionBadge = ({
 );
 
 export const ReactionIcon = ({ reaction, pressed }: { reaction: PostReactionType | "Like"; pressed?: boolean }) => {
-  const iconProps = pressed ? { strokeWidth: 3.5, fill: "hsl(var(--primary))" } : {};
+  const iconProps = pressed ? { strokeWidth: 3.5, fill: "hsl(var(--primary))" } : { strokeWidth: 1.8 };
   const icons = {
     Like: <HeartIcon size={15} {...iconProps} />,
-    Upvote: <ArrowBigUp size={20} {...iconProps} />,
-    Downvote: <ArrowBigDown size={20} {...iconProps} />,
-    Repost: (
-      <Repeat2Icon
-        size={18}
-        strokeWidth={pressed ? 3.5 : 1.8}
-        color={pressed ? "hsl(var(--accent-foreground))" : undefined}
-      />
-    ),
-    Comment: <MessageSquareIcon size={15} />,
-    Collect: (
-      <CirclePlusIcon
-        size={16}
-        strokeWidth={pressed ? 3.5 : 1.8}
-        color={pressed ? "hsl(var(--accent-foreground))" : undefined}
-      />
-    ),
+    Upvote: <ArrowBigUp size={20} {...iconProps} strokeWidth={1.5} />,
+    Downvote: <ArrowBigDown size={20} {...iconProps} strokeWidth={1.5} />,
     Bookmark: <BookmarkIcon size={16} {...iconProps} />,
+    Repost: <Repeat2Icon size={18} {...iconProps} />,
+    Collect: <CirclePlusIcon size={16} {...iconProps} />,
+    Comment: <MessageSquareIcon size={15} />,
   };
 
   return icons[reaction] || null;
