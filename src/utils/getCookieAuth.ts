@@ -21,10 +21,7 @@ export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null
     }
 
     if (typeof decodedToken.exp !== 'number' || decodedToken.exp < currentTimestamp) {
-      return {
-        isValid: false,
-        refreshToken: null,
-      };
+      throw new Error( "Authentication token has expired")
     }
 
     return {
@@ -32,10 +29,10 @@ export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null
       refreshToken,
     };
   } catch (error) {
-    console.log("Error decoding jwt token:", error);
+    console.log("Error using jwt token:", error);
     return {
       isValid: false,
-      refreshToken: null,
+      refreshToken,
     };
   }
 };

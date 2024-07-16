@@ -1,6 +1,7 @@
 import { LensClient, production } from "@lens-protocol/client";
 import { User, lensProfileToUser } from "~/components/user/User";
 import { getCookieAuth } from "./getCookieAuth";
+import { window } from "./globals";
 
 interface ServerAuthResult {
   isAuthenticated: boolean;
@@ -19,7 +20,10 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
     headers: {
       origin: "https://pingpad.io",
     },
+    storage: window?.localStorage
   });
+
+  console.log(refreshToken, isValid);
 
   if (!refreshToken || !isValid) {
     return {

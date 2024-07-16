@@ -2,8 +2,8 @@
 
 import { useRefreshToken, useSession } from "@lens-protocol/react-web";
 import { setCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import { useEffect } from "react";
-import { getCookie, deleteCookie } from "cookies-next";
 
 export default function AuthWatcher() {
   const { data: session } = useSession();
@@ -18,10 +18,6 @@ export default function AuthWatcher() {
             secure: true,
             sameSite: "lax",
           });
-        }
-      } else {
-        if (currentRefreshToken) {
-          deleteCookie("refreshToken");
         }
       }
     };
