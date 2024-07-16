@@ -104,7 +104,7 @@ const Links = () => {
         <Link href="https://github.com/pingpad-io/ping/" className="hover:underline" target="_blank" rel="noreferrer">
           GitHub
         </Link>
-        <Link className="hover:underline" href={"https://discord.gg/DhMeQAXW4F"}>
+        <Link className="hover:underline" href={"https://discord.gg/DhMeQAXW4F"} target="_blank" rel="noreferrer">
           Discord
         </Link>
         <Link className="hover:underline" href={"/about"}>
