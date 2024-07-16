@@ -23,8 +23,6 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
     storage: window?.localStorage
   });
 
-  console.log(refreshToken, isValid);
-
   if (!refreshToken || !isValid) {
     return {
       isAuthenticated: false,

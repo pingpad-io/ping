@@ -97,7 +97,6 @@ export function ReactionsList({
     }
 
     if (!reactions[reactionType]?.isActive) shootEffect();
-    console.log(post.id, `/api/posts/${post.id}/${reactionType.toLowerCase()}`);
 
     const route = reactionType === "Like" ? "upvote" : reactionType.toLowerCase();
     const response = await fetch(`/api/posts/${post.id}/${route}`, {
