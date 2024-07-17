@@ -24,7 +24,7 @@ export default async function RootLayout({ children }) {
   const { user } = await getServerAuth();
 
   return (
-    <html className={`${quicksand.variable} scroll-smooth font-sans overflow-hidden`} lang="en">
+    <html className={`${quicksand.variable} scroll-smooth font-sans overflow-x-hidden overflow-y-scroll`} lang="en">
       <body className="flex flex-col relative">
         <Providers>
           <UserProvider user={user}>
