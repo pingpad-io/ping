@@ -27,11 +27,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { client, isAuthenticated } = await getServerAuth();
-
-    if (!isAuthenticated) {
-      return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
-    }
+    const { client } = await getServerAuth();
 
     const data = await client.explore.publications({
       where: { publicationTypes: [ExplorePublicationType.Post] },

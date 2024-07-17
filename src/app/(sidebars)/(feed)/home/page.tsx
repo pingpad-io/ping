@@ -1,11 +1,11 @@
-import { LimitType, PublicationType } from "@lens-protocol/client";
+import { ExplorePublicationsOrderByType, LimitType } from "@lens-protocol/client";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const authenticatedEndpoint = "/api/posts/feed";
-const unauthenticatedEndpoint = "/api/posts";
+const unauthenticatedEndpoint = "/api/posts/explore?type=curated";
 
 const home = async () => {
   const { posts, nextCursor } = await getInitialFeed();
@@ -30,8 +30,8 @@ const getInitialFeed = async () => {
       })
     ).unwrap();
   } else {
-    data = await client.publication
-      .fetchAll({ where: { publicationTypes: [PublicationType.Post] }, limit: LimitType.Ten })
+    data = await client.explore
+      .publications({ orderBy: ExplorePublicationsOrderByType.LensCurated, limit: LimitType.Ten })
       .catch(() => {
         throw new Error("(×_×)⌒☆ Failed to fetch feed");
       });
