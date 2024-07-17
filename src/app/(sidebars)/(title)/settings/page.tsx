@@ -43,7 +43,7 @@ const settings = async () => {
                   </h1>
                 </AccordionTrigger>
                 <AccordionContent className="pl-4">
-                  <InterestsList activeInterests={user.interests} />
+                  <InterestsList activeInterests={user?.interests} />
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="wallet">

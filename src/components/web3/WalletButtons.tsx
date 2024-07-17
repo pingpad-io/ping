@@ -2,14 +2,15 @@
 
 import { useLogout } from "@lens-protocol/react-web";
 import { GlobeIcon, LogInIcon, UserMinusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { type PropsWithChildren, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { clearCookies } from "../../utils/clearCookies";
 import { WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { ConnectedWalletLabel } from "./ConnnectedWalletLabel";
 import { LensProfileSelect } from "./LensProfileSelect";
-import { clearCookies } from "../../utils/clearCookies";
 
 export function ConnectWalletButton() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -78,15 +79,18 @@ export function DisconnectWalletButton(props: PropsWithChildren) {
 export function LogoutButton() {
   const { execute: disconnect } = useLogout();
   const { isConnected } = useAccount();
+  const router = useRouter();
 
   return (
     <Button
       variant="destructive"
-      onClick={() => {
+      onClick={async () => {
         if (isConnected) {
           disconnect();
         }
-        clearCookies();
+        await clearCookies();
+        router.push("/home")
+        router.refresh();
       }}
     >
       <UserMinusIcon size={20} className="sm:mr-2" />
