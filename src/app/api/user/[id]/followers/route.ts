@@ -11,17 +11,17 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const following = await client.profile.following({
-      cursor,
-      for: id,
+    const following = await client.profile.followers({
       limit: LimitType.Fifty,
+      of: id,
+      cursor
     });
 
     if (!following) {
       return NextResponse.json({ error: "Failed to fetch followers" }, { status: 500 });
     }
 
-    return NextResponse.json({ users: following }, { status: 200 });
+    return NextResponse.json({ users: following, nextCursor: following.pageInfo.next }, { status: 200 });
   } catch (error) {
     console.error("Failed to follow profile: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });
