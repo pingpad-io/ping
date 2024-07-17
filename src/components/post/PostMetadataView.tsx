@@ -115,7 +115,11 @@ export const LinkView = ({ metadata }: { metadata: LinkMetadataV3 }) => {
   return (
     <div>
       <ContentView content={metadata.content} />
-      <Badge className="p-2">{metadata.sharingLink}</Badge>
+      <Badge variant="outline" className="text-base rounded-lg p-1 px-2">
+        <a className="hover:underline" href={metadata.sharingLink}>
+          {metadata.sharingLink}
+        </a>
+      </Badge>
     </div>
   );
 };
