@@ -109,83 +109,79 @@ export function ReactionsList({
   };
 
   return (
-    <div className="flex grow flex-row grow justify-around w-full items-center -mb-2 -ml-2 mt-2">
-      <div className="flex flex-row items-center gap-12 w-full">
-        <ReactionButton
-          reactionType="Comment"
-          reaction={reactions.Comment}
-          onClick={() => setReplyWizardOpen(!isReplyWizardOpen)}
-          disabled={!post.reactions.canComment}
-        />
-        <ReactionButton
-          reactionType="Repost"
-          reaction={reactions.Repost}
-          onClick={() => updateReaction("Repost")}
-          disabled={!post.reactions.canRepost}
-        />
-        <span className="relative">
-          {isComment ? (
-            <span className="flex flex-row gap-1 h-full">
-              <ReactionButton
-                reactionType="Upvote"
-                reaction={{ count: reactions.score, isActive: reactions.Upvote.isActive }}
-                onClick={() => updateReaction("Upvote")}
-              />
+    <div className="flex flex-row items-center justify-between sm:justify-start gap-3 sm:gap-12 w-full -mb-2 -ml-2 mt-2">
+      <ReactionButton
+        reactionType="Comment"
+        reaction={reactions.Comment}
+        onClick={() => setReplyWizardOpen(!isReplyWizardOpen)}
+        disabled={!post.reactions.canComment}
+      />
+      <ReactionButton
+        reactionType="Repost"
+        reaction={reactions.Repost}
+        onClick={() => updateReaction("Repost")}
+        disabled={!post.reactions.canRepost}
+      />
+      <span className="relative overflow-shown">
+        {isComment ? (
+          <span className="flex flex-row gap-1 ">
+            <ReactionButton
+              reactionType="Upvote"
+              reaction={{ count: reactions.score, isActive: reactions.Upvote.isActive }}
+              onClick={() => updateReaction("Upvote")}
+            />
+            <span className="-mx-2">
               <ReactionCount
                 isPressed={reactions.Upvote.isActive || reactions.Downvote.isActive}
                 amount={reactions.score}
                 persistent={true}
               />
-              <ReactionButton
-                reactionType="Downvote"
-                reaction={{ count: reactions.score, isActive: reactions.Downvote.isActive }}
-                onClick={() => updateReaction("Downvote")}
-              />
             </span>
-          ) : (
-            <ReactionButton reactionType="Like" reaction={reactions.Like} onClick={() => updateReaction("Like")} />
-          )}
-          <Explosion
-            onInit={onInitHandler}
-            className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[30] select-none pointer-events-none"
-            width={1000}
-            height={1000}
-            globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
-            decorateOptions={(defaultOptions) => ({
-              ...defaultOptions,
-              colors: ["#fff", "#ccc", "#555"],
-              scalar: 1,
-              particleCount: 15,
-              ticks: 60,
-              startVelocity: 8,
-              shapes: ["star", "circle", "square"],
-            })}
-          />
-        </span>
-        <div className={`${post.reactions.canCollect ? "" : "opacity-0 pointer-events-none"}`}>
-          <ReactionButton
-            reactionType="Collect"
-            reaction={reactions.Collect}
-            onClick={() => updateReaction("Collect")}
-          />
-        </div>
-        <div className="grow" />
-        <div className="flex flex-row items-center gap-2">
-          <div className="flex flex-row opacity-0 group-hover:opacity-100 duration-300 delay-150">
-            {!collapsed && (
-              <ReactionButton
-                reactionType="Bookmark"
-                reaction={reactions.Bookmark}
-                onClick={() => updateReaction("Bookmark")}
-              />
-            )}
-          </div>
-          {collapsed && (
-            <Button size="sm" variant="ghost" className="h-max w-12 border-0 px-0 place-content-center items-center">
-              <ChevronDownIcon className="h-5" />
-            </Button>
+            <ReactionButton
+              reactionType="Downvote"
+              reaction={{ count: reactions.score, isActive: reactions.Downvote.isActive }}
+              onClick={() => updateReaction("Downvote")}
+            />
+          </span>
+        ) : (
+          <ReactionButton reactionType="Like" reaction={reactions.Like} onClick={() => updateReaction("Like")} />
+        )}
+        <Explosion
+          onInit={onInitHandler}
+          className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[30] select-none pointer-events-none"
+          width={400}
+          height={400}
+          globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
+          decorateOptions={(defaultOptions) => ({
+            ...defaultOptions,
+            colors: ["#fff", "#ccc", "#555"],
+            scalar: 1,
+            particleCount: 15,
+            ticks: 60,
+            startVelocity: 8,
+            shapes: ["star", "circle", "square"],
+          })}
+        />
+      </span>
+      <div className={`${post.reactions.canCollect ? "" : "hidden"}`}>
+        <ReactionButton reactionType="Collect" reaction={reactions.Collect} onClick={() => updateReaction("Collect")} />
+      </div>
+
+      <div className="ml-auto">
+        <div className="opacity-0 group-hover:opacity-100 duration-300 delay-150">
+          {!collapsed && (
+            <ReactionButton
+              reactionType="Bookmark"
+              reaction={reactions.Bookmark}
+              onClick={() => updateReaction("Bookmark")}
+            />
           )}
         </div>
+        {collapsed && (
+          <Button size="sm" variant="ghost" className="h-max w-12 border-0 px-0 place-content-center items-center">
+            <ChevronDownIcon className="h-5" />
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -206,7 +202,7 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactionType, reaction,
       e.stopPropagation();
       onClick();
     }}
-    className="w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full"
+    className="w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full hover:bg-transparent text-sm sm:text-base"
     disabled={disabled}
   >
     {reactionType !== "Upvote" && reactionType !== "Downvote" && (
@@ -232,7 +228,11 @@ export const ReactionCount = ({
     maximumFractionDigits: 1,
   }).format(amount);
 
-  return <span className={isPressed ? "font-semibold text-accent-foreground" : ""}>{formattedAmount}</span>;
+  return (
+    <span className={isPressed ? "font-semibold text-accent-foreground" : ""}>
+      <span className="w-fit font-medium">{formattedAmount}</span>
+    </span>
+  );
 };
 
 export const ReactionBadge = ({
