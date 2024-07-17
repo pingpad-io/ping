@@ -15,8 +15,7 @@ const community = async () => {
 };
 
 const getInitialFeed = async () => {
-  const url = getBaseUrl();
-  const data = await fetch(`${url}${endpoint}`, {
+  const data = await fetch(`https:/pingpad.io${endpoint}`, {
     method: "GET",
   })
     .then((res) => res.json())

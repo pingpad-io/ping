@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
   const type = searchParams.get("type") ?? "latest";
+  const limitParam = searchParams.get("limit") ?? "25";
 
   let orderBy: ExplorePublicationsOrderByType;
   switch (type) {
@@ -26,6 +27,22 @@ export async function GET(req: NextRequest) {
       break;
   }
 
+  let limit;
+  switch (limitParam) {
+    case "10":
+      limit = LimitType.Ten;
+      break;
+    case "25":
+      limit = LimitType.TwentyFive;
+      break;
+    case "50":
+      limit = LimitType.Fifty;
+      break;
+    default:
+      limit = LimitType.TwentyFive;
+      break;
+  }
+
   try {
     const { client } = await getServerAuth();
 
@@ -33,7 +50,7 @@ export async function GET(req: NextRequest) {
       where: { publicationTypes: [ExplorePublicationType.Post] },
       orderBy,
       cursor,
-      limit: LimitType.TwentyFive,
+      limit,
     });
 
     const posts = data.items.map(lensItemToPost);
