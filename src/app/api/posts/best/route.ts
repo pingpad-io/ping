@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const cursor = searchParams.get("cursor");
+  const cursor = searchParams.get("cursor") ?? undefined;
 
   try {
     const { client, isAuthenticated, profileId } = await getServerAuth();
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     const items = data.unwrap();
     const posts = items.items.map(lensItemToPost);
 
-    return new Response(JSON.stringify({ posts, nextCursor: items.pageInfo.next }), { status: 200 });
+    return new Response(JSON.stringify({ data: posts, nextCursor: items.pageInfo.next }), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify({ error: `Failed to fetch posts: ${error.message}` }), { status: 500 });
   }

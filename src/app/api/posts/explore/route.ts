@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
 
     const posts = data.items.map(lensItemToPost);
 
-    return new Response(JSON.stringify({ posts, nextCursor: data.pageInfo.next }), { status: 200 });
+    return new Response(JSON.stringify({ data: posts, nextCursor: data.pageInfo.next }), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify({ error: `Failed to fetch posts: ${error.message}` }), { status: 500 });
   }

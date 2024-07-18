@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
     const data = await fetchData(client, isAuthenticated, profileId, params, publicationType);
     const posts = data.items.map(lensItemToPost);
 
-    return NextResponse.json({ posts, nextCursor: data.pageInfo.next }, { status: 200 });
+    return NextResponse.json({ data: posts, nextCursor: data.pageInfo.next }, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch posts: ", error);
     return NextResponse.json({ error: `Failed to fetch posts: ${error.message}` }, { status: 500 });

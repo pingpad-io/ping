@@ -4,13 +4,16 @@ import Link from "~/components/Link";
 import { TimeSince } from "~/components/TimeLabel";
 import { UserAvatar } from "~/components/user/UserAvatar";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { Feed } from "../Feed";
 import { FollowButton } from "../FollowButton";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { type User, parseInterests } from "./User";
 import { UserInterestsList } from "./UserInterests";
+import { UserView } from "./UserView";
 
 export const UserProfile = async ({ user }: { user?: User }) => {
   if (!user) return notFound();
@@ -81,8 +84,42 @@ export const UserProfile = async ({ user }: { user?: User }) => {
         </div>
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <User2Icon size={14} />
-          Following <b>{user.stats.following}</b>
+          <Dialog>
+            <DialogTrigger>
+              Following <b>{user.stats.following}</b>
+            </DialogTrigger>
+            <DialogContent className="max-w-96">
+              <DialogTitle className="text-lg font-bold">
+                {user.handle}'s follows ({user.stats.following})
+              </DialogTitle>
+              <ScrollArea className="max-h-96">
+                <Feed
+                  ItemView={UserView}
+                  endpoint={`/api/user/${user.id}/following`}
+                  initialCursor={undefined}
+                  initialData={undefined}
+                />
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger>
           Followers <b>{user.stats.followers}</b>
+            </DialogTrigger>
+            <DialogContent className="max-w-96">
+              <DialogTitle className="text-lg font-bold">
+                {user.handle}'s followers ({user.stats.followers})
+              </DialogTitle>
+              <ScrollArea className="max-h-96">
+                <Feed
+                  ItemView={UserView}
+                  endpoint={`/api/user/${user.id}/followers`}
+                  initialCursor={undefined}
+                  initialData={undefined}
+                />
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

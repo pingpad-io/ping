@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
 
     const posts = data.items.map(lensItemToPost);
 
-    return NextResponse.json({ posts, nextCursor: data.pageInfo.next }, { status: 200 });
+    return NextResponse.json({ data: posts, nextCursor: data.pageInfo.next }, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch feed: ", error);
     return NextResponse.json({ error: `Failed to fetch feed: ${error.message}` }, { status: 500 });
