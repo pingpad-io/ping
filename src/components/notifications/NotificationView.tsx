@@ -10,6 +10,7 @@ import {
   UserPlusIcon,
 } from "lucide-react";
 import Link from "~/components/Link";
+import { TruncatedText } from "../TruncatedText";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatarArray } from "../user/UserAvatar";
 import type { Notification } from "./Notification";
@@ -64,12 +65,14 @@ export const NotificationView = ({ item }: { item: Notification }) => {
         <div className="shrink-0 grow-0 rounded-full">
           <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />
         </div>
-        <div className="flex flex-col shrink group max-w-sm grow gap-1 place-content-center">
+        <div className="flex flex-col shrink group max-w-md grow gap-1 place-content-center">
           <div className="flex flex-wrap whitespace-pre-wrap truncate text-ellipsis overflow-hidden">
             {usersText}
             <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
           </div>
-          <div className="text-muted-foreground text-sm line-clamp-1 text-ellipsis overflow-hidden">{content}</div>
+          <div className="text-muted-foreground text-sm line-clamp-1 text-ellipsis overflow-hidden">
+            <TruncatedText text={content} maxLength={150} />
+          </div>
         </div>
       </CardContent>
     </Card>

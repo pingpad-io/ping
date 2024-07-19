@@ -21,9 +21,12 @@ export async function GET(req: NextRequest) {
       return new Response(JSON.stringify({ error: "Failed to fetch notifications" }), { status: 500 });
     }
 
-    const posts = data.unwrap().items.map(lensNotificationToNative);
+    const items = data.unwrap().items;
+    const notifications = items.map(lensNotificationToNative);
 
-    return new Response(JSON.stringify({ posts, nextCursor: data.unwrap().pageInfo.next }), { status: 200 });
+    return new Response(JSON.stringify({ data: notifications, nextCursor: data.unwrap().pageInfo.next }), {
+      status: 200,
+    });
   } catch (error) {
     return new Response(JSON.stringify({ error: `Failed to fetch notifications: ${error.message}` }), { status: 500 });
   }
