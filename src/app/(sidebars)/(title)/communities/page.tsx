@@ -1,6 +1,5 @@
 import { Feed } from "~/components/Feed";
 import { CommunityView } from "~/components/communities/CommunityView";
-import { getBaseUrl } from "~/utils/getBaseUrl";
 
 const endpoint = "/api/community";
 

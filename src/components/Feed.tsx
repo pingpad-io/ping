@@ -11,7 +11,7 @@ export const Feed = ({ ItemView, initialData, initialCursor, endpoint }) => {
   const [error, setError] = useState(null);
 
   const loadNextBatch = useCallback(async () => {
-    if (loading) return;
+    if (loading || cursor === null) return;
 
     setLoading(true);
 

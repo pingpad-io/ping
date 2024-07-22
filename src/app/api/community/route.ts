@@ -18,7 +18,7 @@ const communities = [
   "photography",
   "raave",
   "design",
-  "vinylandmusic",
+  "music",
   "memes",
   "books",
 ];
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
       return new Response(JSON.stringify({ communities: [], error: "No results found" }), { status: 200 });
     }
 
-    return new Response(JSON.stringify({ communities: result }), { status: 200 });
+    return new Response(JSON.stringify({ data: result, nextCursor: null }), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify({ error: `Failed to fetch communities: ${error.message}` }), { status: 500 });
   }
