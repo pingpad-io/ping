@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
-import Link from "~/components/Link";
+import Link from "next/link";
 import type { User } from "./User";
 import { UserCard } from "./UserCard";
 
@@ -12,13 +12,13 @@ export function UserAvatar({ user, link = true, card = true }: { user: User; lin
     </Avatar>
   );
   const avatarLink = link ? (
-    <Link className="w-full h-full" href={`/u/${user.handle}`}>
+    <Link className="w-full h-full" href={`/u/${user.handle}`} prefetch>
       {avatar}
     </Link>
   ) : (
     avatar
   );
-  const avatarCard = card ? <UserCard user={user}>{avatarLink}</UserCard> : avatarLink;
+  const avatarCard = card ? <UserCard handle={user.handle}>{avatarLink}</UserCard> : avatarLink;
 
   return avatarCard;
 }
