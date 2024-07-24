@@ -1,4 +1,3 @@
-import React, { forwardRef } from "react";
 import {
   ArrowBigDown,
   ArrowBigUp,
@@ -8,6 +7,7 @@ import {
   MessageSquareIcon,
   Repeat2Icon,
 } from "lucide-react";
+import React, { forwardRef } from "react";
 import { PostReactionType } from "./post/Post";
 
 interface ReactionIconProps {
@@ -23,7 +23,7 @@ const ReactionIcon = forwardRef<SVGSVGElement, ReactionIconProps>(({ reaction, p
     Downvote: <ArrowBigDown size={20} {...iconProps} strokeWidth={1.5} ref={ref} />,
     Bookmark: <BookmarkIcon size={16} {...iconProps} ref={ref} />,
     Repost: <Repeat2Icon size={18} strokeWidth={pressed ? 3 : 1.5} ref={ref} />,
-    Collect: <CirclePlusIcon size={16} strokeWidth={pressed ? 3 : 1.5} ref={ref} />,
+    Collect: <CirclePlusIcon size={16} strokeWidth={pressed ? 3.3 : 1.5} ref={ref} />,
     Comment: <MessageSquareIcon size={15} ref={ref} />,
   };
 

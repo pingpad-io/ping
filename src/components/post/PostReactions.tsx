@@ -1,21 +1,12 @@
 "use client";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
-import {
-  ArrowBigDown,
-  ArrowBigUp,
-  BookmarkIcon,
-  ChevronDownIcon,
-  CirclePlusIcon,
-  HeartIcon,
-  MessageSquareIcon,
-  Repeat2Icon,
-} from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import Explosion from "react-canvas-confetti/dist/presets/explosion";
+import { ReactionButton } from "../ReactionButton";
+import { ReactionCount } from "../ReactionCount";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
-import ReactionIcon from "../ReactionIcon";
 
 type ReactionState = {
   [key in PostReactionType | "Like"]: {
@@ -97,7 +88,10 @@ export function ReactionsList({
       }));
     }
 
-    if (!reactions[reactionType]?.isActive) shootEffect();
+    // Fire explosion only for Like and Upvote
+    if (["Like", "Upvote"].includes(reactionType) && !reactions[reactionType]?.isActive) {
+      shootEffect();
+    }
 
     const route = reactionType === "Like" ? "upvote" : reactionType.toLowerCase();
     const response = await fetch(`/api/posts/${post.id}/${route}`, {
@@ -187,73 +181,3 @@ export function ReactionsList({
     </div>
   );
 }
-
-type ReactionButtonProps = {
-  reactionType: PostReactionType | "Like";
-  reaction: { count: number; isActive: boolean };
-  onClick: () => void;
-  disabled?: boolean;
-};
-
-const ReactionButton: React.FC<ReactionButtonProps> = ({ reactionType, reaction, onClick, disabled = false }) => (
-  <Button
-    size="sm"
-    variant="ghost"
-    onClick={(e) => {
-      e.stopPropagation();
-      onClick();
-    }}
-    className="w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full hover:bg-transparent text-sm sm:text-base"
-    disabled={disabled}
-  >
-    {reactionType !== "Upvote" && reactionType !== "Downvote" && (
-      <ReactionCount isPressed={reaction.isActive} amount={reaction.count} persistent={false} />
-    )}
-    <ReactionBadge isPressed={reaction.isActive} reaction={reactionType} amount={reaction.count} />
-  </Button>
-);
-
-export const ReactionCount = ({
-  amount,
-  isPressed,
-  persistent = false,
-}: {
-  amount: number;
-  isPressed: boolean;
-  persistent: boolean;
-}) => {
-  if (amount <= 0 && !persistent) return null;
-
-  const formattedAmount = Intl.NumberFormat("en-US", {
-    notation: "compact",
-    maximumFractionDigits: 1,
-  }).format(amount);
-
-  return (
-    <span className={isPressed ? "font-semibold text-accent-foreground" : ""}>
-      <span className="w-fit font-medium">{formattedAmount}</span>
-    </span>
-  );
-};
-
-export const ReactionBadge = ({
-  reaction,
-  amount,
-  isPressed,
-}: {
-  reaction: PostReactionType | "Like";
-  amount: number;
-  isPressed?: boolean;
-}) => (
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <ReactionIcon pressed={isPressed} reaction={reaction} />
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>{`${amount} ${reaction.toLowerCase()}${amount === 1 ? "" : "s"}`}</p>
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-);
-
