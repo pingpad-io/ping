@@ -15,6 +15,7 @@ import { useRef, useState } from "react";
 import Explosion from "react-canvas-confetti/dist/presets/explosion";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
+import ReactionIcon from "../ReactionIcon";
 
 type ReactionState = {
   [key in PostReactionType | "Like"]: {
@@ -256,17 +257,3 @@ export const ReactionBadge = ({
   </TooltipProvider>
 );
 
-export const ReactionIcon = ({ reaction, pressed }: { reaction: PostReactionType | "Like"; pressed?: boolean }) => {
-  const iconProps = pressed ? { strokeWidth: 3.5, fill: "hsl(var(--primary))" } : { strokeWidth: 1.8 };
-  const icons = {
-    Like: <HeartIcon size={15} {...iconProps} />,
-    Upvote: <ArrowBigUp size={20} {...iconProps} strokeWidth={1.5} />,
-    Downvote: <ArrowBigDown size={20} {...iconProps} strokeWidth={1.5} />,
-    Bookmark: <BookmarkIcon size={16} {...iconProps} />,
-    Repost: <Repeat2Icon size={18} {...iconProps} />,
-    Collect: <CirclePlusIcon size={16} {...iconProps} />,
-    Comment: <MessageSquareIcon size={15} />,
-  };
-
-  return icons[reaction] || null;
-};
