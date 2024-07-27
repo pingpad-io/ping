@@ -1,5 +1,4 @@
 import { MetadataRoute } from "next";
-import { Post } from "~/components/post/Post";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
@@ -13,12 +12,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const res = await fetch("https://pingpad.io/api/posts/explore?type=curated&limit=50", { method: "GET" });
   if (!res.ok) throw new Error(res.statusText);
 
-  const { data } = await res.json();
-  const postPages = data.map((post: Post) => ({
-    url: `/p/${post.id}`,
-    changefreq: "hourly",
-    priority: 0.6,
-  }));
+  // const { data } = await res.json();
+  // console.log(data);
+  // const postPages = data.map((post: Post) => ({
+  //   url: `/p/${post.id}`,
+  //   changefreq: "hourly",
+  //   priority: 0.6,
+  // }));
 
-  return [...staticPages, ...postPages];
+  return [...staticPages];
 }
