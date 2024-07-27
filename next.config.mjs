@@ -10,7 +10,6 @@ const bundleAnalyzer = withBundleAnalyzer({
 const config = {
   reactStrictMode: true,
   transpilePackages: ['@lens-protocol', 'lucide-react'],
-  output: 'export',
 
   typescript: {
     ignoreBuildErrors: true,
