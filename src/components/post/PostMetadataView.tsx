@@ -71,9 +71,9 @@ export const ArticleView = ({ metadata }: { metadata: ArticleMetadataV3 }) => {
 };
 
 export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
-  const url = metadata.asset.image?.optimized?.uri || metadata.asset.image?.raw.uri;
-  const alt = metadata.asset.altTag;
-  const title = metadata.title;
+  const url = metadata?.asset.image?.optimized?.uri || metadata?.asset?.image?.raw?.uri;
+  const alt = metadata?.asset?.altTag;
+  const title = metadata?.title;
 
   return (
     <div>
@@ -86,8 +86,8 @@ export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
 };
 
 export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
-  const url = metadata.asset.video.optimized.uri || metadata.asset.video.raw.uri;
-  const cover = metadata.asset.cover?.optimized.uri || metadata.asset.cover?.raw.uri;
+  const url = metadata?.asset?.video?.optimized?.uri || metadata?.asset?.video?.raw?.uri;
+  const cover = metadata?.asset?.cover?.optimized?.uri || metadata?.asset?.cover?.raw?.uri;
 
   return (
     <div>
@@ -98,10 +98,10 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
 };
 
 export const AudioView = ({ metadata }: { metadata: AudioMetadataV3 }) => {
-  const url = metadata.asset.audio.optimized.uri || metadata.asset.audio.raw.uri;
-  const cover = metadata.asset.cover?.optimized.uri || metadata.asset.cover?.raw.uri;
-  const artist = metadata.asset.artist;
-  const title = metadata.title;
+  const url = metadata?.asset?.audio?.optimized?.uri || metadata?.asset?.audio?.raw?.uri;
+  const cover = metadata?.asset.cover?.optimized?.uri || metadata?.asset?.cover?.raw?.uri;
+  const artist = metadata?.asset?.artist;
+  const title = metadata?.title;
 
   return (
     <div>
