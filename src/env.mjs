@@ -24,9 +24,9 @@ const client = z.object({
  */
 const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
-  NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
-  STORAGE_ACCESS_KEY: process.env.STORAGE_ACCESS_KEY,
-  STORAGE_SECRET_KEY: process.env.STORAGE_SECRET_KEY,
+  NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: process.env.project.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+  STORAGE_ACCESS_KEY: process.env.project.STORAGE_ACCESS_KEY,
+  STORAGE_SECRET_KEY: process.env.project.STORAGE_SECRET_KEY,
 };
 
 const merged = server.merge(client);
