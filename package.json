@@ -9,7 +9,7 @@
     "check": "npx @biomejs/biome check --apply-unsafe ./src/*"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.588.0",
+    "@aws-sdk/client-s3": "^3.621.0",
     "@coinbase/wallet-sdk": "^3.7.2",
     "@lens-protocol/client": "^2.3.1",
     "@lens-protocol/metadata": "^1.2.0",
