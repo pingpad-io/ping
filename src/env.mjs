@@ -23,10 +23,10 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
-  NODE_ENV: process.env.NODE_ENV,
-  NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: process.env.project.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
-  STORAGE_ACCESS_KEY: process.env.project.STORAGE_ACCESS_KEY,
-  STORAGE_SECRET_KEY: process.env.project.STORAGE_SECRET_KEY,
+  NODE_ENV: process.env.project.NODE_ENV,
+  NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+  STORAGE_ACCESS_KEY: process.env.STORAGE_ACCESS_KEY,
+  STORAGE_SECRET_KEY: process.env.STORAGE_SECRET_KEY,
 };
 
 const merged = server.merge(client);
