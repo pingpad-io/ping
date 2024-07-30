@@ -19,7 +19,8 @@ const getInitialFeed = async () => {
   })
     .then((res) => res.json())
     .catch(() => {
-      throw new Error("(×_×)⌒☆ Failed to fetch communities");
+      console.error("(×_×)⌒☆ Failed to fetch communities");
+      return null;
     });
 
   const { communities } = data;

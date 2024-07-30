@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const res = await fetch("https://pingpad.io/api/posts/explore?type=curated&limit=50", { method: "GET" });
-  if (!res.ok) throw new Error(res.statusText);
+  if (!res.ok) console.error(res)
 
   // const { data } = await res.json();
   // console.log(data);
