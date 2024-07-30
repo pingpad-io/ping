@@ -49,7 +49,7 @@ export const AudioPlayer = ({
   const previewImage = (
     <>
       <div className="relative w-full aspect-square">
-        <Image className="object-cover border w-full h-full rounded-xl" src={cover} fill alt={""} />
+        <img className="object-cover border w-full h-full rounded-xl" src={cover} alt={"Preview"} />
       </div>
     </>
   );
