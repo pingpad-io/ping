@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import dynamic from "next/dynamic";
 import { Providers } from "~/components/Providers";
@@ -7,6 +6,7 @@ import { UserProvider } from "~/components/user/UserContext";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
+import Script from "next/script";
 
 const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
 
@@ -25,11 +25,13 @@ export default async function RootLayout({ children }) {
 
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans overflow-x-hidden overflow-y-scroll`} lang="en">
+      <head>
+        <Script defer src="https://stats.pingpad.io/script.js" data-website-id="3a604368-ddf7-40a8-a759-05bbe71ce01d"/>
+      </head>
       <body className="flex flex-col relative">
         <Providers>
           <UserProvider user={user}>
             <SpeedInsights />
-            <Analytics />
             <AuthWatcher />
             <Toaster position="top-right" offset={16} />
 
