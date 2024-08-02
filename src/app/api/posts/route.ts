@@ -4,10 +4,8 @@ import type {
   CredentialsExpiredError,
   FeedItemFragment,
   LensClient,
-  LensProfileManagerRelayErrorFragment,
   NotAuthenticatedError,
   PaginatedResult,
-  RelaySuccessFragment,
   Result,
 } from "@lens-protocol/client";
 import { LimitType, PublicationType } from "@lens-protocol/client";
