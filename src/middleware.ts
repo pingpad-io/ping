@@ -5,6 +5,7 @@ import { getCookieAuth } from "./utils/getCookieAuth";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const { isValid: isAuthTokenValid } = getCookieAuth();
+  console.log(isAuthTokenValid);
 
   // Check for the .lens postfix
   const lensNamespace = /^\/u\/(.+)\.lens$/;
@@ -22,15 +23,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/u/${username}`, request.url));
   }
 
-  // Define routes that are always accessible
-  const publicRoutes = ["/home", "/u", "/p"];
-
-  // Handle redirects
-  if (pathname === "/") {
-    // Always redirect the root path to /home
+  if (isAuthTokenValid && pathname === "/") {
+    // If authenticated redirect the root path to /home
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
+  // routes that are always accessible
+  const publicRoutes = ["/", "/home", "/u", "/p"];
+
+  
   if (!isAuthTokenValid) {
     // If not authenticated and trying to access a protected route, redirect to /home
     if (!publicRoutes.some((route) => pathname.startsWith(route))) {
@@ -43,5 +44,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|logo.png|home|favicon.ico).*)"],
 };
