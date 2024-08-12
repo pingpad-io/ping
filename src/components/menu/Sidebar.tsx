@@ -89,7 +89,7 @@ export function Sidebar() {
 
 const Links = () => {
   const version = process.env.npm_package_version ?? "0.8";
-  const git = process.env.VERCEL_GIT_COMMIT_SHA ?? "0000000";
+  const git = process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.SOURCE_COMMIT ?? "0000000";
   const gitSliced = git.slice(0, 7);
 
   return (
