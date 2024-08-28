@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchProfiles } from "@lens-protocol/react-web";
-import { LoadingSpinner } from "./LoadingIcon";
+import { LoadingSpinner } from "./LoadingSpinner";
 import { lensProfileToUser } from "./user/User";
 
 export function HandleSearch({ query, maxResults = 10 }: { query: string; maxResults?: number }) {

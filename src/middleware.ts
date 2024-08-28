@@ -5,7 +5,6 @@ import { getCookieAuth } from "./utils/getCookieAuth";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const { isValid: isAuthTokenValid } = getCookieAuth();
-  console.log(isAuthTokenValid);
 
   // Check for the .lens postfix
   const lensNamespace = /^\/u\/(.+)\.lens$/;

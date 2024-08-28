@@ -1,12 +1,12 @@
 "use client";
 
-import { profileId, useLogin, useProfilesManaged, useSession as useLensSession } from "@lens-protocol/react-web";
+import { profileId, useSession as useLensSession, useLogin, useProfilesManaged } from "@lens-protocol/react-web";
 import { setCookie } from "cookies-next";
 import { PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useAccount as useWagmiAccount } from "wagmi";
 import Link from "~/components/Link";
-import { LoadingSpinner } from "../LoadingIcon";
+import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { lensProfileToUser } from "../user/User";

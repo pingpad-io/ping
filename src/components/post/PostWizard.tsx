@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form
 import { zodResolver } from "@hookform/resolvers/zod";
 import { textOnly } from "@lens-protocol/metadata";
 import { useSearchProfiles } from "@lens-protocol/react-web";
-import EmojiPicker, { Theme } from "emoji-picker-react";
+import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { SendHorizontalIcon, SmileIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
@@ -12,7 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { LoadingSpinner } from "../LoadingIcon";
+import { LoadingSpinner } from "../LoadingSpinner";
 import { getCommunityTags } from "../communities/Community";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -342,8 +342,8 @@ function getCaretCoordinates(element: HTMLTextAreaElement, position: number) {
 
   document.body.appendChild(div);
   const coordinates = {
-    top: span.offsetTop + parseInt(styles.borderTopWidth),
-    left: span.offsetLeft + parseInt(styles.borderLeftWidth),
+    top: span.offsetTop + Number.parseInt(styles.borderTopWidth),
+    left: span.offsetLeft + Number.parseInt(styles.borderLeftWidth),
   };
   document.body.removeChild(div);
 

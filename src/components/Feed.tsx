@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { FeedSuspense } from "./FeedSuspense";
-import { LoadingSpinner } from "./LoadingIcon";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 export const Feed = ({ ItemView, initialData, initialCursor, endpoint }) => {
   const [data, setData] = useState(initialData);

@@ -1,6 +1,6 @@
 import { PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { LoadingSpinner } from "../LoadingIcon";
+import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
 import { PostView } from "./PostView";
