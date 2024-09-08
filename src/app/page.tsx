@@ -31,7 +31,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 px-auto grow items-center justify-center py-10 mt-16 text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex flex-col gap-6 justify-center">
+        <div className="grid md:grid-cols-2 px-auto grow items-center justify-center py-10 mt-16 text-3xl p-8 text-center drop-shadow-md dark:drop-shadow-glow place-items-center flex-col gap-6">
           <div className="col-span-1 flex flex-col gap-2">
             <FadeIn className="duration-1000 delay-100">
               <h1>

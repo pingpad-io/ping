@@ -34,7 +34,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 export const Navigation = () => {
   return (
-    <nav className="z-[40] w-full max-w-2xl flex flex-row justify-center items-center p-4 px-0 sticky top-0 bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
+    <nav className="z-[40] w-full max-w-2xl flex flex-row justify-center items-center border border-muted p-1 sticky top-1 bg-background/50 backdrop-blur-lg rounded-xl overflow-visible">
       <Carousel
         opts={{ dragFree: true, watchDrag: true, slidesToScroll: 6, loop: true, active: true, align: "start" }}
         plugins={[WheelGesturesPlugin({ active: true })]}
@@ -135,7 +135,7 @@ export const Navigation = () => {
 
 export const ExploreNavigation = () => {
   return (
-    <nav className="z-[40] flex flex-row justify-start items-center gap-2 p-4 px-0 sticky top-0 bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
+    <nav className="z-[40] flex flex-row justify-start items-center gap-2 p-4 px-0 sticky top-1 border border-muted bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
       <NavigationItem href={"/explore/curated"}>
         <NewspaperIcon size={18} />
         explore
@@ -167,8 +167,8 @@ export const NavigationItem = ({
 
   return (
     <Link
-      className={`rounded-md w-max h-10 disabled p-2 overflow-hidden inline-flex gap-1 items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted 
-        hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 
+      className={`rounded-md w-max h-10 disabled p-1 overflow-hidden inline-flex gap-1 items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted
+        hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
       ${selectedStyle(href)} ${disabledStyle}`}
       href={href}
     >

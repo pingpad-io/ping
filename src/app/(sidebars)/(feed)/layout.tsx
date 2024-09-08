@@ -16,7 +16,7 @@ export default async function layout({ children }: PropsWithChildren) {
     <Card className="z-[30] hover:bg-card p-4 py-0 border-0">
       <ServerSignedIn>
         <Navigation />
-        <div className="pb-4">
+        <div className="py-4">
           <PostWizard user={user} />
         </div>
       </ServerSignedIn>

@@ -1,5 +1,5 @@
 import { LensClient, production } from "@lens-protocol/client";
-import { User, lensProfileToUser } from "~/components/user/User";
+import { type User, lensProfileToUser } from "~/components/user/User";
 import { getCookieAuth } from "./getCookieAuth";
 import { window } from "./globals";
 
