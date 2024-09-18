@@ -34,7 +34,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 export const Navigation = () => {
   return (
-    <nav className="z-[40] w-full max-w-2xl flex flex-row justify-center items-center border border-muted p-1 sticky top-1 bg-background/50 backdrop-blur-lg rounded-xl overflow-visible">
+    <nav className="z-[40] w-full max-w-2xl flex flex-row justify-center items-center border border-muted p-1 sticky top-3 bg-background/50 backdrop-blur-lg rounded-xl overflow-visible">
       <Carousel
         opts={{ dragFree: true, watchDrag: true, slidesToScroll: 6, loop: true, active: true, align: "start" }}
         plugins={[WheelGesturesPlugin({ active: true })]}
@@ -135,7 +135,7 @@ export const Navigation = () => {
 
 export const ExploreNavigation = () => {
   return (
-    <nav className="z-[40] flex flex-row justify-start items-center gap-2 p-4 px-0 sticky top-1 border border-muted bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
+    <nav className="z-[40] flex flex-row justify-start items-center gap-2 p-4 px-0 sticky top-3 border border-muted bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
       <NavigationItem href={"/explore/curated"}>
         <NewspaperIcon size={18} />
         explore

@@ -11,7 +11,7 @@ import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
-import { type User, parseInterests } from "./User";
+import { parseInterests, type User } from "./User";
 import { UserInterestsList } from "./UserInterests";
 import { UserView } from "./UserView";
 
@@ -28,7 +28,7 @@ export const UserProfile = async ({ user }: { user?: User }) => {
   const commonInterests = parseInterests(commonInterestTypes);
 
   return (
-    <div className="p-4 z-20 flex w-full flex-row gap-4 bg-card drop-shadow-md">
+    <div className="p-4 z-20 flex w-full flex-row gap-4 bg-card drop-shadow-md rounded-b-2xl">
       <div className="flex flex-col gap-2">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
           <UserAvatar card={false} user={user} />
@@ -104,7 +104,7 @@ export const UserProfile = async ({ user }: { user?: User }) => {
           </Dialog>
           <Dialog>
             <DialogTrigger>
-          Followers <b>{user.stats.followers}</b>
+              Followers <b>{user.stats.followers}</b>
             </DialogTrigger>
             <DialogContent className="max-w-96">
               <DialogTitle className="text-lg font-bold">
