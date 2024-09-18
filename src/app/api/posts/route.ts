@@ -18,6 +18,7 @@ export const dynamic = "force-dynamic";
 
 const accessKeyId = env.STORAGE_ACCESS_KEY;
 const secretAccessKey = env.STORAGE_SECRET_KEY;
+
 const MAX_DATA_SIZE = 149 * 1024; // 149KB
 const BUCKET_NAME = "pingpad-ar";
 
