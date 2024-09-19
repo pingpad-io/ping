@@ -11,7 +11,7 @@ export const EmailSubscription = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    fetch(`https://kualta.dev/api/subscribe?email=${event.target.email.value}`, {
+    fetch(`https://kualta.dev/api/subscribe?email=${event.target.email.value}&list=1`, {
       method: "POST",
     })
       .then((res) => res.json())
