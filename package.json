@@ -43,7 +43,7 @@
     "@wagmi/core": "^1.4.13",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "cookies-next": "^4.2.1",
+    "cookies-next": "^4.3.0",
     "dayjs": "^1.11.7",
     "embla-carousel-react": "^8.1.5",
     "embla-carousel-wheel-gestures": "^8.0.1",
