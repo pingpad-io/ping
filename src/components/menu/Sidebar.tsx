@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { lensProfileToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
+import { TopDonors } from "../TopDonors";
 
 const UserBar = async () => {
   const { handle, profileId, client } = await getServerAuth();
@@ -63,22 +64,15 @@ export function Sidebar() {
           </AccordionTrigger>
           <AccordionContent>
             <p>Welcome to pingpad!</p>
-            <p>This is a beta, some things might be broken</p>
-            <p>We would love to hear what you think!</p>
-            <p>
-              Leave your feedback here:{" "}
-              <Link className="underline underline-offset-2" href={"/c/pingpad"}>
-                /pingpad
-              </Link>
-            </p>
-            <br />
-            <p>
-              big love,{" "}
-              <Link className="underline underline-offset-2" href={"/u/pingpad"}>
-                @pingpad
-              </Link>{" "}
-              team
-            </p>
+            <p>This is a beta, we would love to hear what you think!</p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="donos">
+          <AccordionTrigger className="py-2">
+            <span> Top Donors </span>
+          </AccordionTrigger>
+          <AccordionContent>
+            <TopDonors />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
