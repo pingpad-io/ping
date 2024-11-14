@@ -1,4 +1,4 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
@@ -9,8 +9,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "/tos", changefreq: "monthly", priority: 0.4 },
   ];
 
-  const res = await fetch("https://pingpad.io/api/posts/explore?type=curated&limit=50", { method: "GET" });
-  if (!res.ok) console.error(res)
+  // const res = await fetch("https://pingpad.io/api/posts/explore?type=curated&limit=50", { method: "GET" });
+  // if (!res.ok) console.error(res)
 
   // const { data } = await res.json();
   // console.log(data);
