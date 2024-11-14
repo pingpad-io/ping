@@ -14,30 +14,15 @@ interface NetworkConfig {
 
 const DONOR_WALLET = env.DONOR_WALLET;
 const ETHERSCAN_API_KEY = env.ETHERSCAN_API_KEY;
-const POLYGONSCAN_API_KEY = env.POLYGONSCAN_API_KEY;
 
 const NETWORKS = {
   ethereum: {
     apiUrl: "https://api.etherscan.io/api",
   },
-  polygon: {
-    apiUrl: "https://api.polygonscan.com/api",
-    PolToEthRate: 0, // Will be fetched dynamically
-  },
 } satisfies Record<string, NetworkConfig>;
 
 export const revalidate = 3600;
 
-async function fetchPolToEthRate(): Promise<number> {
-  try {
-    const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=eth");
-    const data = await response.json();
-    return data["matic-network"].eth;
-  } catch (error) {
-    console.error("Error fetching MATIC/ETH rate:", error);
-    return 0;
-  }
-}
 async function fetchNetworkTransactions(network: keyof typeof NETWORKS, apiKey: string): Promise<any[]> {
   const config = NETWORKS[network];
   const response = await fetch(
@@ -55,11 +40,8 @@ async function fetchNetworkTransactions(network: keyof typeof NETWORKS, apiKey: 
 
 async function fetchTopDonors(): Promise<Donor[]> {
   try {
-    NETWORKS.polygon.PolToEthRate = await fetchPolToEthRate();
-
-    const [ethereumTxs, polygonTxs] = await Promise.all([
+    const [ethereumTxs] = await Promise.all([
       fetchNetworkTransactions("ethereum", ETHERSCAN_API_KEY),
-      fetchNetworkTransactions("polygon", POLYGONSCAN_API_KEY),
     ]);
 
     const donorMap = new Map<string, ethers.BigNumber>();
@@ -67,15 +49,7 @@ async function fetchTopDonors(): Promise<Donor[]> {
     const processTransactions = (transactions: any[], network: keyof typeof NETWORKS) => {
       for (const tx of transactions) {
         if (tx.to.toLowerCase() === DONOR_WALLET.toLowerCase()) {
-          let amount = ethers.BigNumber.from(tx.value);
-
-          // Convert MATIC to ETH if it's a Polygon transaction
-          if (network === "polygon" && NETWORKS.polygon.PolToEthRate) {
-            amount = amount
-              .mul(ethers.utils.parseEther(NETWORKS.polygon.PolToEthRate.toString()))
-              .div(ethers.utils.parseEther("1"));
-          }
-
+          const amount = ethers.BigNumber.from(tx.value);
           const currentTotal = donorMap.get(tx.from) || ethers.BigNumber.from(0);
           donorMap.set(tx.from, currentTotal.add(amount));
         }
@@ -83,7 +57,6 @@ async function fetchTopDonors(): Promise<Donor[]> {
     };
 
     processTransactions(ethereumTxs, "ethereum");
-    processTransactions(polygonTxs, "polygon");
 
     const sortedDonors = Array.from(donorMap.entries())
       .sort((a, b) => (b[1].gt(a[1]) ? 1 : -1))
