@@ -25,7 +25,7 @@ export default async function RootLayout({ children }) {
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans overflow-x-hidden overflow-y-scroll`} lang="en">
       <head>
-        <Script defer src="https://stats.pingpad.io/script.js" data-website-id="3a604368-ddf7-40a8-a759-05bbe71ce01d" />
+        <Script defer src="https://stats.pingpad.io/script.js" data-website-id="b3bf05cd-46cc-4199-a5c0-aeaf3d70d311" />
       </head>
       <body className="flex flex-col relative">
         <Providers>
