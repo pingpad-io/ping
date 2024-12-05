@@ -170,7 +170,7 @@ export const NavigationItem = ({
       className={`rounded-md w-max h-10 disabled p-1 px-2.5 overflow-hidden inline-flex gap-1 items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted
         hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
       ${selectedStyle(href)} ${disabledStyle}`}
-      href={href}
+      href={disabled ? "" : href}
     >
       {children}
     </Link>
