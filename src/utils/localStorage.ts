@@ -99,7 +99,6 @@ interface WagmiStorage {
   removeItem(key: string): void | Promise<void>;
 }
 
-// Class that implements both Lens and Wagmi storage interfaces
 export class CookieStorageProvider implements IObservableStorageProvider, WagmiStorage {
   private subscribers = new Map<string, StorageProviderSubscriber[]>();
   private cookies: Map<string, string>;
@@ -122,7 +121,6 @@ export class CookieStorageProvider implements IObservableStorageProvider, WagmiS
   setItem(key: string, value: string): void {
     this.cookies.set(key, value);
     
-    // Set cookie with 30 day expiry
     const expires = new Date();
     expires.setDate(expires.getDate() + 30);
     

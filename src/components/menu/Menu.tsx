@@ -118,7 +118,7 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
       <Dialog>
         <DialogTrigger asChild>
           <Button className="px-6 sm:px-12 hidden sm:flex">
-            <div className="font-bold text-lg -mt-1">post</div>
+            <div className="font-semibold text-lg -mt-1">post</div>
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-full sm:max-w-[700px]">
