@@ -4,6 +4,7 @@ import { useLogout } from "@lens-protocol/react-web";
 import { GlobeIcon, LogInIcon, UserMinusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type PropsWithChildren, useState } from "react";
+import { toast } from "sonner";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { clearCookies } from "../../utils/clearCookies";
 import { WalletConnectIcon } from "../Icons";
@@ -14,7 +15,15 @@ import { LensProfileSelect } from "./LensProfileSelect";
 
 export function ConnectWalletButton() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { connectors, connect } = useConnect();
+  const { connectors, connect } = useConnect({
+    mutation: {
+      onError: (error) => {
+        toast.error("Connection Failed", { description: error.message });
+
+        setDialogOpen(false);
+      },
+    },
+  });
   const { isConnected: walletConnected } = useAccount();
 
   const connectorList = connectors.map((connector) => {
@@ -89,7 +98,7 @@ export function LogoutButton() {
           disconnect();
         }
         await clearCookies();
-        router.push("/home")
+        router.push("/home");
         router.refresh();
       }}
     >

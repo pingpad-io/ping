@@ -1,18 +1,17 @@
 "use client";
 
-import { LensProvider } from "@lens-protocol/react-web";
-import { type LensConfig, production } from "@lens-protocol/react-web";
+import { type LensConfig, LensProvider, production } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { http, WagmiProvider, createConfig } from "wagmi";
+import { http, WagmiProvider, createConfig, createStorage } from "wagmi";
 import { polygon } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
-import { localStorage } from "~/utils/localStorage";
+import { localStorage, wagmiLocalStorage } from "~/utils/localStorage";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
@@ -55,6 +54,11 @@ const wagmiConfig = createConfig({
       },
     }),
   ],
+
+  storage: createStorage({
+    storage: wagmiLocalStorage(),
+    key: "wagmi",
+  }),
   transports: {
     [polygon.id]: http(),
   },
@@ -70,15 +74,15 @@ const lensConfig: LensConfig = {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
-  
+
     useEffect(() => {
       setMounted(true);
     }, []);
-  
+
     if (!mounted) {
       return null;
     }
-    
+
   return (
     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme>
       <WagmiProvider config={wagmiConfig}>
