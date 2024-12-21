@@ -51,7 +51,7 @@ nvm use 18
 npm install
 ```
 
-#### 3. Running the dev server
+#### 3. Run the dev server
 
 Finally, you can run the dev server:
 
@@ -67,5 +67,5 @@ Now you're all set to start contributing to Pingpad! Next, read **[contributing.
 
 #### 5. (extra) Install Biome
 
-Biome is used for formatting and linting in the project, and can be installed in the VSCode extension marketplace or on [biome website](https://biomejs.dev/guides/getting-started/)
+Biome is used for formatting and linting in the project, and can be installed in the Zed/VSCode extensions or on [biome website](https://biomejs.dev/guides/getting-started/)
 

@@ -49,6 +49,7 @@ const LandingPage = () => {
               </h1>
             </FadeIn>
           </div>
+          
           <FadeIn className="duration-1000 delay-1000">
             <div className="col-span-1 flex flex-row gap-2 items-center justify-center">
               <h1>built on</h1>
@@ -64,7 +65,7 @@ const LandingPage = () => {
           </FadeIn>
         </div>
 
-        <FadeIn className="duration-[3000ms] delay-[4500ms]">
+        <FadeIn className="">
           <div className="w-full p-8 mt-16 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
             <div className=" text-xl flex flex-col gap-4">
               Join v1.0 waitlist
@@ -73,7 +74,7 @@ const LandingPage = () => {
           </div>
         </FadeIn>
 
-        <FadeIn className="duration-[3000ms] delay-[5000ms]">
+        <FadeIn className="">
           <Card className="hover:bg-card flex flex-col gap-4 place-items-center mx-auto w-full p-4 my-32">
             <CardHeader>
               <CardTitle> FAQ </CardTitle>
@@ -104,7 +105,7 @@ const LandingPage = () => {
           </Card>
         </FadeIn>
 
-        <FadeIn className="duration-[3000ms] delay-[5500ms]">
+        <FadeIn className="">
           <div className="flex flex-col md:flex-row gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">
             <Link href="https://kualta.dev">
               <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
