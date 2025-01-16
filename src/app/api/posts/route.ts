@@ -1,32 +1,11 @@
-import { S3 } from "@aws-sdk/client-s3";
 import type {
-  AnyPublicationFragment,
-  CredentialsExpiredError,
-  FeedItemFragment,
-  LensClient,
-  NotAuthenticatedError,
-  PaginatedResult,
   Result,
 } from "@lens-protocol/client";
-import { LimitType, PublicationType } from "@lens-protocol/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
-import { env } from "~/env.mjs";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
-
-const accessKeyId = env.STORAGE_ACCESS_KEY;
-const secretAccessKey = env.STORAGE_SECRET_KEY;
-
-const MAX_DATA_SIZE = 149 * 1024; // 149KB
-const BUCKET_NAME = "pingpad-ar";
-
-const s3 = new S3({
-  endpoint: "https://endpoint.4everland.co",
-  credentials: { accessKeyId, secretAccessKey },
-  region: "4EVERLAND",
-});
 
 export async function GET(req: NextRequest) {
   try {
