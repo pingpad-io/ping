@@ -1,5 +1,5 @@
-import type { ProfileFragment } from "@lens-protocol/client";
-import type { Profile, ProfileInterestTypes } from "@lens-protocol/react-web";
+import type { Account } from "@lens-protocol/client";
+import type { ProfileInterestTypes } from "@lens-protocol/react-web";
 
 export type UserInterests = {
   category: string;
@@ -37,47 +37,44 @@ export type User = {
   profilePictureUrl?: string;
 };
 
-export function lensProfileToUser(profile: Profile | ProfileFragment): User {
+export function lensProfileToUser(profile: Account): User {
   if (!profile) return {} as unknown as User;
 
-  const imageUrl =
-    profile?.metadata?.picture?.__typename === "ImageSet"
-      ? profile?.metadata?.picture?.optimized?.uri || profile?.metadata?.picture?.raw?.uri
-      : profile?.metadata?.picture.image.optimized?.uri || profile?.metadata?.picture?.image.raw?.uri;
+  const imageUrl = profile?.metadata?.picture;
 
+  //// FIXME: Temporary stats
   const stats = {
-    followers: profile.stats.followers,
-    following: profile.stats.following,
-    downvotes: profile.stats.downvotes,
-    upvotes: profile.stats.upvotes,
-    comments: profile.stats.comments,
-    posts: profile.stats.posts,
-    score: profile.stats.lensClassifierScore,
+    followers: 0,
+    following: 0,
+    downvotes: 0,
+    upvotes: 0,
+    comments: 0,
+    posts: 0,
+    score: 0,
   };
 
-  const interests = parseInterests(profile.interests as ProfileInterestTypes[]);
+  //// FIXME: Temporary interests
+  const interests = [];
 
   const actions = {
-    followed: profile.operations.isFollowedByMe.value,
-    following: profile.operations.isFollowingMe.value,
-    blocked: profile.operations.isBlockedByMe.value,
+    followed: profile.operations.isFollowedByMe,
+    following: profile.operations.isFollowingMe,
+    blocked: profile.operations.isBlockedByMe,
   };
 
-  const user = {
-    id: profile.id,
+  return {
+    id: profile.address,
     profilePictureUrl: imageUrl,
-    address: profile.ownedBy.address,
-    createdAt: profile.createdAt as unknown as Date,
-    description: profile?.metadata?.bio,
+    address: profile.owner,
+    createdAt: profile.createdAt,
+    description: profile?.metadata.bio,
     interests,
     actions,
-    name: profile?.metadata?.displayName,
-    handle: profile.handle?.localName ?? profile.id,
-    namespace: profile.handle?.namespace ?? "wallet",
+    name: profile?.metadata.name,
+    handle: profile.username.localName,
+    namespace: profile.username.namespace.address,
     stats,
   };
-
-  return user;
 }
 
 // Capitalizes each word in a string
