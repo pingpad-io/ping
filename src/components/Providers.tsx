@@ -1,5 +1,6 @@
 "use client";
 
+import { chains } from "@lens-network/sdk/viem";
 import { type LensConfig, LensProvider, production } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,20 +17,22 @@ import { localStorage, wagmiLocalStorage } from "~/utils/localStorage";
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
 
-const metadata = {
-  name: "Pingpad",
-  description: "minimalistic decentralized social",
-  url,
-  icons: ["https://pingpad.io/favicon.ico"],
-};
-
 const wagmiConfig = createConfig({
-  chains: [polygon],
+  chains: [chains.testnet, polygon],
+  transports: {
+    [polygon.id]: http(),
+    [chains.testnet.id]: http(),
+  },
   connectors: [
     injected(),
     walletConnect({
       projectId,
-      metadata,
+      metadata: {
+        name: "Pingpad",
+        description: "minimalistic decentralized social",
+        url,
+        icons: ["https://pingpad.io/favicon.ico"],
+      },
       qrModalOptions: {
         themeMode: "dark",
         themeVariables: {
@@ -59,9 +62,6 @@ const wagmiConfig = createConfig({
     storage: wagmiLocalStorage(),
     key: "wagmi",
   }),
-  transports: {
-    [polygon.id]: http(),
-  },
 });
 
 const queryClient = new QueryClient();
@@ -75,21 +75,19 @@ const lensConfig: LensConfig = {
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
-      setMounted(true);
-    }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    if (!mounted) {
-      return null;
-    }
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <LensProvider config={lensConfig}>
-            {children}
-          </LensProvider>
+          <LensProvider config={lensConfig}>{children}</LensProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </ThemeProvider>

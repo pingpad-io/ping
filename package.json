@@ -11,8 +11,9 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.621.0",
     "@coinbase/wallet-sdk": "^3.7.2",
-    "@lens-protocol/client": "^2.3.1",
-    "@lens-protocol/metadata": "^1.2.0",
+    "@lens-network/sdk": "^0.0.0-canary-20241203140504",
+    "@lens-protocol/client": "^0.0.0-canary-20250116154448",
+    "@lens-protocol/metadata": "^2.0.0-next.5",
     "@lens-protocol/react-web": "^2.3.1",
     "@lens-protocol/wagmi": "^4.1.4",
     "@next/bundle-analyzer": "^13.5.4",
@@ -87,7 +88,7 @@
     "tailwindcss-animate": "^1.0.7",
     "theme-change": "^2.5.0",
     "viem": "^2.9.13",
-    "wagmi": "^2.14.4",
+    "wagmi": "^2.14.8",
     "zod": "^3.23.8"
   },
   "devDependencies": {
