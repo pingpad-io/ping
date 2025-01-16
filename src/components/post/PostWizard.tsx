@@ -19,14 +19,14 @@ import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Textarea } from "../ui/textarea";
 import type { User } from "../user/User";
-import { lensProfileToUser } from "../user/User";
+import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   const { data: profiles, loading, error } = useSearchProfiles({ query: query.slice(1) });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const users = profiles?.slice(0, 10).map(lensProfileToUser) || [];
+  const users = profiles?.slice(0, 10).map(lensAcountToUser) || [];
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

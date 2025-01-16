@@ -37,10 +37,10 @@ export type User = {
   profilePictureUrl?: string;
 };
 
-export function lensProfileToUser(profile: Account): User {
-  if (!profile) return {} as unknown as User;
+export function lensAcountToUser(account: Account): User {
+  if (!account) return {} as unknown as User;
 
-  const imageUrl = profile?.metadata?.picture;
+  const imageUrl = account?.metadata?.picture;
 
   //// FIXME: Temporary stats
   const stats = {
@@ -57,22 +57,22 @@ export function lensProfileToUser(profile: Account): User {
   const interests = [];
 
   const actions = {
-    followed: profile.operations.isFollowedByMe,
-    following: profile.operations.isFollowingMe,
-    blocked: profile.operations.isBlockedByMe,
+    followed: account.operations.isFollowedByMe,
+    following: account.operations.isFollowingMe,
+    blocked: account.operations.isBlockedByMe,
   };
 
   return {
-    id: profile.address,
+    id: account.address,
     profilePictureUrl: imageUrl,
-    address: profile.owner,
-    createdAt: profile.createdAt,
-    description: profile?.metadata.bio,
+    address: account.owner,
+    createdAt: account.createdAt,
+    description: account?.metadata.bio,
     interests,
     actions,
-    name: profile?.metadata.name,
-    handle: profile.username.localName,
-    namespace: profile.username.namespace.address,
+    name: account?.metadata.name,
+    handle: account.username.localName,
+    namespace: account.username.namespace.address,
     stats,
   };
 }

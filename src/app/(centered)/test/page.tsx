@@ -1,11 +1,11 @@
 import { FollowButton } from "~/components/FollowButton";
 import Markdown from "~/components/Markdown";
-import { lensProfileToUser } from "~/components/user/User";
+import { lensAcountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const test = async () => {
   const { user, client } = await getServerAuth();
-  const anotherUser = await client.profile.fetch({ forHandle: "@lens/deana" }).then((res) => lensProfileToUser(res));
+  const anotherUser = await client.profile.fetch({ forHandle: "@lens/deana" }).then((res) => lensAcountToUser(res));
 
   return (
     <>

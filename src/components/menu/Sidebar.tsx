@@ -5,13 +5,13 @@ import { ServerSignedIn } from "../auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { lensProfileToUser } from "../user/User";
+import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
 
 const UserBar = async () => {
   const { handle, profileId, client } = await getServerAuth();
-  const user = await client.profile.fetch({ forProfileId: profileId }).then((res) => lensProfileToUser(res));
+  const user = await client.profile.fetch({ forProfileId: profileId }).then((res) => lensAcountToUser(res));
   const handleOrProfileId = handle ?? profileId;
 
   return (

@@ -1,8 +1,7 @@
-import { AnyClient } from "@lens-protocol/client";
+import { SessionClient } from "@lens-protocol/client";
 import { fetchMeDetails } from "@lens-protocol/client/actions";
 import jwt from "jsonwebtoken";
-import { type User, lensProfileToUser } from "~/components/user/User";
-import { getCookieAuth } from "./getCookieAuth";
+import { type User, lensAcountToUser } from "~/components/user/User";
 import { getLensClient } from "./lens/getLensClient";
 
 interface ServerAuthResult {
@@ -10,7 +9,7 @@ interface ServerAuthResult {
   profileId: string | null;
   address: string | null;
   handle: string | null;
-  client: AnyClient;
+  client: SessionClient;
   user: User | null;
 }
 
@@ -38,7 +37,7 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
       address: null,
       handle: null,
       user: null,
-      client,
+      client: null,
     };
   }
   const credentials = await client.getCredentials();
@@ -69,7 +68,7 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
   }
 
   const handle = account.loggedInAs.account.username?.localName;
-  const user = lensProfileToUser(account);
+  const user = lensAcountToUser(account);
 
   return {
     isAuthenticated: !!address,

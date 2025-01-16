@@ -4,7 +4,7 @@ import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { getServerAuth } from "~/utils/getServerAuth";
-import { getUserByHandle } from "~/utils/getUserByHandle";
+import { getUserByUsername } from "~/utils/getUserByHandle";
 
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {
   const handle = params.user;
@@ -31,7 +31,7 @@ const user = async ({ params }: { params: { user: string } }) => {
 
 const getInitialData = async (handle: string) => {
   const { client } = await getServerAuth();
-  const user = await getUserByHandle(handle);
+  const user = await getUserByUsername(handle);
 
   const lensPosts = await client.publication
     .fetchAll({

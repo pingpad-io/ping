@@ -28,7 +28,7 @@ import type {
   TransactionMetadataV3,
   VideoMetadataV3,
 } from "@lens-protocol/react-web";
-import { type User, lensProfileToUser } from "../user/User";
+import { type User, lensAcountToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number> & {
@@ -122,7 +122,7 @@ export function lensItemToPost(item: AnyLensItem): Post | null {
   try {
     post = {
       id: origin.id,
-      author: lensProfileToUser(origin.by),
+      author: lensAcountToUser(origin.by),
       reactions: getReactions(origin),
       comments: getComments(normalizedPost),
       reply: getReply(origin),
@@ -188,7 +188,7 @@ function getComments(post: AnyLensItem) {
       .filter((comment) => comment.commentOn.id === post.root.id) // only render direct comments in feed
       .map((comment: Comment | Quote | LensPost) => ({
         id: comment.id as string,
-        author: lensProfileToUser(comment.by),
+        author: lensAcountToUser(comment.by),
         createdAt: new Date(comment.createdAt),
         updatedAt: new Date(comment.createdAt),
         comments: [],
@@ -218,7 +218,7 @@ function getReply(origin: Comment | Quote | LensPost) {
     case "Comment":
       return {
         id: origin.root.id,
-        author: origin?.commentOn?.by ? lensProfileToUser(origin?.commentOn?.by) : undefined,
+        author: origin?.commentOn?.by ? lensAcountToUser(origin?.commentOn?.by) : undefined,
         content: "content" in origin.commentOn.metadata ? origin.commentOn.metadata.content : "",
         metadata: origin.commentOn.metadata,
         ...reply,
@@ -227,7 +227,7 @@ function getReply(origin: Comment | Quote | LensPost) {
     case "Quote":
       return {
         id: origin.quoteOn.id,
-        author: origin?.quoteOn?.by ? lensProfileToUser(origin?.quoteOn?.by) : undefined,
+        author: origin?.quoteOn?.by ? lensAcountToUser(origin?.quoteOn?.by) : undefined,
         content: "content" in origin.quoteOn.metadata ? origin.quoteOn?.metadata?.content : "",
         metadata: origin.quoteOn.metadata,
         ...reply,

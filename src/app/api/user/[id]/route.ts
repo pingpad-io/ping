@@ -1,5 +1,6 @@
+import { fetchAccount } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
-import { lensProfileToUser } from "~/components/user/User";
+import { lensAcountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
@@ -13,13 +14,19 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const lensProfile = await client.profile.fetch({
-      forProfileId: id,
-    });
+    const account = await fetchAccount(client, {address: id}).unwrapOr(null);
 
-    const profile = lensProfileToUser(lensProfile);
+    if (!account) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
 
-    return NextResponse.json({ profile, lensProfile }, { status: 200 });
+    const user = lensAcountToUser(account);
+
+    if (!user) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ profile: user, lensProfile: account }, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch post: ", error);
     return NextResponse.json({ error: `Failed to fetch post: ${error.message}` }, { status: 500 });

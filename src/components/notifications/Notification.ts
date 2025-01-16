@@ -1,6 +1,6 @@
 import type { NotificationFragment, ProfileFragment } from "@lens-protocol/client";
 import { type AnyLensItem, type Post, lensItemToPost } from "../post/Post";
-import { type User, lensProfileToUser } from "../user/User";
+import { type User, lensAcountToUser } from "../user/User";
 
 type NotificationType = "Reaction" | "Comment" | "Follow" | "Repost" | "Action" | "Mention" | "Quote";
 
@@ -67,7 +67,7 @@ export function lensNotificationToNative(item: NotificationFragment): Notificati
       break;
   }
 
-  const who = profiles.map(lensProfileToUser);
+  const who = profiles.map(lensAcountToUser);
   const content = actedOn ? lensItemToPost(actedOn) : undefined;
   const id = item.id;
 

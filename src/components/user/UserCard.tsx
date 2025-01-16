@@ -7,7 +7,7 @@ import { LoadingSpinner } from "../LoadingSpinner";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
-import { type User, lensProfileToUser } from "./User";
+import { type User, lensAcountToUser } from "./User";
 import { UserAvatar } from "./UserAvatar";
 
 export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: string }) => {
@@ -17,7 +17,7 @@ export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: st
   const loadCard = () => {
     execute({ forHandle: `lens/${handle}` }).then((res) => {
       if (res.isSuccess()) {
-        setUser(lensProfileToUser(res.unwrap()));
+        setUser(lensAcountToUser(res.unwrap()));
       }
     });
   };

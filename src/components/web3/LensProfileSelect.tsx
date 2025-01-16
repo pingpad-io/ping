@@ -9,7 +9,7 @@ import Link from "~/components/Link";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { lensProfileToUser } from "../user/User";
+import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 
 export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
@@ -79,7 +79,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
                 onClick={() => onSubmit(profile.id)}
               >
                 <div className="w-9 h-9">
-                  <UserAvatar link={false} user={lensProfileToUser(profile)} />
+                  <UserAvatar link={false} user={lensAcountToUser(profile)} />
                 </div>
                 {handle}
               </Button>

@@ -2,7 +2,7 @@
 
 import { useSearchProfiles } from "@lens-protocol/react-web";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { lensProfileToUser } from "./user/User";
+import { lensAcountToUser } from "./user/User";
 
 export function HandleSearch({ query, maxResults = 10 }: { query: string; maxResults?: number }) {
   const { data: profiles, loading, error } = useSearchProfiles({ query });
@@ -10,7 +10,7 @@ export function HandleSearch({ query, maxResults = 10 }: { query: string; maxRes
   if (!query) return null;
   if (error && query) throw new Error(error.message);
 
-  const users = profiles?.slice(0, maxResults).map(lensProfileToUser);
+  const users = profiles?.slice(0, maxResults).map(lensAcountToUser);
   const list = users.map((user) => user.name);
 
   if (loading) return <LoadingSpinner />;
