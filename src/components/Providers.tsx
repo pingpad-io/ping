@@ -1,13 +1,13 @@
 "use client";
 
 import { chains } from "@lens-network/sdk/viem";
-import { type LensConfig, LensProvider, production } from "@lens-protocol/react-web";
+import { LensProvider, production, type LensConfig } from "@lens-protocol/react-web";
 import { bindings } from "@lens-protocol/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { http, WagmiProvider, createConfig, createStorage } from "wagmi";
+import { WagmiProvider, createConfig, createStorage, http } from "wagmi";
 import { polygon } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
