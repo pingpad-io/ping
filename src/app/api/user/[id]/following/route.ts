@@ -1,4 +1,5 @@
-import { LimitType } from "@lens-protocol/client";
+import { PageSize } from "@lens-protocol/client";
+import { fetchFollowing } from "@lens-protocol/client/actions";
 import { NextRequest, NextResponse } from "next/server";
 import { lensAcountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -12,14 +13,14 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const following = await client.profile.following({
+    const following = await fetchFollowing(client, {
       cursor,
-      for: id,
-      limit: LimitType.Fifty,
-    });
+      pageSize: PageSize.Fifty,
+      account: id
+    }).unwrapOr(null);
 
     if (!following) {
-      return NextResponse.json({ error: "Failed to fetch followers" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to fetch following" }, { status: 500 });
     }
 
     const users = following.items.map(lensAcountToUser);
