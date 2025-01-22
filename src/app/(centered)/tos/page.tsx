@@ -3,7 +3,7 @@ const ConditionsPage = () => {
     <>
       <div className="prose dark:prose-invert p-8 lg:prose-lg">
         <h2>Terms of Service</h2>
-        <p>By using Ping, you agree to comply with the following legally binding terms and conditions:</p>
+        <p>By using Pingpad, you agree to comply with the following legally binding terms and conditions:</p>
 
         <h4>1. Compliance with Laws</h4>
         <p>
@@ -21,10 +21,10 @@ const ConditionsPage = () => {
 
         <h4>3. Reporting Policy Violations</h4>
         <p>
-          Users are encouraged to report any violations of our policies to us by emailing{" "}
-          <a href="mailto:contact@kualta.dev">contact@kualta.dev</a>. We take all reports of policy violations
-          seriously, and may take action against users who violate our policies, up to and including the termination of
-          their account.
+          Users are encouraged to report any violations of our policies to us by emailing 
+          <a href="mailto:contact@kualta.dev">contact@kualta.dev</a>. While we take reports seriously and review them
+          carefully, we emphasize that Pingpad operates in a permissionless environment, and we cannot remove or restrict
+          accounts or content on the underlying blockchain. 
         </p>
 
         <h4>4. Disclaimer of Liability</h4>
@@ -36,13 +36,14 @@ const ConditionsPage = () => {
 
         <h4>5. Termination of Accounts</h4>
         <p>
-          The app reserves the right to terminate any user's account at any time, for any reason, including but not
-          limited to violation of our policies or applicable laws.
+          The app reserves the right to terminate access to its platform interface at any time, for any reason, including
+          but not limited to violation of our policies or applicable laws. However, this does not affect the permissionless
+          nature of the underlying environment, and users retain access through other means outside of our platform.
         </p>
 
         <p>
           By using our app, you acknowledge and agree to these terms and conditions. If you do not agree to these terms,
-          please refrain from using Ping.
+          please refrain from using Pingpad.
         </p>
       </div>
     </>
