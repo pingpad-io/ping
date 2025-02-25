@@ -1,5 +1,4 @@
 import type { AnyPost, PostMetadata } from "@lens-protocol/client";
-import type { Comment, Post as LensPost, Quote } from "@lens-protocol/react-web";
 import { type User, lensAcountToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
@@ -36,24 +35,33 @@ export type Post = {
   reply?: Post;
 };
 
-export function lensItemToPost(item: AnyPost): Post | null {
+export function lensItemToPost(item: any): Post | null {
   if (!item) return null;
 
-  if (item.__typename === "Repost") {
+  // Handle different post types in Lens v3
+  if (item.__typename === "Repost" || item.__typename === "Mirror") {
     return null;
+  }
+
+  // Handle TimelineItem type from fetchTimeline
+  if (item.__typename === "TimelineItem") {
+    return lensItemToPost(item.primary);
   }
 
   let post: Post;
   try {
+    const author = item.by || item.author;
+    const timestamp = item.createdAt || item.timestamp;
+    
     post = {
       id: item.id,
-      author: lensAcountToUser(item.author),
+      author: lensAcountToUser(author),
       reactions: getReactions(item),
-      comments: getComments(item),
-      reply: getReply(item),
+      comments: getCommentsFromItem(item),
+      reply: getReplyFromItem(item),
       metadata: item.metadata,
-      createdAt: new Date(item.timestamp),
-      updatedAt: new Date(item.timestamp),
+      createdAt: new Date(timestamp),
+      updatedAt: new Date(timestamp),
       platform: "lens",
       __typename: "Post",
     };
@@ -65,7 +73,7 @@ export function lensItemToPost(item: AnyPost): Post | null {
   return post;
 }
 
-function getReactions(post: AnyPost): Partial<PostReactions> {
+function getReactions(post: any): Partial<PostReactions> {
   return {
     Upvote: 0,
     Downvote: 0,
@@ -87,62 +95,74 @@ function getReactions(post: AnyPost): Partial<PostReactions> {
   };
 }
 
-function getComments(post: AnyLensItem) {
+function getCommentsFromItem(post: any) {
   let comments = [];
-  if (!("__typename" in post)) return comments;
-
-  if (post.__typename === "FeedItem") {
-    comments = post.comments
-      .filter((comment) => comment.commentOn.id === post.root.id) // only render direct comments in feed
-      .map((comment: Comment | Quote | LensPost) => ({
-        id: comment.id as string,
-        author: lensAcountToUser(comment.by),
-        createdAt: new Date(comment.createdAt),
-        updatedAt: new Date(comment.createdAt),
-        comments: [],
-        reactions: getReactions(comment),
-        metadata: comment.metadata,
-        platform: "lens",
-      }));
+  
+  // Handle TimelineItem comments
+  if (post.__typename === "TimelineItem" && post.comments) {
+    return post.comments.map(processComment);
   }
-
-  comments.sort((a, b) => b.reactions.totalReactions - a.reactions.totalReactions);
-  comments.slice(0, 3);
-
+  
+  // Handle FeedItem comments
+  if (post.__typename === "FeedItem" && post.comments) {
+    return post.comments
+      .filter((comment) => comment.commentOn?.id === post.root?.id)
+      .map(processComment);
+  }
+  
   return comments;
 }
 
-function getReply(origin: AnyPost) {
-  const reply = {
-    reply: undefined,
-    reactions: undefined,
-    platform: "lens",
+function processComment(comment: any) {
+  return {
+    id: comment.id,
+    author: comment.by ? lensAcountToUser(comment.by) : null,
+    createdAt: new Date(comment.createdAt),
+    updatedAt: new Date(comment.createdAt),
     comments: [],
-    createdAt: new Date(origin.createdAt),
-    updatedAt: new Date(origin.createdAt),
-  } as Post;
+    reactions: getReactions(comment),
+    metadata: comment.metadata,
+    platform: "lens",
+    __typename: "Post" as const,
+  };
+}
 
-  switch (origin.__typename) {
-    case "Comment":
-      return {
-        id: origin.root.id,
-        author: origin?.commentOn?.by ? lensAcountToUser(origin?.commentOn?.by) : undefined,
-        content: "content" in origin.commentOn.metadata ? origin.commentOn.metadata.content : "",
-        metadata: origin.commentOn.metadata,
-        ...reply,
-      } as Post;
-
-    case "Quote":
-      return {
-        id: origin.quoteOn.id,
-        author: origin?.quoteOn?.by ? lensAcountToUser(origin?.quoteOn?.by) : undefined,
-        content: "content" in origin.quoteOn.metadata ? origin.quoteOn?.metadata?.content : "",
-        metadata: origin.quoteOn.metadata,
-        ...reply,
-      } as Post;
-    case "Post":
-      return;
+function getReplyFromItem(origin: any) {
+  if (!origin) return undefined;
+  
+  // Handle Comment type
+  if (origin.__typename === "Comment" && origin.commentOn) {
+    return {
+      id: origin.commentOn.id,
+      author: origin.commentOn.by ? lensAcountToUser(origin.commentOn.by) : undefined,
+      content: origin.commentOn.metadata?.content || "",
+      metadata: origin.commentOn.metadata,
+      createdAt: new Date(origin.commentOn.createdAt || Date.now()),
+      updatedAt: new Date(origin.commentOn.createdAt || Date.now()),
+      reactions: undefined,
+      platform: "lens",
+      comments: [],
+      __typename: "Post" as const,
+    } as Post;
   }
+  
+  // Handle Quote type
+  if (origin.__typename === "Quote" && origin.quoteOn) {
+    return {
+      id: origin.quoteOn.id,
+      author: origin.quoteOn.by ? lensAcountToUser(origin.quoteOn.by) : undefined,
+      content: origin.quoteOn.metadata?.content || "",
+      metadata: origin.quoteOn.metadata,
+      createdAt: new Date(origin.quoteOn.createdAt || Date.now()),
+      updatedAt: new Date(origin.quoteOn.createdAt || Date.now()),
+      reactions: undefined,
+      platform: "lens",
+      comments: [],
+      __typename: "Post" as const,
+    } as Post;
+  }
+  
+  return undefined;
 }
 
 export type { User };

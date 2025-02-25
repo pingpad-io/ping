@@ -1,11 +1,15 @@
 import { FollowButton } from "~/components/FollowButton";
 import Markdown from "~/components/Markdown";
+import { fetchAccount } from "@lens-protocol/client/actions";
 import { lensAcountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const test = async () => {
   const { user, client } = await getServerAuth();
-  const anotherUser = await client.profile.fetch({ forHandle: "@lens/deana" }).then((res) => lensAcountToUser(res));
+  
+  // Fetch account by username
+  const result = await fetchAccount(client, { username: "lens/deana" });
+  const anotherUser = result.isOk() ? lensAcountToUser(result.value) : null;
 
   return (
     <>
@@ -15,7 +19,7 @@ const test = async () => {
 
       <Markdown content="@kualta @lens/kualta boop *bold* _italic_ `code`" />
 
-      <FollowButton user={anotherUser} />
+      {anotherUser && <FollowButton user={anotherUser} />}
     </>
   );
 };

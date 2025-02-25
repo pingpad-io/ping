@@ -1,4 +1,4 @@
-import { LimitType } from "@lens-protocol/client";
+import { fetchTimelineHighlights } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
@@ -19,16 +19,16 @@ const best = async () => {
 const getInitialFeed = async () => {
   const { client, isAuthenticated, profileId } = await getServerAuth();
   if (isAuthenticated) {
-    const data = await client.feed.highlights({
-      where: { for: profileId },
-      limit: LimitType.Ten,
+    const result = await fetchTimelineHighlights(client, {
+      account: profileId,
+      pageSize: 10,
     });
 
-    if (!data || !data.isSuccess()) {
+    if (result.isErr()) {
       throw new Error("Failed to fetch feed");
     }
 
-    const items = data.unwrap();
+    const items = result.value;
     const posts = items.items.map(lensItemToPost);
 
     return { posts, nextCursor: items.pageInfo.next };

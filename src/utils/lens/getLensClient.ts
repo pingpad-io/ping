@@ -1,4 +1,4 @@
-import { PublicClient, testnet } from "@lens-protocol/client";
+import { AnyClient, PublicClient, testnet } from "@lens-protocol/client";
 import { clientCookieStorage, cookieStorage } from "./storage";
 
 const isServer = typeof window === "undefined";
@@ -73,7 +73,7 @@ export const getAccountOwnerClient = async (
   return authenticated.value;
 };
 
-export const getLensClient = async () => {
+export const getLensClient = async (): Promise<AnyClient> => {
   const resumed = await publicClient.resumeSession();
   if (resumed.isErr()) {
     console.error(resumed.error);

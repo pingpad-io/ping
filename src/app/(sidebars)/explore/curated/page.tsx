@@ -1,4 +1,4 @@
-import { ExplorePublicationType, ExplorePublicationsOrderByType, LimitType } from "@lens-protocol/client";
+import { fetchPosts } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
@@ -19,14 +19,19 @@ const exploreCurated = async () => {
 const getInitialFeed = async () => {
   const { client, isAuthenticated } = await getServerAuth();
   if (isAuthenticated) {
-    const response = await client.explore.publications({
-      where: { publicationTypes: [ExplorePublicationType.Post] },
-      orderBy: ExplorePublicationsOrderByType.LensCurated,
-      limit: LimitType.Ten,
-    });
-
-    const posts = response.items.map(lensItemToPost);
-    return { posts, nextCursor: response.pageInfo.next };
+    try {
+      // Note: In the new API, we don't have a direct equivalent for LensCurated
+      // Using the API endpoint instead which has the appropriate filtering
+      const response = await fetch("/api/posts/explore?type=curated");
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
+      }
+      
+      const result = await response.json();
+      return { posts: result.data, nextCursor: result.nextCursor };
+    } catch (error) {
+      throw new Error("Failed to fetch posts: " + error.message);
+    }
   }
   throw new Error("Unauthorized TT");
 };

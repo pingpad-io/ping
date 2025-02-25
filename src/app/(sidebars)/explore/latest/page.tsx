@@ -1,4 +1,4 @@
-import { ExplorePublicationType, ExplorePublicationsOrderByType, LimitType } from "@lens-protocol/client";
+import { fetchPosts } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
@@ -19,14 +19,24 @@ const exploreLatest = async () => {
 const getInitialFeed = async () => {
   const { client, isAuthenticated } = await getServerAuth();
   if (isAuthenticated) {
-    const response = await client.explore.publications({
-      where: { publicationTypes: [ExplorePublicationType.Post] },
-      orderBy: ExplorePublicationsOrderByType.Latest,
-      limit: LimitType.Ten,
-    });
+    try {
+      const result = await fetchPosts(client, {
+        filter: {
+          postTypes: ["POST"],
+        },
+        pageSize: 10,
+      });
 
-    const posts = response.items.map(lensItemToPost);
-    return { posts, nextCursor: response.pageInfo.next };
+      if (result.isErr()) {
+        throw new Error("Failed to fetch posts");
+      }
+
+      const response = result.value;
+      const posts = response.items.map(lensItemToPost);
+      return { posts, nextCursor: response.pageInfo.next };
+    } catch (error) {
+      throw new Error("Failed to fetch posts: " + error.message);
+    }
   }
   throw new Error("Unauthorized TT");
 };

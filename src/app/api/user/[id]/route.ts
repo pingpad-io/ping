@@ -14,7 +14,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const account = await fetchAccount(client, {address: id}).unwrapOr(null);
+    const result = await fetchAccount(client, {address: id});
+
+    if (result.isErr()) {
+      return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+    }
+
+    const account = result.value;
 
     if (!account) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
@@ -28,7 +34,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     return NextResponse.json({ profile: user, lensProfile: account }, { status: 200 });
   } catch (error) {
-    console.error("Failed to fetch post: ", error);
-    return NextResponse.json({ error: `Failed to fetch post: ${error.message}` }, { status: 500 });
+    console.error("Failed to fetch profile: ", error);
+    return NextResponse.json({ error: `Failed to fetch profile: ${error.message}` }, { status: 500 });
   }
 }

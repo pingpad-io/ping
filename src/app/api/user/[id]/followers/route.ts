@@ -1,4 +1,3 @@
-import { PageSize } from "@lens-protocol/client";
 import { fetchFollowers } from "@lens-protocol/client/actions";
 import { NextRequest, NextResponse } from "next/server";
 import { lensAcountToUser } from "~/components/user/User";
@@ -13,21 +12,22 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const followers = await fetchFollowers(client, {
+    const result = await fetchFollowers(client, {
       cursor,
-      pageSize: PageSize.Fifty,
+      pageSize: 50,
       account: id,
-    }).unwrapOr(null);
+    });
 
-    if (!followers) {
+    if (result.isErr()) {
       return NextResponse.json({ error: "Failed to fetch followers" }, { status: 500 });
     }
 
-    const users = followers.items.map(lensAcountToUser);
+    const followers = result.value;
+    const users = followers.items.map(item => lensAcountToUser(item.follower));
 
     return NextResponse.json({ data: users, nextCursor: followers.pageInfo.next }, { status: 200 });
   } catch (error) {
-    console.error("Failed to follow profile: ", error.message);
+    console.error("Failed to fetch followers: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });
   }
 }

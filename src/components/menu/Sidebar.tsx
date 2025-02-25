@@ -1,5 +1,6 @@
 import { BellIcon, BookmarkIcon, MailIcon } from "lucide-react";
 import Link from "~/components/Link";
+import { fetchAccount } from "@lens-protocol/client/actions";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
@@ -10,9 +11,11 @@ import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
 
 const UserBar = async () => {
-  const { handle, profileId, client } = await getServerAuth();
-  const user = await client.profile.fetch({ forProfileId: profileId }).then((res) => lensAcountToUser(res));
-  const handleOrProfileId = handle ?? profileId;
+  const { client, profileId } = await getServerAuth();
+  
+  const result = await fetchAccount(client, { address: profileId });
+  const user = result.isOk() ? lensAcountToUser(result.value) : null;
+  const handleOrProfileId = user?.handle ?? profileId;
 
   return (
     <div className="flex flex-row gap-2 items-center justify-between">

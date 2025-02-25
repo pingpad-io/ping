@@ -1,4 +1,4 @@
-import { SessionClient } from "@lens-protocol/client";
+import { AnyClient, SessionClient } from "@lens-protocol/client";
 import { fetchMeDetails } from "@lens-protocol/client/actions";
 import jwt from "jsonwebtoken";
 import { type User, lensAcountToUser } from "~/components/user/User";
@@ -9,7 +9,8 @@ interface ServerAuthResult {
   profileId: string | null;
   address: string | null;
   handle: string | null;
-  client: SessionClient;
+  client: AnyClient;
+  sessionClient: SessionClient | null;
   user: User | null;
 }
 
@@ -29,6 +30,7 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
   // const { refreshToken, isValid } = getCookieAuth();
 
   const client = await getLensClient();
+  let sessionClient: SessionClient | null = null;
 
   if (!client.isSessionClient()) {
     return {
@@ -37,10 +39,13 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
       address: null,
       handle: null,
       user: null,
-      client: null,
+      client,
+      sessionClient: null,
     };
   }
-  const credentials = await client.getCredentials();
+  
+  sessionClient = client as SessionClient;
+  const credentials = await sessionClient.getCredentials();
 
   if (!credentials || credentials.isErr()) {
     throw new Error("Unable to get credentials");
@@ -53,9 +58,9 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
   }
 
   const address = decodedIdToken.sub;
-  const account = await fetchMeDetails(client).unwrapOr(null);
-
-  if (!account) {
+  const authenticatedUser = await sessionClient.getAuthenticatedUser();
+  
+  if (authenticatedUser.isErr() || !authenticatedUser.value) {
     console.error("Profile not found, returning empty profile");
     return {
       isAuthenticated: false,
@@ -64,17 +69,34 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
       handle: null,
       user: null,
       client,
+      sessionClient: null,
     };
   }
 
-  const handle = account.loggedInAs.account.username?.localName;
-  const user = lensAcountToUser(account);
+  const account = await fetchMeDetails(sessionClient);
+
+  if (account.isErr()) {
+    console.error("Profile not found, returning empty profile");
+    return {
+      isAuthenticated: false,
+      profileId: null,
+      address: null,
+      handle: null,
+      user: null,
+      client,
+      sessionClient: null,
+    };
+  }
+
+  const handle = account.value.loggedInAs.account.username?.localName;
+  const user = lensAcountToUser(account.value.loggedInAs.account);
 
   return {
     isAuthenticated: !!address,
     profileId: address,
     address,
     client,
+    sessionClient,
     handle,
     user,
   };

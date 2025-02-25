@@ -1,4 +1,4 @@
-import { ExplorePublicationType, ExplorePublicationsOrderByType, LimitType } from "@lens-protocol/client";
+import { fetchPosts } from "@lens-protocol/client/actions";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -11,48 +11,54 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get("type") ?? "latest";
   const limitParam = searchParams.get("limit") ?? "25";
 
-  let orderBy: ExplorePublicationsOrderByType;
+  let orderBy;
   switch (type) {
     case "latest":
-      orderBy = ExplorePublicationsOrderByType.Latest;
+      orderBy = "CREATED_AT";
       break;
     case "curated":
-      orderBy = ExplorePublicationsOrderByType.LensCurated;
+      orderBy = "CURATED";
       break;
     case "collected":
-      orderBy = ExplorePublicationsOrderByType.TopCollectedOpenAction;
+      orderBy = "COLLECTED";
       break;
     default:
-      orderBy = ExplorePublicationsOrderByType.Latest;
+      orderBy = "CREATED_AT";
       break;
   }
 
   let limit;
   switch (limitParam) {
     case "10":
-      limit = LimitType.Ten;
+      limit = 10;
       break;
     case "25":
-      limit = LimitType.TwentyFive;
+      limit = 25;
       break;
     case "50":
-      limit = LimitType.Fifty;
+      limit = 50;
       break;
     default:
-      limit = LimitType.TwentyFive;
+      limit = 25;
       break;
   }
 
   try {
     const { client } = await getServerAuth();
 
-    const data = await client.explore.publications({
-      where: { publicationTypes: [ExplorePublicationType.Post] },
-      orderBy,
+    const result = await fetchPosts(client, {
+      filter: {
+        postTypes: ["POST"],
+      },
       cursor,
-      limit,
+      pageSize: limit,
     });
 
+    if (result.isErr()) {
+      return new Response(JSON.stringify({ error: "Failed to fetch posts" }), { status: 500 });
+    }
+
+    const data = result.value;
     const posts = data.items.map(lensItemToPost);
 
     return new Response(JSON.stringify({ data: posts, nextCursor: data.pageInfo.next }), { status: 200 });

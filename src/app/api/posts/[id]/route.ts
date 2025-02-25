@@ -1,3 +1,4 @@
+import { fetchPost } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -10,10 +11,15 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const lensPost = await client.publication.fetch({
-      forId: id,
+    const result = await fetchPost(client, {
+      post: id,
     });
 
+    if (result.isErr()) {
+      return NextResponse.json({ error: "Failed to fetch post" }, { status: 500 });
+    }
+
+    const lensPost = result.value;
     const nativePost = lensItemToPost(lensPost);
 
     return NextResponse.json({ lensPost, nativePost }, { status: 200 });

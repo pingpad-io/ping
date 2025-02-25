@@ -57,9 +57,9 @@ export function lensAcountToUser(account: Account): User {
   const interests = [];
 
   const actions = {
-    followed: account.operations.isFollowedByMe,
-    following: account.operations.isFollowingMe,
-    blocked: account.operations.isBlockedByMe,
+    followed: account?.operations?.isFollowedByMe,
+    following: account?.operations?.isFollowingMe,
+    blocked: account?.operations?.isBlockedByMe,
   };
 
   return {
@@ -71,8 +71,8 @@ export function lensAcountToUser(account: Account): User {
     interests,
     actions,
     name: account?.metadata.name,
-    handle: account.username.localName,
-    namespace: account.username.namespace.address,
+    handle: account.username?.localName || '',
+    namespace: account.username?.namespace?.address || '',
     stats,
   };
 }

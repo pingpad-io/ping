@@ -11,7 +11,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   try {
-    const { client } = await getServerAuth();
+    const { client, sessionClient } = await getServerAuth();
+
+    if (!sessionClient) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
 
     const accountFetch = await fetchAccount(client, { address: id });
     if (accountFetch.isErr()) {
@@ -23,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const isFollowing = accountFetch.value.operations.isFollowedByMe;
 
     if (isFollowing) {
-      const result = await unfollow(client, {
+      const result = await unfollow(sessionClient, {
         account: id,
       });
 
@@ -34,7 +38,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ result: result.value }, { status: 200 });
     }
 
-    const result = await follow(client, {
+    const result = await follow(sessionClient, {
       account: id,
     });
 
