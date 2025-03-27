@@ -1,3 +1,4 @@
+import { PageSize, PostType } from "@lens-protocol/client";
 import { fetchPosts } from "@lens-protocol/client/actions";
 import type { NextRequest } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
@@ -27,34 +28,33 @@ export async function GET(req: NextRequest) {
       break;
   }
 
-  let limit;
+  let pageSize;
   switch (limitParam) {
     case "10":
-      limit = 10;
-      break;
-    case "25":
-      limit = 25;
+      pageSize = PageSize.Ten;
       break;
     case "50":
-      limit = 50;
+      pageSize = PageSize.Fifty;
       break;
     default:
-      limit = 25;
+      pageSize = PageSize.Ten;
       break;
   }
 
   try {
     const { client } = await getServerAuth();
 
+
     const result = await fetchPosts(client, {
       filter: {
-        postTypes: ["POST"],
+        postTypes: [PostType.Root],
       },
       cursor,
-      pageSize: limit,
+      pageSize,
     });
 
     if (result.isErr()) {
+      console.error(result.error);
       return new Response(JSON.stringify({ error: "Failed to fetch posts" }), { status: 500 });
     }
 
@@ -63,6 +63,7 @@ export async function GET(req: NextRequest) {
 
     return new Response(JSON.stringify({ data: posts, nextCursor: data.pageInfo.next }), { status: 200 });
   } catch (error) {
+    console.error(error);
     return new Response(JSON.stringify({ error: `Failed to fetch posts: ${error.message}` }), { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-import { StorageClient } from "@lens-chain/storage-client/import";
+import { StorageClient } from "@lens-chain/storage-client";
 import type { IStorageProvider } from "@lens-protocol/client";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
