@@ -1,5 +1,5 @@
+import { StorageClient } from "@lens-chain/storage-client/import";
 import type { IStorageProvider } from "@lens-protocol/client";
-import { StorageClient, testnet } from "@lens-protocol/storage-node-client";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 export const cookieStorage: IStorageProvider = {
@@ -33,4 +33,4 @@ export const clientCookieStorage: IStorageProvider = {
   },
 };
 
-export const storageClient = StorageClient.create(testnet);
+export const storageClient = StorageClient.create();
