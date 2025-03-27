@@ -1,3 +1,4 @@
+import { PostType } from "@lens-protocol/client";
 import { fetchTimeline, fetchPosts } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
@@ -25,17 +26,18 @@ const getInitialFeed = async () => {
   try {
     let data;
     
-    // if (client.isSessionClient()) {
-      // const response = await fetch(`/api/posts/feed`);
-      // if (!response.ok) {
-      //   throw new Error("Failed to fetch feed");
-      // }
-      // const result = await response.json();
-      // data = result.data;
-    // } else {
+    if (client.isSessionClient()) {
+      const response = await fetch(`/api/posts/feed`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch feed");
+      }
+      const result = await response.json();
+      data = result.data;
+    } else {
       const result = await fetchPosts(client, {
         filter: {
-          postTypes: ["POST"],
+          postTypes: [PostType.Root],
+          feeds: [{ globalFeed: true }],
         },
       });
       
@@ -44,7 +46,7 @@ const getInitialFeed = async () => {
       }
       
       data = result.value;
-    // }
+    }
     
     const posts = data.items.map(lensItemToPost);
     return { posts, nextCursor: data.pageInfo.next };
