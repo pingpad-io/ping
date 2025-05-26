@@ -35,7 +35,8 @@ const getInitialFeed = async () => {
       const result = await fetchNotifications(client, {
         cursor: undefined,
         filter: {
-          timeBasedAggregation: true
+          timeBasedAggregation: true,
+          includeLowScore: false,
         }
       });
       
