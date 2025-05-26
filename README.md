@@ -2,26 +2,20 @@
 
 **what?**
 
-[pingpad](https://pingpad.io) is a minimalistic decentralized social platform, made for you and your community.
-
-**why?**
-
-clarity paves the way for brilliance. pingpad is focusing on clear and efficient solutions.
+clarity paves the way for brilliance. [pingpad](https://pingpad.io) is a minimalistic decentralized social platform, focusing on clear and efficient solutions.
 
 **how?**
 
-built on top of [lens network](https://lens.xyz), media is shared using [ipfs](https://ipfs.io) and backed up on [arweave](https://arweave.org)
+built on top of [lens](https://lens.xyz), media is stored on [grove](https://grove.xyz) and [arweave](https://arweave.org)
 
-## Gallery
+<!-- ## Gallery
 <img height="auto" width="700" style="border-radius:20px" src="https://github.com/pingpad-io/ping/assets/72769566/29e2ae6a-f89e-45cc-b17a-4d5c6a4dd841" />
 
-<img height="auto" width="700" style="border-radius:20px" src="https://github.com/pingpad-io/ping/assets/72769566/4d6ec827-3e13-4119-aa60-63e0fbaf01cd" />
+<img height="auto" width="700" style="border-radius:20px" src="https://github.com/pingpad-io/ping/assets/72769566/4d6ec827-3e13-4119-aa60-63e0fbaf01cd" /> -->
 
 
 ## Contributing
-Thank you for considering contributing to Pingpad!
-
-First, you need to fork and the repository:
+First, clone the repository:
 ```sh
 git clone https://github.com/pingpad-io/ping.git && cd ping
 ```
@@ -36,6 +30,8 @@ Copy the provided `.env.example` file to `.env`.
 ```sh
 cp .env.example .env
 ```
+
+Replace the variables with your own values.
 
 #### 2. Install dependencies
 
