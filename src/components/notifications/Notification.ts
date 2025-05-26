@@ -1,4 +1,4 @@
-import type { Account, Notification as LensNotification, TippingAccountActionExecuted, UnknownAccountActionExecuted } from "@lens-protocol/client";
+import type { Account, Notification as LensNotification } from "@lens-protocol/client";
 import { type Post, lensItemToPost } from "../post/Post";
 import { type User, lensAcountToUser } from "../user/User";
 
@@ -57,8 +57,8 @@ export function lensNotificationToNative(item: LensNotification): Notification {
       break;
     case "RepostNotification":
       id = item.id;
-      profiles = item.reposts?.map((repost) => repost.account) || 
-                [item.reposts[0]?.account || item.reposts[0]?.account];
+      profiles = item.reposts?.map((repost) => repost.account) ||
+        [item.reposts[0]?.account || item.reposts[0]?.account];
       actedOn = item.post || item.post;
       createdAt = (item.post || item.post)?.timestamp || new Date().toISOString();
       type = "Repost";
@@ -70,32 +70,7 @@ export function lensNotificationToNative(item: LensNotification): Notification {
       createdAt = item.quote?.timestamp || new Date().toISOString();
       type = "Quote";
       break;
-    case "PostActionExecutedNotification":
-      id = item.id;
-      profiles = [item.post?.author];
-      actedOn = item.post || item.post;
-      createdAt = item.post?.timestamp || new Date().toISOString();
-      type = "Action";
-      break;
-    case "AccountActionExecutedNotification":
-      id = item.id;
-      switch (item.actions[0].__typename) {
-        case "TippingAccountActionExecuted":
-          profiles = item.actions?.map((action: TippingAccountActionExecuted) => action.executedBy) || [];
-          actedOn = "Tipping"
-          createdAt = (item.actions[0].executedAt) || new Date().toISOString();
-          type = "Action";
-          break;
-        case "UnknownAccountActionExecuted":
-          profiles = item.actions?.map((action: UnknownAccountActionExecuted) => action.executedBy) || [];
-          actedOn = "Unknown";
-          createdAt = (item.actions[0].executedAt) || new Date().toISOString();
-          type = "Action";
-          break;
-      }
-      break;
     default:
-      // Handle unknown notification types
       profiles = [];
       actedOn = undefined;
       createdAt = new Date().toISOString();
