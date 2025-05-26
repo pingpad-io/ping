@@ -29,23 +29,15 @@ const getInitialData = async (handle: string) => {
   const { client } = await getServerAuth();
   const user = await getUserByUsername(handle);
 
-  // const lensPosts = await client.publication
-  //   .fetchAll({
-  //     where: { from: [user.id] },
-  //     limit: LimitType.Ten,
-  //   })
-  //   .catch(() => {
-  //     throw new Error(`☆⌒(>。<) Couldn't get user posts`);
-  //   });
-
   const lensPosts = await fetchPosts(client, {
     filter: {
+      authors: [user.address],
       postTypes: [PostType.Root],
       feeds: [{ globalFeed: true }],
     },
   }).unwrapOr(null);
 
-  if (!lensPosts) {
+  if (!lensPosts || !lensPosts.items || lensPosts.items.length === 0) {
     return {
       user,
       posts: [],

@@ -36,19 +36,13 @@ const getInitialData = async (handle: string) => {
 
   const lensPosts = await fetchPosts(client, {
     filter: {
+      authors: [user.address],
       postTypes: [PostType.Comment],
       feeds: [{ globalFeed: true }],
     },
   }).unwrapOr(null);
-  // const lensPosts = await client.publication
-  //   .fetchAll({
-  //     where: { from: [user.id], publicationTypes: [PublicationType.Comment] },
-  //     limit: LimitType.Ten,
-  //   })
-  //   .catch(() => {
-  //     throw new Error(`☆⌒(>。<) Couldn't get user posts`);
-  //   });
-  if (!lensPosts) {
+
+  if (!lensPosts || !lensPosts.items || lensPosts.items.length === 0) {
     return {
       user,
       posts: [],

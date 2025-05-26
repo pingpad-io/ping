@@ -64,7 +64,7 @@ export const Feed = ({ ItemView, initialData, initialCursor, endpoint }) => {
   if (error) throw new Error(error);
   if (!data) return <FeedSuspense />;
 
-  const list = data.map((item) => <ItemView key={item.id} item={item} />);
+  const list = data.filter(Boolean).map((item) => <ItemView key={item.id} item={item} />);
 
   return (
     <>
