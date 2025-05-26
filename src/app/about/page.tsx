@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 const AboutPage = () => {
   return (
     <>
-      <div className="flex flex-col items-center p-2 sm:p-4 md:p-20 gap-8">
+      <div className="flex flex-col max-w-2xl mx-auto items-center p-2 sm:p-4 md:p-20 gap-8">
         <h1 className="font-bold text-4xl">About Pingpad</h1>
         <h2 className="text-2xl">a focus-first decentralized social</h2>
         <div className="flex flex-col text-center  gap-8 p-2 md:p-8">
@@ -52,19 +52,12 @@ const AboutPage = () => {
                 <AccordionItem value="item-1">
                   <AccordionTrigger>Current status?</AccordionTrigger>
                   <AccordionContent>
-                    In development. Ping (centralized version) has retired, and Pingpad is currently being built. <br />{" "}
+                    In development. Pingpad is live on Lens v3! <br />
                     <br />
                     <a className="underline" href="https://github.com/pingpad-io/ping">
                       Contributions
                     </a>{" "}
                     are welcome.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>When open for all?</AccordionTrigger>
-                  <AccordionContent>
-                    Pingpad in currently in closed Beta, gathering feedback and improving the experience. <br />
-                    <br /> Subscribe to the newsletter above to get in early.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-3">

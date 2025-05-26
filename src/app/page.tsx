@@ -10,12 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
 const LandingPage = () => {
   return (
-    <div className={"flex flex-col mx-auto max-w-5xl min-w-0"}>
-      <div className="w-full">
+    <div className={"flex flex-col min-h-screen mx-auto max-w-5xl min-w-0"}>
+      <div className="w-full h-full">
         <div className="p-4 rounded-t-none flex place-content-between">
           <Link className="flex flex-row gap-4 items-center " href="/">
             <AtSign className="dark:drop-shadow-glow-sm drop-shadow-md" size={35} />
-            <div className="text-3xl font-bold dark:drop-shadow-glow drop-shadow-md  -mt-1.5 -ml-2">pingpad</div>
+            <div className="text-3xl font-semibold dark:drop-shadow-glow drop-shadow-md  -mt-1.5 -ml-2">pingpad</div>
           </Link>
 
           <div className="flex gap-4 items-center ">
@@ -23,7 +23,7 @@ const LandingPage = () => {
             <div className="dark:drop-shadow-glow drop-shadow-md ">
               <Link href="/home">
                 <Button variant="default" size="sm_icon">
-                  <div className="hidden sm:flex mr-2">Join Beta</div>
+                  <div className="hidden sm:flex mr-2">Join</div>
                   <LogInIcon />
                 </Button>
               </Link>
@@ -49,32 +49,34 @@ const LandingPage = () => {
               </h1>
             </FadeIn>
           </div>
-          
+
           <FadeIn className="duration-1000 delay-1000">
             <div className="col-span-1 flex flex-row gap-2 items-center justify-center">
               <h1>built on</h1>
-              <Link className="hover:underline -mt-24 -mb-24  flex items-center gap-2" href={"https://lens.xyz"}>
+              <Link className="hover:underline -mt-24 -mb-24  flex items-center gap-2 relative" href={"https://lens.xyz"}>
                 <div className="dark:hidden">
                   <LensTextDark />
                 </div>
                 <div className="dark:flex hidden">
                   <LensTextLight />
                 </div>
+                <div className="absolute bottom-10 right-5 text-xs font-bold transform  border border-primary/80 text-primary px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                  Now on v3!
+                </div>
               </Link>
             </div>
           </FadeIn>
         </div>
 
-        <FadeIn className="">
-          <div className="w-full p-8 mt-16 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
-            <div className=" text-xl flex flex-col gap-4">
-              Join v1.0 waitlist
-              <EmailSubscription />
-            </div>
-          </div>
-        </FadeIn>
+        {/* <FadeIn className="">
+          <div className="w-full p-8 mt-24 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
+            <div className="text-xl font-bold flex flex-col gap-4">
+              {/* Now on Lens v3! moved to Lens logo */}
+              {/* <EmailSubscription /> */}
+            {/* </div>
+          </div> */}
 
-        <FadeIn className="">
+        {/* <FadeIn className="">
           <Card className="hover:bg-card flex flex-col gap-4 place-items-center mx-auto w-full p-4 my-32">
             <CardHeader>
               <CardTitle> FAQ </CardTitle>
@@ -103,7 +105,7 @@ const LandingPage = () => {
               </div>
             </CardContent>
           </Card>
-        </FadeIn>
+        </FadeIn> */}
 
         <FadeIn className="">
           <div className="flex flex-col md:flex-row gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">

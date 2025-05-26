@@ -7,7 +7,7 @@ import { getBaseUrl } from "~/utils/getBaseUrl";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const authenticatedEndpoint = "/api/posts/feed";
-const unauthenticatedEndpoint = "/api/posts/explore?type=curated";
+const unauthenticatedEndpoint = "/api/posts/";
 
 const home = async () => {
   const { posts, nextCursor } = await getInitialFeed();

@@ -1,7 +1,9 @@
-import type {
-  Result,
+import {
+  PageSize,
+  PostType,
+  type Result,
 } from "@lens-protocol/client";
-import { fetchTimeline, post, fetchPosts, deletePost } from "@lens-protocol/client/actions";
+import { fetchTimeline, post, fetchPosts, deletePost, fetchPostsToExplore } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -13,103 +15,33 @@ const MAX_DATA_SIZE = 1024 * 1024 * 2; // 2MB
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  try {
-    const params = extractQueryParams(req);
-    const { client, isAuthenticated, profileId } = await getServerAuth();
-    const publicationType = getPublicationType(params.type);
-
-    const data = await fetchData(client, isAuthenticated, profileId, params, publicationType);
-    
-    // Process the data based on its type
-    let posts = [];
-    let nextCursor = null;
-    
-    if (data && typeof data.unwrapOr === 'function') {
-      const unwrapped = data.unwrapOr({ items: [], pageInfo: { next: null } });
-      
-      // Handle different response structures
-      if (unwrapped.items) {
-        posts = unwrapped.items.map(item => {
-          // For TimelineItem, we need to extract the primary post
-          if (item.__typename === "TimelineItem") {
-            return lensItemToPost(item.primary);
-          }
-          return lensItemToPost(item);
-        }).filter(Boolean);
-        
-        nextCursor = unwrapped.pageInfo?.next;
-      }
-    }
-
-    return NextResponse.json({ data: posts, nextCursor }, { status: 200 });
-  } catch (error) {
-    console.error("Failed to fetch posts: ", error);
-    return NextResponse.json({ error: `Failed to fetch posts: ${error.message}` }, { status: 500 });
-  }
-}
-
-function extractQueryParams(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  return {
-    idFrom: searchParams.get("id") || undefined,
-    cursor: searchParams.get("cursor") || undefined,
-    community: searchParams.get("community") || undefined,
-    type: searchParams.get("type") || "any",
-  };
-}
+  const cursor = searchParams.get("cursor") || undefined;
+  const type = searchParams.get("type") || "post";
 
-function getPublicationType(type: string) {
-  const typeMap = {
-    post: "POST",
-    comment: "COMMENT",
-    quote: "QUOTE",
-    repost: "MIRROR",
-    any: ["POST", "COMMENT", "QUOTE", "MIRROR"],
-  };
+  try {
+    const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
 
-  return typeMap[type] || "POST";
-}
-
-async function fetchData(
-  client,
-  isAuthenticated,
-  profileId,
-  params,
-  publicationType,
-) {
-  if (isAuthenticated && !params.idFrom && !params.community) {
-    // Use the client directly for timeline if the fetchTimeline action has issues
-    if (client.isSessionClient()) {
-      try {
-        // Try to use the client's direct API if available
-        const result = await client.timeline({
-          cursor: params.cursor,
-        });
-        return result;
-      } catch (error) {
-        console.error("Error fetching timeline with client:", error);
-      }
-    }
-    
-    // Fallback to fetching posts
-    return await fetchPosts(client, {
+    const data = await fetchPosts(client, {
       filter: {
-        postTypes: ["POST", "COMMENT", "QUOTE", "MIRROR"],
+        postTypes: [PostType.Root],
+        feeds: [{ globalFeed: true }],
       },
-      cursor: params.cursor,
-      pageSize: 10,
+      cursor,
+      pageSize: PageSize.Ten,
     });
-  }
 
-  return await fetchPosts(client, {
-    filter: {
-      authors: params.idFrom ? [params.idFrom] : undefined,
-      metadata: params.community ? { tags: { oneOf: [params.community] } } : undefined,
-      postTypes: Array.isArray(publicationType) ? publicationType : [publicationType],
-    },
-    cursor: params.cursor,
-    pageSize: 10,
-  });
+    if (data.isErr()) {
+      return NextResponse.json({ error: data.error.message }, { status: 500 });
+    }
+
+    const posts = data.value.items.map((item) => { return lensItemToPost(item); });
+
+    return NextResponse.json({ data: posts, nextCursor: data.value.pageInfo.next }, { status: 200 });
+  } catch (error) {
+    console.error("Failed to fetch feed: ", error);
+    return NextResponse.json({ error: `Failed to fetch feed: ${error.message}` }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: NextRequest) {
@@ -174,7 +106,7 @@ export async function POST(req: NextRequest) {
       if (!unwrapped) {
         throw new Error("Failed to create post");
       }
-      
+
       if (unwrapped.__typename === "LensProfileManagerRelayError") {
         throw new Error(unwrapped.reason);
       }
@@ -214,11 +146,11 @@ async function uploadMetadata(data: any, handle: string) {
   try {
     // Use storageClient.uploadAsJson instead of S3
     const result = await storageClient.uploadAsJson(data);
-    
+
     if (!result || !result.uri) {
       throw new Error("Failed to upload metadata");
     }
-    
+
     console.log(`Uploaded metadata for ${handle} to ${result.uri}`);
     return result.uri;
   } catch (error) {
@@ -229,9 +161,9 @@ async function uploadMetadata(data: any, handle: string) {
 
 async function createPost(client, contentUri, replyingTo) {
   if (replyingTo) {
-    return await post(client, { 
-      contentUri, 
-      commentOn: replyingTo 
+    return await post(client, {
+      contentUri,
+      commentOn: replyingTo
     });
   }
   return await post(client, { contentUri });
