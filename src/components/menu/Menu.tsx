@@ -5,17 +5,21 @@ import {
   GavelIcon,
   GlobeIcon,
   MailIcon,
+  PlusIcon,
   SettingsIcon,
   UserIcon,
   UsersIcon,
 } from "lucide-react";
 import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
+import { fetchAccount } from "@lens-protocol/client/actions";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
 import type { User } from "../user/User";
+import { lensAcountToUser } from "../user/User";
+import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
 import { SearchButton } from "./Search";
 
@@ -25,93 +29,58 @@ export default async function Menu() {
 
   if (!profileId) {
     return (
-      <span className="flex shrink text-xl p-4 w-full sm:w-max">
-        <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 sm:left-4 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-0 z-50">
+        <div className="flex flex-row sm:flex-col items-center gap-2 md:gap-6 bg-background/80 backdrop-blur-md rounded-2xl p-2 shadow-lg">
           <Link href="/home">
-            <Button variant="ghost" size="sm_icon">
-              <span className="hidden sm:flex -mt-1">pingpad</span>
-              <AtSign className="sm:ml-2" size={20} />
+            <Button variant="ghost" size="icon" className="w-10 h-10">
+              <AtSign size={20} strokeWidth={2.5} />
             </Button>
           </Link>
-          <ConnectWalletButton />
-        </span>
-      </span>
+          <div className="w-10">
+            <ConnectWalletButton />
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <span className="flex shrink text-xl p-2 sm:p-4 w-full sm:w-max">
-      <span className="flex flex-row sm:flex-col items-end gap-2 place-content-between sm:place-content-start w-full">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 sm:left-4 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-0 z-50">
+      <div className="flex flex-row sm:flex-col items-center gap-4 md:gap-6 bg-background/80 backdrop-blur-md rounded-2xl p-2 shadow-lg">
         <Link href="/home">
-          <Button variant="ghost" size="sm_icon">
-            <span className="hidden sm:flex -mt-1">pingpad</span>
-            <AtSign className="sm:ml-2" size={20} />
+          <Button variant="ghost" size="icon" className="w-10 h-10">
+            <AtSign size={20} strokeWidth={2.5} />
           </Button>
         </Link>
-        <SearchButton />
 
         <ServerSignedIn>
           <MenuAuthed handle={handleOrProfileId} user={user} />
         </ServerSignedIn>
-      </span>
-    </span>
+      </div>
+    </div>
   );
 }
 
 export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => {
   return (
     <>
-      {/* <Link href={"/communities"}  className="hidden sm:flex"> */}
-      {/* <Button variant="ghost" size="sm_icon" disabled>
-        <div className="hidden sm:flex -mt-1">communities</div>
-        <UsersIcon className="sm:ml-2" size={21} />
-      </Button> */}
-      {/* </Link> */}
-
-      {/* <Link href={"/gov"}> */}
-      {/* <Button variant="ghost" size="sm_icon" className="hidden sm:flex" disabled>
-        <div className="hidden sm:flex -mt-1">governance</div>
-        <GavelIcon className="sm:ml-2" size={21} />
-      </Button> */}
-      {/* </Link> */}
-
-      <Button variant="ghost" size="sm_icon" className="hidden sm:flex lg:hidden" disabled>
-        <div className="hidden sm:flex -mt-1">messages</div>
-        <MailIcon className="sm:ml-2" size={20} />
-      </Button>
-
-      <Link href={"/notifications"} className="sm:flex lg:hidden">
-        <Button variant="ghost" size="sm_icon">
-          <div className="hidden sm:flex -mt-1">notifications</div>
-          <BellIcon className="sm:ml-2" size={21} />
+      {/* <Link href="/settings">
+        <Button variant="ghost" size="icon" className="w-10 h-10">
+          <SettingsIcon size={20} strokeWidth={3} />
         </Button>
-      </Link>
+      </Link> */}
 
-      <Link href={"/bookmarks"} className="flex lg:hidden">
-        <Button variant="ghost" size="sm_icon">
-          <div className="hidden sm:flex -mt-1">bookmarks</div>
-          <BookmarkIcon className="sm:ml-2" size={21} />
-        </Button>
-      </Link>
 
-      <Link href="/settings">
-        <Button variant="ghost" size="sm_icon">
-          <div className="hidden sm:flex -mt-1">settings</div>
-          <SettingsIcon className="sm:ml-2" size={20} />
-        </Button>
-      </Link>
-
-      <Link href={`/u/${handle}`} className="flex lg:hidden">
-        <Button variant="ghost" size="sm_icon">
-          <div className="hidden sm:flex -mt-1">profile</div>
-          <UserIcon className="sm:ml-2" size={21} />
+      <Link href="/notifications">
+        <Button variant="ghost" size="icon" className="w-10 h-10">
+          <BellIcon size={20} strokeWidth={2.5} />
         </Button>
       </Link>
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="px-6 sm:px-12 hidden sm:flex">
-            <div className="font-semibold text-lg -mt-1">post</div>
+          <Button variant="secondary" size="icon" className="w-10 h-10">
+            <PlusIcon size={20} strokeWidth={2.5} />
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-full sm:max-w-[700px]">
@@ -121,6 +90,33 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
           </div>
         </DialogContent>
       </Dialog>
+
+      <UserAvatarMenu handle={handle} />
+
+      <Link href="/bookmarks">
+        <Button variant="ghost" size="icon" className="w-10 h-10">
+          <BookmarkIcon size={20} strokeWidth={2.5} />
+        </Button>
+      </Link>
+
     </>
+  );
+};
+
+const UserAvatarMenu = async ({ handle }: { handle: string }) => {
+  const { client, profileId } = await getServerAuth();
+
+  const result = await fetchAccount(client, { address: profileId });
+  const user = result.isOk() ? lensAcountToUser(result.value) : null;
+  const handleOrProfileId = user?.handle ?? profileId;
+
+  return (
+    <Link href={`/u/${handleOrProfileId}`}>
+      <Button variant="ghost" size="icon" className="w-10 h-10 p-1.5">
+        <div className="w-7 h-7 rounded-lg overflow-hidden">
+          <UserAvatar link={false} card={false} user={user} />
+        </div>
+      </Button>
+    </Link>
   );
 };

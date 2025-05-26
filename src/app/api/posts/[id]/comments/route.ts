@@ -1,4 +1,5 @@
-import { fetchPosts } from "@lens-protocol/client/actions";
+import { fetchPostReferences, fetchPosts } from "@lens-protocol/client/actions";
+import { PageSize, PostReferenceType } from "@lens-protocol/react";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -16,13 +17,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    // In the new API, we need to fetch all posts and filter for comments
-    // This is a temporary solution until a direct API for fetching comments is available
-    const result = await fetchPosts(client, {
-      filter: {
-        postTypes: ["COMMENT"],
-      },
-      pageSize: 25,
+    const result = await fetchPostReferences(client, {
+      referenceTypes: [PostReferenceType.CommentOn],
+      referencedPost: id,
+      pageSize: PageSize.Ten,
       cursor,
     });
 
@@ -36,19 +34,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       throw new Error("No comments found");
     }
 
-    // Note: This is a temporary solution
-    // In a production environment, you would need to implement a more efficient way
-    // to fetch comments for a specific post once the API supports it
-    const commentsPosts = comments.items
-      .filter(item => {
-        // We can't directly check for comments on a specific post with the current API
-        // This is a placeholder for when the API supports it
-        return true;
-      })
-      .map(comment => lensItemToPost(comment));
+    const commentsPosts = comments.items.map(comment => lensItemToPost(comment));
 
-    return NextResponse.json({ 
-      comments: commentsPosts, 
+    return NextResponse.json({
+      comments: commentsPosts,
       nextCursor: comments.pageInfo.next,
       note: "Comment filtering is limited with the current API version"
     }, { status: 200 });
