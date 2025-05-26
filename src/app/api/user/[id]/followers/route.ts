@@ -1,6 +1,6 @@
-import { LimitType } from "@lens-protocol/client";
+import { fetchFollowers } from "@lens-protocol/client/actions";
 import { NextRequest, NextResponse } from "next/server";
-import { lensProfileToUser } from "~/components/user/User";
+import { lensAcountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
@@ -12,22 +12,22 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const following = await client.profile.followers({
-      limit: LimitType.Fifty,
-      of: id,
-      cursor
+    const result = await fetchFollowers(client, {
+      cursor,
+      pageSize: 50,
+      account: id,
     });
 
-    if (!following) {
+    if (result.isErr()) {
       return NextResponse.json({ error: "Failed to fetch followers" }, { status: 500 });
-
     }
 
-    const users = following.items.map(lensProfileToUser)
+    const followers = result.value;
+    const users = followers.items.map(item => lensAcountToUser(item.follower));
 
-    return NextResponse.json({ data: users, nextCursor: following.pageInfo.next }, { status: 200 });
+    return NextResponse.json({ data: users, nextCursor: followers.pageInfo.next }, { status: 200 });
   } catch (error) {
-    console.error("Failed to follow profile: ", error.message);
+    console.error("Failed to fetch followers: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });
   }
 }

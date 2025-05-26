@@ -71,7 +71,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
             <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
           </div>
           <div className="text-muted-foreground text-sm line-clamp-1 text-ellipsis overflow-hidden">
-            <TruncatedText text={content} maxLength={150} />
+            <TruncatedText text={content as string} maxLength={150} />
           </div>
         </div>
       </CardContent>

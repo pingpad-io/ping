@@ -1,9 +1,8 @@
-import type { ProfileFragment } from "@lens-protocol/client";
-import type { Profile, ProfileInterestTypes } from "@lens-protocol/react-web";
+import type { Account } from "@lens-protocol/client";
 
 export type UserInterests = {
   category: string;
-  value: ProfileInterestTypes;
+  value: string;
   label: string;
 };
 
@@ -37,56 +36,51 @@ export type User = {
   profilePictureUrl?: string;
 };
 
-export function lensProfileToUser(profile: Profile | ProfileFragment): User {
-  if (!profile) return {} as unknown as User;
+export function lensAcountToUser(account: Account): User {
+  if (!account) return {} as unknown as User;
 
-  const imageUrl =
-    profile?.metadata?.picture?.__typename === "ImageSet"
-      ? profile?.metadata?.picture?.optimized?.uri || profile?.metadata?.picture?.raw?.uri
-      : profile?.metadata?.picture.image.optimized?.uri || profile?.metadata?.picture?.image.raw?.uri;
+  const imageUrl = account?.metadata?.picture;
 
+  //// FIXME: Temporary stats
   const stats = {
-    followers: profile.stats.followers,
-    following: profile.stats.following,
-    downvotes: profile.stats.downvotes,
-    upvotes: profile.stats.upvotes,
-    comments: profile.stats.comments,
-    posts: profile.stats.posts,
-    score: profile.stats.lensClassifierScore,
+    followers: 0,
+    following: 0,
+    downvotes: 0,
+    upvotes: 0,
+    comments: 0,
+    posts: 0,
+    score: 0,
   };
 
-  const interests = parseInterests(profile.interests as ProfileInterestTypes[]);
+  //// FIXME: Temporary interests
+  const interests = [];
 
   const actions = {
-    followed: profile.operations.isFollowedByMe.value,
-    following: profile.operations.isFollowingMe.value,
-    blocked: profile.operations.isBlockedByMe.value,
+    followed: account?.operations?.isFollowedByMe,
+    following: account?.operations?.isFollowingMe,
+    blocked: account?.operations?.isBlockedByMe,
   };
 
-  const user = {
-    id: profile.id,
+  return {
+    id: account.address,
     profilePictureUrl: imageUrl,
-    address: profile.ownedBy.address,
-    createdAt: profile.createdAt as unknown as Date,
-    description: profile?.metadata?.bio,
+    address: account.owner,
+    createdAt: account.createdAt,
+    description: account?.metadata?.bio,
     interests,
     actions,
-    name: profile?.metadata?.displayName,
-    handle: profile.handle?.localName ?? profile.id,
-    namespace: profile.handle?.namespace ?? "wallet",
+    name: account?.metadata?.name,
+    handle: account.username?.localName,
+    namespace: account.username?.namespace?.address,
     stats,
   };
-
-  return user;
 }
 
-// Capitalizes each word in a string
 export function capitalize(label: string): string {
   return label.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-// Processes raw interest types into structured interests array
-export function parseInterests(categories: ProfileInterestTypes[]): UserInterests[] {
+export function parseInterests(categories: string[]): UserInterests[] {
   return categories.map((item) => {
     const [category, subcategory] = item.split("__");
     const label = capitalize(subcategory ? subcategory.replace(/_/g, " ") : category.replace(/_/g, " "));

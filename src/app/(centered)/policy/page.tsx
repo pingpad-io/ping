@@ -4,11 +4,10 @@ const PolicyPage = () => {
       <div className="prose dark:prose-invert p-8 lg:prose-lg">
         <h2>Privacy Policy</h2>
         <p>
-          Kualta dba "K.U Corp." ("us", "we", or "our") operates ping.kualta.dev (the "Service"). This page informs you
-          of our policies regarding the collection, use and disclosure of Personal Information we receive from users of
-          the Service. We use your Personal Information only for identifying you on the website and improving the
-          Service. By using the Service, you agree to the collection and use of information in accordance with this
-          policy.
+          Kualta ("us", "we", or "our") operates pingpad.io (the "Service"). This page informs you of our policies
+          regarding the collection, use and disclosure of Personal Information we receive from users of the Service. We
+          use your Personal Information only for identifying you on the website and improving the Service. By using the
+          Service, you agree to the collection and use of information in accordance with this policy.
         </p>
         <h4>Information Collection And Use</h4>
         <p>
@@ -36,7 +35,7 @@ const PolicyPage = () => {
         </p>
         <h4>Changes To This Privacy Policy</h4>
         <p>
-          This Privacy Policy is effective as of May 15th, 2023 and will remain in effect except with respect to any
+          This Privacy Policy is effective as of January 22, 2025 and will remain in effect except with respect to any
           changes in its provisions in the future, which will be in effect immediately after being posted on this page.
           We reserve the right to update or change our Privacy Policy at any time and you should check this Privacy
           Policy periodically. Your continued use of the Service after we post any modifications to the Privacy Policy
@@ -46,7 +45,7 @@ const PolicyPage = () => {
         <h4>Contact Us</h4>
         <p>If you have any questions about this Privacy Policy, please contact us at contact@kualta.dev.</p>
         <h5>
-          Last updated: <b>Sep 14th, 2023</b>.
+          Last updated: <b>January 22, 2025</b>.
         </h5>
       </div>
     </>

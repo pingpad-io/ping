@@ -23,7 +23,7 @@ export const PostView = ({
   item,
   settings = { isComment: false, showBadges: true, level: 1 },
 }: { item: Post; settings?: PostViewSettings }) => {
-  const content = "content" in item.metadata ? item.metadata.content : "";
+  const content = "content" in item.metadata ? (item.metadata.content as string) : "";
   const [collapsed, setCollapsed] = useState(content.length > 400);
   const [isCommentsOpen, setCommentsOpen] = useState(false);
   const [isReplyWizardOpen, setReplyWizardOpen] = useState(false);
@@ -46,9 +46,8 @@ export const PostView = ({
               </div>
               {settings.isComment && (
                 <div
-                  className={`-mt-4 -mr-6 w-full h-[90%] border-l ${settings.isLastComment && "rounded-full h-[98%]"} ${
-                    settings.isComment && !settings.isLastComment && "min-h-[130%]"
-                  } `}
+                  className={`-mt-4 -mr-6 w-full h-[90%] border-l ${settings.isLastComment && "rounded-full h-[98%]"} ${settings.isComment && !settings.isLastComment && "min-h-[130%]"
+                    } `}
                 />
               )}
             </span>

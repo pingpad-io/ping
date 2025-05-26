@@ -11,9 +11,6 @@ const config = {
   reactStrictMode: true,
   transpilePackages: ['@lens-protocol', 'lucide-react'],
 
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
     remotePatterns: [
       {

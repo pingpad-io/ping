@@ -1,11 +1,4 @@
-import {
-  type CredentialsExpiredError,
-  type LensProfileManagerRelayErrorFragment,
-  LensTransactionStatusType,
-  type NotAuthenticatedError,
-  type RelaySuccessFragment,
-  type Result,
-} from "@lens-protocol/client";
+import { fetchAccount, follow, unfollow } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
 
@@ -18,40 +11,39 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   try {
-    const { client } = await getServerAuth();
+    const { client, sessionClient } = await getServerAuth();
 
-    const profile = await client.profile.fetch({ forProfileId: id });
+    if (!sessionClient) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
 
-    const isFollowing = profile.operations.isFollowedByMe;
+    const accountFetch = await fetchAccount(client, { address: id });
+    if (accountFetch.isErr()) {
+      return NextResponse.json(
+        { error: "Failed to fetch profile", extra: accountFetch.error.message },
+        { status: 500 },
+      );
+    }
+    const isFollowing = accountFetch.value.operations.isFollowedByMe;
 
-    let result: Result<
-      RelaySuccessFragment | LensProfileManagerRelayErrorFragment,
-      CredentialsExpiredError | NotAuthenticatedError
-    >;
-    if (isFollowing.value) {
-      result = await client.profile.unfollow({
-        unfollow: [id],
+    if (isFollowing) {
+      const result = await unfollow(sessionClient, {
+        account: id,
       });
-    } else {
-      result = await client.profile.follow({
-        follow: [{ profileId: id }],
-      });
+
+      if (result.isErr()) {
+        return NextResponse.json({ error: "Failed to unfollow profile", extra: result.error.message }, { status: 500 });
+      }
+
+      return NextResponse.json({ result: result.value }, { status: 200 });
     }
 
-    if (result.isFailure()) {
-      return NextResponse.json({ error: result.error.message }, { status: 500 });
-    }
+    const result = await follow(sessionClient, {
+      account: id,
+    });
 
-    if (result.value.__typename === "LensProfileManagerRelayError") {
-      return NextResponse.json({ error: result.value.reason }, { status: 500 });
-    }
-
-    const data = result.value;
-
-    const completion = await client.transaction.waitUntilComplete({ forTxId: data.txId });
-    if (completion?.status === LensTransactionStatusType.Failed) {
-      console.error(completion.reason);
-      return NextResponse.json({ error: completion.reason, extra: completion.extraInfo }, { status: 500 });
+    if (result.isErr()) {
+      return NextResponse.json({ error: "Failed to follow profile", extra: result.error.message }, { status: 500 });
     }
 
     return NextResponse.json({ result: result.value }, { status: 200 });

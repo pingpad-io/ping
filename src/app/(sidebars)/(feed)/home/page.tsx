@@ -1,7 +1,9 @@
-import { ExplorePublicationsOrderByType, LimitType } from "@lens-protocol/client";
+import { PostType, TimelineEventItemType } from "@lens-protocol/client";
+import { fetchTimeline, fetchPosts } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
+import { getBaseUrl } from "~/utils/getBaseUrl";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const authenticatedEndpoint = "/api/posts/feed";
@@ -20,25 +22,45 @@ const home = async () => {
 };
 
 const getInitialFeed = async () => {
-  const { client, isAuthenticated, profileId } = await getServerAuth();
-  let data: any;
+  const { client, isAuthenticated, profileId, address } = await getServerAuth();
 
-  if (isAuthenticated) {
-    data = (
-      await client.feed.fetch({ where: { for: profileId } }).catch(() => {
-        throw new Error("(×_×)⌒☆ Failed to fetch feed");
+  try {
+    let data;
+
+    if (client.isSessionClient()) {
+      const result = await fetchTimeline(client, {
+        account: address,
+        filter: {
+          eventType: [TimelineEventItemType.Post]
+        },
+        // cursor,
       })
-    ).unwrap();
-  } else {
-    data = await client.explore
-      .publications({ orderBy: ExplorePublicationsOrderByType.LensCurated, limit: LimitType.Ten })
-      .catch(() => {
-        throw new Error("(×_×)⌒☆ Failed to fetch feed");
-      });
-  }
 
-  const posts = data.items.map(lensItemToPost);
-  return { posts, nextCursor: data.pageInfo.next };
+      if (result.isErr()) {
+        throw new Error(result.error.message);
+      }
+
+      data = result.value;
+    } else {
+      const result = await fetchPosts(client, {
+        filter: {
+          postTypes: [PostType.Root],
+          feeds: [{ globalFeed: true }],
+        },
+      });
+
+      if (result.isErr()) {
+        throw new Error(result.error.message);
+      }
+
+      data = result.value;
+    }
+
+    const posts = data.items.map(lensItemToPost);
+    return { posts, nextCursor: data.pageInfo.next };
+  } catch (error) {
+    throw new Error("(×_×)⌒☆ Failed to fetch feed: " + error.message);
+  }
 };
 
 export default home;

@@ -9,7 +9,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
   const author = post.author;
   const isLensHandle = author.namespace === "lens";
   const handle = author.handle;
-  const tags = post.metadata.tags || [];
+  const tags = post?.metadata?.tags || [];
 
   let community = null;
   tags.map((tag) => {

@@ -2,6 +2,7 @@ import { Feed } from "~/components/Feed";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { NotificationView } from "~/components/notifications/NotificationView";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { fetchNotifications } from "@lens-protocol/client/actions";
 
 const endpoint = "/api/notifications";
 
@@ -19,19 +20,45 @@ const notifications = async () => {
 
 const getInitialFeed = async () => {
   const { client, isAuthenticated } = await getServerAuth();
-  if (isAuthenticated) {
-    const data = await client.notifications.fetch({ where: { timeBasedAggregation: true } }).catch((error) => {
-      throw new Error(error.message);
-    });
 
-    if (data.isFailure()) throw new Error(data.error.message);
-
-    const items = data.unwrap();
-    const notifications = items.items?.map((notification) => lensNotificationToNative(notification));
-
-    return { notifications, nextCursor: items.pageInfo.next };
+  if (!isAuthenticated) {
+    // throw new Error("Unauthorized TT");
+    return {
+      notifications: [],
+      nextCursor: undefined
+    };
   }
-  throw new Error("Unauthorized TT");
+
+  try {
+    if (client.isSessionClient()) {
+      const result = await fetchNotifications(client, {
+        cursor: undefined,
+        filter: {
+          timeBasedAggregation: true,
+          includeLowScore: false,
+        }
+      });
+
+      if (result.isErr()) {
+        throw new Error(result.error.message);
+      }
+
+      const notifications = result.value.items.map(lensNotificationToNative);
+
+      return {
+        notifications,
+        nextCursor: result.value.pageInfo.next
+      };
+    } else {
+      throw new Error("Session client required for notifications");
+    }
+  } catch (error) {
+    console.error("Error using fetchNotifications action:", error);
+
+    // We no longer need the fallback since the client.notifications.fetch() method
+    // is deprecated in the new API. Instead, we'll throw an error.
+    throw new Error("Failed to fetch notifications: " + (error.message || "Unknown error"));
+  }
 };
 
 export default notifications;

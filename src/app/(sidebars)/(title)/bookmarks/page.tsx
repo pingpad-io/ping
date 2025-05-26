@@ -1,7 +1,9 @@
 import { Feed } from "~/components/Feed";
+import { fetchPostBookmarks } from "@lens-protocol/client/actions";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { PageSize } from "@lens-protocol/client";
 
 const endpoint = "/api/bookmarks";
 
@@ -16,20 +18,26 @@ const bookmarks = async () => {
 };
 
 const getInitialFeed = async () => {
-  const { client, isAuthenticated } = await getServerAuth();
-  if (isAuthenticated) {
-    const data = await client.publication.bookmarks.fetch({}).catch((error) => {
+  const { sessionClient, isAuthenticated } = await getServerAuth();
+  if (isAuthenticated && sessionClient) {
+    try {
+      const result = await fetchPostBookmarks(sessionClient, { pageSize: PageSize.Fifty });
+
+      if (result.isErr()) throw new Error(result.error.message);
+
+      const items = result.value;
+      const bookmarks = items.items?.map(lensItemToPost);
+
+      return { bookmarks, nextCursor: items.pageInfo.next };
+    } catch (error) {
       throw new Error(error.message);
-    });
-
-    if (data.isFailure()) throw new Error(data.error.message);
-
-    const items = data.unwrap();
-    const bookmarks = items.items?.map(lensItemToPost);
-
-    return { bookmarks, nextCursor: items.pageInfo.next };
+    }
   }
-  throw new Error("Unauthorized TT");
+  // throw new Error("Unauthorized TT");
+  return {
+    bookmarks: [],
+    nextCursor: undefined
+  };
 };
 
 export default bookmarks;

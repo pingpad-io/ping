@@ -5,18 +5,13 @@ import { z } from "zod";
  */
 const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
-  STORAGE_ACCESS_KEY: z.string(),
-  STORAGE_SECRET_KEY: z.string(),
-  ETHERSCAN_API_KEY: z.string(),
-  POLYGONSCAN_API_KEY: z.string(),
-  DONOR_WALLET: z.string(),
 });
 
 /**
  * Client-side environment variables schema
  */
 const client = z.object({
-  NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: z.string(),
+  NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: z.string().optional(),
 });
 
 /**
@@ -28,11 +23,6 @@ const client = z.object({
 const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
-  STORAGE_ACCESS_KEY: process.env.STORAGE_ACCESS_KEY,
-  STORAGE_SECRET_KEY: process.env.STORAGE_SECRET_KEY,
-  ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY,
-  POLYGONSCAN_API_KEY: process.env.POLYGONSCAN_API_KEY,
-  DONOR_WALLET: process.env.DONOR_WALLET,
 };
 
 const merged = server.merge(client);

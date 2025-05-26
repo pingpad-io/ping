@@ -1,16 +1,17 @@
-import { type User, lensProfileToUser } from "~/components/user/User";
+import { type User, lensAcountToUser } from "~/components/user/User";
 import { getServerAuth } from "./getServerAuth";
+import { fetchAccount } from "@lens-protocol/client/actions";
 
-export const getUserByHandle = async (handle: string): Promise<User | null> => {
+export const getUserByUsername = async (username: string): Promise<User | null> => {
   const { client } = await getServerAuth();
 
-  const profile = await client.profile.fetch({
-    forHandle: `lens/${handle}`,
-  });
+  const profile = await fetchAccount(client, {
+    username: {localName: username}
+  }).unwrapOr(null);
 
   if (!profile) return null;
 
-  const user = lensProfileToUser(profile);
+  const user = lensAcountToUser(profile);
 
   return user;
 };

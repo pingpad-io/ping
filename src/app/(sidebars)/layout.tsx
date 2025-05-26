@@ -8,20 +8,15 @@ export default function SidebarLayout({
 }) {
   return (
     <div className="flex flex-row justify-center shrink grow w-full">
-      <div className="hidden sm:flex sticky top-0 h-fit">
-        <Menu />
-      </div>
+      <Menu />
 
       <div className="min-w-0 max-w-2xl grow sm:shrink lg:max-w-2xl h-full">
-        <div className="z-[100] flex sm:hidden h-fit w-full sticky top-0 bg-card rounded-b-lg drop-shadow-xl">
-          <Menu />
-        </div>
         {children}
       </div>
 
-      <div className="hidden lg:flex sticky top-0 h-fit max-w-xs w-full">
+      {/* <div className="hidden lg:flex sticky top-0 h-fit max-w-xs w-full">
         <Sidebar />
-      </div>
+      </div> */}
     </div>
   );
 }

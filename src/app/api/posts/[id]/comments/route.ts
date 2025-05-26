@@ -1,4 +1,5 @@
-import { LimitType } from "@lens-protocol/client";
+import { fetchPostReferences, fetchPosts } from "@lens-protocol/client/actions";
+import { PageSize, PostReferenceType } from "@lens-protocol/react";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -16,19 +17,30 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const comments = await client.publication.fetchAll({
-      where: { commentOn: { id } },
-      limit: LimitType.TwentyFive,
+    const result = await fetchPostReferences(client, {
+      referenceTypes: [PostReferenceType.CommentOn],
+      referencedPost: id,
+      pageSize: PageSize.Ten,
       cursor,
     });
+
+    if (result.isErr()) {
+      return NextResponse.json({ error: "Failed to fetch comments" }, { status: 500 });
+    }
+
+    const comments = result.value;
 
     if (!comments.items) {
       throw new Error("No comments found");
     }
 
-    const commentsPosts = comments.items.map((comment) => lensItemToPost(comment));
+    const commentsPosts = comments.items.map(comment => lensItemToPost(comment));
 
-    return NextResponse.json({ comments: commentsPosts, nextCursor: comments.pageInfo.next }, { status: 200 });
+    return NextResponse.json({
+      comments: commentsPosts,
+      nextCursor: comments.pageInfo.next,
+      note: "Comment filtering is limited with the current API version"
+    }, { status: 200 });
   } catch (error) {
     console.error("Failed to load comments: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });

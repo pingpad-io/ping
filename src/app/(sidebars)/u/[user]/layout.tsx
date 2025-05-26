@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Card } from "~/components/ui/card";
 import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
-import { getUserByHandle } from "~/utils/getUserByHandle";
+import { getUserByUsername } from "~/utils/getUserByHandle";
 
 export const maxDuration = 60;
 export const revalidate = 0;
@@ -16,7 +16,7 @@ export default async function layout({
   params: { user: string };
 }) {
   const handle = params.user;
-  const user = await getUserByHandle(handle);
+  const user = await getUserByUsername(handle);
 
   if (!user) return notFound();
 

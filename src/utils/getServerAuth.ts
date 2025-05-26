@@ -1,29 +1,40 @@
-import { LensClient, production } from "@lens-protocol/client";
-import { type User, lensProfileToUser } from "~/components/user/User";
-import { getCookieAuth } from "./getCookieAuth";
-import { window } from "./globals";
+import { AnyClient, SessionClient } from "@lens-protocol/client";
+import { fetchMeDetails } from "@lens-protocol/client/actions";
+import jwt from "jsonwebtoken";
+import { type User, lensAcountToUser } from "~/components/user/User";
+import { getLensClient } from "./lens/getLensClient";
 
 interface ServerAuthResult {
   isAuthenticated: boolean;
   profileId: string | null;
   address: string | null;
   handle: string | null;
-  client: LensClient;
+  client: AnyClient;
+  sessionClient: SessionClient | null;
   user: User | null;
 }
 
+interface LensIdToken {
+  sub: string; // signedBy address
+  iss: string; // API endpoint
+  aud: string; // App address
+  iat: number; // Issued at timestamp
+  exp: number; // Expiration timestamp
+  sid: string; // Session ID
+  act?: {
+    sub: string;
+  };
+  "tag:lens.dev,2024:sponsored"?: boolean;
+  "tag:lens.dev,2024:role"?: "ACCOUNT_OWNER" | "ACCOUNT_MANAGER" | "ONBOARDING_USER" | "BUILDER";
+}
+
 export const getServerAuth = async (): Promise<ServerAuthResult> => {
-  const { refreshToken, isValid } = getCookieAuth();
+  // const { refreshToken, isValid } = getCookieAuth();
 
-  const client = new LensClient({
-    environment: production,
-    headers: {
-      origin: "https://pingpad.io",
-    },
-    storage: window?.localStorage
-  });
+  const client = await getLensClient();
+  let sessionClient: SessionClient | null = null;
 
-  if (!refreshToken || !isValid) {
+  if (!client.isSessionClient()) {
     return {
       isAuthenticated: false,
       profileId: null,
@@ -31,28 +42,63 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
       handle: null,
       user: null,
       client,
+      sessionClient: null,
     };
   }
 
-  if (refreshToken && isValid) {
-    await client.authentication.authenticateWith({ refreshToken });
+  sessionClient = client as SessionClient;
+  const credentials = await sessionClient.getCredentials();
+
+  if (!credentials || credentials.isErr()) {
+    throw new Error("Unable to get credentials");
   }
 
-  const profileId = await client.authentication.getProfileId();
-  const address = await client.authentication.getWalletAddress();
+  const idToken = credentials.value?.idToken;
+  const decodedIdToken = jwt.decode(idToken || "") as LensIdToken;
+  if (!decodedIdToken) {
+    throw new Error("Invalid ID token");
+  }
 
-  const user = await client.profile
-    .fetch({ forProfileId: profileId })
-    .catch(() => null)
-    .then((profile) => lensProfileToUser(profile));
+  const address = decodedIdToken.act.sub;
+  const authenticatedUser = await sessionClient.getAuthenticatedUser();
 
-  const handle = user?.handle;
+  if (authenticatedUser.isErr() || !authenticatedUser.value) {
+    console.error("Profile not found, returning empty profile");
+    return {
+      isAuthenticated: false,
+      profileId: null,
+      address: null,
+      handle: null,
+      user: null,
+      client,
+      sessionClient: null,
+    };
+  }
+
+  const account = await fetchMeDetails(sessionClient);
+
+  if (account.isErr()) {
+    console.error("Profile not found, returning empty profile");
+    return {
+      isAuthenticated: false,
+      profileId: null,
+      address: null,
+      handle: null,
+      user: null,
+      client,
+      sessionClient: null,
+    };
+  }
+
+  const handle = account.value.loggedInAs.account.username?.localName;
+  const user = lensAcountToUser(account.value.loggedInAs.account);
 
   return {
-    isAuthenticated: !!profileId,
-    profileId,
+    isAuthenticated: !!address,
+    profileId: address,
     address,
     client,
+    sessionClient,
     handle,
     user,
   };

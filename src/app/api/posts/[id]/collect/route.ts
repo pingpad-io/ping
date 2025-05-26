@@ -1,13 +1,6 @@
-import {
-  LensTransactionStatusType,
-  type MultirecipientFeeCollectOpenActionSettingsFragment,
-  type SimpleCollectOpenActionSettingsFragment,
-} from "@lens-protocol/client";
+import { fetchPost } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
-type CollectActionModuleSettings =
-  | SimpleCollectOpenActionSettingsFragment
-  | MultirecipientFeeCollectOpenActionSettingsFragment;
 
 export const dynamic = "force-dynamic";
 
@@ -19,44 +12,62 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   try {
-    const { client } = await getServerAuth();
+    const { sessionClient } = await getServerAuth();
 
-    const publication = await client.publication.fetch({
-      forId: id,
-    });
-
-    if (publication.__typename === "Mirror") {
-      return NextResponse.json({ error: "Cannot collect a share publication", result: false }, { status: 400 });
+    if (!sessionClient) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const result = await client.publication.actions.actOn({
-      actOn: {
-        simpleCollectOpenAction: true,
+    const postResult = await fetchPost(sessionClient, {
+      post: id,
+    });
+
+    if (postResult.isErr()) {
+      return NextResponse.json({ error: "Failed to fetch post", result: false }, { status: 500 });
+    }
+
+    const publication = postResult.value;
+
+    // Check if the post is a repost (previously called Mirror)
+    if (publication.__typename === "Repost") {
+      return NextResponse.json({ error: "Cannot collect a repost publication", result: false }, { status: 400 });
+    }
+
+    // Note: client.publication.actions.actOn() is marked as "Coming Soon" in the migration guide
+    // For now, we'll return a message indicating this functionality is not yet available
+    
+    return NextResponse.json({ 
+      message: "Collect action is not yet available in the new Lens Protocol API",
+      postId: id
+    }, { status: 200 });
+    
+    /* 
+    // This is the code that would be used once the API is available:
+    const result = await actOn(sessionClient, {
+      action: {
+        simpleCollect: true,
       },
-      for: id,
+      post: id,
     });
 
-    if (result.isFailure()) {
+    if (result.isErr()) {
       return NextResponse.json({ error: result.error.message, result: false }, { status: 500 });
-    }
-
-    if (result.value.__typename === "LensProfileManagerRelayError") {
-      return NextResponse.json({ error: result.value.reason, result: false }, { status: 500 });
     }
 
     const data = result.value;
 
-    const completion = await client.transaction.waitUntilComplete({ forTxId: data.txId });
+    const completion = await sessionClient.waitForTransaction({ txId: data.txId });
 
-    if (completion.status === LensTransactionStatusType.Failed) {
+    if (completion.status === "FAILED") {
       return NextResponse.json({ error: completion.reason, result: false }, { status: 500 });
     }
 
-    if (completion.status === LensTransactionStatusType.Complete) {
+    if (completion.status === "COMPLETE") {
       return NextResponse.json({ result: true }, { status: 200 });
     }
+    */
   } catch (error) {
-    console.error("Failed to follow profile: ", error.message);
+    console.error("Failed to collect post: ", error.message);
     return NextResponse.json({ error: `${error.message}`, result: false }, { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
-import type { NotificationFragment, ProfileFragment } from "@lens-protocol/client";
-import { type AnyLensItem, type Post, lensItemToPost } from "../post/Post";
-import { type User, lensProfileToUser } from "../user/User";
+import type { Account, Notification as LensNotification, TippingAccountActionExecuted, UnknownAccountActionExecuted } from "@lens-protocol/client";
+import { type Post, lensItemToPost } from "../post/Post";
+import { type User, lensAcountToUser } from "../user/User";
 
 type NotificationType = "Reaction" | "Comment" | "Follow" | "Repost" | "Action" | "Mention" | "Quote";
 
@@ -14,62 +14,97 @@ export type Notification = {
   reactionType?: "Upvote" | "Downvote";
 };
 
-export function lensNotificationToNative(item: NotificationFragment): Notification {
-  let profiles: ProfileFragment[] = [];
-  let actedOn: AnyLensItem;
+export function lensNotificationToNative(item: LensNotification): Notification {
+  let profiles: Account[] = [];
+  let actedOn: any;
   let createdAt: string;
   let type: NotificationType;
   let reactionType: "Upvote" | "Downvote";
+  let id: string;
 
+  // Handle different notification types in Lens v3
   switch (item.__typename) {
     case "CommentNotification":
-      profiles = [item.comment.by];
+      id = item.id;
+      profiles = [item.comment.author];
       actedOn = item.comment;
-      createdAt = item.comment.createdAt;
+      createdAt = item.comment.timestamp;
       type = "Comment";
       break;
-    case "ActedNotification":
-      profiles = item.actions.map((action) => action.by);
-      actedOn = item.publication;
-      createdAt = item.publication.createdAt;
-      type = "Action";
+    case "ReactionNotification":
+      id = item.id;
+      profiles = item.reactions.map((reaction) => reaction.account);
+      actedOn = item.post || item.post;
+      createdAt = item.reactions[0]?.reactions[0].reactedAt || new Date().toISOString();
+      type = "Reaction";
+      // Handle different reaction formats
+      const reactionValue = item.reactions[0]?.reactions[0].reaction;
+      reactionType = reactionValue === "UPVOTE" ? "Upvote" : "Downvote";
       break;
     case "FollowNotification":
-      profiles = item.followers;
+      id = item.id;
+      profiles = item.followers.map((follower) => follower.account);
       actedOn = undefined;
-      createdAt = undefined;
+      createdAt = item.followers[0].followedAt || new Date().toISOString();
       type = "Follow";
       break;
     case "MentionNotification":
-      profiles = [item.publication.by];
-      actedOn = item.publication;
-      createdAt = item.publication.createdAt;
+      id = item.id;
+      profiles = [item.post?.author || item.post?.author];
+      actedOn = item.post || item.post;
+      createdAt = (item.post || item.post)?.timestamp || new Date().toISOString();
       type = "Mention";
       break;
-    case "MirrorNotification":
-      profiles = item.mirrors.map((mirror) => mirror.profile);
-      actedOn = item.publication;
-      createdAt = item.publication.createdAt;
+    case "RepostNotification":
+      id = item.id;
+      profiles = item.reposts?.map((repost) => repost.account) || 
+                [item.reposts[0]?.account || item.reposts[0]?.account];
+      actedOn = item.post || item.post;
+      createdAt = (item.post || item.post)?.timestamp || new Date().toISOString();
       type = "Repost";
       break;
     case "QuoteNotification":
-      profiles = [item.quote.by];
-      actedOn = item.quote.quoteOn;
-      createdAt = item.quote.createdAt;
+      id = item.id;
+      profiles = [item.quote?.author];
+      actedOn = item.quote || item.quote;
+      createdAt = item.quote?.timestamp || new Date().toISOString();
       type = "Quote";
       break;
-    case "ReactionNotification":
-      profiles = item.reactions.map((reaction) => reaction.profile);
-      actedOn = item.publication;
-      createdAt = item.reactions[0].reactions[0].reactedAt;
-      type = "Reaction";
-      reactionType = item.reactions[0].reactions[0].reaction === "UPVOTE" ? "Upvote" : "Downvote";
+    case "PostActionExecutedNotification":
+      id = item.id;
+      profiles = [item.post?.author];
+      actedOn = item.post || item.post;
+      createdAt = item.post?.timestamp || new Date().toISOString();
+      type = "Action";
+      break;
+    case "AccountActionExecutedNotification":
+      id = item.id;
+      switch (item.actions[0].__typename) {
+        case "TippingAccountActionExecuted":
+          profiles = item.actions?.map((action: TippingAccountActionExecuted) => action.executedBy) || [];
+          actedOn = "Tipping"
+          createdAt = (item.actions[0].executedAt) || new Date().toISOString();
+          type = "Action";
+          break;
+        case "UnknownAccountActionExecuted":
+          profiles = item.actions?.map((action: UnknownAccountActionExecuted) => action.executedBy) || [];
+          actedOn = "Unknown";
+          createdAt = (item.actions[0].executedAt) || new Date().toISOString();
+          type = "Action";
+          break;
+      }
+      break;
+    default:
+      // Handle unknown notification types
+      profiles = [];
+      actedOn = undefined;
+      createdAt = new Date().toISOString();
+      type = "Action";
       break;
   }
 
-  const who = profiles.map(lensProfileToUser);
+  const who = profiles.map(lensAcountToUser);
   const content = actedOn ? lensItemToPost(actedOn) : undefined;
-  const id = item.id;
 
   return {
     id,
@@ -77,7 +112,7 @@ export function lensNotificationToNative(item: NotificationFragment): Notificati
     type,
     actedOn: content,
     reactionType: reactionType,
-    createdAt: new Date(createdAt),
+    createdAt: new Date(createdAt || Date.now()),
     __typename: "Notification",
   };
 }

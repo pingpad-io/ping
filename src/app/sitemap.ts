@@ -13,7 +13,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // if (!res.ok) console.error(res)
 
   // const { data } = await res.json();
-  // console.log(data);
   // const postPages = data.map((post: Post) => ({
   //   url: `/p/${post.id}`,
   //   changefreq: "hourly",

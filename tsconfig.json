@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -18,12 +14,8 @@
     "jsx": "preserve",
     "allowUmdGlobalAccess": true,
     "paths": {
-      "~/*": [
-        "./src/*"
-      ],
-      "@/*": [
-        "./*"
-      ]
+      "~/*": ["./src/*"],
+      "@/*": ["./*"]
     },
     "plugins": [
       {
@@ -39,6 +31,7 @@
     "src/app/*.ts",
     "src/app/*.tsx",
     "src/utils/**.ts",
+    "src/utils/**/*.ts",
     "src/styles/**.ts",
     "src/types/**.ts",
     "src/app/**/*.ts",
