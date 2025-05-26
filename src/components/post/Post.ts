@@ -73,25 +73,25 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
   return post;
 }
 
-function getReactions(post: any): Partial<PostReactions> {
+function getReactions(post: LensPost): Partial<PostReactions> {
   return {
-    Upvote: 0,
-    Downvote: 0,
-    Bookmark: 0,
-    Collect: 0,
-    Comment: 0,
-    Repost: 0,
-    isUpvoted: false,
-    isDownvoted: false,
-    isBookmarked: false,
-    isCollected: false,
-    isReposted: false,
-    canCollect: true,
-    canComment: true,
-    canRepost: true,
-    canQuote: false,
+    Upvote: post.stats?.upvotes || 0,
+    Downvote: post.stats?.downvotes || 0,
+    Bookmark: post.stats?.bookmarks || 0,
+    Collect: post.stats?.collects || 0,
+    Comment: post.stats?.comments || 0,
+    Repost: post.stats?.reposts || 0,
+    isUpvoted: post.operations?.hasUpvoted || false,
+    isDownvoted: post.operations?.hasDownvoted || false,
+    isBookmarked: post.operations?.hasBookmarked || false,
+    isCollected: post.operations?.hasSimpleCollected || false,
+    isReposted: post.operations?.hasReposted.optimistic || false,
+    canCollect: post.operations?.canSimpleCollect.__typename === "SimpleCollectValidationPassed" || false,
+    canComment: post.operations?.canComment.__typename === "PostOperationValidationPassed" || false,
+    canRepost: post.operations?.canRepost.__typename === "PostOperationValidationPassed" || false,
+    canQuote: post.operations?.canQuote.__typename === "PostOperationValidationPassed" || false,
     canDecrypt: false,
-    totalReactions: 0,
+    totalReactions: post.stats?.upvotes + post.stats?.downvotes + post.stats?.bookmarks + post.stats?.collects + post.stats?.comments + post.stats?.reposts || 0,
   };
 }
 
