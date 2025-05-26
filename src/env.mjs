@@ -4,7 +4,6 @@ import { z } from "zod";
  * Server-side environment variables schema.
  */
 const server = z.object({
-  NODE_ENV: z.enum(["development", "test", "production"]),
 });
 
 /**
@@ -12,6 +11,9 @@ const server = z.object({
  */
 const client = z.object({
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: z.string().optional(),
+  NEXT_PUBLIC_APP_ADDRESS_TESTNET: z.string().optional(),
+  NEXT_PUBLIC_APP_ADDRESS: z.string().optional(),
+  NEXT_PUBLIC_NODE_ENV: z.enum(["development", "test", "production"]),
 });
 
 /**
@@ -23,6 +25,9 @@ const client = z.object({
 const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+  NEXT_PUBLIC_APP_ADDRESS_TESTNET: process.env.NEXT_PUBLIC_APP_ADDRESS_TESTNET,
+  NEXT_PUBLIC_APP_ADDRESS: process.env.NEXT_PUBLIC_APP_ADDRESS,
+  NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
 };
 
 const merged = server.merge(client);

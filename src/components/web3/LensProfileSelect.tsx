@@ -13,29 +13,29 @@ import { UserAvatar } from "../user/UserAvatar";
 import { fetchAccountsAvailable } from "@lens-protocol/client/actions";
 import { getPublicClient } from "~/utils/lens/getLensClient";
 import { useState, useEffect } from "react";
-import { getAccountOwnerClient } from "~/utils/lens/getLensClient";
-import type { Account, AuthenticatedUser } from "@lens-protocol/client";
+import type { Account } from "@lens-protocol/client";
+import { env } from "~/env.mjs";
 
 export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
-  const { isConnected, address } = useWagmiAccount();
+  const { isConnected, address: walletAddress } = useWagmiAccount();
   const { data: walletClient } = useWalletClient();
   const [profiles, setProfiles] = useState<Account[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isLoginPending, setIsLoginPending] = useState(false);
-  
+
   useEffect(() => {
     const fetchProfiles = async () => {
-      if (!address) return;
-      
+      if (!walletAddress) return;
+
       setLoading(true);
       try {
         const client = getPublicClient();
-        const result = await fetchAccountsAvailable(client, { 
-          managedBy: address, 
-          includeOwned: true 
+        const result = await fetchAccountsAvailable(client, {
+          managedBy: walletAddress,
+          includeOwned: true
         });
-        
+
         if (result.isOk()) {
           // Extract accounts from the paginated result
           const accounts = result.value.items.map(item => item.account);
@@ -49,66 +49,84 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
         setLoading(false);
       }
     };
-    
-    if (isConnected && address) {
+
+    if (isConnected && walletAddress) {
       fetchProfiles();
     }
-  }, [isConnected, address]);
+  }, [isConnected, walletAddress]);
 
-  const onSubmit = async (accountAddress: string) => {
-    if (!address || !walletClient) return;
-    
+  const onSubmit = async (account: Account) => {
+    if (!walletAddress || !walletClient) return;
+
     setIsLoginPending(true);
     try {
+      const client = getPublicClient();
+
+      if (!client) {
+        throw new Error("No Lens client found");
+      }
+
+      const isOwner = account.owner === walletAddress;
+      const appAddress = env.NEXT_PUBLIC_NODE_ENV === "development" ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET : env.NEXT_PUBLIC_APP_ADDRESS;
+      const ownerRequest = {
+        accountOwner: {
+          account: account.address,
+          owner: walletAddress,
+          app: appAddress,
+        },
+      };
+      const managerRequest = {
+        accountManager: {
+          account: account.address,
+          manager: walletAddress,
+          app: appAddress,
+        },
+      };
+      const challengeRequest = isOwner ? ownerRequest : managerRequest;
+
       const signMessage = async (message: string) => {
-        const signature = await walletClient.signMessage({ 
-          account: address as `0x${string}`,
-          message 
+        const signature = await walletClient.signMessage({
+          account: walletAddress as `0x${string}`,
+          message
         });
         return signature;
       };
-      
-      const client = await getAccountOwnerClient(
-        address, // owner address
-        accountAddress, // account address
-        signMessage
-      );
-      
-      if (!client) {
-        throw new Error("Failed to authenticate");
+
+      const authenticated = await client.login({
+        ...challengeRequest,
+        signMessage,
+      });
+
+      if (authenticated.isErr()) {
+        throw new Error(`Failed to get authenticated client: ${authenticated.error.message}`);
       }
-      
-      const credentials = await client.getCredentials();
+
+      const credentials = await authenticated.value.getCredentials();
+
       if (credentials.isErr()) {
-        throw new Error(credentials.error.message);
+        console.error("Failed to get credentials", credentials.error);
+        throw new Error("Unable to retrieve authentication credentials");
       }
-      
-      // Get the username from the authenticated account
-      const authenticatedUser = await client.getAuthenticatedUser();
-      if (authenticatedUser.isErr() || !authenticatedUser.value) {
-        throw new Error("Failed to get authenticated user");
+
+      const refreshToken = credentials.value?.refreshToken;
+
+      if (!refreshToken) {
+        console.error("Failed to get refresh token - missing from credentials");
+        throw new Error("Authentication token unavailable");
       }
-      
-      // Get account details from authenticated user
-      const accountDetails = authenticatedUser.value as unknown as { address: string };
-      
-      // Store the refresh token in cookies
-      if (credentials.value.refreshToken) {
-        setCookie("refreshToken", credentials.value.refreshToken, {
-          secure: true,
-          sameSite: "lax",
-        });
-      }
-      
+
+      setCookie("refreshToken", refreshToken, {
+        secure: true,
+        sameSite: "lax",
+      });
+
       setDialogOpen(false);
       window.location.reload();
 
       toast.success(`Welcome to Ping!`, { description: "login successful!" });
     } catch (err) {
-      console.error(err instanceof Error ? err.message : 'Login failed');
-      toast.error("Login failed", { 
-        description: err instanceof Error ? err.message : 'Unknown error' 
-      });
+      console.error("Error logging in:", err);
+      toast.error(err instanceof Error ? err.message : "Failed to log in. Please try again.");
     } finally {
       setIsLoginPending(false);
     }
@@ -129,7 +147,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
     return null;
   }
 
-  if (!address) {
+  if (!walletAddress) {
     return null;
   }
 
@@ -138,6 +156,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
       <div className="flex flex-wrap gap-2">
         {profiles.map((profile, idx) => {
           const username = profile.username?.localName ? `@${profile.username.localName}` : `#${profile.address}`;
+          const isOwner = profile.owner === walletAddress;
           return (
             <div id={`${idx}`} key={`${profile.address}`}>
               <Button
@@ -146,12 +165,17 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
                 variant="outline"
                 value={profile.address}
                 type="submit"
-                onClick={() => onSubmit(profile.address)}
+                onClick={() => onSubmit(profile)}
               >
                 <div className="w-9 h-9">
                   <UserAvatar link={false} user={lensAcountToUser(profile)} />
                 </div>
-                {username}
+                <div className="flex flex-col items-start">
+                  <span>{username}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {isOwner ? "Owner" : "Manager"}
+                  </span>
+                </div>
               </Button>
             </div>
           );
