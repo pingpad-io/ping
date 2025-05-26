@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { fetchPosts, fetchTimeline } from "@lens-protocol/client/actions";
+import { TimelineEventItemType } from "@lens-protocol/react";
 
 export const dynamic = "force-dynamic";
 
@@ -33,17 +34,15 @@ export async function GET(req: NextRequest) {
     const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
     console.log(client, profileId, isAuthenticated)
 
-    if (!isAuthenticated) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
+    // if (!isAuthenticated || !sessionClient) {
+    //   return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    // }
 
-    // const data = await fetchTimeline(client, { 
-    //   account: profileId,
-    //   cursor,
-    // })
-
-    const data = await fetchTimeline(client, {
+    const data = await fetchTimeline(sessionClient, {
       account: profileId,
+      filter: {
+        eventType: [TimelineEventItemType.Post]
+      },
       cursor,
     })
 
@@ -52,7 +51,9 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: data.error.message }, { status: 500 });
     }
 
-    const posts = data.value.items.map(lensItemToPost);
+    const posts = data.value.items.map((item) => {
+      return lensItemToPost(item.primary);
+    });
 
     return NextResponse.json({ data: posts, nextCursor: data.value.pageInfo.next }, { status: 200 });
   } catch (error) {

@@ -1,14 +1,13 @@
 "use client";
 
-import { chains } from "@lens-network/sdk/viem";
-import { AnyClient, LensProvider, testnet, PublicClient } from "@lens-protocol/react";
+import { chains } from "@lens-chain/sdk/viem";
+import { AnyClient, LensProvider, mainnet, PublicClient } from "@lens-protocol/react";
 import { bindings } from "@lens-protocol/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { WagmiProvider, createConfig, createStorage, http } from "wagmi";
-import { polygon } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
@@ -18,11 +17,12 @@ const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
 
 const wagmiConfig = createConfig({
-  chains: [chains.testnet, polygon],
+  chains: [chains.mainnet],
   transports: {
-    [polygon.id]: http(),
+    [chains.mainnet.id]: http(),
     [chains.testnet.id]: http(),
   },
+
   connectors: [
     injected(),
     walletConnect({
@@ -78,7 +78,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }
 
   const publicClient = PublicClient.create({
-    environment: testnet,
+    environment: mainnet,
   });
 
   return (

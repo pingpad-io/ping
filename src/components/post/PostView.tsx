@@ -23,7 +23,7 @@ export const PostView = ({
   item,
   settings = { isComment: false, showBadges: true, level: 1 },
 }: { item: Post; settings?: PostViewSettings }) => {
-  const content = "content" in item.metadata ? item.metadata.content : "";
+  const content = "content" in item.metadata ? (item.metadata.content as string) : "";
   const [collapsed, setCollapsed] = useState(content.length > 400);
   const [isCommentsOpen, setCommentsOpen] = useState(false);
   const [isReplyWizardOpen, setReplyWizardOpen] = useState(false);

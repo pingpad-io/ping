@@ -1,4 +1,4 @@
-import { PostType } from "@lens-protocol/client";
+import { PostType, TimelineEventItemType } from "@lens-protocol/client";
 import { fetchTimeline, fetchPosts } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
@@ -22,19 +22,26 @@ const home = async () => {
 };
 
 const getInitialFeed = async () => {
-  const { client, isAuthenticated, profileId } = await getServerAuth();
+  const { client, isAuthenticated, profileId, address } = await getServerAuth();
 
   try {
     let data;
 
     if (client.isSessionClient()) {
-      const response = await fetch(`/api/posts/feed`);
-      console.log("response", response);
-      if (!response.ok) {
-        throw new Error("Failed to fetch feed");
+      const result = await fetchTimeline(client, {
+        account: address,
+        filter: {
+          eventType: [TimelineEventItemType.Post]
+        },
+        // cursor,
+      })
+
+      if (result.isErr()) {
+        throw new Error(result.error.message);
       }
-      const result = await response.json();
-      data = result.data;
+      console.log("result", result.value, profileId, address);
+
+      data = result.value;
     } else {
       const result = await fetchPosts(client, {
         filter: {

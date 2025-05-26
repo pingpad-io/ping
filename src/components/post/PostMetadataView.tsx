@@ -1,58 +1,41 @@
-import type {
-  ArticleMetadataV3,
-  AudioMetadataV3,
-  CheckingInMetadataV3,
-  EmbedMetadataV3,
-  EventMetadataV3,
-  ImageMetadataV3,
-  LinkMetadataV3,
-  LiveStreamMetadataV3,
-  MintMetadataV3,
-  SpaceMetadataV3,
-  StoryMetadataV3,
-  TextOnlyMetadataV3,
-  ThreeDMetadataV3,
-  TransactionMetadataV3,
-  VideoMetadataV3,
-} from "@lens-protocol/react-web";
 import { AudioPlayer } from "../AudioPlayer";
 import Markdown from "../Markdown";
 import { VideoPlayer } from "../VideoPlayer";
 import { Badge } from "../ui/badge";
-import type { AnyLensMetadata } from "./Post";
+import { PostMetadata, PostMetadataSchemaId, TextOnlyMetadata, ArticleMetadata, ImageMetadata, VideoMetadata, LinkMetadata, LiveStreamMetadata, CheckingInMetadata, EmbedMetadata, EventMetadata, MintMetadata, SpaceMetadata, StoryMetadata, TransactionMetadata, ThreeDMetadata, AudioMetadata, TextOnlyMetadataDetails, ArticleMetadataDetails, ImageMetadataDetails, VideoMetadataDetails, AudioMetadataDetails, LinkMetadataDetails, LiveStreamMetadataDetails, CheckingInMetadataDetails, EmbedMetadataDetails, EventMetadataDetails, MintMetadataDetails, SpaceMetadataDetails, StoryMetadataDetails, TransactionMetadataDetails, ThreeDMetadataDetails } from "@lens-protocol/metadata";  
 
-export const getPostMetadataView = (metadata: AnyLensMetadata) => {
+export const getPostMetadataView = (metadata: any) => {
   switch (metadata.__typename) {
-    case "TextOnlyMetadataV3":
-      return <TextOnlyView metadata={metadata} />;
-    case "ArticleMetadataV3":
-      return <ArticleView metadata={metadata} />;
-    case "ImageMetadataV3":
-      return <ImageView metadata={metadata} />;
-    case "VideoMetadataV3":
-      return <VideoView metadata={metadata} />;
-    case "AudioMetadataV3":
-      return <AudioView metadata={metadata} />;
-    case "LinkMetadataV3":
-      return <LinkView metadata={metadata} />;
-    case "LiveStreamMetadataV3":
-      return <LiveStreamView metadata={metadata} />;
-    case "CheckingInMetadataV3":
-      return <CheckingInView metadata={metadata} />;
-    case "EmbedMetadataV3":
-      return <EmbedView metadata={metadata} />;
-    case "EventMetadataV3":
-      return <EventView metadata={metadata} />;
-    case "MintMetadataV3":
-      return <MintView metadata={metadata} />;
-    case "SpaceMetadataV3":
-      return <SpaceView metadata={metadata} />;
-    case "StoryMetadataV3":
-      return <StoryView metadata={metadata} />;
-    case "TransactionMetadataV3":
-      return <TransactionView metadata={metadata} />;
-    case "ThreeDMetadataV3":
-      return <ThreeDView metadata={metadata} />;
+    case "TextOnlyMetadata":
+      return <TextOnlyView metadata={metadata as TextOnlyMetadataDetails} />;
+    case "ArticleMetadata":
+      return <ArticleView metadata={metadata as ArticleMetadataDetails} />;
+    case "ImageMetadata":
+      return <ImageView metadata={metadata as ImageMetadataDetails} />;
+    case "VideoMetadata":
+      return <VideoView metadata={metadata as VideoMetadataDetails} />;
+    case "AudioMetadata":
+      return <AudioView metadata={metadata as AudioMetadataDetails} />;
+    case "LinkMetadata":
+      return <LinkView metadata={metadata as LinkMetadataDetails} />;
+    case "LiveStreamMetadata":
+      return <LiveStreamView metadata={metadata as LiveStreamMetadataDetails} />;
+    case "CheckingInMetadata":
+      return <CheckingInView metadata={metadata as CheckingInMetadataDetails} />;
+    case "EmbedMetadata":
+      return <EmbedView metadata={metadata as EmbedMetadataDetails} />;
+    case "EventMetadata":
+      return <EventView metadata={metadata as EventMetadataDetails} />;
+    case "MintMetadata":
+      return <MintView metadata={metadata as MintMetadataDetails} />;
+    case "SpaceMetadata":
+      return <SpaceView metadata={metadata as SpaceMetadataDetails} />;
+    case "StoryMetadata":
+      return <StoryView metadata={metadata as StoryMetadataDetails} />;
+    case "TransactionMetadata":
+      return <TransactionView metadata={metadata as TransactionMetadataDetails} />;
+    case "ThreeDMetadata":
+      return <ThreeDView metadata={metadata as ThreeDMetadataDetails} />;
     default:
       return null;
   }
@@ -62,17 +45,17 @@ const ContentView = ({ content }: { content: string }) => {
   return <Markdown content={content} />;
 };
 
-export const TextOnlyView = ({ metadata }: { metadata: TextOnlyMetadataV3 }) => {
+export const TextOnlyView = ({ metadata }: { metadata: TextOnlyMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const ArticleView = ({ metadata }: { metadata: ArticleMetadataV3 }) => {
+export const ArticleView = ({ metadata }: { metadata: ArticleMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
-  const url = metadata?.asset.image?.optimized?.uri || metadata?.asset?.image?.raw?.uri;
-  const alt = metadata?.asset?.altTag;
+export const ImageView = ({ metadata }: { metadata: ImageMetadataDetails }) => {
+  const url = metadata?.image?.item
+  const alt = metadata?.image.altTag
   const title = metadata?.title;
 
   return (
@@ -85,9 +68,9 @@ export const ImageView = ({ metadata }: { metadata: ImageMetadataV3 }) => {
   );
 };
 
-export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
-  const url = metadata?.asset?.video?.optimized?.uri || metadata?.asset?.video?.raw?.uri;
-  const cover = metadata?.asset?.cover?.optimized?.uri || metadata?.asset?.cover?.raw?.uri;
+export const VideoView = ({ metadata }: { metadata: VideoMetadataDetails }) => {
+  const url = metadata?.video?.item
+  const cover = metadata?.video.cover
 
   return (
     <div>
@@ -97,11 +80,11 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataV3 }) => {
   );
 };
 
-export const AudioView = ({ metadata }: { metadata: AudioMetadataV3 }) => {
-  const url = metadata?.asset?.audio?.optimized?.uri || metadata?.asset?.audio?.raw?.uri;
-  const cover = metadata?.asset.cover?.optimized?.uri || metadata?.asset?.cover?.raw?.uri;
-  const artist = metadata?.asset?.artist;
-  const title = metadata?.title;
+export const AudioView = ({ metadata }: { metadata: AudioMetadataDetails }) => {
+  const url = metadata?.audio?.item
+  const cover = metadata?.audio.cover
+  const artist = metadata?.audio.artist
+  const title = metadata?.title
 
   return (
     <div>
@@ -111,7 +94,7 @@ export const AudioView = ({ metadata }: { metadata: AudioMetadataV3 }) => {
   );
 };
 
-export const LinkView = ({ metadata }: { metadata: LinkMetadataV3 }) => {
+export const LinkView = ({ metadata }: { metadata: LinkMetadataDetails }) => {
   return (
     <div>
       <ContentView content={metadata.content} />
@@ -124,19 +107,19 @@ export const LinkView = ({ metadata }: { metadata: LinkMetadataV3 }) => {
   );
 };
 
-export const LiveStreamView = ({ metadata }: { metadata: LiveStreamMetadataV3 }) => {
+export const LiveStreamView = ({ metadata }: { metadata: LiveStreamMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const CheckingInView = ({ metadata }: { metadata: CheckingInMetadataV3 }) => {
+export const CheckingInView = ({ metadata }: { metadata: CheckingInMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const EmbedView = ({ metadata }: { metadata: EmbedMetadataV3 }) => {
+export const EmbedView = ({ metadata }: { metadata: EmbedMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const EventView = ({ metadata }: { metadata: EventMetadataV3 }) => {
+export const EventView = ({ metadata }: { metadata: EventMetadataDetails }) => {
   return (
     <div>
       <h1>Event</h1>
@@ -147,22 +130,22 @@ export const EventView = ({ metadata }: { metadata: EventMetadataV3 }) => {
   );
 };
 
-export const MintView = ({ metadata }: { metadata: MintMetadataV3 }) => {
+export const MintView = ({ metadata }: { metadata: MintMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const SpaceView = ({ metadata }: { metadata: SpaceMetadataV3 }) => {
+export const SpaceView = ({ metadata }: { metadata: SpaceMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const StoryView = ({ metadata }: { metadata: StoryMetadataV3 }) => {
+export const StoryView = ({ metadata }: { metadata: StoryMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const TransactionView = ({ metadata }: { metadata: TransactionMetadataV3 }) => {
+export const TransactionView = ({ metadata }: { metadata: TransactionMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const ThreeDView = ({ metadata }: { metadata: ThreeDMetadataV3 }) => {
+export const ThreeDView = ({ metadata }: { metadata: ThreeDMetadataDetails }) => {
   return <ContentView content={metadata.content} />;
 };

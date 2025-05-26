@@ -41,7 +41,7 @@ export function lensItemToPost(item: any): Post | null {
   console.log(item);
 
   // Handle different post types in Lens v3
-  if (item.__typename === "Repost" || item.__typename === "Mirror") {
+  if (item.__typename === "Repost") {
     return null;
   }
 

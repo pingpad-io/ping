@@ -21,7 +21,9 @@ interface LensIdToken {
   iat: number; // Issued at timestamp
   exp: number; // Expiration timestamp
   sid: string; // Session ID
-  act?: string; // Optional account address for managers
+  act?: {
+    sub: string;
+  };
   "tag:lens.dev,2024:sponsored"?: boolean;
   "tag:lens.dev,2024:role"?: "ACCOUNT_OWNER" | "ACCOUNT_MANAGER" | "ONBOARDING_USER" | "BUILDER";
 }
@@ -43,7 +45,7 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
       sessionClient: null,
     };
   }
-  
+
   sessionClient = client as SessionClient;
   const credentials = await sessionClient.getCredentials();
 
@@ -57,9 +59,10 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
     throw new Error("Invalid ID token");
   }
 
-  const address = decodedIdToken.sub;
+  console.log("decodedIdToken", decodedIdToken);
+  const address = decodedIdToken.act.sub;
   const authenticatedUser = await sessionClient.getAuthenticatedUser();
-  
+
   if (authenticatedUser.isErr() || !authenticatedUser.value) {
     console.error("Profile not found, returning empty profile");
     return {

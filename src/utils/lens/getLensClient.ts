@@ -1,10 +1,10 @@
-import { AnyClient, PublicClient, testnet } from "@lens-protocol/client";
+import { AnyClient, mainnet, PublicClient, testnet } from "@lens-protocol/client";
 import { clientCookieStorage, cookieStorage } from "./storage";
 
 const isServer = typeof window === "undefined";
 
 const publicClient = PublicClient.create({
-  environment: testnet,
+  environment: mainnet,
   origin: "https://pingpad.io",
   storage: isServer ? cookieStorage : clientCookieStorage,
 });
@@ -35,7 +35,7 @@ export const getOnboardingClient = async (address: string, signMessage: (message
 
   const authenticated = await publicClient.login({
     onboardingUser: {
-      app: "0xC4149776CD7AA7E7035720Bfe884060BA1CE4A1c",
+      app: "0x30d66188F860374cF8AC8A4354E7f537532ed13b",
       wallet: address,
     },
     signMessage,
@@ -59,7 +59,7 @@ export const getAccountOwnerClient = async (
   const authenticated = await publicClient.login({
     accountOwner: {
       account: accountAddress,
-      app: "0xC4149776CD7AA7E7035720Bfe884060BA1CE4A1c",
+      app: "0x30d66188F860374cF8AC8A4354E7f537532ed13b",
       owner: ownerAddress,
     },
     signMessage,
