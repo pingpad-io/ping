@@ -163,7 +163,9 @@ async function createPost(client, contentUri, replyingTo) {
   if (replyingTo) {
     return await post(client, {
       contentUri,
-      commentOn: replyingTo
+      commentOn: {
+        post: replyingTo,
+      },
     });
   }
   return await post(client, { contentUri });
