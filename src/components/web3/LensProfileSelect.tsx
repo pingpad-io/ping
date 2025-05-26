@@ -91,7 +91,6 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
       
       // Get account details from authenticated user
       const accountDetails = authenticatedUser.value as unknown as { address: string };
-      const username = accountDetails.address;
       
       // Store the refresh token in cookies
       if (credentials.value.refreshToken) {
@@ -104,7 +103,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
       setDialogOpen(false);
       window.location.reload();
 
-      toast.success(`Welcome @${username}`, { description: "login successful!" });
+      toast.success(`Welcome to Ping!`, { description: "login successful!" });
     } catch (err) {
       console.error(err instanceof Error ? err.message : 'Login failed');
       toast.error("Login failed", { 
