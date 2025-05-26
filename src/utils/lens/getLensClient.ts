@@ -35,7 +35,7 @@ export const getOnboardingClient = async (address: string, signMessage: (message
 
   const authenticated = await publicClient.login({
     onboardingUser: {
-      app: "0xF9F360bb2bFA920a19cB5DedFd4d2d9e7ecc5904",
+      app: "0xC4149776CD7AA7E7035720Bfe884060BA1CE4A1c",
       wallet: address,
     },
     signMessage,
@@ -59,7 +59,7 @@ export const getAccountOwnerClient = async (
   const authenticated = await publicClient.login({
     accountOwner: {
       account: accountAddress,
-      app: "0xF9F360bb2bFA920a19cB5DedFd4d2d9e7ecc5904",
+      app: "0xC4149776CD7AA7E7035720Bfe884060BA1CE4A1c",
       owner: ownerAddress,
     },
     signMessage,

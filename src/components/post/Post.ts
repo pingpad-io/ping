@@ -1,5 +1,6 @@
-import type { AnyPost, PostMetadata } from "@lens-protocol/client";
+import type { AnyPost } from "@lens-protocol/client";
 import { type User, lensAcountToUser } from "../user/User";
+import { PostMetadata } from "@lens-protocol/metadata";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number> & {
@@ -37,6 +38,7 @@ export type Post = {
 
 export function lensItemToPost(item: any): Post | null {
   if (!item) return null;
+  console.log(item);
 
   // Handle different post types in Lens v3
   if (item.__typename === "Repost" || item.__typename === "Mirror") {
@@ -52,7 +54,7 @@ export function lensItemToPost(item: any): Post | null {
   try {
     const author = item.by || item.author;
     const timestamp = item.createdAt || item.timestamp;
-    
+
     post = {
       id: item.id,
       author: lensAcountToUser(author),
@@ -97,19 +99,19 @@ function getReactions(post: any): Partial<PostReactions> {
 
 function getCommentsFromItem(post: any) {
   let comments = [];
-  
+
   // Handle TimelineItem comments
   if (post.__typename === "TimelineItem" && post.comments) {
     return post.comments.map(processComment);
   }
-  
+
   // Handle FeedItem comments
   if (post.__typename === "FeedItem" && post.comments) {
     return post.comments
       .filter((comment) => comment.commentOn?.id === post.root?.id)
       .map(processComment);
   }
-  
+
   return comments;
 }
 
@@ -129,7 +131,7 @@ function processComment(comment: any) {
 
 function getReplyFromItem(origin: any) {
   if (!origin) return undefined;
-  
+
   // Handle Comment type
   if (origin.__typename === "Comment" && origin.commentOn) {
     return {
@@ -145,7 +147,7 @@ function getReplyFromItem(origin: any) {
       __typename: "Post" as const,
     } as Post;
   }
-  
+
   // Handle Quote type
   if (origin.__typename === "Quote" && origin.quoteOn) {
     return {
@@ -161,7 +163,7 @@ function getReplyFromItem(origin: any) {
       __typename: "Post" as const,
     } as Post;
   }
-  
+
   return undefined;
 }
 

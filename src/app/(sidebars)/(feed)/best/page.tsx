@@ -33,7 +33,7 @@ const getInitialFeed = async () => {
 
     return { posts, nextCursor: items.pageInfo.next };
   }
-  throw new Error("Unauthorized TT");
+  // throw new Error("Unauthorized TT");
 };
 
 export default best;

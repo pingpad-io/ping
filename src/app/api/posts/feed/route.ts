@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor") || undefined;
   const type = searchParams.get("type") || "post";
+  console.log("cursor", cursor, "type", type);
 
   // let publicationType: PublicationType;
   // switch (type) {
@@ -41,11 +42,12 @@ export async function GET(req: NextRequest) {
     //   cursor,
     // })
 
-    const data = await fetchTimeline(client, { 
+    const data = await fetchTimeline(client, {
       account: profileId,
       cursor,
     })
 
+    console.log(data);
     if (data.isErr()) {
       return NextResponse.json({ error: data.error.message }, { status: 500 });
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLazyProfile } from "@lens-protocol/react-web";
+import { useAccount } from "@lens-protocol/react";
 import { type PropsWithChildren, useState } from "react";
 import { FollowButton } from "../FollowButton";
 import { LoadingSpinner } from "../LoadingSpinner";
@@ -11,15 +11,13 @@ import { type User, lensAcountToUser } from "./User";
 import { UserAvatar } from "./UserAvatar";
 
 export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: string }) => {
-  const { data, error, loading, execute } = useLazyProfile();
+  const { data, error, loading } = useAccount({ username: { localName: handle } });
   const [user, setUser] = useState<User | null>(null);
 
   const loadCard = () => {
-    execute({ forHandle: `lens/${handle}` }).then((res) => {
-      if (res.isSuccess()) {
-        setUser(lensAcountToUser(res.unwrap()));
-      }
-    });
+    if (data) {
+      setUser(lensAcountToUser(data));
+    }
   };
 
   // const _avatar = user?.profilePictureUrl;
@@ -33,7 +31,7 @@ export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: st
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
       <HoverCardContent className="w-full max-w-sm" side="top">
         {(loading || !user) && <LoadingSpinner />}
-        {error && <div>Error: {error.message}</div>}
+        {error && <div>Error: {error}</div>}
         {user && (
           <div className="flex flex-col gap-2">
             <div className="flex flex-row items-center gap-2 text-sm">

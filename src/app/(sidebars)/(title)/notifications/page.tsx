@@ -22,7 +22,11 @@ const getInitialFeed = async () => {
   const { client, isAuthenticated } = await getServerAuth();
   
   if (!isAuthenticated) {
-    throw new Error("Unauthorized TT");
+    // throw new Error("Unauthorized TT");
+    return {
+      notifications: [],
+      nextCursor: undefined
+    };
   }
   
   try {

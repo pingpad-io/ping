@@ -3,6 +3,7 @@ import { fetchTimeline, fetchPosts } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
+import { getBaseUrl } from "~/utils/getBaseUrl";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const authenticatedEndpoint = "/api/posts/feed";
@@ -22,12 +23,13 @@ const home = async () => {
 
 const getInitialFeed = async () => {
   const { client, isAuthenticated, profileId } = await getServerAuth();
-  
+
   try {
     let data;
-    
+
     if (client.isSessionClient()) {
       const response = await fetch(`/api/posts/feed`);
+      console.log("response", response);
       if (!response.ok) {
         throw new Error("Failed to fetch feed");
       }
@@ -40,14 +42,14 @@ const getInitialFeed = async () => {
           feeds: [{ globalFeed: true }],
         },
       });
-      
+
       if (result.isErr()) {
         throw new Error(result.error.message);
       }
-      
+
       data = result.value;
     }
-    
+
     const posts = data.items.map(lensItemToPost);
     return { posts, nextCursor: data.pageInfo.next };
   } catch (error) {

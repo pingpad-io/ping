@@ -38,7 +38,11 @@ const getInitialFeed = async () => {
       throw new Error("Failed to fetch posts: " + error.message);
     }
   }
-  throw new Error("Unauthorized TT");
+  // throw new Error("Unauthorized TT");
+  return {
+    posts: [],
+    nextCursor: undefined
+  };
 };
 
 export default exploreLatest;

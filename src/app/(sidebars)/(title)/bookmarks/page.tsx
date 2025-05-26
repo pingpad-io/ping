@@ -32,7 +32,11 @@ const getInitialFeed = async () => {
       throw new Error(error.message);
     }
   }
-  throw new Error("Unauthorized TT");
+  // throw new Error("Unauthorized TT");
+  return {
+    bookmarks: [],
+    nextCursor: undefined
+  };
 };
 
 export default bookmarks;

@@ -1,4 +1,5 @@
-import { LimitType } from "@lens-protocol/client";
+import { PostType } from "@lens-protocol/client";
+import { fetchPosts } from "@lens-protocol/client/actions";
 import type { Metadata } from "next";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
@@ -28,18 +29,33 @@ const getInitialData = async (handle: string) => {
   const { client } = await getServerAuth();
   const user = await getUserByUsername(handle);
 
-  const lensPosts = await client.publication
-    .fetchAll({
-      where: { from: [user.id] },
-      limit: LimitType.Ten,
-    })
-    .catch(() => {
-      throw new Error(`☆⌒(>。<) Couldn't get user posts`);
-    });
+  // const lensPosts = await client.publication
+  //   .fetchAll({
+  //     where: { from: [user.id] },
+  //     limit: LimitType.Ten,
+  //   })
+  //   .catch(() => {
+  //     throw new Error(`☆⌒(>。<) Couldn't get user posts`);
+  //   });
 
-  const posts = lensPosts.items.map(lensItemToPost);
+  const lensPosts = await fetchPosts(client, {
+    filter: {
+      postTypes: [PostType.Root],
+      feeds: [{ globalFeed: true }],
+    },
+  }).unwrapOr(null);
 
-  return { user, posts, nextCursor: lensPosts.pageInfo.next };
+  if (!lensPosts) {
+    return {
+      user,
+      posts: [],
+      nextCursor: undefined
+    };
+  }
+
+  const posts = lensPosts.value.items.map(lensItemToPost);
+
+  return { user, posts, nextCursor: lensPosts.value.pageInfo.next };
 };
 
 export default user;

@@ -67,12 +67,12 @@ export function lensAcountToUser(account: Account): User {
     profilePictureUrl: imageUrl,
     address: account.owner,
     createdAt: account.createdAt,
-    description: account?.metadata.bio,
+    description: account?.metadata?.bio,
     interests,
     actions,
-    name: account?.metadata.name,
-    handle: account.username?.localName || '',
-    namespace: account.username?.namespace?.address || '',
+    name: account?.metadata?.name,
+    handle: account.username?.localName,
+    namespace: account.username?.namespace?.address,
     stats,
   };
 }

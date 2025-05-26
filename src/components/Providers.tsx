@@ -1,7 +1,7 @@
 "use client";
 
 import { chains } from "@lens-network/sdk/viem";
-import { LensProvider, production, type LensConfig } from "@lens-protocol/react-web";
+import { AnyClient, LensProvider, testnet, PublicClient } from "@lens-protocol/react";
 import { bindings } from "@lens-protocol/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
@@ -66,12 +66,6 @@ const wagmiConfig = createConfig({
 
 const queryClient = new QueryClient();
 
-const lensConfig: LensConfig = {
-  bindings: bindings(wagmiConfig),
-  environment: production,
-  storage: localStorage(),
-};
-
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
@@ -83,11 +77,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return null;
   }
 
+  const publicClient = PublicClient.create({
+    environment: testnet,
+  });
+
   return (
     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <LensProvider config={lensConfig}>{children}</LensProvider>
+          <LensProvider client={publicClient}>{children}</LensProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </ThemeProvider>
