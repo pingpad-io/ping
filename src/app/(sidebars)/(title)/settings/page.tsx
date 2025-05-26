@@ -5,7 +5,6 @@ import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
-import { InterestsList } from "~/components/user/UserInterests";
 import { ConnectedWalletLabel } from "~/components/web3/ConnnectedWalletLabel";
 import { LogoutButton } from "~/components/web3/WalletButtons";
 import { getServerAuth } from "~/utils/getServerAuth";

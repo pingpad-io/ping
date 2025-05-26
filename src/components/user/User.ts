@@ -1,9 +1,8 @@
 import type { Account } from "@lens-protocol/client";
-import type { ProfileInterestTypes } from "@lens-protocol/react-web";
 
 export type UserInterests = {
   category: string;
-  value: ProfileInterestTypes;
+  value: string;
   label: string;
 };
 
@@ -77,13 +76,11 @@ export function lensAcountToUser(account: Account): User {
   };
 }
 
-// Capitalizes each word in a string
 export function capitalize(label: string): string {
   return label.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-// Processes raw interest types into structured interests array
-export function parseInterests(categories: ProfileInterestTypes[]): UserInterests[] {
+export function parseInterests(categories: string[]): UserInterests[] {
   return categories.map((item) => {
     const [category, subcategory] = item.split("__");
     const label = capitalize(subcategory ? subcategory.replace(/_/g, " ") : category.replace(/_/g, " "));

@@ -1,16 +1,16 @@
 "use client";
 
-import { useSearchProfiles } from "@lens-protocol/react-web";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { lensAcountToUser } from "./user/User";
+import { useAccounts } from "@lens-protocol/react";
 
 export function HandleSearch({ query, maxResults = 10 }: { query: string; maxResults?: number }) {
-  const { data: profiles, loading, error } = useSearchProfiles({ query });
+  const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query } } });
 
   if (!query) return null;
-  if (error && query) throw new Error(error.message);
+  if (error && query) throw new Error(error);
 
-  const users = profiles?.slice(0, maxResults).map(lensAcountToUser);
+  const users = profiles?.items?.slice(0, maxResults).map(lensAcountToUser);
   const list = users.map((user) => user.name);
 
   if (loading) return <LoadingSpinner />;

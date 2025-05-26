@@ -3,7 +3,6 @@
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { textOnly } from "@lens-protocol/metadata";
-import { useSearchProfiles } from "@lens-protocol/react-web";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { SendHorizontalIcon, SmileIcon } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -22,11 +21,12 @@ import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
+import { useAccounts } from "@lens-protocol/react";
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
-  const { data: profiles, loading, error } = useSearchProfiles({ query: query.slice(1) });
+  const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const users = profiles?.slice(0, 10).map(lensAcountToUser) || [];
+  const users = profiles?.items?.slice(0, 10).map(lensAcountToUser) || [];
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -55,7 +55,7 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
     >
       {loading && <p className="p-2 text-center">Loading...</p>}
-      {error && <p className="p-2 text-center">Error: {error.message}</p>}
+      {error && <p className="p-2 text-center">Error: {error}</p>}
       {!loading && !error && users.length === 0 && <p className="p-2 text-center">No users found</p>}
       {users.map((user, index) => (
         <Card
@@ -111,7 +111,6 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
     try {
       metadata = textOnly({
         content: data.content,
-        appId: "ping",
         tags: tags,
       });
     } catch (error) {
@@ -228,7 +227,6 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
 
       form.setValue("content", newContent, { shouldValidate: true });
 
-      // Update cursor position
       setTimeout(() => {
         const newCursorPosition = cursorPosition + emoji.emoji.length;
         textarea.current.setSelectionRange(newCursorPosition, newCursorPosition);

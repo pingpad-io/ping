@@ -12,7 +12,7 @@ const config = {
   transpilePackages: ['@lens-protocol', 'lucide-react'],
 
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   images: {
     remotePatterns: [
