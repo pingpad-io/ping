@@ -3,13 +3,16 @@
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { textOnly } from "@lens-protocol/metadata";
+import { post, fetchPost } from "@lens-protocol/client/actions";
+import { useSessionClient } from "@lens-protocol/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { SendHorizontalIcon, SmileIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useWalletClient } from "wagmi";
 import * as z from "zod";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { getCommunityTags } from "../communities/Community";
@@ -22,6 +25,10 @@ import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { useAccounts } from "@lens-protocol/react";
+import { storageClient } from "~/utils/lens/storage";
+import { handleOperationWith } from '@lens-protocol/client/viem';
+import { getLensClient } from "~/utils/lens/getLensClient";
+
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
@@ -88,6 +95,9 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
   const placeholderText = replyingTo ? "write your reply..." : "write a new post...";
   const pathname = usePathname().split("/");
   const community = pathname[1] === "c" ? pathname[2] : "";
+  const router = useRouter();
+
+  const { data: walletClient } = useWalletClient();
 
   const FormSchema = z.object({
     content: z.string().max(3000, {
@@ -102,10 +112,12 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     setPosting(true);
+    const toastId = Math.random().toString();
 
     const tags = getCommunityTags(community);
+    const client = await getLensClient();
 
     let metadata;
     try {
@@ -119,22 +131,50 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
       return;
     }
 
-    fetch(`/api/posts?${replyingTo ? `replyingTo=${replyingTo.id}&` : ""}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(metadata),
-    }).then((res) => {
-      if (res.ok) {
-        toast.success("Post created successfully!");
+    try {
+      toast.loading('Uploading metadata...', { id: toastId });
+
+      const metadataFile = new File([JSON.stringify(metadata)], 'metadata.json', { type: 'application/json' });
+      const { uri: contentUri } = await storageClient.uploadFile(metadataFile);
+
+      toast.loading('Creating post on Lens...', { id: toastId });
+      console.log('Uploaded metadata to grove storage:', contentUri);
+
+      if (!client || !client.isSessionClient()) {
+        toast.error('Not authenticated', { id: toastId });
+        setPosting(false);
+        return;
+      }
+
+      const postData = replyingTo ? {
+          contentUri,
+          commentOn: {
+            post: replyingTo.id,
+          },
+        } : {
+          contentUri,
+        };
+
+      const result = await post(client, postData).andThen(
+        handleOperationWith(walletClient))
+        .andThen((client).waitForTransaction)
+        .andThen((txHash) => fetchPost(client, { txHash }));
+
+      if (result.isOk()) {
+        console.log('Post created successfully:', result.value);
+        toast.success('Post published successfully!', { id: toastId });
         form.setValue("content", "");
         resetHeight();
       } else {
-        toast.error(res.statusText);
+        console.error('Failed to create post:', result.error);
+        toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
       }
+    } catch (error) {
+      console.error('Error creating post:', error);
+      toast.error(`Failed to create post: ${error.message}`, { id: toastId });
+    } finally {
       setPosting(false);
-    });
+    }
   }
 
   const resetHeight = () => {

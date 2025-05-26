@@ -144,7 +144,6 @@ function validateDataSize(data: any, handle: string) {
 
 async function uploadMetadata(data: any, handle: string) {
   try {
-    // Use storageClient.uploadAsJson instead of S3
     const result = await storageClient.uploadAsJson(data);
 
     if (!result || !result.uri) {
