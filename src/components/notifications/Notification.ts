@@ -1,4 +1,4 @@
-import type { Notification as LensNotification, TippingAccountActionExecuted, UnknownAccountActionExecuted } from "@lens-protocol/client";
+import type { Account, Notification as LensNotification, TippingAccountActionExecuted, UnknownAccountActionExecuted } from "@lens-protocol/client";
 import { type Post, lensItemToPost } from "../post/Post";
 import { type User, lensAcountToUser } from "../user/User";
 
@@ -15,7 +15,7 @@ export type Notification = {
 };
 
 export function lensNotificationToNative(item: LensNotification): Notification {
-  let profiles: any[] = [];
+  let profiles: Account[] = [];
   let actedOn: any;
   let createdAt: string;
   let type: NotificationType;
@@ -33,7 +33,7 @@ export function lensNotificationToNative(item: LensNotification): Notification {
       break;
     case "ReactionNotification":
       id = item.id;
-      profiles = item.reactions.map((reaction) => reaction.reactions);
+      profiles = item.reactions.map((reaction) => reaction.account);
       actedOn = item.post || item.post;
       createdAt = item.reactions[0]?.reactions[0].reactedAt || new Date().toISOString();
       type = "Reaction";
@@ -43,7 +43,7 @@ export function lensNotificationToNative(item: LensNotification): Notification {
       break;
     case "FollowNotification":
       id = item.id;
-      profiles = item.followers || [item.followers[0]];
+      profiles = item.followers.map((follower) => follower.account);
       actedOn = undefined;
       createdAt = item.followers[0].followedAt || new Date().toISOString();
       type = "Follow";
@@ -69,6 +69,13 @@ export function lensNotificationToNative(item: LensNotification): Notification {
       actedOn = item.quote || item.quote;
       createdAt = item.quote?.timestamp || new Date().toISOString();
       type = "Quote";
+      break;
+    case "PostActionExecutedNotification":
+      id = item.id;
+      profiles = [item.post?.author];
+      actedOn = item.post || item.post;
+      createdAt = item.post?.timestamp || new Date().toISOString();
+      type = "Action";
       break;
     case "AccountActionExecutedNotification":
       id = item.id;

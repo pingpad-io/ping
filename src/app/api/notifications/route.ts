@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       const resultResponse = await fetchNotifications(sessionClient, {
         cursor: cursor || undefined,
         filter: {
-          timeBasedAggregation: true
+          feeds: [{ globalFeed: true }]
         },
       });
 
@@ -33,10 +33,10 @@ export async function GET(req: NextRequest) {
       const notifications = result.items.map(lensNotificationToNative);
 
       return new Response(
-        JSON.stringify({ 
-          data: notifications, 
-          nextCursor: result.pageInfo.next 
-        }), 
+        JSON.stringify({
+          data: notifications,
+          nextCursor: result.pageInfo.next
+        }),
         { status: 200 }
       );
     } catch (error) {
@@ -46,9 +46,9 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("Notifications API error:", error);
     return new Response(
-      JSON.stringify({ 
-        error: `Failed to fetch notifications: ${error.message || "Unknown error"}` 
-      }), 
+      JSON.stringify({
+        error: `Failed to fetch notifications: ${error.message || "Unknown error"}`
+      }),
       { status: 500 }
     );
   }
