@@ -30,7 +30,7 @@ export default async function Menu() {
   if (!profileId) {
     return (
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 sm:left-4 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-0 z-50">
-        <div className="flex flex-row sm:flex-col items-center gap-2 md:gap-6 bg-background/80 backdrop-blur-md rounded-2xl p-2 shadow-lg">
+        <div className="flex flex-row sm:flex-col items-center gap-4 md:gap-6 bg-background/80 backdrop-blur-md rounded-2xl">
           <Link href="/home">
             <Button variant="ghost" size="icon" className="w-10 h-10">
               <AtSign size={20} strokeWidth={2.5} />
@@ -46,7 +46,7 @@ export default async function Menu() {
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 sm:left-4 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-0 z-50">
-      <div className="flex flex-row sm:flex-col items-center gap-4 md:gap-6 bg-background/80 backdrop-blur-md rounded-2xl p-2 shadow-lg">
+      <div className="flex flex-row sm:flex-col items-center gap-4 md:gap-6 bg-background/80 backdrop-blur-md rounded-2xl">
         <Link href="/home">
           <Button variant="ghost" size="icon" className="w-10 h-10">
             <AtSign size={20} strokeWidth={2.5} />

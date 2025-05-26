@@ -1,7 +1,7 @@
 "use client";
 
 import { useLogout } from "@lens-protocol/react";
-import { GlobeIcon, LogInIcon, UserMinusIcon } from "lucide-react";
+import { GlobeIcon, Grid2X2, LogInIcon, SquareIcon, UserMinusIcon, UsersIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type PropsWithChildren, useState } from "react";
 import { toast } from "sonner";
@@ -27,14 +27,24 @@ export function ConnectWalletButton() {
   const { isConnected: walletConnected } = useAccount();
 
   const connectorList = connectors.map((connector) => {
-    if (connector.id !== "injected" && connector.id !== "walletConnect") return null;
-    const name = connector.id === "injected" ? "Browser Wallet" : "Wallet Connect";
-    const icon =
-      connector.id === "injected" ? (
-        <GlobeIcon key={connector.uid} strokeWidth={1.1} size={26} />
-      ) : (
-        <WalletConnectIcon key={connector.uid} />
-      );
+    if (connector.id !== "injected" && connector.id !== "walletConnect" && connector.id !== "familyAccountsProvider") return null;
+
+    let name: string;
+    let icon: JSX.Element;
+
+    if (connector.id === "injected") {
+      name = "Browser Wallet";
+      icon = <GlobeIcon key={connector.uid} strokeWidth={1.1} size={26} />;
+    } else if (connector.id === "walletConnect") {
+      name = "Wallet Connect";
+      icon = <WalletConnectIcon key={connector.uid} />;
+    } else if (connector.id === "familyAccountsProvider") {
+      name = "Continue with Family";
+      icon = <Grid2X2 key={connector.uid} strokeWidth={1.1} size={26} />;
+    } else {
+      return null;
+    }
+
     return (
       <Button
         className="w-full flex flex-row justify-between"
@@ -51,9 +61,9 @@ export function ConnectWalletButton() {
   return (
     <Dialog onOpenChange={(open) => setDialogOpen(open)} open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm_icon" onClick={(_e) => setDialogOpen(true)}>
-          <div className="hidden sm:flex text-xl -mt-1">connect</div>
-          <LogInIcon className="sm:ml-2" size={20} />
+        <Button size="sm" className="w-10 h-10" onClick={(_e) => setDialogOpen(true)}>
+          {/* <div className="hidden sm:flex text-xl -mt-1">connect</div> */}
+          <LogInIcon size={20} strokeWidth={2.5} />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-sm flex flex-col justify-center">
