@@ -61,25 +61,18 @@ export default async function Menu() {
 export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => {
   return (
     <>
-      <Link href={"/explore/curated"}>
-        <Button variant="ghost" size="sm_icon">
-          <div className="hidden sm:flex -mt-1">explore</div>
-          <GlobeIcon className="sm:ml-2" size={21} />
-        </Button>
-      </Link>
-
-      <Link href={"/communities"} className="hidden sm:flex">
-        <Button variant="ghost" size="sm_icon">
-          <div className="hidden sm:flex -mt-1">communities</div>
-          <UsersIcon className="sm:ml-2" size={21} />
-        </Button>
-      </Link>
+      {/* <Link href={"/communities"}  className="hidden sm:flex"> */}
+      {/* <Button variant="ghost" size="sm_icon" disabled>
+        <div className="hidden sm:flex -mt-1">communities</div>
+        <UsersIcon className="sm:ml-2" size={21} />
+      </Button> */}
+      {/* </Link> */}
 
       {/* <Link href={"/gov"}> */}
-      <Button variant="ghost" size="sm_icon" className="hidden sm:flex" disabled>
+      {/* <Button variant="ghost" size="sm_icon" className="hidden sm:flex" disabled>
         <div className="hidden sm:flex -mt-1">governance</div>
         <GavelIcon className="sm:ml-2" size={21} />
-      </Button>
+      </Button> */}
       {/* </Link> */}
 
       <Button variant="ghost" size="sm_icon" className="hidden sm:flex lg:hidden" disabled>

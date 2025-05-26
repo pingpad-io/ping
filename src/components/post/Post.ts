@@ -1,6 +1,7 @@
-import type { AnyPost } from "@lens-protocol/client";
+import type { AnyPost, Post as LensPost, Repost, TimelineItem } from "@lens-protocol/client";
 import { type User, lensAcountToUser } from "../user/User";
 import { PostMetadata } from "@lens-protocol/metadata";
+import { FeedItem } from "@lens-protocol/api-bindings";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number> & {
@@ -30,30 +31,27 @@ export type Post = {
   author: User;
   createdAt: Date;
   comments: Post[];
-  metadata: PostMetadata;
+  metadata: any;
   reactions?: Partial<PostReactions>;
   updatedAt?: Date;
   reply?: Post;
 };
 
-export function lensItemToPost(item: any): Post | null {
+export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
   if (!item) return null;
-  console.log(item);
 
-  // Handle different post types in Lens v3
   if (item.__typename === "Repost") {
     return null;
   }
 
-  // Handle TimelineItem type from fetchTimeline
   if (item.__typename === "TimelineItem") {
     return lensItemToPost(item.primary);
   }
 
   let post: Post;
   try {
-    const author = item.by || item.author;
-    const timestamp = item.createdAt || item.timestamp;
+    const author = item.author;
+    const timestamp = item.timestamp;
 
     post = {
       id: item.id,

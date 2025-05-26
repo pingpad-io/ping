@@ -36,16 +36,6 @@ const settings = async () => {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <Accordion className="w-full" type="multiple">
-              <AccordionItem value="interests">
-                <AccordionTrigger className="py-2">
-                  <h1 className="text-lg flex gap-2 items-center">
-                    <PawPrintIcon /> Interests
-                  </h1>
-                </AccordionTrigger>
-                <AccordionContent className="pl-4">
-                  <InterestsList activeInterests={user?.interests} />
-                </AccordionContent>
-              </AccordionItem>
               <AccordionItem value="wallet">
                 <AccordionTrigger className="py-2">
                   <h1 className="text-lg flex gap-2 items-center">

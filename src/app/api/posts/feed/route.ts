@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor") || undefined;
   const type = searchParams.get("type") || "post";
-  console.log("cursor", cursor, "type", type);
 
   // let publicationType: PublicationType;
   // switch (type) {
@@ -32,7 +31,6 @@ export async function GET(req: NextRequest) {
 
   try {
     const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
-    console.log(client, profileId, isAuthenticated)
 
     // if (!isAuthenticated || !sessionClient) {
     //   return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -46,7 +44,6 @@ export async function GET(req: NextRequest) {
       cursor,
     })
 
-    console.log(data);
     if (data.isErr()) {
       return NextResponse.json({ error: data.error.message }, { status: 500 });
     }

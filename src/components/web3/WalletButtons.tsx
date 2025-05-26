@@ -1,6 +1,6 @@
 "use client";
 
-import { useLogout } from "@lens-protocol/react-web";
+import { useLogout } from "@lens-protocol/react";
 import { GlobeIcon, LogInIcon, UserMinusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type PropsWithChildren, useState } from "react";
@@ -88,6 +88,7 @@ export function DisconnectWalletButton(props: PropsWithChildren) {
 export function LogoutButton() {
   const { execute: disconnect } = useLogout();
   const { isConnected } = useAccount();
+  const { disconnect: disconnectWallet } = useDisconnect();
   const router = useRouter();
 
   return (
@@ -95,7 +96,8 @@ export function LogoutButton() {
       variant="destructive"
       onClick={async () => {
         if (isConnected) {
-          disconnect();
+          // disconnect();
+          disconnectWallet();
         }
         await clearCookies();
         router.push("/home");

@@ -39,7 +39,6 @@ const getInitialFeed = async () => {
       if (result.isErr()) {
         throw new Error(result.error.message);
       }
-      console.log("result", result.value, profileId, address);
 
       data = result.value;
     } else {

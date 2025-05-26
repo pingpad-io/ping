@@ -96,9 +96,7 @@ export function lensNotificationToNative(item: LensNotification): Notification {
       break;
   }
 
-  // Filter out any null/undefined profiles
-  const validProfiles = profiles.filter(Boolean);
-  const who = validProfiles.map(lensAcountToUser);
+  const who = profiles.map(lensAcountToUser);
   const content = actedOn ? lensItemToPost(actedOn) : undefined;
 
   return {

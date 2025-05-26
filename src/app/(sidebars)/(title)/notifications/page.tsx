@@ -20,7 +20,7 @@ const notifications = async () => {
 
 const getInitialFeed = async () => {
   const { client, isAuthenticated } = await getServerAuth();
-  
+
   if (!isAuthenticated) {
     // throw new Error("Unauthorized TT");
     return {
@@ -28,9 +28,8 @@ const getInitialFeed = async () => {
       nextCursor: undefined
     };
   }
-  
+
   try {
-    // Try using the fetchNotifications action with sessionClient
     if (client.isSessionClient()) {
       const result = await fetchNotifications(client, {
         cursor: undefined,
@@ -39,23 +38,23 @@ const getInitialFeed = async () => {
           includeLowScore: false,
         }
       });
-      
+
       if (result.isErr()) {
         throw new Error(result.error.message);
       }
-      
+
       const notifications = result.value.items.map(lensNotificationToNative);
-      
-      return { 
-        notifications, 
-        nextCursor: result.value.pageInfo.next 
+
+      return {
+        notifications,
+        nextCursor: result.value.pageInfo.next
       };
     } else {
       throw new Error("Session client required for notifications");
     }
   } catch (error) {
     console.error("Error using fetchNotifications action:", error);
-    
+
     // We no longer need the fallback since the client.notifications.fetch() method
     // is deprecated in the new API. Instead, we'll throw an error.
     throw new Error("Failed to fetch notifications: " + (error.message || "Unknown error"));

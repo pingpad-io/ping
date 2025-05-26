@@ -3,6 +3,7 @@ import { fetchPostBookmarks } from "@lens-protocol/client/actions";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { PageSize } from "@lens-protocol/client";
 
 const endpoint = "/api/bookmarks";
 
@@ -20,7 +21,7 @@ const getInitialFeed = async () => {
   const { sessionClient, isAuthenticated } = await getServerAuth();
   if (isAuthenticated && sessionClient) {
     try {
-      const result = await fetchPostBookmarks(sessionClient, { pageSize: 25 });
+      const result = await fetchPostBookmarks(sessionClient, { pageSize: PageSize.Fifty });
 
       if (result.isErr()) throw new Error(result.error.message);
 

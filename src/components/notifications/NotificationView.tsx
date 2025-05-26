@@ -22,8 +22,6 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     </Link>
   );
 
-  console.log(item);
-
   // biome-ignore format: keep it compact
   const notificationTextMap = {
     Reaction: <> liked your{post} <HeartIcon className="-mb-0.5" size={16} /></>,
