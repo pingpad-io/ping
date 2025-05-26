@@ -72,10 +72,11 @@ class LocalStorageProvider implements IObservableStorageProvider {
 export function localStorage(): IObservableStorageProvider {
   return new LocalStorageProvider();
 }
+
 interface WagmiStorage {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): void;
-  removeItem(key: string): void;
+  getItem(key: string): string | null | Promise<string | null>;
+  setItem(key: string, value: string): void | Promise<void>;
+  removeItem(key: string): void | Promise<void>;
 }
 
 // Separate localStorage implementation for wagmi
@@ -89,14 +90,8 @@ export function wagmiLocalStorage(): WagmiStorage {
     },
     removeItem(key: string) {
       window?.localStorage.removeItem(key);
-    }
+    },
   };
-}
-
-interface WagmiStorage {
-  getItem(key: string): string | null | Promise<string | null>;
-  setItem(key: string, value: string): void | Promise<void>;
-  removeItem(key: string): void | Promise<void>;
 }
 
 export class CookieStorageProvider implements IObservableStorageProvider, WagmiStorage {
@@ -108,9 +103,9 @@ export class CookieStorageProvider implements IObservableStorageProvider, WagmiS
     this.cookies = new Map(
       (typeof document !== "undefined" ? document.cookie : "")
         .split(";")
-        .map(cookie => cookie.trim())
+        .map((cookie) => cookie.trim())
         .filter(Boolean)
-        .map(cookie => cookie.split("=").map(decodeURIComponent) as [string, string])
+        .map((cookie) => cookie.split("=").map(decodeURIComponent) as [string, string]),
     );
   }
 
@@ -120,12 +115,12 @@ export class CookieStorageProvider implements IObservableStorageProvider, WagmiS
 
   setItem(key: string, value: string): void {
     this.cookies.set(key, value);
-    
+
     const expires = new Date();
     expires.setDate(expires.getDate() + 30);
-    
+
     document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/`;
-    
+
     const subscribers = this.subscribers.get(key);
     if (subscribers) {
       const oldValue = this.getItem(key);
@@ -138,7 +133,7 @@ export class CookieStorageProvider implements IObservableStorageProvider, WagmiS
   removeItem(key: string): void {
     this.cookies.delete(key);
     document.cookie = `${encodeURIComponent(key)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
-    
+
     const subscribers = this.subscribers.get(key);
     if (subscribers) {
       const oldValue = this.getItem(key);
@@ -164,7 +159,7 @@ export class CookieStorageProvider implements IObservableStorageProvider, WagmiS
         if (subscribers.length === 0) {
           this.subscribers.delete(key);
         }
-      }
+      },
     };
   }
 }
