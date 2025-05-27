@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
-import { textOnly } from "@lens-protocol/metadata";
+import { image, MediaImageMimeType, textOnly } from "@lens-protocol/metadata";
 import { useSessionClient } from "@lens-protocol/react";
 import { useAccounts } from "@lens-protocol/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
@@ -124,15 +124,25 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
     let metadata: any;
     try {
       let content = data.content;
+
       if (imageFile) {
         toast.loading("Uploading image...", { id: toastId });
         const { uri } = await storageClient.uploadFile(imageFile);
-        content += `\n![image](${uri})`;
+        metadata = image({
+          content,
+          tags: tags,
+          image: {
+            item: uri,
+            type: imageFile.type as MediaImageMimeType,
+          },
+        });
+      } else {
+        metadata = textOnly({
+          content,
+          tags: tags,
+        });
       }
-      metadata = textOnly({
-        content,
-        tags: tags,
-      });
+
     } catch (error) {
       toast.error(error.message);
       setPosting(false);
