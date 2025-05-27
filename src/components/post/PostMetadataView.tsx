@@ -1,8 +1,42 @@
+import {
+  ArticleMetadata,
+  ArticleMetadataDetails,
+  AudioMetadata,
+  AudioMetadataDetails,
+  CheckingInMetadata,
+  CheckingInMetadataDetails,
+  EmbedMetadata,
+  EmbedMetadataDetails,
+  EventMetadata,
+  EventMetadataDetails,
+  ImageMetadata,
+  ImageMetadataDetails,
+  LinkMetadata,
+  LinkMetadataDetails,
+  LiveStreamMetadata,
+  LiveStreamMetadataDetails,
+  MintMetadata,
+  MintMetadataDetails,
+  PostMetadata,
+  PostMetadataSchemaId,
+  SpaceMetadata,
+  SpaceMetadataDetails,
+  StoryMetadata,
+  StoryMetadataDetails,
+  TextOnlyMetadata,
+  TextOnlyMetadataDetails,
+  ThreeDMetadata,
+  ThreeDMetadataDetails,
+  TransactionMetadata,
+  TransactionMetadataDetails,
+  VideoMetadata,
+  VideoMetadataDetails,
+} from "@lens-protocol/metadata";
 import { AudioPlayer } from "../AudioPlayer";
+import { ImageViewer } from "../ImageViewer";
 import Markdown from "../Markdown";
 import { VideoPlayer } from "../VideoPlayer";
 import { Badge } from "../ui/badge";
-import { PostMetadata, PostMetadataSchemaId, TextOnlyMetadata, ArticleMetadata, ImageMetadata, VideoMetadata, LinkMetadata, LiveStreamMetadata, CheckingInMetadata, EmbedMetadata, EventMetadata, MintMetadata, SpaceMetadata, StoryMetadata, TransactionMetadata, ThreeDMetadata, AudioMetadata, TextOnlyMetadataDetails, ArticleMetadataDetails, ImageMetadataDetails, VideoMetadataDetails, AudioMetadataDetails, LinkMetadataDetails, LiveStreamMetadataDetails, CheckingInMetadataDetails, EmbedMetadataDetails, EventMetadataDetails, MintMetadataDetails, SpaceMetadataDetails, StoryMetadataDetails, TransactionMetadataDetails, ThreeDMetadataDetails } from "@lens-protocol/metadata";  
 
 export const getPostMetadataView = (metadata: any) => {
   switch (metadata.__typename) {
@@ -54,23 +88,23 @@ export const ArticleView = ({ metadata }: { metadata: ArticleMetadataDetails }) 
 };
 
 export const ImageView = ({ metadata }: { metadata: ImageMetadataDetails }) => {
-  const url = metadata?.image?.item
-  const alt = metadata?.image.altTag
+  const url = metadata?.image?.item;
+  const alt = metadata?.image.altTag;
   const title = metadata?.title;
 
   return (
     <div>
       <ContentView content={metadata.content} />
       <div className="relative mt-2 w-full">
-        <img src={url} alt={alt || title} className="object-cover border w-full rounded-xl h-auto" />
+        <ImageViewer src={url} alt={alt || title} className="object-cover border w-full rounded-xl h-auto" />
       </div>
     </div>
   );
 };
 
 export const VideoView = ({ metadata }: { metadata: VideoMetadataDetails }) => {
-  const url = metadata?.video?.item
-  const cover = metadata?.video.cover
+  const url = metadata?.video?.item;
+  const cover = metadata?.video.cover;
 
   return (
     <div>
@@ -81,10 +115,10 @@ export const VideoView = ({ metadata }: { metadata: VideoMetadataDetails }) => {
 };
 
 export const AudioView = ({ metadata }: { metadata: AudioMetadataDetails }) => {
-  const url = metadata?.audio?.item
-  const cover = metadata?.audio.cover
-  const artist = metadata?.audio.artist
-  const title = metadata?.title
+  const url = metadata?.audio?.item;
+  const cover = metadata?.audio.cover;
+  const artist = metadata?.audio.artist;
+  const title = metadata?.title;
 
   return (
     <div>
