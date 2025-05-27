@@ -1,16 +1,9 @@
-import {
-  PageSize,
-  PostType,
-  type Result,
-} from "@lens-protocol/client";
-import { fetchTimeline, post, fetchPosts, deletePost, fetchPostsToExplore } from "@lens-protocol/client/actions";
+import { PageSize, PostType, type Result } from "@lens-protocol/client";
+import { deletePost, fetchPosts, fetchPostsToExplore, fetchTimeline, post } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { storageClient } from "~/utils/lens/storage";
-
-// Constants for file upload
-const MAX_DATA_SIZE = 1024 * 1024 * 2; // 2MB
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +28,9 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: data.error.message }, { status: 500 });
     }
 
-    const posts = data.value.items.map((item) => { return lensItemToPost(item); });
+    const posts = data.value.items.map((item) => {
+      return lensItemToPost(item);
+    });
 
     return NextResponse.json({ data: posts, nextCursor: data.value.pageInfo.next }, { status: 200 });
   } catch (error) {
@@ -65,7 +60,7 @@ export async function DELETE(req: NextRequest) {
 
     const result = await deletePost(client, { post: id });
 
-    if (result && typeof result.unwrapOr === 'function') {
+    if (result && typeof result.unwrapOr === "function") {
       const unwrapped = result.unwrapOr(null);
       if (!unwrapped) {
         throw new Error("Failed to delete post");
@@ -96,12 +91,10 @@ export async function POST(req: NextRequest) {
       throw new Error("Not authenticated with a session client");
     }
 
-    validateDataSize(data, handle);
-
     const contentUri = await uploadMetadata(data, handle);
     const postResult = await createPost(client, contentUri, replyingTo);
 
-    if (postResult && typeof postResult.unwrapOr === 'function') {
+    if (postResult && typeof postResult.unwrapOr === "function") {
       const unwrapped = postResult.unwrapOr(null);
       if (!unwrapped) {
         throw new Error("Failed to create post");
@@ -136,22 +129,18 @@ async function parseRequestBody(req: NextRequest) {
   return data;
 }
 
-function validateDataSize(data: any, handle: string) {
-  if (data && JSON.stringify(data).length > MAX_DATA_SIZE) {
-    throw new Error(`Data too large for ${handle}`);
-  }
-}
-
 async function uploadMetadata(data: any, handle: string) {
   try {
-    const result = await storageClient.uploadAsJson(data);
+    const metadataFile = new File([JSON.stringify(data)], "metadata.json", { type: "application/json" });
 
-    if (!result || !result.uri) {
+    const { uri } = await storageClient.uploadFile(metadataFile);
+
+    if (!uri) {
       throw new Error("Failed to upload metadata");
     }
 
-    console.log(`Uploaded metadata for ${handle} to ${result.uri}`);
-    return result.uri;
+    console.log(`Uploaded metadata for ${handle} to ${uri}`);
+    return uri;
   } catch (error) {
     console.error("Error uploading metadata:", error);
     throw new Error(`Failed to upload metadata: ${error.message}`);
