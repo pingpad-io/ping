@@ -2,11 +2,13 @@
 
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { fetchPost, post } from "@lens-protocol/client/actions";
+import { handleOperationWith } from "@lens-protocol/client/viem";
 import { textOnly } from "@lens-protocol/metadata";
-import { post, fetchPost } from "@lens-protocol/client/actions";
 import { useSessionClient } from "@lens-protocol/react";
+import { useAccounts } from "@lens-protocol/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
-import { SendHorizontalIcon, SmileIcon } from "lucide-react";
+import { ImageIcon, SendHorizontalIcon, SmileIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -14,21 +16,19 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
 import * as z from "zod";
+import { getLensClient } from "~/utils/lens/getLensClient";
+import { storageClient } from "~/utils/lens/storage";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { getCommunityTags } from "../communities/Community";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
-import { useAccounts } from "@lens-protocol/react";
-import { storageClient } from "~/utils/lens/storage";
-import { handleOperationWith } from '@lens-protocol/client/viem';
-import { getLensClient } from "~/utils/lens/getLensClient";
-
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
@@ -88,10 +88,12 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
 
 export default function PostWizard({ user, replyingTo }: { user?: User; replyingTo?: Post }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPosting, setPosting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const placeholderText = replyingTo ? "write your reply..." : "write a new post...";
   const pathname = usePathname().split("/");
   const community = pathname[1] === "c" ? pathname[2] : "";
@@ -119,10 +121,16 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
     const tags = getCommunityTags(community);
     const client = await getLensClient();
 
-    let metadata;
+    let metadata: any;
     try {
+      let content = data.content;
+      if (imageFile) {
+        toast.loading("Uploading image...", { id: toastId });
+        const { uri } = await storageClient.uploadFile(imageFile);
+        content += `\n![image](${uri})`;
+      }
       metadata = textOnly({
-        content: data.content,
+        content,
         tags: tags,
       });
     } catch (error) {
@@ -132,45 +140,48 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
     }
 
     try {
-      toast.loading('Uploading metadata...', { id: toastId });
+      toast.loading("Uploading metadata...", { id: toastId });
 
-      const metadataFile = new File([JSON.stringify(metadata)], 'metadata.json', { type: 'application/json' });
+      const metadataFile = new File([JSON.stringify(metadata)], "metadata.json", { type: "application/json" });
       const { uri: contentUri } = await storageClient.uploadFile(metadataFile);
 
-      toast.loading('Creating post on Lens...', { id: toastId });
-      console.log('Uploaded metadata to grove storage:', contentUri);
+      toast.loading("Creating post on Lens...", { id: toastId });
+      console.log("Uploaded metadata to grove storage:", contentUri);
 
       if (!client || !client.isSessionClient()) {
-        toast.error('Not authenticated', { id: toastId });
+        toast.error("Not authenticated", { id: toastId });
         setPosting(false);
         return;
       }
 
-      const postData = replyingTo ? {
+      const postData = replyingTo
+        ? {
           contentUri,
           commentOn: {
             post: replyingTo.id,
           },
-        } : {
+        }
+        : {
           contentUri,
         };
 
-      const result = await post(client, postData).andThen(
-        handleOperationWith(walletClient))
-        .andThen((client).waitForTransaction)
+      const result = await post(client, postData)
+        .andThen(handleOperationWith(walletClient))
+        .andThen(client.waitForTransaction)
         .andThen((txHash) => fetchPost(client, { txHash }));
 
       if (result.isOk()) {
-        console.log('Post created successfully:', result.value);
-        toast.success('Post published successfully!', { id: toastId });
+        console.log("Post created successfully:", result.value);
+        toast.success("Post published successfully!", { id: toastId });
         form.setValue("content", "");
         resetHeight();
+        setImageFile(null);
       } else {
-        console.error('Failed to create post:', result.error);
+        console.error("Failed to create post:", result.error);
         toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
       }
     } catch (error) {
-      console.error('Error creating post:', error);
+      console.error("Error creating post:", error);
       toast.error(`Failed to create post: ${error.message}`, { id: toastId });
     } finally {
       setPosting(false);
@@ -189,6 +200,11 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
       textarea.current.style.height = "auto";
       textarea.current.style.height = `${textarea.current.scrollHeight + 2}px`;
     }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setImageFile(file);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -249,7 +265,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
   );
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.ctrlKey && event.key === "Enter") {
+    if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
       onSubmit(form.getValues());
     }
     if (event.key === "Tab" && showPopup) {
@@ -302,6 +318,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
                     onKeyDown={onKeyDown}
                     placeholder={placeholderText}
                     disabled={isPosting}
+                    autoComplete="off"
                     className="min-h-8 resize-none mt-2 px-2 py-2"
                     ref={textarea}
                     rows={1}
@@ -327,6 +344,16 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
                     />
                   </DropdownMenuContent>
                 </DropdownMenu>
+                <input ref={fileInputRef} onChange={handleFileChange} type="file" accept="image/*" className="hidden" />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="p-0 m-0 rounded-full w-8 h-8 absolute right-[35px] bottom-[3px]"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <ImageIcon className="h-5 w-5 text-base-content" />
+                </Button>
                 {showPopup && (
                   <UserSearchPopup
                     query={searchQuery}
@@ -334,6 +361,11 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
                     onClose={() => setShowPopup(false)}
                     position={popupPosition}
                   />
+                )}
+                {imageFile && (
+                  <div className="mt-2">
+                    <img src={URL.createObjectURL(imageFile)} alt="selected" className="max-h-40 rounded-md" />
+                  </div>
                 )}
               </FormItem>
             )}
