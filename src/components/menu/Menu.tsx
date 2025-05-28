@@ -1,6 +1,6 @@
+import { fetchAccount } from "@lens-protocol/client/actions";
 import {
   AtSign,
-  BellIcon,
   BookmarkIcon,
   GavelIcon,
   GlobeIcon,
@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
-import { fetchAccount } from "@lens-protocol/client/actions";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import PostWizard from "../post/PostWizard";
@@ -21,6 +20,7 @@ import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
+import { NotificationButton } from "../notifications/NotificationButton";
 import { SearchButton } from "./Search";
 
 export default async function Menu() {
@@ -70,12 +70,7 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
         </Button>
       </Link> */}
 
-
-      <Link href="/notifications">
-        <Button variant="ghost" size="icon" className="w-10 h-10">
-          <BellIcon size={20} strokeWidth={2.5} />
-        </Button>
-      </Link>
+      <NotificationButton />
 
       <Dialog>
         <DialogTrigger asChild>
@@ -98,7 +93,6 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
           <BookmarkIcon size={20} strokeWidth={2.5} />
         </Button>
       </Link>
-
     </>
   );
 };

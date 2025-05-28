@@ -14,8 +14,24 @@ import { TruncatedText } from "../TruncatedText";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatarArray } from "../user/UserAvatar";
 import type { Notification } from "./Notification";
+import { useNotifications } from "./NotificationsContext";
+import { useEffect } from "react";
 
 export const NotificationView = ({ item }: { item: Notification }) => {
+  const { markAllAsRead, lastSeen } = useNotifications();
+
+  const notificationTime = new Date(item.createdAt).getTime();
+  const highlight = lastSeen !== null && notificationTime > lastSeen;
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (highlight) {
+        markAllAsRead();
+        console.log("Marked all as read");
+      }
+    }, 300);
+  }, [highlight]);
+
   const post = (
     <Link className="hover:underline" href={`/p/${item?.actedOn?.id}`}>
       post
@@ -34,16 +50,19 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   };
 
   const maxUsersPerNotification = 5;
-  const users = item.who.slice(0, maxUsersPerNotification);
-  const wasTruncated = item.who.length > maxUsersPerNotification;
-  const amountTruncated = item.who.length - maxUsersPerNotification;
+  const uniqueUsers = item.who.filter((user, index, arr) =>
+    arr.findIndex(u => u.id === user.id) === index
+  );
+  const users = uniqueUsers.slice(0, maxUsersPerNotification);
+  const wasTruncated = uniqueUsers.length > maxUsersPerNotification;
+  const amountTruncated = uniqueUsers.length - maxUsersPerNotification;
   const notificationText = notificationTextMap[item.type];
 
   const usersText = users.map((profile, i, arr) => {
     const userName = profile.name || profile.handle;
     const userLink = (
       <Link
-        key={profile.id + item.id + item.type}
+        key={profile.id + item.id + notificationTime}
         className="font-bold hover:underline whitespace-nowrap"
         href={`/u/${profile.handle}`}
       >
@@ -60,7 +79,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const content = item?.actedOn?.metadata && "content" in item.actedOn.metadata ? item?.actedOn?.metadata?.content : "";
 
   return (
-    <Card>
+    <Card className={highlight ? "bg-accent/20" : undefined}>
       <CardContent className="flex h-fit w-full flex-row gap-4 p-2 sm:p-4">
         <div className="shrink-0 grow-0 rounded-full">
           <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />
