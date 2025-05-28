@@ -59,8 +59,8 @@ export const PostView = ({
               {settings?.showBadges && (
                 <ReactionsList
                   isComment={settings.isComment}
-                  isReplyWizardOpen={isReplyWizardOpen}
-                  setReplyWizardOpen={setReplyWizardOpen}
+                  isCommentsOpen={isCommentsOpen}
+                  setCommentsOpen={setCommentsOpen}
                   collapsed={collapsed}
                   post={item}
                 />
@@ -70,7 +70,12 @@ export const PostView = ({
         </Card>
       </PostContextMenu>
       <PostReplyWizard level={settings.level + 1} isOpen={isReplyWizardOpen} post={item} />
-      <PostComments level={settings.level + 1} isOpen={isCommentsOpen} post={item} />
+      <PostComments
+        level={settings.level + 1}
+        isOpen={isCommentsOpen}
+        post={item}
+        onReply={() => setReplyWizardOpen(true)}
+      />
     </div>
   );
 };

@@ -21,14 +21,14 @@ export function ReactionsList({
   post,
   collapsed,
   isComment,
-  isReplyWizardOpen,
-  setReplyWizardOpen,
+  isCommentsOpen,
+  setCommentsOpen,
 }: {
   post: Post;
   collapsed: boolean;
   isComment: boolean;
-  isReplyWizardOpen: boolean;
-  setReplyWizardOpen: (open: boolean) => void;
+  isCommentsOpen: boolean;
+  setCommentsOpen: (open: boolean) => void;
 }) {
   const [reactions, setReactions] = useState<ReactionState>({
     score: post.reactions.Upvote - post.reactions.Downvote,
@@ -108,7 +108,7 @@ export function ReactionsList({
       <ReactionButton
         reactionType="Comment"
         reaction={reactions.Comment}
-        onClick={() => setReplyWizardOpen(!isReplyWizardOpen)}
+        onClick={() => setCommentsOpen(true)}
         disabled={!post.reactions.canComment}
       />
       <ReactionButton
@@ -158,9 +158,6 @@ export function ReactionsList({
           })}
         />
       </span>
-      <div className={`${post.reactions.canCollect ? "" : "hidden"}`}>
-        <ReactionButton reactionType="Collect" reaction={reactions.Collect} onClick={() => updateReaction("Collect")} />
-      </div>
 
       <div className="ml-auto">
         <div className="opacity-0 group-hover:opacity-100 duration-300 delay-150">
