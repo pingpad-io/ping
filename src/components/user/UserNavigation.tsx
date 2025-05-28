@@ -26,7 +26,7 @@ export const UserNavigation = ({ handle }: { handle: string }) => {
         <PlusCircleIcon size={18} />
         collection
       </NavigationItem> */}
-      <NavigationItem href={`/u/${handle}/gallery`} disabled>
+      <NavigationItem href={`/u/${handle}/gallery`}>
         <ImagesIcon size={18} />
         gallery
       </NavigationItem>
