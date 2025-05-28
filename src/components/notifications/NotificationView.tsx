@@ -15,7 +15,7 @@ import { Card, CardContent } from "../ui/card";
 import { UserAvatarArray } from "../user/UserAvatar";
 import type { Notification } from "./Notification";
 
-export const NotificationView = ({ item }: { item: Notification }) => {
+export const NotificationView = ({ item, highlight = false }: { item: Notification; highlight?: boolean }) => {
   const post = (
     <Link className="hover:underline" href={`/p/${item?.actedOn?.id}`}>
       post
@@ -60,7 +60,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const content = item?.actedOn?.metadata && "content" in item.actedOn.metadata ? item?.actedOn?.metadata?.content : "";
 
   return (
-    <Card>
+    <Card className={highlight ? "bg-accent/20" : undefined}>
       <CardContent className="flex h-fit w-full flex-row gap-4 p-2 sm:p-4">
         <div className="shrink-0 grow-0 rounded-full">
           <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />

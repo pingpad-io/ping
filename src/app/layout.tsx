@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import { Providers } from "~/components/Providers";
+import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
 import { Toaster } from "~/components/ui/sonner";
 import { UserProvider } from "~/components/user/UserContext";
 import { quicksand } from "~/styles/fonts";
@@ -29,12 +30,14 @@ export default async function RootLayout({ children }) {
       </head>
       <body className="flex flex-col relative">
         <Providers>
-          <UserProvider user={user}>
-            <AuthWatcher />
-            <Toaster position="top-right" offset={16} />
+          <NotificationsProvider>
+            <UserProvider user={user}>
+              <AuthWatcher />
+              <Toaster position="top-right" offset={16} />
 
-            {children}
-          </UserProvider>
+              {children}
+            </UserProvider>
+          </NotificationsProvider>
         </Providers>
       </body>
     </html>
