@@ -52,6 +52,7 @@
     "embla-carousel-wheel-gestures": "^8.0.1",
     "emoji-picker-react": "^4.12.2",
     "eslint-config-next": "latest",
+    "ethers": "^6.13.2",
     "got": "^13.0.0",
     "i18next": "^23.16.8",
     "jsonwebtoken": "^9.0.2",
