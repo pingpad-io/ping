@@ -1,11 +1,21 @@
-import { PlusIcon } from "lucide-react";
+import { PlusCircleIcon, PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
 import { PostView } from "./PostView";
 
-export const PostComments = ({ post, level, isOpen }: { post: Post; level: number; isOpen: boolean }) => {
+export const PostComments = ({
+  post,
+  level,
+  isOpen,
+  onReply,
+}: {
+  post: Post;
+  level: number;
+  isOpen: boolean;
+  onReply: () => void;
+}) => {
   const [comments, setComments] = useState(post.comments);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -48,12 +58,23 @@ export const PostComments = ({ post, level, isOpen }: { post: Post; level: numbe
     </li>
   ));
 
+  const replyElement = isOpen ? (
+    <li key="reply" className="animate-in slide-in-from-top-3 duration-300 ease-in-out">
+      <Button variant="ghost" onClick={onReply} className="flex flex-row items-center gap-1">
+        <PlusCircleIcon size={16} /> Reply
+      </Button>
+    </li>
+  ) : null;
+
   if (error) throw new Error(error);
 
   return (
     <div className="w-full flex flex-col items-end justify-center gap-2 text-xs sm:text-sm">
       <div className={`gap-2 ${level === 2 ? "w-[90%]" : "w-[94%]"}`}>
-        <ul>{commentElements}</ul>
+        <ul>
+          {replyElement}
+          {commentElements}
+        </ul>
         {loading && <LoadingSpinner className="animate-in fade-in slide-in-from-top-5 duration-500 ease-in-out p-4" />}
         {isOpen && cursor && !loading && (
           <Button variant="ghost" onMouseEnter={loadMoreComments} disabled={loading} className="cursor-pointer">
