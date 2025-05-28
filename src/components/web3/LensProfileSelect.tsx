@@ -13,6 +13,7 @@ import { getPublicClient } from "~/utils/lens/getLensClient";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import { ScrollArea } from "../ui/scroll-area";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 
@@ -153,38 +154,40 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
 
   return (
     <>
-      <div className="flex flex-wrap gap-2">
-        {accounts.map((account, idx) => {
-          const username = account.username?.localName ? `@${account.username.localName}` : `#${account.address}`;
-          const isOwner = account.owner === walletAddress;
-          return (
-            <div id={`${idx}`} key={`${account.address}`}>
-              <Button
-                className="flex flex-row items-center gap-2"
-                size="default"
-                variant="outline"
-                value={account.address}
-                type="submit"
-                onClick={() => onSubmit(account)}
-              >
-                <div className="w-9 h-9">
-                  <UserAvatar link={false} user={lensAcountToUser(account)} />
-                </div>
-                <div className="flex flex-col items-start">
-                  <span>{username}</span>
-                  <span className="text-xs text-muted-foreground">{isOwner ? "Owner" : "Manager"}</span>
-                </div>
-              </Button>
-            </div>
-          );
-        })}
-        <Link href={"https://lens.xyz/mint"} target="_blank">
-          <Button className="flex flex-row h-full w-full items-center gap-2" size="default" variant="outline">
-            <PlusIcon size={22} />
-            New Profile
-          </Button>
-        </Link>
-      </div>
+      <ScrollArea className="max-h-96">
+        <div className="flex flex-col gap-2">
+          {accounts.map((account, idx) => {
+            const username = account.username?.localName ? `@${account.username.localName}` : `#${account.address}`;
+            const isOwner = account.owner === walletAddress;
+            return (
+              <div id={`${idx}`} key={`${account.address}`}>
+                <Button
+                  className="flex flex-row items-center gap-2"
+                  size="default"
+                  variant="outline"
+                  value={account.address}
+                  type="submit"
+                  onClick={() => onSubmit(account)}
+                >
+                  <div className="w-9 h-9">
+                    <UserAvatar link={false} user={lensAcountToUser(account)} />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span>{username}</span>
+                    <span className="text-xs text-muted-foreground">{isOwner ? "Owner" : "Manager"}</span>
+                  </div>
+                </Button>
+              </div>
+            );
+          })}
+          <Link href={"https://lens.xyz/mint"} target="_blank">
+            <Button className="flex flex-row w-full items-center gap-2" size="default" variant="outline">
+              <PlusIcon size={22} />
+              New Profile
+            </Button>
+          </Link>
+        </div>
+      </ScrollArea>
 
       {accounts.length === 0 && <Label className="mb-4">No Profiles found.</Label>}
       {isLoginPending && <Label>Sign a message in your wallet</Label>}

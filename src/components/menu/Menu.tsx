@@ -1,15 +1,4 @@
-import { fetchAccount } from "@lens-protocol/client/actions";
-import {
-  AtSign,
-  BookmarkIcon,
-  GavelIcon,
-  GlobeIcon,
-  MailIcon,
-  PlusIcon,
-  SettingsIcon,
-  UserIcon,
-  UsersIcon,
-} from "lucide-react";
+import { AtSign, BookmarkIcon, PlusIcon } from "lucide-react";
 import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -18,10 +7,9 @@ import { NotificationButton } from "../notifications/NotificationButton";
 import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
 import type { User } from "../user/User";
-import { lensAcountToUser } from "../user/User";
-import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
 import { SearchButton } from "./Search";
+import { UserMenu } from "./UserMenu";
 
 export default async function Menu() {
   const { handle, profileId, user } = await getServerAuth();
@@ -86,7 +74,7 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
         </DialogContent>
       </Dialog>
 
-      <UserAvatarMenu handle={handle} />
+      <UserMenu handle={handle} user={user} />
 
       <Link href="/bookmarks">
         <Button variant="ghost" size="icon" className="w-10 h-10">
@@ -94,23 +82,5 @@ export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => 
         </Button>
       </Link>
     </>
-  );
-};
-
-const UserAvatarMenu = async ({ handle }: { handle: string }) => {
-  const { client, profileId } = await getServerAuth();
-
-  const result = await fetchAccount(client, { address: profileId });
-  const user = result.isOk() ? lensAcountToUser(result.value) : null;
-  const handleOrProfileId = user?.handle ?? profileId;
-
-  return (
-    <Link href={`/u/${handleOrProfileId}`}>
-      <Button variant="ghost" size="icon" className="w-10 h-10 p-1.5">
-        <div className="w-7 h-7 rounded-lg overflow-hidden">
-          <UserAvatar link={false} card={false} user={user} />
-        </div>
-      </Button>
-    </Link>
   );
 };
