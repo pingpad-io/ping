@@ -48,6 +48,7 @@ const post = async ({ params }: { params: { slug: string } }) => {
 
 
   if (!lensPost) throw new Error("(╥_╥) Post not found");
+  console.log(lensPost);
 
   const lensComments = await fetchPostReferences(client, {
     referenceTypes: [PostReferenceType.CommentOn],
