@@ -1,9 +1,10 @@
 import { PlusCircleIcon, PlusIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
-import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
 import { PostView } from "./PostView";
+import { CommentSkeleton } from "./PostCommentSkeleton";
 
 export const PostComments = ({
   post,
@@ -45,7 +46,16 @@ export const PostComments = ({
   }, [cursor, loading, post.id]);
 
   const commentElements = comments.map((comment, index) => (
-    <li key={comment.id} className="animate-in slide-in-from-top-3 duration-300 ease-in-out">
+    <motion.li
+      key={comment.id}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{
+        duration: 0.3,
+        ease: "easeInOut",
+      }}
+    >
       <PostView
         item={comment}
         settings={{
@@ -55,15 +65,24 @@ export const PostComments = ({
           isLastComment: index === comments.length - 1,
         }}
       />
-    </li>
+    </motion.li>
   ));
 
   const replyElement = isOpen ? (
-    <li key="reply" className="animate-in slide-in-from-top-3 duration-300 ease-in-out">
+    <motion.li
+      key="reply"
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{
+        duration: 0.3,
+        ease: "easeInOut",
+      }}
+    >
       <Button variant="ghost" onClick={onReply} className="flex flex-row items-center gap-1">
         <PlusCircleIcon size={16} /> Reply
       </Button>
-    </li>
+    </motion.li>
   ) : null;
 
   if (error) throw new Error(error);
@@ -71,11 +90,25 @@ export const PostComments = ({
   return (
     <div className="w-full flex flex-col items-end justify-center gap-2 text-xs sm:text-sm">
       <div className={`gap-2 ${level === 2 ? "w-[90%]" : "w-[94%]"}`}>
-        <ul>
-          {replyElement}
-          {commentElements}
-        </ul>
-        {loading && <LoadingSpinner className="animate-in fade-in slide-in-from-top-5 duration-500 ease-in-out p-4" />}
+        <AnimatePresence>
+          <ul>
+            {replyElement}
+            {commentElements}
+          </ul>
+        </AnimatePresence>
+        {loading && (
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{
+              duration: 0.5,
+              ease: "easeInOut",
+            }}
+          >
+            <CommentSkeleton />
+          </motion.div>
+        )}
         {isOpen && cursor && !loading && (
           <Button variant="ghost" onMouseEnter={loadMoreComments} disabled={loading} className="cursor-pointer">
             <PlusIcon /> Load more Comments

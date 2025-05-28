@@ -158,9 +158,6 @@ export function ReactionsList({
           })}
         />
       </span>
-      <div className={`${post.reactions.canCollect ? "" : "hidden"}`}>
-        <ReactionButton reactionType="Collect" reaction={reactions.Collect} onClick={() => updateReaction("Collect")} />
-      </div>
 
       <div className="ml-auto">
         <div className="opacity-0 group-hover:opacity-100 duration-300 delay-150">
