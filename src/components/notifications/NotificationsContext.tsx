@@ -1,9 +1,9 @@
 "use client";
 
+import { P } from "@lens-protocol/client/dist/clients-BTRwdEON";
+import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, createContext, useContext, useEffect, useState } from "react";
 import type { Notification } from "./Notification";
-import { usePathname, useRouter } from "next/navigation";
-import { P } from "@lens-protocol/client/dist/clients-BTRwdEON";
 
 interface NotificationsContextValue {
   notifications: Notification[];
@@ -22,10 +22,10 @@ function parseNotification(raw: any): Notification {
     createdAt: new Date(raw.createdAt),
     actedOn: raw.actedOn
       ? {
-        ...raw.actedOn,
-        createdAt: new Date(raw.actedOn.createdAt),
-        updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
-      }
+          ...raw.actedOn,
+          createdAt: new Date(raw.actedOn.createdAt),
+          updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
+        }
       : undefined,
   } as Notification;
 }
@@ -38,6 +38,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     return stored ? Number.parseInt(stored, 10) : Date.now();
   });
   const [newCount, setNewCount] = useState<number>(0);
+  const [baseTitle, setBaseTitle] = useState<string>("");
   const router = useRouter();
   const pathname = usePathname();
 
@@ -47,14 +48,14 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       const isNew = notificationTime > lastSeen;
 
       if (isNew) {
-        console.log(`New notification:`, {
+        console.log("New notification:", {
           id: n.id,
           type: n.type,
           createdAt: n.createdAt,
           notificationTime,
           lastSeen,
           isNew,
-          who: n.who.map(u => ({ name: u.name, handle: u.handle }))
+          who: n.who.map((u) => ({ name: u.name, handle: u.handle })),
         });
 
         if (pathname.includes("/notifications")) {
@@ -100,6 +101,19 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     const interval = setInterval(refresh, 30_000); // 30 seconds
     return () => clearInterval(interval);
   }, [lastSeen]);
+
+  useEffect(() => {
+    setBaseTitle(document.title);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!baseTitle) return;
+    if (newCount > 0) {
+      document.title = `(${newCount}) ${baseTitle}`;
+    } else {
+      document.title = baseTitle;
+    }
+  }, [newCount, baseTitle]);
 
   const markAllAsRead = () => {
     const now = Date.now();
