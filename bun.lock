@@ -87,7 +87,7 @@
         "tailwind-merge": "^2.6.0",
         "tailwindcss-animate": "^1.0.7",
         "theme-change": "^2.5.0",
-        "viem": "2.x",
+        "viem": "^2.30.3",
         "wagmi": "^2.15.4",
         "zod": "^3.24.2",
       },
