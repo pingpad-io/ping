@@ -142,7 +142,7 @@ export function lensNotificationToNative(item: LensNotification): Notification {
     default:
       console.log("Unknown notification type, falling back to Action:", {
         typename: item.__typename,
-        item: item
+        item: item,
       });
 
       // Return a fallback notification

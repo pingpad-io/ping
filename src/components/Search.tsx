@@ -1,5 +1,6 @@
 "use client";
 
+import { usePosts } from "@lens-protocol/react";
 import { ChevronLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { FeedSuspense } from "~/components/FeedSuspense";
@@ -8,7 +9,6 @@ import { SearchBar } from "~/components/menu/Search";
 import { lensItemToPost } from "~/components/post/Post";
 import { Button } from "~/components/ui/button";
 import { PostView } from "./post/PostView";
-import { usePosts } from "@lens-protocol/react";
 
 export function Search() {
   const params = useSearchParams();

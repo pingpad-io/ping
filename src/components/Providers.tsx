@@ -1,20 +1,19 @@
 "use client";
 
 import { chains } from "@lens-chain/sdk/viem";
-import { LensProvider, mainnet, PublicClient } from "@lens-protocol/react";
+import { LensProvider, PublicClient, mainnet } from "@lens-protocol/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+import { familyAccountsConnector } from "family";
 import { ThemeProvider } from "next-themes";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { createClient } from "viem";
+import { http, WagmiProvider, createConfig } from "wagmi";
+import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
-import {  wagmiLocalStorage } from "~/utils/localStorage";
-import { injected, walletConnect } from "wagmi/connectors";
-import { WagmiProvider, createConfig, http } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import { createClient } from "viem";
-import { familyAccountsConnector } from "family";
-
+import { wagmiLocalStorage } from "~/utils/localStorage";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
@@ -67,9 +66,7 @@ const url = getBaseUrl();
 const wagmiConfig = createConfig({
   chains: [chains.mainnet],
   client: createClient({
-    transport: http(
-      `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`
-    )
+    transport: http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`),
   }),
   connectors: [
     familyAccountsConnector(),
@@ -78,12 +75,12 @@ const wagmiConfig = createConfig({
       projectId: projectId,
       metadata: {
         name: "Pingpad",
-        description: "minimalistic decentralized social", 
+        description: "minimalistic decentralized social",
         url: url,
-        icons: ["https://pingpad.io/favicon.ico"]
-      }
-    })
-  ]
+        icons: ["https://pingpad.io/favicon.ico"],
+      },
+    }),
+  ],
 });
 
 const queryClient = new QueryClient();

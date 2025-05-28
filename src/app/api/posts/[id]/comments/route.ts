@@ -34,13 +34,16 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       throw new Error("No comments found");
     }
 
-    const commentsPosts = comments.items.map(comment => lensItemToPost(comment));
+    const commentsPosts = comments.items.map((comment) => lensItemToPost(comment));
 
-    return NextResponse.json({
-      comments: commentsPosts,
-      nextCursor: comments.pageInfo.next,
-      note: "Comment filtering is limited with the current API version"
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        comments: commentsPosts,
+        nextCursor: comments.pageInfo.next,
+        note: "Comment filtering is limited with the current API version",
+      },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Failed to load comments: ", error.message);
     return NextResponse.json({ error: `${error.message}` }, { status: 500 });

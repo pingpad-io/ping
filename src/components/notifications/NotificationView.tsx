@@ -9,13 +9,13 @@ import {
   Repeat2Icon,
   UserPlusIcon,
 } from "lucide-react";
+import { useEffect } from "react";
 import Link from "~/components/Link";
 import { TruncatedText } from "../TruncatedText";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatarArray } from "../user/UserAvatar";
 import type { Notification } from "./Notification";
 import { useNotifications } from "./NotificationsContext";
-import { useEffect } from "react";
 
 export const NotificationView = ({ item }: { item: Notification }) => {
   const { markAllAsRead, lastSeen } = useNotifications();
@@ -50,9 +50,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   };
 
   const maxUsersPerNotification = 5;
-  const uniqueUsers = item.who.filter((user, index, arr) =>
-    arr.findIndex(u => u.id === user.id) === index
-  );
+  const uniqueUsers = item.who.filter((user, index, arr) => arr.findIndex((u) => u.id === user.id) === index);
   const users = uniqueUsers.slice(0, maxUsersPerNotification);
   const wasTruncated = uniqueUsers.length > maxUsersPerNotification;
   const amountTruncated = uniqueUsers.length - maxUsersPerNotification;

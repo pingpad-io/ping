@@ -4,7 +4,6 @@ import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 const MAX_AGE = 30 * 24 * 60 * 60;
 
-
 export const cookieStorage: IStorageProvider = {
   async getItem(key: string) {
     const { cookies } = await import("next/headers");
@@ -35,6 +34,5 @@ export const clientCookieStorage: IStorageProvider = {
     deleteCookie(key, { maxAge: 0 });
   },
 };
-
 
 export const storageClient = StorageClient.create();

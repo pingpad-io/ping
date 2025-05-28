@@ -35,12 +35,15 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     // Note: client.publication.actions.actOn() is marked as "Coming Soon" in the migration guide
     // For now, we'll return a message indicating this functionality is not yet available
-    
-    return NextResponse.json({ 
-      message: "Collect action is not yet available in the new Lens Protocol API",
-      postId: id
-    }, { status: 200 });
-    
+
+    return NextResponse.json(
+      {
+        message: "Collect action is not yet available in the new Lens Protocol API",
+        postId: id,
+      },
+      { status: 200 },
+    );
+
     /* 
     // This is the code that would be used once the API is available:
     const result = await actOn(sessionClient, {

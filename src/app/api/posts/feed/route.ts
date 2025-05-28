@@ -1,8 +1,8 @@
+import { fetchPosts, fetchTimeline } from "@lens-protocol/client/actions";
+import { TimelineEventItemType } from "@lens-protocol/react";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
-import { fetchPosts, fetchTimeline } from "@lens-protocol/client/actions";
-import { TimelineEventItemType } from "@lens-protocol/react";
 
 export const dynamic = "force-dynamic";
 
@@ -39,10 +39,10 @@ export async function GET(req: NextRequest) {
     const data = await fetchTimeline(sessionClient, {
       account: profileId,
       filter: {
-        eventType: [TimelineEventItemType.Post]
+        eventType: [TimelineEventItemType.Post],
       },
       cursor,
-    })
+    });
 
     if (data.isErr()) {
       return NextResponse.json({ error: data.error.message }, { status: 500 });

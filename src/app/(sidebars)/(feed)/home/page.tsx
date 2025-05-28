@@ -1,5 +1,5 @@
 import { PostType, TimelineEventItemType } from "@lens-protocol/client";
-import { fetchTimeline, fetchPosts } from "@lens-protocol/client/actions";
+import { fetchPosts, fetchTimeline } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
@@ -31,10 +31,10 @@ const getInitialFeed = async () => {
       const result = await fetchTimeline(client, {
         account: address,
         filter: {
-          eventType: [TimelineEventItemType.Post]
+          eventType: [TimelineEventItemType.Post],
         },
         // cursor,
-      })
+      });
 
       if (result.isErr()) {
         throw new Error(result.error.message);
@@ -59,7 +59,7 @@ const getInitialFeed = async () => {
     const posts = data.items.map(lensItemToPost);
     return { posts, nextCursor: data.pageInfo.next };
   } catch (error) {
-    throw new Error("(×_×)⌒☆ Failed to fetch feed: " + error.message);
+    throw new Error(`(×_×)⌒☆ Failed to fetch feed: ${error.message}`);
   }
 };
 

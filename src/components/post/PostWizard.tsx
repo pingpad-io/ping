@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
-import { image, MediaImageMimeType, textOnly } from "@lens-protocol/metadata";
+import { MediaImageMimeType, image, textOnly } from "@lens-protocol/metadata";
 import { useSessionClient } from "@lens-protocol/react";
 import { useAccounts } from "@lens-protocol/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
@@ -123,7 +123,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
 
     let metadata: any;
     try {
-      let content = data.content;
+      const content = data.content;
 
       if (imageFile) {
         toast.loading("Uploading image...", { id: toastId });
@@ -142,7 +142,6 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
           tags: tags,
         });
       }
-
     } catch (error) {
       toast.error(error.message);
       setPosting(false);
@@ -166,14 +165,14 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
 
       const postData = replyingTo
         ? {
-          contentUri,
-          commentOn: {
-            post: replyingTo.id,
-          },
-        }
+            contentUri,
+            commentOn: {
+              post: replyingTo.id,
+            },
+          }
         : {
-          contentUri,
-        };
+            contentUri,
+          };
 
       const result = await post(client, postData)
         .andThen(handleOperationWith(walletClient))

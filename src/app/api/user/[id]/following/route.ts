@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const result = await fetchFollowing(client, {
       cursor,
       pageSize: 50,
-      account: id
+      account: id,
     });
 
     if (result.isErr()) {
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     const following = result.value;
     // In the new API, each following item has a 'following' property that contains the account
-    const users = following.items.map(item => lensAcountToUser(item.following));
+    const users = following.items.map((item) => lensAcountToUser(item.following));
 
     return NextResponse.json({ data: users, nextCursor: following.pageInfo.next }, { status: 200 });
   } catch (error) {

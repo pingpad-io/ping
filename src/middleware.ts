@@ -30,7 +30,6 @@ export async function middleware(request: NextRequest) {
   // routes that are always accessible
   const publicRoutes = ["/", "/home", "/u", "/p"];
 
-  
   if (!isAuthTokenValid) {
     // If not authenticated and trying to access a protected route, redirect to /home
     if (!publicRoutes.some((route) => pathname.startsWith(route))) {

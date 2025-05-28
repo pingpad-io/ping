@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const { client } = await getServerAuth();
 
-    const result = await fetchAccount(client, {address: id});
+    const result = await fetchAccount(client, { address: id });
 
     if (result.isErr()) {
       return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });

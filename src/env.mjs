@@ -3,8 +3,7 @@ import { z } from "zod";
 /**
  * Server-side environment variables schema.
  */
-const server = z.object({
-});
+const server = z.object({});
 
 /**
  * Client-side environment variables schema

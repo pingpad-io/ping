@@ -1,6 +1,6 @@
-import { PostReactionType } from "./post/Post";
 import { ReactionBadge } from "./ReactionBadge";
 import { ReactionCount } from "./ReactionCount";
+import { PostReactionType } from "./post/Post";
 import { Button } from "./ui/button";
 
 type ReactionButtonProps = {
@@ -10,7 +10,12 @@ type ReactionButtonProps = {
   disabled?: boolean;
 };
 
-export const ReactionButton: React.FC<ReactionButtonProps> = ({ reactionType, reaction, onClick, disabled = false }) => (
+export const ReactionButton: React.FC<ReactionButtonProps> = ({
+  reactionType,
+  reaction,
+  onClick,
+  disabled = false,
+}) => (
   <Button
     size="sm"
     variant="ghost"

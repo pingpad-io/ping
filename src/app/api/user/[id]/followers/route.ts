@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const followers = result.value;
-    const users = followers.items.map(item => lensAcountToUser(item.follower));
+    const users = followers.items.map((item) => lensAcountToUser(item.follower));
 
     return NextResponse.json({ data: users, nextCursor: followers.pageInfo.next }, { status: 200 });
   } catch (error) {

@@ -21,10 +21,10 @@ const ConditionsPage = () => {
 
         <h4>3. Reporting Policy Violations</h4>
         <p>
-          Users are encouraged to report any violations of our policies to us by emailing 
+          Users are encouraged to report any violations of our policies to us by emailing
           <a href="mailto:contact@kualta.dev">contact@kualta.dev</a>. While we take reports seriously and review them
-          carefully, we emphasize that Pingpad operates in a permissionless environment, and we cannot remove or restrict
-          accounts or content on the underlying blockchain. 
+          carefully, we emphasize that Pingpad operates in a permissionless environment, and we cannot remove or
+          restrict accounts or content on the underlying blockchain.
         </p>
 
         <h4>4. Disclaimer of Liability</h4>
@@ -36,9 +36,10 @@ const ConditionsPage = () => {
 
         <h4>5. Termination of Accounts</h4>
         <p>
-          The app reserves the right to terminate access to its platform interface at any time, for any reason, including
-          but not limited to violation of our policies or applicable laws. However, this does not affect the permissionless
-          nature of the underlying environment, and users retain access through other means outside of our platform.
+          The app reserves the right to terminate access to its platform interface at any time, for any reason,
+          including but not limited to violation of our policies or applicable laws. However, this does not affect the
+          permissionless nature of the underlying environment, and users retain access through other means outside of
+          our platform.
         </p>
 
         <p>

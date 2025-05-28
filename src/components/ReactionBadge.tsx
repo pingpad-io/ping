@@ -1,5 +1,5 @@
-import { PostReactionType } from "./post/Post";
 import ReactionIcon from "./ReactionIcon";
+import { PostReactionType } from "./post/Post";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 export const ReactionBadge = ({

@@ -1,9 +1,9 @@
-import { Feed } from "~/components/Feed";
+import { PageSize } from "@lens-protocol/client";
 import { fetchPostBookmarks } from "@lens-protocol/client/actions";
+import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { getServerAuth } from "~/utils/getServerAuth";
-import { PageSize } from "@lens-protocol/client";
 
 const endpoint = "/api/bookmarks";
 
@@ -36,7 +36,7 @@ const getInitialFeed = async () => {
   // throw new Error("Unauthorized TT");
   return {
     bookmarks: [],
-    nextCursor: undefined
+    nextCursor: undefined,
   };
 };
 

@@ -1,20 +1,20 @@
 "use client";
 
+import type { Account } from "@lens-protocol/client";
+import { fetchAccountsAvailable } from "@lens-protocol/client/actions";
 import { setCookie } from "cookies-next";
 import { PlusIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAccount as useWagmiAccount, useWalletClient } from "wagmi";
 import Link from "~/components/Link";
+import { env } from "~/env.mjs";
+import { getPublicClient } from "~/utils/lens/getLensClient";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
-import { fetchAccountsAvailable } from "@lens-protocol/client/actions";
-import { getPublicClient } from "~/utils/lens/getLensClient";
-import { useState, useEffect } from "react";
-import type { Account } from "@lens-protocol/client";
-import { env } from "~/env.mjs";
 
 export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
   const { isConnected, address: walletAddress } = useWagmiAccount();
@@ -33,17 +33,17 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
         const client = getPublicClient();
         const result = await fetchAccountsAvailable(client, {
           managedBy: walletAddress,
-          includeOwned: true
+          includeOwned: true,
         });
 
         if (result.isOk()) {
-          const accounts = result.value.items.map(item => item.account);
+          const accounts = result.value.items.map((item) => item.account);
           setAccounts(accounts);
         } else {
           setError(new Error(result.error.message));
         }
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('Failed to fetch profiles'));
+        setError(err instanceof Error ? err : new Error("Failed to fetch profiles"));
       } finally {
         setLoading(false);
       }
@@ -66,7 +66,8 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
       }
 
       const isOwner = account.owner === walletAddress;
-      const appAddress = env.NEXT_PUBLIC_NODE_ENV === "development" ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET : env.NEXT_PUBLIC_APP_ADDRESS;
+      const appAddress =
+        env.NEXT_PUBLIC_NODE_ENV === "development" ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET : env.NEXT_PUBLIC_APP_ADDRESS;
       const ownerRequest = {
         accountOwner: {
           account: account.address,
@@ -86,7 +87,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
       const signMessage = async (message: string) => {
         const signature = await walletClient.signMessage({
           account: walletAddress as `0x${string}`,
-          message
+          message,
         });
         return signature;
       };
@@ -122,7 +123,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
       setDialogOpen(false);
       window.location.reload();
 
-      toast.success(`Welcome to Ping!`, { description: "login successful!" });
+      toast.success("Welcome to Ping!", { description: "login successful!" });
     } catch (err) {
       console.error("Error logging in:", err);
       toast.error(err instanceof Error ? err.message : "Failed to log in. Please try again.");
@@ -171,9 +172,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
                 </div>
                 <div className="flex flex-col items-start">
                   <span>{username}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {isOwner ? "Owner" : "Manager"}
-                  </span>
+                  <span className="text-xs text-muted-foreground">{isOwner ? "Owner" : "Manager"}</span>
                 </div>
               </Button>
             </div>

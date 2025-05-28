@@ -27,7 +27,8 @@ export function ConnectWalletButton() {
   const { isConnected: walletConnected } = useAccount();
 
   const connectorList = connectors.map((connector) => {
-    if (connector.id !== "injected" && connector.id !== "walletConnect" && connector.id !== "familyAccountsProvider") return null;
+    if (connector.id !== "injected" && connector.id !== "walletConnect" && connector.id !== "familyAccountsProvider")
+      return null;
 
     let name: string;
     let icon: JSX.Element;

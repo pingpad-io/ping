@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { createContext, useContext, type ReactNode } from "react";
 import type { User } from "./User";

@@ -1,7 +1,7 @@
-import type { AnyPost, Post as LensPost, Repost, TimelineItem } from "@lens-protocol/client";
-import { type User, lensAcountToUser } from "../user/User";
-import { PostMetadata } from "@lens-protocol/metadata";
 import { FeedItem } from "@lens-protocol/api-bindings";
+import type { AnyPost, Post as LensPost, Repost, TimelineItem } from "@lens-protocol/client";
+import { PostMetadata } from "@lens-protocol/metadata";
+import { type User, lensAcountToUser } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number> & {
@@ -91,21 +91,25 @@ function getReactions(post: LensPost): Partial<PostReactions> {
     canRepost: post.operations?.canRepost.__typename === "PostOperationValidationPassed" || false,
     canQuote: post.operations?.canQuote.__typename === "PostOperationValidationPassed" || false,
     canDecrypt: false,
-    totalReactions: post.stats?.upvotes + post.stats?.downvotes + post.stats?.bookmarks + post.stats?.collects + post.stats?.comments + post.stats?.reposts || 0,
+    totalReactions:
+      post.stats?.upvotes +
+        post.stats?.downvotes +
+        post.stats?.bookmarks +
+        post.stats?.collects +
+        post.stats?.comments +
+        post.stats?.reposts || 0,
   };
 }
 
 function getCommentsFromItem(post: any) {
-  let comments = [];
+  const comments = [];
 
   if (post.__typename === "TimelineItem" && post.comments) {
     return post.comments.map(processComment);
   }
 
   if (post.__typename === "FeedItem" && post.comments) {
-    return post.comments
-      .filter((comment) => comment.commentOn?.id === post.root?.id)
-      .map(processComment);
+    return post.comments.filter((comment) => comment.commentOn?.id === post.root?.id).map(processComment);
   }
 
   return comments;

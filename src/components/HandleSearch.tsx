@@ -1,8 +1,8 @@
 "use client";
 
+import { useAccounts } from "@lens-protocol/react";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { lensAcountToUser } from "./user/User";
-import { useAccounts } from "@lens-protocol/react";
 
 export function HandleSearch({ query, maxResults = 10 }: { query: string; maxResults?: number }) {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query } } });

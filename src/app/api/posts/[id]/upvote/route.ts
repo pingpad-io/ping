@@ -1,7 +1,4 @@
-import {
-  UnauthenticatedError,
-  PostReactionType,
-} from "@lens-protocol/client";
+import { PostReactionType, UnauthenticatedError } from "@lens-protocol/client";
 import { addReaction, fetchPost, undoReaction } from "@lens-protocol/client/actions";
 import { NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -45,7 +42,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
           post: id,
           reaction: PostReactionType.Upvote,
         });
-        
+
         if (result.isErr()) {
           return NextResponse.json({ error: result.error.message }, { status: 500 });
         }
@@ -56,12 +53,12 @@ export async function POST(req: Request, { params }: { params: { id: string } })
             reaction: PostReactionType.Downvote,
           });
         }
-        
+
         const result = await addReaction(sessionClient, {
           post: id,
           reaction: PostReactionType.Upvote,
         });
-        
+
         if (result.isErr()) {
           return NextResponse.json({ error: result.error.message }, { status: 500 });
         }

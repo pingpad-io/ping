@@ -17,7 +17,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const id = params.slug;
   const post = await fetchPost(client, {
     post: id,
-  }).unwrapOr(null)
+  })
+    .unwrapOr(null)
     .then((data) => lensItemToPost(data))
     .catch(() => {
       throw new Error("(╥_╥) Post not found");
@@ -40,12 +41,12 @@ const post = async ({ params }: { params: { slug: string } }) => {
   const id = params.slug;
   const lensPost = await fetchPost(client, {
     post: id,
-  }).unwrapOr(null)
+  })
+    .unwrapOr(null)
     .then((data) => lensItemToPost(data))
     .catch(() => {
       throw new Error("(╥_╥) Post not found");
     });
-
 
   if (!lensPost) throw new Error("(╥_╥) Post not found");
   console.log(lensPost);
@@ -53,7 +54,8 @@ const post = async ({ params }: { params: { slug: string } }) => {
   const lensComments = await fetchPostReferences(client, {
     referenceTypes: [PostReferenceType.CommentOn],
     referencedPost: id,
-  }).unwrapOr(null)
+  })
+    .unwrapOr(null)
     .then((data) => data.items.map((item) => lensItemToPost(item)))
     .catch(() => {
       throw new Error("(╥_╥) Comments not found");

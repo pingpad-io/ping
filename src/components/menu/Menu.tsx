@@ -14,13 +14,13 @@ import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
+import { NotificationButton } from "../notifications/NotificationButton";
 import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
 import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
-import { NotificationButton } from "../notifications/NotificationButton";
 import { SearchButton } from "./Search";
 
 export default async function Menu() {

@@ -41,7 +41,7 @@ const getInitialData = async (handle: string) => {
     return {
       user,
       posts: [],
-      nextCursor: undefined
+      nextCursor: undefined,
     };
   }
 

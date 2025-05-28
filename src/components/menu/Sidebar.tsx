@@ -1,6 +1,6 @@
+import { fetchAccount } from "@lens-protocol/client/actions";
 import { BellIcon, BookmarkIcon, MailIcon } from "lucide-react";
 import Link from "~/components/Link";
-import { fetchAccount } from "@lens-protocol/client/actions";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
@@ -12,7 +12,7 @@ import { SearchBar } from "./Search";
 
 const UserBar = async () => {
   const { client, profileId } = await getServerAuth();
-  
+
   const result = await fetchAccount(client, { address: profileId });
   const user = result.isOk() ? lensAcountToUser(result.value) : null;
   const handleOrProfileId = user?.handle ?? profileId;

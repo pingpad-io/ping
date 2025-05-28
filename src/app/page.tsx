@@ -53,7 +53,10 @@ const LandingPage = () => {
           <FadeIn className="duration-1000 delay-1000">
             <div className="col-span-1 flex flex-row gap-2 items-center justify-center">
               <h1>built on</h1>
-              <Link className="hover:underline -mt-24 -mb-24  flex items-center gap-2 relative" href={"https://lens.xyz"}>
+              <Link
+                className="hover:underline -mt-24 -mb-24  flex items-center gap-2 relative"
+                href={"https://lens.xyz"}
+              >
                 <div className="dark:hidden">
                   <LensTextDark />
                 </div>
@@ -72,8 +75,8 @@ const LandingPage = () => {
           <div className="w-full p-8 mt-24 text-center drop-shadow-lg dark:drop-shadow-glow flex flex-col justify-center items-center">
             <div className="text-xl font-bold flex flex-col gap-4">
               {/* Now on Lens v3! moved to Lens logo */}
-              {/* <EmailSubscription /> */}
-            {/* </div>
+        {/* <EmailSubscription /> */}
+        {/* </div>
           </div> */}
 
         {/* <FadeIn className="">

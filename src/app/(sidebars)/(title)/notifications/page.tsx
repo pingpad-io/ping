@@ -21,7 +21,7 @@ const notifications = async () => {
       initialCursor={nextCursor}
       key={`notifications-${notifications.length}`}
     />
-  )
+  );
 };
 
 const getInitialFeed = async () => {

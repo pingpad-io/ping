@@ -25,5 +25,5 @@ export default function AuthWatcher() {
   //   handleRefresh();
   // }, [session]);
 
-  return null; 
+  return null;
 }
