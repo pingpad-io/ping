@@ -23,10 +23,11 @@ class ContentParser {
   }
 
   parseLinks(): ContentParser {
-    const linkRegex = /(https?:\/\/\S+)/gi;
-    this.content = this.content.replace(linkRegex, (match) => {
-      const linkWithoutProtocol = match.replace(/^https?:\/\//, "");
-      return `[${linkWithoutProtocol}](${match})`;
+    const linkRegex = /<?((?:https?:\/\/|www\.)?[\w-]+(?:\.[\w-]+)*\.[a-zA-Z]{2,}(?:\/[^\s<>]*)?)>?/gi;
+    this.content = this.content.replace(linkRegex, (match, link) => {
+      const url = link.startsWith("http") ? link : `https://${link}`;
+      const linkWithoutProtocol = link.replace(/^https?:\/\//, "");
+      return `[${linkWithoutProtocol}](${url})`;
     });
     return this;
   }
