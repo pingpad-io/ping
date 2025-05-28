@@ -9,11 +9,8 @@ import { Feed } from "../Feed";
 import { FollowButton } from "../FollowButton";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { ScrollArea } from "../ui/scroll-area";
-import { Separator } from "../ui/separator";
 import { type User } from "./User";
-import { UserView } from "./UserView";
+import { UserFollowing } from "./UserFollowing";
 
 export const UserProfile = async ({
   user,
@@ -64,45 +61,11 @@ export const UserProfile = async ({
           <MessageCircleIcon size={14} />
           {postsCount} Posts
         </div>
-        <div className="text-sm flex flex-row gap-1 place-items-center">
-          <User2Icon size={14} />
-          <Dialog>
-            <DialogTrigger>
-              Following <b>{followingCount}</b>
-            </DialogTrigger>
-            <DialogContent className="max-w-96">
-              <DialogTitle className="text-lg font-bold">
-                {user.handle}'s follows ({followingCount})
-              </DialogTitle>
-              <ScrollArea className="max-h-96">
-                <Feed
-                  ItemView={UserView}
-                  endpoint={`/api/user/${user.id}/following`}
-                  initialCursor={undefined}
-                  initialData={undefined}
-                />
-              </ScrollArea>
-            </DialogContent>
-          </Dialog>
-          <Dialog>
-            <DialogTrigger>
-              Followers <b>{followersCount}</b>
-            </DialogTrigger>
-            <DialogContent className="max-w-96">
-              <DialogTitle className="text-lg font-bold">
-                {user.handle}'s followers ({followersCount})
-              </DialogTitle>
-              <ScrollArea className="max-h-96">
-                <Feed
-                  ItemView={UserView}
-                  endpoint={`/api/user/${user.id}/followers`}
-                  initialCursor={undefined}
-                  initialData={undefined}
-                />
-              </ScrollArea>
-            </DialogContent>
-          </Dialog>
-        </div>
+        <UserFollowing
+          user={user}
+          followingCount={followingCount}
+          followersCount={followersCount}
+        />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { PageSize } from "@lens-protocol/client";
 import { fetchFollowers } from "@lens-protocol/client/actions";
 import { NextRequest, NextResponse } from "next/server";
 import { lensAcountToUser } from "~/components/user/User";
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     const result = await fetchFollowers(client, {
       cursor,
-      pageSize: 50,
+      pageSize: PageSize.Fifty,
       account: id,
     });
 
