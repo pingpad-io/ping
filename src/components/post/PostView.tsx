@@ -47,14 +47,15 @@ export const PostView = ({
         >
           <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
             <span className="min-h-full flex flex-col justify-start items-center relative">
-              <div className={`shrink-0 grow-0 rounded-full" ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
+              <div className={`shrink-0 z-10 grow-0 rounded-full" ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
                 <UserAvatar user={item.author} />
               </div>
               {settings.isComment && (
                 <div
-                  className={`-mt-4 -mr-6 w-full h-[90%] border-l 
-                    ${settings.isLastComment && "rounded-full h-[98%]"} 
-                    ${settings.isComment && !settings.isLastComment && "min-h-[calc(100%+2rem)]"} `}
+                  className={`-mt-4 -mr-6 w-full h-[90%] relative
+                    ${settings.isLastComment && "before:rounded-bl-lg before:border-b before:border-l before:w-[50%]"} 
+                    ${settings.isComment && !settings.isLastComment && "min-h-[calc(100%+2rem)] before:w-[50%]"} 
+                    before:absolute before:left-0 before:top-0 before:border-l before:border-border before:h-full`}
                 />
               )}
             </span>
