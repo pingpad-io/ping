@@ -51,10 +51,10 @@ const LandingPage = () => {
           </div>
 
           <FadeIn className="duration-1000 delay-1000">
-            <div className="col-span-1 flex flex-row gap-2 items-center justify-center">
+            <div className="col-span-1 flex flex-row gap-4 items-center justify-center">
               <h1>built on</h1>
               <Link
-                className="hover:underline -mt-24 -mb-24  flex items-center gap-2 relative"
+                className="hover:underline -mt-24 -mb-24  flex items-center relative"
                 href={"https://lens.xyz"}
               >
                 <div className="dark:hidden">
@@ -63,7 +63,7 @@ const LandingPage = () => {
                 <div className="dark:flex hidden">
                   <LensTextLight />
                 </div>
-                <div className="absolute bottom-10 right-5 text-xs font-bold transform  border border-primary/80 text-primary px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                <div className="absolute -bottom-6 -right-6 text-xs font-bold transform  border border-primary/80 text-primary px-2 py-1 rounded shadow-lg whitespace-nowrap">
                   Now on v3!
                 </div>
               </Link>
