@@ -93,11 +93,11 @@ function getReactions(post: LensPost): Partial<PostReactions> {
     canDecrypt: false,
     totalReactions:
       post.stats?.upvotes +
-        post.stats?.downvotes +
-        post.stats?.bookmarks +
-        post.stats?.collects +
-        post.stats?.comments +
-        post.stats?.reposts || 0,
+      post.stats?.downvotes +
+      post.stats?.bookmarks +
+      post.stats?.collects +
+      post.stats?.comments +
+      post.stats?.reposts || 0,
   };
 }
 
@@ -129,37 +129,15 @@ function processComment(comment: any) {
   };
 }
 
-function getReplyFromItem(origin: any) {
+function getReplyFromItem(origin: LensPost) {
   if (!origin) return undefined;
 
-  if (origin.__typename === "Comment" && origin.commentOn) {
-    return {
-      id: origin.commentOn.slug ?? origin.commentOn.id,
-      author: origin.commentOn.by ? lensAcountToUser(origin.commentOn.by) : undefined,
-      content: origin.commentOn.metadata?.content || "",
-      metadata: origin.commentOn.metadata,
-      createdAt: new Date(origin.commentOn.createdAt || Date.now()),
-      updatedAt: new Date(origin.commentOn.createdAt || Date.now()),
-      reactions: undefined,
-      platform: "lens",
-      comments: [],
-      __typename: "Post" as const,
-    } as Post;
+  if (origin.__typename === "Post" && origin.commentOn) {
+    return lensItemToPost(origin.commentOn);
   }
 
-  if (origin.__typename === "Quote" && origin.quoteOn) {
-    return {
-      id: origin.quoteOn.slug ?? origin.quoteOn.id,
-      author: origin.quoteOn.by ? lensAcountToUser(origin.quoteOn.by) : undefined,
-      content: origin.quoteOn.metadata?.content || "",
-      metadata: origin.quoteOn.metadata,
-      createdAt: new Date(origin.quoteOn.createdAt || Date.now()),
-      updatedAt: new Date(origin.quoteOn.createdAt || Date.now()),
-      reactions: undefined,
-      platform: "lens",
-      comments: [],
-      __typename: "Post" as const,
-    } as Post;
+  if (origin.__typename === "Post" && origin.quoteOf) {
+    return lensItemToPost(origin.quoteOf);
   }
 
   return undefined;

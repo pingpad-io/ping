@@ -50,9 +50,9 @@ const getInitialData = async (handle: string) => {
     };
   }
 
-  const posts = lensPosts.value.items.map(lensItemToPost);
+  const posts = lensPosts.items.map(lensItemToPost);
 
-  return { user, posts, nextCursor: lensPosts.value.pageInfo.next };
+  return { user, posts, nextCursor: lensPosts.pageInfo.next };
 };
 
 export default user;
