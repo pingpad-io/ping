@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { FeedSuspense } from "./FeedSuspense";
 import { LoadingSpinner } from "./LoadingSpinner";
+import { Button } from "./ui/button";
 
-export const Feed = ({ ItemView, initialData, initialCursor, endpoint }) => {
+export const Feed = ({ ItemView, initialData, initialCursor, endpoint, manualNextPage = false }) => {
   const [data, setData] = useState(initialData);
   const [cursor, setCursor] = useState(initialCursor);
   const [loading, setLoading] = useState(false);
@@ -57,9 +58,13 @@ export const Feed = ({ ItemView, initialData, initialCursor, endpoint }) => {
     };
 
     handleInitialLoad();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [loadNextBatch]);
+
+    // Only add scroll listener if not using manual pagination
+    if (!manualNextPage) {
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [loadNextBatch, manualNextPage]);
 
   if (error) throw new Error(error);
   if (!data) return <FeedSuspense />;
@@ -69,7 +74,17 @@ export const Feed = ({ ItemView, initialData, initialCursor, endpoint }) => {
   return (
     <>
       {list}
-      {loading && (
+      {manualNextPage && cursor !== null && (
+        <Button
+          variant="outline"
+          className="w-full mt-4"
+          onClick={loadNextBatch}
+          disabled={loading}
+        >
+          {loading ? "Loading..." : "Load more"}
+        </Button>
+      )}
+      {!manualNextPage && loading && (
         <div className="w-full h-12 flex justify-center items-center">
           <LoadingSpinner />
         </div>
