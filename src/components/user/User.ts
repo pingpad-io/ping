@@ -64,7 +64,7 @@ export function lensAcountToUser(account: Account): User {
   return {
     id: account.address,
     profilePictureUrl: imageUrl,
-    address: account.owner,
+    address: account.address,
     createdAt: account.createdAt,
     description: account?.metadata?.bio,
     interests,

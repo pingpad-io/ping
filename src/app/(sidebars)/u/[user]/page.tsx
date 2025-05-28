@@ -1,3 +1,4 @@
+import { PostType } from "@lens-protocol/client";
 import { fetchPosts } from "@lens-protocol/client/actions";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -32,9 +33,9 @@ const user = async ({ params }: { params: { user: string } }) => {
   );
 };
 
-const getInitialData = async (handle: string) => {
+const getInitialData = async (username: string) => {
   const { client } = await getServerAuth();
-  const user = await getUserByUsername(handle);
+  const user = await getUserByUsername(username);
 
   if (!user) {
     return { user: null, posts: null, nextCursor: null };
@@ -43,6 +44,7 @@ const getInitialData = async (handle: string) => {
   const result = await fetchPosts(client, {
     filter: {
       authors: [user.id],
+      postTypes: [PostType.Root],
     },
   });
 

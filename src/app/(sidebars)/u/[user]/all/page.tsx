@@ -32,7 +32,7 @@ const getInitialData = async (handle: string) => {
   const lensPosts = await fetchPosts(client, {
     filter: {
       authors: [user.address],
-      postTypes: [PostType.Root],
+      postTypes: [PostType.Root, PostType.Comment, PostType.Repost],
       feeds: [{ globalFeed: true }],
     },
   }).unwrapOr(null);
