@@ -49,9 +49,14 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: data.error.message }, { status: 500 });
     }
 
-    const posts = data.value.items.map((item) => {
-      return lensItemToPost(item);
-    });
+    const posts = data.value.items
+      .map((item) => lensItemToPost(item))
+      .filter((post) => {
+        if (!post) return false;
+        if (searchParams.get("media") !== "true") return true;
+        const type = post.metadata?.__typename;
+        return type === "ImageMetadata" || type === "VideoMetadata";
+      });
 
     return NextResponse.json({ data: posts, nextCursor: data.value.pageInfo.next }, { status: 200 });
   } catch (error) {

@@ -14,25 +14,13 @@ export const UserNavigation = ({ handle }: { handle: string }) => {
         <MessageSquare size={18} />
         comments
       </NavigationItem>
+      <NavigationItem href={`/u/${handle}/gallery`}>
+        <ImagesIcon size={18} />
+        gallery
+      </NavigationItem>
       <NavigationItem href={`/u/${handle}/all`}>
         <MessageCircleCode size={18} />
         all
-      </NavigationItem>
-      {/* <NavigationItem href={`/u/${handle}/gallery`} disabled>
-        <ImagesIcon size={18} />
-        gallery
-      </NavigationItem>
-      <NavigationItem href={`/u/${handle}/collection`} disabled>
-        <PlusCircleIcon size={18} />
-        collection
-      </NavigationItem> */}
-      <NavigationItem href={`/u/${handle}/gallery`} disabled>
-        <ImagesIcon size={18} />
-        gallery
-      </NavigationItem>
-      <NavigationItem href={`/u/${handle}/collection`} disabled>
-        <PlusCircleIcon size={18} />
-        collection
       </NavigationItem>
     </nav>
   );
