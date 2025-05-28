@@ -26,7 +26,7 @@ const user = async ({ params }: { params: { user: string } }) => {
   return (
     <Feed
       ItemView={PostView}
-      endpoint={`/api/posts?id=${user.id}&type=post`}
+      endpoint={`/api/posts?address=${user.address}&type=post`}
       initialData={posts}
       initialCursor={nextCursor}
     />
@@ -43,7 +43,7 @@ const getInitialData = async (username: string) => {
 
   const result = await fetchPosts(client, {
     filter: {
-      authors: [user.id],
+      authors: [user.address],
       postTypes: [PostType.Root],
     },
   });

@@ -21,7 +21,12 @@ const user = async ({ params }: { params: { user: string } }) => {
   const { user, posts, nextCursor } = await getInitialData(handle);
 
   return (
-    <Feed ItemView={PostView} endpoint={`/api/posts?id=${user.id}`} initialData={posts} initialCursor={nextCursor} />
+    <Feed
+      ItemView={PostView}
+      endpoint={`/api/posts?address=${user.address}&type=all`}
+      initialData={posts}
+      initialCursor={nextCursor}
+    />
   );
 };
 
@@ -45,9 +50,9 @@ const getInitialData = async (handle: string) => {
     };
   }
 
-  const posts = lensPosts.value.items.map(lensItemToPost);
+  const posts = lensPosts.items.map(lensItemToPost);
 
-  return { user, posts, nextCursor: lensPosts.value.pageInfo.next };
+  return { user, posts, nextCursor: lensPosts.pageInfo.next };
 };
 
 export default user;

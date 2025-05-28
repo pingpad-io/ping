@@ -23,7 +23,7 @@ const user = async ({ params }: { params: { user: string } }) => {
   return (
     <Feed
       ItemView={PostView}
-      endpoint={`/api/posts?id=${user.id}&type=comment`}
+      endpoint={`/api/posts?address=${user.address}&type=comment`}
       initialData={posts}
       initialCursor={nextCursor}
     />
@@ -50,9 +50,9 @@ const getInitialData = async (handle: string) => {
     };
   }
 
-  const posts = lensPosts.value.items.map(lensItemToPost);
+  const posts = lensPosts.items.map(lensItemToPost);
 
-  return { user, posts, nextCursor: lensPosts.value.pageInfo.next };
+  return { user, posts, nextCursor: lensPosts.pageInfo.next };
 };
 
 export default user;

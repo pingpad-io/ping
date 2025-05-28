@@ -11,15 +11,36 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor") || undefined;
   const type = searchParams.get("type") || "post";
+  const address = searchParams.get("address") || undefined;
 
   try {
     const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
 
+    let postTypes: PostType[];
+
+    switch (type) {
+      case "comment":
+        postTypes = [PostType.Comment];
+        break;
+      case "repost":
+        postTypes = [PostType.Repost];
+        break;
+      case "all":
+        postTypes = [PostType.Root, PostType.Comment, PostType.Repost];
+        break;
+      default:
+        postTypes = [PostType.Root];
+    }
+
+    const filter: any = { postTypes };
+    if (address) {
+      filter.authors = [address];
+    } else {
+      filter.feeds = [{ globalFeed: true }];
+    }
+
     const data = await fetchPosts(client, {
-      filter: {
-        postTypes: [PostType.Root],
-        feeds: [{ globalFeed: true }],
-      },
+      filter,
       cursor,
       pageSize: PageSize.Ten,
     });
