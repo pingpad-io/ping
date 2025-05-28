@@ -21,7 +21,12 @@ const user = async ({ params }: { params: { user: string } }) => {
   const { user, posts, nextCursor } = await getInitialData(handle);
 
   return (
-    <Feed ItemView={PostView} endpoint={`/api/posts?id=${user.id}`} initialData={posts} initialCursor={nextCursor} />
+    <Feed
+      ItemView={PostView}
+      endpoint={`/api/posts?address=${user.address}&type=all`}
+      initialData={posts}
+      initialCursor={nextCursor}
+    />
   );
 };
 

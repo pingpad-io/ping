@@ -23,7 +23,7 @@ const user = async ({ params }: { params: { user: string } }) => {
   return (
     <Feed
       ItemView={PostView}
-      endpoint={`/api/posts?id=${user.id}&type=comment`}
+      endpoint={`/api/posts?address=${user.address}&type=comment`}
       initialData={posts}
       initialCursor={nextCursor}
     />
