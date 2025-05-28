@@ -46,8 +46,7 @@ export const PostView = ({
               </div>
               {settings.isComment && (
                 <div
-                  className={`-mt-4 -mr-6 w-full h-[90%] border-l ${settings.isLastComment && "rounded-full h-[98%]"} ${settings.isComment && !settings.isLastComment && "min-h-[130%]"
-                    } `}
+                  className={`-mt-4 -mr-6 w-full h-[90%] border-l ${settings.isLastComment && "rounded-full h-[98%]"} ${settings.isComment && !settings.isLastComment && "min-h-[130%]"} `}
                 />
               )}
             </span>

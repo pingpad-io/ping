@@ -7,7 +7,7 @@ import { PostMenu } from "./PostMenu";
 
 export const PostInfo = ({ post }: { post: Post }) => {
   const author = post.author;
-  const isLensHandle = author.namespace === "lens";
+  const isGlobalHandle = author.namespace === undefined;
   const handle = author.handle;
   const tags = post?.metadata?.tags || [];
 
@@ -31,7 +31,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
     >
       <Link className="flex gap-2" href={`/u/${handle}`}>
         <span className="w-fit truncate font-bold">{author.name}</span>
-        <span className="">{`${isLensHandle ? "@" : "#"}${handle}`}</span>
+        <span className="text-muted-foreground">{`${isGlobalHandle ? "@" : "#"}${handle}`}</span>
       </Link>
       {community && (
         <>

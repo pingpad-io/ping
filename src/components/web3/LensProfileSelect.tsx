@@ -19,7 +19,7 @@ import { env } from "~/env.mjs";
 export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
   const { isConnected, address: walletAddress } = useWagmiAccount();
   const { data: walletClient } = useWalletClient();
-  const [profiles, setProfiles] = useState<Account[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isLoginPending, setIsLoginPending] = useState(false);
@@ -37,9 +37,8 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
         });
 
         if (result.isOk()) {
-          // Extract accounts from the paginated result
           const accounts = result.value.items.map(item => item.account);
-          setProfiles(accounts);
+          setAccounts(accounts);
         } else {
           setError(new Error(result.error.message));
         }
@@ -154,21 +153,21 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
   return (
     <>
       <div className="flex flex-wrap gap-2">
-        {profiles.map((profile, idx) => {
-          const username = profile.username?.localName ? `@${profile.username.localName}` : `#${profile.address}`;
-          const isOwner = profile.owner === walletAddress;
+        {accounts.map((account, idx) => {
+          const username = account.username?.localName ? `@${account.username.localName}` : `#${account.address}`;
+          const isOwner = account.owner === walletAddress;
           return (
-            <div id={`${idx}`} key={`${profile.address}`}>
+            <div id={`${idx}`} key={`${account.address}`}>
               <Button
                 className="flex flex-row items-center gap-2"
                 size="default"
                 variant="outline"
-                value={profile.address}
+                value={account.address}
                 type="submit"
-                onClick={() => onSubmit(profile)}
+                onClick={() => onSubmit(account)}
               >
                 <div className="w-9 h-9">
-                  <UserAvatar link={false} user={lensAcountToUser(profile)} />
+                  <UserAvatar link={false} user={lensAcountToUser(account)} />
                 </div>
                 <div className="flex flex-col items-start">
                   <span>{username}</span>
@@ -188,7 +187,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
         </Link>
       </div>
 
-      {profiles.length === 0 && <Label className="mb-4">No Profiles found.</Label>}
+      {accounts.length === 0 && <Label className="mb-4">No Profiles found.</Label>}
       {isLoginPending && <Label>Sign a message in your wallet</Label>}
     </>
   );
