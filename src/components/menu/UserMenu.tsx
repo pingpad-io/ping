@@ -61,8 +61,7 @@ export function UserMenu({
             <UsersIcon size={16} />
             Switch Profile
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="flex gap-2 text-destructive focus:text-destructive" onSelect={logout}>
+          <DropdownMenuItem className="flex gap-2" onSelect={logout}>
             <LogOutIcon size={16} />
             Log out
           </DropdownMenuItem>

@@ -154,15 +154,15 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
 
   return (
     <>
-      <ScrollArea className="max-h-96">
-        <div className="flex flex-col gap-2">
+      <ScrollArea className="h-96">
+        <div className="flex flex-col gap-2 pr-4">
           {accounts.map((account, idx) => {
             const username = account.username?.localName ? `@${account.username.localName}` : `#${account.address}`;
             const isOwner = account.owner === walletAddress;
             return (
               <div id={`${idx}`} key={`${account.address}`}>
                 <Button
-                  className="flex flex-row items-center gap-2"
+                  className="flex flex-row items-center justify-start w-full gap-2"
                   size="default"
                   variant="outline"
                   value={account.address}
@@ -180,7 +180,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
               </div>
             );
           })}
-          <Link href={"https://lens.xyz/mint"} target="_blank">
+          <Link href={"https://onboarding.lens.xyz/"} target="_blank">
             <Button className="flex flex-row w-full items-center gap-2" size="default" variant="outline">
               <PlusIcon size={22} />
               New Profile
