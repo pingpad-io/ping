@@ -1,3 +1,4 @@
+import type { AccountStats } from "@lens-protocol/client";
 import { CalendarIcon, EditIcon, MessageCircleIcon, User2Icon } from "lucide-react";
 import { notFound } from "next/navigation";
 import Link from "~/components/Link";
@@ -14,12 +15,21 @@ import { Separator } from "../ui/separator";
 import { type User } from "./User";
 import { UserView } from "./UserView";
 
-export const UserProfile = async ({ user }: { user?: User }) => {
+export const UserProfile = async ({
+  user,
+  stats,
+}: {
+  user?: User;
+  stats?: AccountStats | null;
+}) => {
   if (!user) return notFound();
 
   const { user: authedUser } = await getServerAuth();
   const isUserProfile = user.id === authedUser?.id;
   const isFollowingMe = user.actions.following;
+  const postsCount = (stats?.feedStats.posts ?? 0) + (stats?.feedStats.comments ?? 0);
+  const followingCount = stats?.graphFollowStats.following ?? 0;
+  const followersCount = stats?.graphFollowStats.followers ?? 0;
 
   return (
     <div className="p-4 z-20 flex w-full flex-row gap-4 bg-card drop-shadow-md rounded-b-2xl">
@@ -52,17 +62,17 @@ export const UserProfile = async ({ user }: { user?: User }) => {
         </div>
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <MessageCircleIcon size={14} />
-          {user.stats.posts + user.stats.comments} Posts
+          {postsCount} Posts
         </div>
         <div className="text-sm flex flex-row gap-1 place-items-center">
           <User2Icon size={14} />
           <Dialog>
             <DialogTrigger>
-              Following <b>{user.stats.following}</b>
+              Following <b>{followingCount}</b>
             </DialogTrigger>
             <DialogContent className="max-w-96">
               <DialogTitle className="text-lg font-bold">
-                {user.handle}'s follows ({user.stats.following})
+                {user.handle}'s follows ({followingCount})
               </DialogTitle>
               <ScrollArea className="max-h-96">
                 <Feed
@@ -76,11 +86,11 @@ export const UserProfile = async ({ user }: { user?: User }) => {
           </Dialog>
           <Dialog>
             <DialogTrigger>
-              Followers <b>{user.stats.followers}</b>
+              Followers <b>{followersCount}</b>
             </DialogTrigger>
             <DialogContent className="max-w-96">
               <DialogTitle className="text-lg font-bold">
-                {user.handle}'s followers ({user.stats.followers})
+                {user.handle}'s followers ({followersCount})
               </DialogTitle>
               <ScrollArea className="max-h-96">
                 <Feed

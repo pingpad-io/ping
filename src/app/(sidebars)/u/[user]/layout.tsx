@@ -1,7 +1,9 @@
+import { fetchAccountStats } from "@lens-protocol/client/actions";
 import { notFound } from "next/navigation";
 import { Card } from "~/components/ui/card";
 import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
+import { getServerAuth } from "~/utils/getServerAuth";
 import { getUserByUsername } from "~/utils/getUserByHandle";
 
 export const maxDuration = 60;
@@ -20,9 +22,12 @@ export default async function layout({
 
   if (!user) return notFound();
 
+  const { client } = await getServerAuth();
+  const stats = await fetchAccountStats(client, { account: user.address }).unwrapOr(null);
+
   return (
     <>
-      <UserProfile user={user} />
+      <UserProfile user={user} stats={stats} />
       <UserNavigation handle={handle} />
 
       <Card className="z-[30] hover:bg-card p-4 border-0">{children}</Card>

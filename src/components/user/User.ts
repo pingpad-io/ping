@@ -6,16 +6,6 @@ export type UserInterests = {
   label: string;
 };
 
-export type UserStats = {
-  followers: number;
-  following: number;
-  downvotes: number;
-  upvotes: number;
-  comments: number;
-  posts: number;
-  score: number;
-};
-
 export type UserActions = {
   followed: boolean;
   following: boolean;
@@ -25,7 +15,6 @@ export type UserActions = {
 export type User = {
   id: string;
   name?: string;
-  stats: UserStats;
   handle: string;
   address: string;
   namespace: string;
@@ -40,17 +29,6 @@ export function lensAcountToUser(account: Account): User {
   if (!account) return {} as unknown as User;
 
   const imageUrl = account?.metadata?.picture;
-
-  //// FIXME: Temporary stats
-  const stats = {
-    followers: 0,
-    following: 0,
-    downvotes: 0,
-    upvotes: 0,
-    comments: 0,
-    posts: 0,
-    score: 0,
-  };
 
   //// FIXME: Temporary interests
   const interests = [];
@@ -72,7 +50,6 @@ export function lensAcountToUser(account: Account): User {
     name: account?.metadata?.name,
     handle: account.username?.localName,
     namespace: account.username?.namespace?.address,
-    stats,
   };
 }
 
