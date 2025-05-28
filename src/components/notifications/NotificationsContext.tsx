@@ -2,18 +2,16 @@
 
 import { type ReactNode, createContext, useContext, useEffect, useState } from "react";
 import type { Notification } from "./Notification";
+import { usePathname, useRouter } from "next/navigation";
+import { P } from "@lens-protocol/client/dist/clients-BTRwdEON";
 
 interface NotificationsContextValue {
   notifications: Notification[];
   lastSeen: number;
   newCount: number;
-  /**
-   * When defined, highlight notifications newer than this timestamp.
-   * It is cleared shortly after updating the last seen timestamp.
-   */
-  highlightSince: number | null;
   setNotifications: (items: Notification[]) => void;
   markAllAsRead: () => void;
+  refresh: () => Promise<void>;
 }
 
 const NotificationsContext = createContext<NotificationsContextValue | undefined>(undefined);
@@ -24,10 +22,10 @@ function parseNotification(raw: any): Notification {
     createdAt: new Date(raw.createdAt),
     actedOn: raw.actedOn
       ? {
-          ...raw.actedOn,
-          createdAt: new Date(raw.actedOn.createdAt),
-          updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
-        }
+        ...raw.actedOn,
+        createdAt: new Date(raw.actedOn.createdAt),
+        updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
+      }
       : undefined,
   } as Notification;
 }
@@ -39,25 +37,57 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     const stored = window.localStorage.getItem("lastSeenNotifications");
     return stored ? Number.parseInt(stored, 10) : Date.now();
   });
-  const [highlightSince, setHighlightSince] = useState<number | null>(null);
   const [newCount, setNewCount] = useState<number>(0);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const computeNewCount = (items: Notification[]) =>
-    items.filter((n) => new Date(n.createdAt).getTime() > lastSeen).length;
+  const computeNewCount = (items: Notification[]) => {
+    const newNotifications = items.filter((n) => {
+      const notificationTime = new Date(n.createdAt).getTime();
+      const isNew = notificationTime > lastSeen;
+
+      if (isNew) {
+        console.log(`New notification:`, {
+          id: n.id,
+          type: n.type,
+          createdAt: n.createdAt,
+          notificationTime,
+          lastSeen,
+          isNew,
+          who: n.who.map(u => ({ name: u.name, handle: u.handle }))
+        });
+
+        if (pathname.includes("/notifications")) {
+          console.log("Refreshing notifications...");
+          router.refresh();
+        }
+      }
+
+      return isNew;
+    });
+
+    return newNotifications.length;
+  };
 
   const setNotifications = (items: Notification[]) => {
     const parsed = items.map((n) => (typeof n.createdAt === "string" ? parseNotification(n) : n));
     parsed.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
     setNotificationsState(parsed);
     setNewCount(computeNewCount(parsed));
   };
 
   const refresh = async () => {
     try {
+      console.log("Refreshing notifications...");
       const res = await fetch("/api/notifications");
-      if (!res.ok) return;
+      if (!res.ok) {
+        console.error("Failed to refresh notifications:", res.statusText);
+        return;
+      }
       const data = await res.json();
       if (Array.isArray(data.data)) {
+        console.log(`Refreshed notifications: ${data.data.length} items`);
         setNotifications(data.data);
       }
     } catch (err) {
@@ -67,24 +97,22 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     refresh();
-    const interval = setInterval(refresh, 30_000);
+    const interval = setInterval(refresh, 30_000); // 30 seconds
     return () => clearInterval(interval);
   }, [lastSeen]);
 
   const markAllAsRead = () => {
     const now = Date.now();
-    setHighlightSince(lastSeen);
     setNewCount(0);
     setLastSeen(now);
     if (typeof window !== "undefined") {
       window.localStorage.setItem("lastSeenNotifications", now.toString());
     }
-    setTimeout(() => setHighlightSince(null), 300);
   };
 
   return (
     <NotificationsContext.Provider
-      value={{ notifications, lastSeen, newCount, highlightSince, setNotifications, markAllAsRead }}
+      value={{ notifications, lastSeen, newCount, setNotifications, markAllAsRead, refresh }}
     >
       {children}
     </NotificationsContext.Provider>

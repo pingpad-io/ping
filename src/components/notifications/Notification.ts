@@ -15,7 +15,7 @@ export type Notification = {
 };
 
 export function lensNotificationToNative(item: LensNotification): Notification {
-  const base = { id: item.id };
+  const base = { id: (item as any).id || crypto.randomUUID() };
 
   switch (item.__typename) {
     case "CommentNotification":
@@ -37,6 +37,65 @@ export function lensNotificationToNative(item: LensNotification): Notification {
         createdAt: new Date(reaction?.reactedAt ?? Date.now()),
         type: "Reaction",
         reactionType: reaction?.reaction === "UPVOTE" ? "Upvote" : "Downvote",
+        __typename: "Notification",
+      };
+    }
+
+    case "PostActionExecutedNotification":
+      return {
+        ...base,
+        who: [lensAcountToUser(item.post.author)],
+        actedOn: lensItemToPost(item.post) || undefined,
+        createdAt: new Date(item.post.timestamp),
+        type: "Action",
+        __typename: "Notification",
+      };
+
+    case "AccountActionExecutedNotification": {
+      const action = item.actions[0];
+      if (!action) {
+        return {
+          ...base,
+          who: [],
+          createdAt: new Date(),
+          type: "Action",
+          __typename: "Notification",
+        };
+      }
+
+      let who: User[] = [];
+      let createdAt = new Date();
+
+      switch (action.__typename) {
+        case "TippingAccountActionExecuted":
+          if ((action as any).account) {
+            who = [lensAcountToUser((action as any).account)];
+          }
+          createdAt = new Date((action as any).executedAt || Date.now());
+          break;
+
+        case "UnknownAccountActionExecuted":
+          if ((action as any).account) {
+            who = [lensAcountToUser((action as any).account)];
+          }
+          createdAt = new Date((action as any).executedAt || Date.now());
+          break;
+
+        default:
+          if ((action as any).account) {
+            who = [lensAcountToUser((action as any).account)];
+          }
+          if ((action as any).executedAt) {
+            createdAt = new Date((action as any).executedAt);
+          }
+          break;
+      }
+
+      return {
+        ...base,
+        who,
+        createdAt,
+        type: "Action",
         __typename: "Notification",
       };
     }
@@ -81,6 +140,12 @@ export function lensNotificationToNative(item: LensNotification): Notification {
       };
 
     default:
+      console.log("Unknown notification type, falling back to Action:", {
+        typename: item.__typename,
+        item: item
+      });
+
+      // Return a fallback notification
       return {
         ...base,
         who: [],

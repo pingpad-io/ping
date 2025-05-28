@@ -24,8 +24,8 @@ export function UserAvatar({ user, link = true, card = true }: { user: User; lin
 }
 
 export function UserAvatarArray({ users, amountTruncated }: { users: User[]; amountTruncated?: number }) {
-  const avatars = users.map((user) => (
-    <div key={user.id} className="w-10 h-10 -ml-4">
+  const avatars = users.map((user, index) => (
+    <div key={`${user.id}-${index}`} className="w-10 h-10 -ml-4">
       <UserAvatar link={true} user={user} />
     </div>
   ));

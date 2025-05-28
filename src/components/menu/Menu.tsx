@@ -20,7 +20,7 @@ import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
-import { NotificationButton } from "./NotificationButton";
+import { NotificationButton } from "../notifications/NotificationButton";
 import { SearchButton } from "./Search";
 
 export default async function Menu() {
