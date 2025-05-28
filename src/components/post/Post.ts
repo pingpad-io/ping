@@ -54,7 +54,7 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
     const timestamp = item.timestamp;
 
     post = {
-      id: item.id,
+      id: item.slug ?? item.id,
       author: lensAcountToUser(author),
       reactions: getReactions(item),
       comments: getCommentsFromItem(item),
@@ -98,12 +98,10 @@ function getReactions(post: LensPost): Partial<PostReactions> {
 function getCommentsFromItem(post: any) {
   let comments = [];
 
-  // Handle TimelineItem comments
   if (post.__typename === "TimelineItem" && post.comments) {
     return post.comments.map(processComment);
   }
 
-  // Handle FeedItem comments
   if (post.__typename === "FeedItem" && post.comments) {
     return post.comments
       .filter((comment) => comment.commentOn?.id === post.root?.id)
@@ -115,7 +113,7 @@ function getCommentsFromItem(post: any) {
 
 function processComment(comment: any) {
   return {
-    id: comment.id,
+    id: comment.slug ?? comment.id,
     author: comment.by ? lensAcountToUser(comment.by) : null,
     createdAt: new Date(comment.createdAt),
     updatedAt: new Date(comment.createdAt),
@@ -130,10 +128,9 @@ function processComment(comment: any) {
 function getReplyFromItem(origin: any) {
   if (!origin) return undefined;
 
-  // Handle Comment type
   if (origin.__typename === "Comment" && origin.commentOn) {
     return {
-      id: origin.commentOn.id,
+      id: origin.commentOn.slug ?? origin.commentOn.id,
       author: origin.commentOn.by ? lensAcountToUser(origin.commentOn.by) : undefined,
       content: origin.commentOn.metadata?.content || "",
       metadata: origin.commentOn.metadata,
@@ -146,10 +143,9 @@ function getReplyFromItem(origin: any) {
     } as Post;
   }
 
-  // Handle Quote type
   if (origin.__typename === "Quote" && origin.quoteOn) {
     return {
-      id: origin.quoteOn.id,
+      id: origin.quoteOn.slug ?? origin.quoteOn.id,
       author: origin.quoteOn.by ? lensAcountToUser(origin.quoteOn.by) : undefined,
       content: origin.quoteOn.metadata?.content || "",
       metadata: origin.quoteOn.metadata,
