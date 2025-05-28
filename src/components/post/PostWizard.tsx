@@ -86,7 +86,7 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   );
 };
 
-export default function PostWizard({ user, replyingTo }: { user?: User; replyingTo?: Post }) {
+export default function PostWizard({ user, replyingTo, onSuccess }: { user?: User; replyingTo?: Post; onSuccess?: () => void }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPosting, setPosting] = useState(false);
@@ -165,14 +165,14 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
 
       const postData = replyingTo
         ? {
-            contentUri,
-            commentOn: {
-              post: replyingTo.id,
-            },
-          }
+          contentUri,
+          commentOn: {
+            post: replyingTo.id,
+          },
+        }
         : {
-            contentUri,
-          };
+          contentUri,
+        };
 
       const result = await post(client, postData)
         .andThen(handleOperationWith(walletClient))
@@ -185,6 +185,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
         form.setValue("content", "");
         resetHeight();
         setImageFile(null);
+        onSuccess?.();
       } else {
         console.error("Failed to create post:", result.error);
         toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
@@ -328,7 +329,7 @@ export default function PostWizard({ user, replyingTo }: { user?: User; replying
                     placeholder={placeholderText}
                     disabled={isPosting}
                     autoComplete="off"
-                    className="min-h-8 resize-none mt-2 px-2 py-2"
+                    className="min-h-8 resize-none px-2 py-2"
                     ref={textarea}
                     rows={1}
                   />

@@ -1,4 +1,4 @@
-import { PlusCircleIcon, PlusIcon } from "lucide-react";
+import { PlusCircleIcon, PlusIcon, MinusCircleIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -68,33 +68,29 @@ export const PostComments = ({
     </motion.li>
   ));
 
-  const replyElement = isOpen ? (
-    <motion.li
-      key="reply"
-      initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{
-        duration: 0.3,
-        ease: "easeInOut",
-      }}
-    >
-      <Button variant="ghost" onClick={onReply} className="flex flex-row items-center gap-1">
-        <PlusCircleIcon size={16} /> Reply
-      </Button>
-    </motion.li>
-  ) : null;
-
   if (error) throw new Error(error);
 
   return (
     <div className="w-full flex flex-col items-end justify-center gap-2 text-xs sm:text-sm">
       <div className={`gap-2 ${level === 2 ? "w-[90%]" : "w-[94%]"}`}>
         <AnimatePresence>
-          <ul>
-            {replyElement}
-            {commentElements}
-          </ul>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{
+                duration: 0.3,
+                ease: "easeInOut",
+              }}
+            >
+              <ul className="gap-2 flex flex-col">
+                <div>
+                  {commentElements}
+                </div>
+              </ul>
+            </motion.div>
+          )}
         </AnimatePresence>
         {loading && (
           <motion.div

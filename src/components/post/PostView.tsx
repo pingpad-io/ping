@@ -29,14 +29,17 @@ export const PostView = ({
   const [isReplyWizardOpen, setReplyWizardOpen] = useState(false);
   const postContentRef = useRef<HTMLDivElement>(null);
 
+  const handleReply = () => {
+    setReplyWizardOpen(!isReplyWizardOpen);
+  };
+
   return (
     <div className={"flex flex-col gap-2 w-full"}>
       <PostContextMenu post={item}>
         <Card
-          onClick={(e) => {
+          onDoubleClick={(e) => {
             e.stopPropagation();
-            setCollapsed(false);
-            setCommentsOpen(true);
+            handleReply();
           }}
         >
           <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
@@ -69,12 +72,17 @@ export const PostView = ({
           </CardContent>
         </Card>
       </PostContextMenu>
-      <PostReplyWizard level={settings.level + 1} isOpen={isReplyWizardOpen} post={item} />
+      <PostReplyWizard
+        level={settings.level || 1}
+        isOpen={isReplyWizardOpen}
+        post={item}
+        setOpen={setReplyWizardOpen}
+      />
       <PostComments
         level={settings.level + 1}
         isOpen={isCommentsOpen}
         post={item}
-        onReply={() => setReplyWizardOpen(true)}
+        onReply={handleReply}
       />
     </div>
   );

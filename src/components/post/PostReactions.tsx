@@ -108,7 +108,7 @@ export function ReactionsList({
       <ReactionButton
         reactionType="Comment"
         reaction={reactions.Comment}
-        onClick={() => setCommentsOpen(true)}
+        onClick={() => setCommentsOpen(!isCommentsOpen)}
         disabled={!post.reactions.canComment}
       />
       <ReactionButton
