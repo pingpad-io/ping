@@ -6,10 +6,12 @@ export const TruncatedText = ({
   text,
   maxLength,
   isMarkdown = true,
+  className,
 }: {
   text: string;
   maxLength: number;
   isMarkdown?: boolean;
+  className?: string;
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   if (!text) return null;
@@ -19,7 +21,7 @@ export const TruncatedText = ({
 
   return (
     <span
-      className={isTruncated ? "line-clamp-3" : "line-clamp-none"}
+      className={`${isTruncated ? "line-clamp-3" : "line-clamp-none"} ${className}`}
       onKeyDown={() => setIsCollapsed(!isCollapsed)}
       onClick={() => setIsCollapsed(!isCollapsed)}
     >

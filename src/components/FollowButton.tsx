@@ -47,21 +47,19 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
           size="sm"
           variant={following ? "outline" : "default"}
           onClick={() => toggleFollow()}
-          className={`font-bold text-sm z-10 absolute right-0 top-0 ${className}`}
+          className={`font-semibold text-sm z-10 px-4 absolute right-0 top-0 ${className}`}
         >
           {following ? "Following" : followsMe ? "Follow back" : "Follow"}
         </Button>
 
-        {/* Hidden button to stretch the parent */}
         <Button
           size="sm"
           variant={following ? "outline" : "default"}
           onClick={() => {}}
-          className={`font-bold text-sm right-0 top-0 ${className} display-none`}
+          className={`font-semibold text-sm right-0 px-4 top-0 ${className} display-none`}
         >
           {following ? "Following" : followsMe ? "Follow back" : "Follow"}
         </Button>
-        {/* Hidden button to stretch the parent */}
 
         <Explosion
           onInit={onInitHandler}
