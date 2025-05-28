@@ -67,6 +67,7 @@
     "metascraper-title": "^5.46.5",
     "metascraper-url": "^5.46.5",
     "metascraper-video": "^5.46.5",
+    "motion": "^12.15.0",
     "neverthrow": "^8.2.0",
     "next-themes": "^0.3.0",
     "pino-pretty": "^11.3.0",
