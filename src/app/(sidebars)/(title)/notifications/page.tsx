@@ -2,7 +2,6 @@ import { fetchNotifications } from "@lens-protocol/client/actions";
 import { Feed } from "~/components/Feed";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { NotificationView } from "~/components/notifications/NotificationView";
-import { NotificationsPageClient } from "~/components/notifications/NotificationsPageClient";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const endpoint = "/api/notifications";
