@@ -1,7 +1,8 @@
 "use client";
 
 import { useLogout } from "@lens-protocol/react";
-import { GlobeIcon, Grid2X2, LogInIcon, SquareIcon, UserMinusIcon, UsersIcon } from "lucide-react";
+import { FamilyIcon, GlobeIcon } from "../Icons";
+import { Grid2X2, LogInIcon, SquareIcon, UserMinusIcon, UsersIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type PropsWithChildren, useState } from "react";
 import { toast } from "sonner";
@@ -35,13 +36,21 @@ export function ConnectWalletButton() {
 
     if (connector.id === "injected") {
       name = "Browser Wallet";
-      icon = <GlobeIcon key={connector.uid} strokeWidth={1.1} size={26} />;
+      icon = (
+        <div className="w-5 h-5">
+          <GlobeIcon key={connector.uid} />
+        </div>
+      );
     } else if (connector.id === "walletConnect") {
       name = "Wallet Connect";
       icon = <WalletConnectIcon key={connector.uid} />;
     } else if (connector.id === "familyAccountsProvider") {
       name = "Continue with Family";
-      icon = <Grid2X2 key={connector.uid} strokeWidth={1.1} size={26} />;
+      icon = (
+        <div className="w-5 h-5">
+          <FamilyIcon key={connector.uid} />
+        </div>
+      );
     } else {
       return null;
     }
