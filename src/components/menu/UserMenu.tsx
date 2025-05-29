@@ -44,8 +44,8 @@ export function UserMenu({
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="w-10 h-10 p-1.5">
-            <div className="w-7 h-7 rounded-lg overflow-hidden">
+          <Button variant="ghost" size="icon" className="w-12 h-12 p-1.5">
+            <div className="w-8 h-8 rounded-lg overflow-hidden">
               <UserAvatar link={false} card={false} user={user} />
             </div>
           </Button>

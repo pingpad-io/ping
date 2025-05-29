@@ -15,72 +15,51 @@ export default async function Menu() {
   const { handle, profileId, user } = await getServerAuth();
   const handleOrProfileId = handle ?? profileId;
 
-  if (!profileId) {
-    return (
-      <div className="fixed h-fit bottom-4 left-1/2 -translate-x-1/2 sm:left-4 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-0 z-50">
-        <div className="flex flex-row sm:flex-col items-center gap-4 md:gap-6 bg-background/80 backdrop-blur-md rounded-2xl">
-          <Link href="/home">
-            <Button variant="ghost" size="icon" className="w-10 h-10">
-              <AtSign size={20} strokeWidth={2.5} />
-            </Button>
-          </Link>
-          <div className="w-10">
-            <ConnectWalletButton />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 sm:left-4 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-0 z-50">
-      <div className="flex flex-row sm:flex-col items-center gap-4 md:gap-6 bg-background/80 backdrop-blur-md rounded-2xl">
-        <Link href="/home">
-          <Button variant="ghost" size="icon" className="w-10 h-10">
+    <div className="fixed bottom-0 left-0 w-full p-2 pb-6 sm:bottom-auto sm:top-1/2 sm:right-0 sm:left-auto sm:w-auto sm:-translate-y-1/2 sm:p-2 z-50 bg-background/80 backdrop-blur-md rounded-2xl">
+      <div className="flex flex-row sm:flex-col items-center justify-around sm:justify-center gap-6 sm:gap-6">
+        <Link href="/home" className="flex-shrink-0">
+          <Button variant="ghost" size="icon" className="w-12 h-12">
             <AtSign size={20} strokeWidth={2.5} />
           </Button>
         </Link>
 
-        <ServerSignedIn>
-          <MenuAuthed handle={handleOrProfileId} user={user} />
-        </ServerSignedIn>
+        {!profileId ? (
+          <div className="w-12 flex-shrink-0">
+            <ConnectWalletButton />
+          </div>
+        ) : (
+          <ServerSignedIn>
+            <div className="flex-shrink-0">
+              <NotificationButton />
+            </div>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="secondary" size="icon" className="w-12 h-12 flex-shrink-0">
+                  <PlusIcon size={20} strokeWidth={2.5} />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-full sm:max-w-[700px]">
+                <DialogTitle className="text-center">What's going on?</DialogTitle>
+                <div className="pr-4">
+                  <PostWizard user={user} />
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <div className="flex-shrink-0">
+              <UserMenu handle={handleOrProfileId} user={user} />
+            </div>
+
+            <Link href="/bookmarks" className="flex-shrink-0">
+              <Button variant="ghost" size="icon" className="w-12 h-12">
+                <BookmarkIcon size={20} strokeWidth={2.5} />
+              </Button>
+            </Link>
+          </ServerSignedIn>
+        )}
       </div>
     </div>
   );
 }
-
-export const MenuAuthed = ({ handle, user }: { handle: string; user: User }) => {
-  return (
-    <>
-      {/* <Link href="/settings">
-        <Button variant="ghost" size="icon" className="w-10 h-10">
-          <SettingsIcon size={20} strokeWidth={3} />
-        </Button>
-      </Link> */}
-
-      <NotificationButton />
-
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="secondary" size="icon" className="w-10 h-10">
-            <PlusIcon size={20} strokeWidth={2.5} />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-full sm:max-w-[700px]">
-          <DialogTitle className="text-center">What's going on?</DialogTitle>
-          <div className="pr-4">
-            <PostWizard user={user} />
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <UserMenu handle={handle} user={user} />
-
-      <Link href="/bookmarks">
-        <Button variant="ghost" size="icon" className="w-10 h-10">
-          <BookmarkIcon size={20} strokeWidth={2.5} />
-        </Button>
-      </Link>
-    </>
-  );
-};
