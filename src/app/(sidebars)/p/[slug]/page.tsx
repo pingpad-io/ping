@@ -8,8 +8,6 @@ import { getServerAuth } from "~/utils/getServerAuth";
 
 /**
  * This route resolves to universal id of the post passed in the [slug]
- *
- * @param slug - id of the post (0x04359b-0x6c)
  */
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { client } = await getServerAuth();
