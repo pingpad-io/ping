@@ -50,6 +50,9 @@
 }
 
 @layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
   * {
     @apply border-border;
   }
@@ -61,6 +64,7 @@
 
 @layer utilities {
   @layer utilities {
+
     /* Hide scrollbar for Chrome, Safari and Opera */
     .no-scrollbar::-webkit-scrollbar {
       display: none;

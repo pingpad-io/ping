@@ -71,8 +71,7 @@ export function ConnectWalletButton() {
   return (
     <Dialog onOpenChange={(open) => setDialogOpen(open)} open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="w-10 h-10" onClick={(_e) => setDialogOpen(true)}>
-          {/* <div className="hidden sm:flex text-xl -mt-1">connect</div> */}
+        <Button size="sm" className="w-12 h-12" onClick={(_e) => setDialogOpen(true)}>
           <LogInIcon size={20} strokeWidth={2.5} />
         </Button>
       </DialogTrigger>
