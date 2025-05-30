@@ -1,25 +1,26 @@
-import { PlusCircleIcon, PlusIcon, MinusCircleIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
-import { PostView } from "./PostView";
 import { CommentSkeleton } from "./PostCommentSkeleton";
+import { PostView } from "./PostView";
 
 export const PostComments = ({
   post,
   level,
   isOpen,
-  onReply,
+  comments,
+  setComments,
 }: {
   post: Post;
   level: number;
   isOpen: boolean;
-  onReply: () => void;
+  comments: Post[];
+  setComments: React.Dispatch<React.SetStateAction<Post[]>>;
 }) => {
-  const [comments, setComments] = useState(post.comments);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<null | string>(null);
   const [cursor, setCursor] = useState(undefined);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export const PostComments = ({
       });
       if (!res.ok) throw new Error(res.statusText);
       const { comments: newComments, nextCursor } = await res.json();
-      const diffComments = newComments.filter((comment) => !post.comments.find((c) => c.id === comment.id));
+      const diffComments = newComments.filter((comment) => !comments.find((c) => c.id === comment.id));
       setComments((prevComments) => [...prevComments, ...diffComments]);
       setCursor(nextCursor);
     } catch (err) {
@@ -85,9 +86,7 @@ export const PostComments = ({
               }}
             >
               <ul className="gap-2 flex flex-col">
-                <div>
-                  {commentElements}
-                </div>
+                <div>{commentElements}</div>
               </ul>
             </motion.div>
           )}
