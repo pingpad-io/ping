@@ -1,6 +1,6 @@
 "use client";
 
-import { shapeFromText } from "canvas-confetti";
+import confetti from "canvas-confetti";
 import { ChevronDownIcon } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import Explosion from "react-canvas-confetti/dist/presets/explosion";
@@ -42,7 +42,9 @@ export function ReactionsList({
     Like: { count: post.reactions.Upvote, isActive: post.reactions.isUpvoted },
   });
 
-  const heartShape = useMemo(() => shapeFromText({ text: "❤️" }), []);
+  const heartShape = useMemo(() => confetti.shapeFromPath({
+    path: "M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
+  }), []);
 
   const explosionController = useRef<any>();
 
@@ -157,6 +159,7 @@ export function ReactionsList({
             particleCount: 15,
             ticks: 60,
             startVelocity: 8,
+            flat: true,
             shapes: [heartShape],
           })}
         />
