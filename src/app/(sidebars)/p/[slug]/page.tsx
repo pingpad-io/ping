@@ -27,9 +27,39 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const title = `${handle}'s post`;
   const ending = content.length > 300 ? "..." : "";
 
+  let image: string | undefined;
+  const metadata = post.metadata as any;
+  switch (metadata?.__typename) {
+    case "ImageMetadata":
+      image = metadata?.image?.item;
+      break;
+    case "VideoMetadata":
+      image = metadata?.video?.cover || metadata?.video?.item;
+      break;
+    case "AudioMetadata":
+      image = metadata?.audio?.cover;
+      break;
+    default:
+      image = undefined;
+  }
+
   return {
     title,
     description: `${content.slice(0, 300)}${ending}`,
+    openGraph: {
+      type: "article",
+      title,
+      description: `${content.slice(0, 300)}${ending}`,
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+            },
+          ]
+        : [],
+    },
   };
 }
 

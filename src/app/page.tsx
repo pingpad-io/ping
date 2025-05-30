@@ -1,8 +1,25 @@
 import { AtSign, Github, Heart, InfoIcon, LogInIcon } from "lucide-react";
+import type { Metadata } from "next";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
 import Link from "~/components/Link";
 import { ThemeToggle } from "~/components/ThemeToggle";
+
+export const metadata: Metadata = {
+  title: "Pingpad",
+  description: "reach your people on pingpad",
+  openGraph: {
+    title: "Pingpad",
+    description: "reach your people on pingpad",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
 import { FadeIn } from "~/components/Transitions";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
@@ -53,10 +70,7 @@ const LandingPage = () => {
           <FadeIn className="duration-1000 delay-1000">
             <div className="col-span-1 flex flex-row gap-4 items-center justify-center">
               <h1>built on</h1>
-              <Link
-                className="hover:underline -mt-24 -mb-24  flex items-center relative"
-                href={"https://lens.xyz"}
-              >
+              <Link className="hover:underline -mt-24 -mb-24  flex items-center relative" href={"https://lens.xyz"}>
                 <div className="dark:hidden">
                   <LensTextDark />
                 </div>

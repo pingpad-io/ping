@@ -35,7 +35,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const bookmarkExists = publication.operations.hasBookmarked;
 
     try {
-      let result;
+      let result: any;
       if (bookmarkExists) {
         result = await undoBookmarkPost(sessionClient, {
           post: publication.id,

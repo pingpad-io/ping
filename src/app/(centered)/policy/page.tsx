@@ -1,3 +1,21 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Pingpad privacy policy",
+  openGraph: {
+    title: "Privacy Policy",
+    description: "Pingpad privacy policy",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
 const PolicyPage = () => {
   return (
     <>

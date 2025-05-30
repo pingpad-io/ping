@@ -1,5 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Cookie, FileIcon, Github } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "About Pingpad",
+  openGraph: {
+    title: "About",
+    description: "About Pingpad",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
 import Link from "~/components/Link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";

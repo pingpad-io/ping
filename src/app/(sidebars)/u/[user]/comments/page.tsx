@@ -13,6 +13,17 @@ export async function generateMetadata({ params }: { params: { user: string } })
   return {
     title,
     description: `@${handle}'s comments on Pingpad`,
+    openGraph: {
+      title,
+      description: `@${handle}'s comments on Pingpad`,
+      images: [
+        {
+          url: "/logo.png",
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
   };
 }
 

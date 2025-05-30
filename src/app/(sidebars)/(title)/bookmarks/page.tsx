@@ -1,8 +1,25 @@
 import { PageSize } from "@lens-protocol/client";
 import { fetchPostBookmarks } from "@lens-protocol/client/actions";
+import type { Metadata } from "next";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
+
+export const metadata: Metadata = {
+  title: "Bookmarks",
+  description: "Your bookmarked posts",
+  openGraph: {
+    title: "Bookmarks",
+    description: "Your bookmarked posts",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const endpoint = "/api/bookmarks";
