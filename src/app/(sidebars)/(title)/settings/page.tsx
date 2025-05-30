@@ -1,8 +1,25 @@
 import { PawPrintIcon, WalletIcon } from "lucide-react";
+import type { Metadata } from "next";
 import { PingButton } from "~/components/SettingsPageItems";
 import { ThemeButtons } from "~/components/ThemeToggle";
 import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
+
+export const metadata: Metadata = {
+  title: "Settings",
+  description: "Adjust your preferences",
+  openGraph: {
+    title: "Settings",
+    description: "Adjust your preferences",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { ConnectedWalletLabel } from "~/components/web3/ConnnectedWalletLabel";

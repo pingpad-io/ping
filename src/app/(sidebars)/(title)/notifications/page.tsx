@@ -1,8 +1,25 @@
 import { fetchNotifications } from "@lens-protocol/client/actions";
+import type { Metadata } from "next";
 import { Feed } from "~/components/Feed";
 import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { NotificationView } from "~/components/notifications/NotificationView";
 import { getServerAuth } from "~/utils/getServerAuth";
+
+export const metadata: Metadata = {
+  title: "Notifications",
+  description: "Your latest notifications",
+  openGraph: {
+    title: "Notifications",
+    description: "Your latest notifications",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
 
 const endpoint = "/api/notifications";
 

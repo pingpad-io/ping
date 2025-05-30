@@ -1,3 +1,21 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: "Pingpad terms of service",
+  openGraph: {
+    title: "Terms of Service",
+    description: "Pingpad terms of service",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
 const ConditionsPage = () => {
   return (
     <>

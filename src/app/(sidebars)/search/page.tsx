@@ -10,6 +10,17 @@ export async function generateMetadata({ searchParams }: { searchParams: { q: st
   return {
     title,
     description: `@${query} on Pingpad`,
+    openGraph: {
+      title,
+      description: `@${query} on Pingpad`,
+      images: [
+        {
+          url: "/logo.png",
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
   };
 }
 const search = async () => {

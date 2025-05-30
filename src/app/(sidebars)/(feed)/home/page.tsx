@@ -1,8 +1,25 @@
 import { PostType, TimelineEventItemType } from "@lens-protocol/client";
 import { fetchPosts, fetchTimeline } from "@lens-protocol/client/actions";
+import type { Metadata } from "next";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description: "Pingpad feed",
+  openGraph: {
+    title: "Home",
+    description: "Pingpad feed",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { getServerAuth } from "~/utils/getServerAuth";
 
@@ -25,7 +42,7 @@ const getInitialFeed = async () => {
   const { client, isAuthenticated, profileId, address } = await getServerAuth();
 
   try {
-    let data;
+    let data: any;
 
     if (client.isSessionClient()) {
       const result = await fetchTimeline(client, {
