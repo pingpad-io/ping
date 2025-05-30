@@ -16,9 +16,9 @@ class ContentParser {
       .replace(userHandleRegex, (match) => {
         const parts = match.slice(1).split("/");
         const handle = parts.length > 1 ? parts[1] : parts[0];
-        return `${BASE_URL}u/${handle}`;
+        return `[${match}](${BASE_URL}u/${handle})`;
       })
-      .replace(communityHandleRegex, (match) => `${BASE_URL}c${match}`);
+      .replace(communityHandleRegex, (match) => `[${match}](${BASE_URL}c${match})`);
     return this;
   }
 
