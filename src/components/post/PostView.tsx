@@ -27,10 +27,18 @@ export const PostView = ({
   const [collapsed, setCollapsed] = useState(content.length > 400);
   const [isCommentsOpen, setCommentsOpen] = useState(false);
   const [isReplyWizardOpen, setReplyWizardOpen] = useState(false);
+  const [comments, setComments] = useState(item.comments);
   const postContentRef = useRef<HTMLDivElement>(null);
 
   const handleReply = () => {
     setReplyWizardOpen(!isReplyWizardOpen);
+  };
+
+  const handleCommentAdded = (comment?: Post | null) => {
+    if (comment) {
+      setComments((prev) => [...prev, comment]);
+      setCommentsOpen(true);
+    }
   };
 
   return (
@@ -81,12 +89,14 @@ export const PostView = ({
         isOpen={isReplyWizardOpen}
         post={item}
         setOpen={setReplyWizardOpen}
+        onCommentAdded={handleCommentAdded}
       />
       <PostComments
         level={settings.level + 1}
         isOpen={isCommentsOpen}
         post={item}
-        onReply={handleReply}
+        comments={comments}
+        setComments={setComments}
       />
     </div>
   );

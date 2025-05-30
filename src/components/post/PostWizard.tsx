@@ -86,7 +86,17 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   );
 };
 
-export default function PostWizard({ user, replyingTo, onSuccess }: { user?: User; replyingTo?: Post; onSuccess?: () => void }) {
+import { lensItemToPost } from "./Post";
+
+export default function PostWizard({
+  user,
+  replyingTo,
+  onSuccess,
+}: {
+  user?: User;
+  replyingTo?: Post;
+  onSuccess?: (post?: Post | null) => void;
+}) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPosting, setPosting] = useState(false);
@@ -165,14 +175,14 @@ export default function PostWizard({ user, replyingTo, onSuccess }: { user?: Use
 
       const postData = replyingTo
         ? {
-          contentUri,
-          commentOn: {
-            post: replyingTo.id,
-          },
-        }
+            contentUri,
+            commentOn: {
+              post: replyingTo.id,
+            },
+          }
         : {
-          contentUri,
-        };
+            contentUri,
+          };
 
       const result = await post(client, postData)
         .andThen(handleOperationWith(walletClient))
@@ -185,7 +195,8 @@ export default function PostWizard({ user, replyingTo, onSuccess }: { user?: Use
         form.setValue("content", "");
         resetHeight();
         setImageFile(null);
-        onSuccess?.();
+        const newPost = lensItemToPost(result.value);
+        onSuccess?.(newPost);
       } else {
         console.error("Failed to create post:", result.error);
         toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
