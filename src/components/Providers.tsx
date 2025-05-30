@@ -65,9 +65,10 @@ const url = getBaseUrl();
 // });
 const wagmiConfig = createConfig({
   chains: [chains.mainnet],
-  client: createClient({
-    transport: http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`),
-  }),
+  transports: {
+    [chains.mainnet.id]: http(),
+    [chains.testnet.id]: http(),
+  },
   connectors: [
     familyAccountsConnector(),
     injected(),
@@ -78,6 +79,29 @@ const wagmiConfig = createConfig({
         description: "minimalistic decentralized social",
         url: url,
         icons: ["https://pingpad.io/favicon.ico"],
+      },
+
+      qrModalOptions: {
+        themeMode: "dark",
+        themeVariables: {
+          "--wcm-font-family": "Quicksand, sans-serif",
+          "--wcm-background-border-radius": "8px",
+          "--wcm-container-border-radius": "8px",
+          "--wcm-button-border-radius": "6px",
+          "--wcm-button-hover-highlight-border-radius": "6px",
+          "--wcm-icon-button-border-radius": "6px",
+          "--wcm-background-color": "hsl(var(--popover))",
+          "--wcm-accent-color": "rgb(148,158,158)",
+          "--wcm-accent-fill-color": "hsl(var(--card-foreground))",
+        },
+        explorerRecommendedWalletIds: [
+          // Coinbase Wallet ID https://walletconnect.com/explorer/coinbase-wallet
+          "fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa",
+          // Trust Wallet ID https://walletconnect.com/explorer/trust-wallet
+          "4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0",
+          // Ledger Live ID https://walletconnect.com/explorer/ledger-live
+          "19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927",
+        ],
       },
     }),
   ],
