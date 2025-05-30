@@ -93,7 +93,7 @@ const post = async ({ params }: { params: { slug: string } }) => {
 
   return (
     <Card className="z-[30] hover:bg-card p-4 border-0">
-      <PostView item={lensPost} />
+      <PostView item={lensPost} defaultReplyOpen />
     </Card>
   );
 };

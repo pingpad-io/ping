@@ -22,15 +22,16 @@ type PostViewSettings = {
 export const PostView = ({
   item,
   settings = { isComment: false, showBadges: true, level: 1 },
-}: { item: Post; settings?: PostViewSettings }) => {
+  defaultReplyOpen = false,
+}: { item: Post; settings?: PostViewSettings; defaultReplyOpen?: boolean }) => {
   const content = "content" in item.metadata ? (item.metadata.content as string) : "";
   const [collapsed, setCollapsed] = useState(content.length > 400);
   const [isCommentsOpen, setCommentsOpen] = useState(false);
-  const [isReplyWizardOpen, setReplyWizardOpen] = useState(false);
+  const [isReplyWizardOpen, setReplyWizardOpen] = useState(defaultReplyOpen);
   const postContentRef = useRef<HTMLDivElement>(null);
 
   const handleReply = () => {
-    setReplyWizardOpen(!isReplyWizardOpen);
+    setReplyWizardOpen(true);
   };
 
   return (
@@ -39,10 +40,6 @@ export const PostView = ({
         <Card
           onClick={() => {
             setCollapsed(false);
-          }}
-          onDoubleClick={(e) => {
-            e.stopPropagation();
-            handleReply();
           }}
         >
           <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
@@ -70,6 +67,7 @@ export const PostView = ({
                   setCommentsOpen={setCommentsOpen}
                   collapsed={collapsed}
                   post={item}
+                  onReply={handleReply}
                 />
               )}
             </div>
@@ -82,12 +80,7 @@ export const PostView = ({
         post={item}
         setOpen={setReplyWizardOpen}
       />
-      <PostComments
-        level={settings.level + 1}
-        isOpen={isCommentsOpen}
-        post={item}
-        onReply={handleReply}
-      />
+      <PostComments level={settings.level + 1} isOpen={isCommentsOpen} post={item} onReply={handleReply} />
     </div>
   );
 };

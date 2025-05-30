@@ -23,12 +23,14 @@ export function ReactionsList({
   isComment,
   isCommentsOpen,
   setCommentsOpen,
+  onReply,
 }: {
   post: Post;
   collapsed: boolean;
   isComment: boolean;
   isCommentsOpen: boolean;
   setCommentsOpen: (open: boolean) => void;
+  onReply: () => void;
 }) {
   const [reactions, setReactions] = useState<ReactionState>({
     score: post.reactions.Upvote - post.reactions.Downvote,
@@ -108,7 +110,11 @@ export function ReactionsList({
       <ReactionButton
         reactionType="Comment"
         reaction={reactions.Comment}
-        onClick={() => setCommentsOpen(!isCommentsOpen)}
+        onClick={() => {
+          const next = !isCommentsOpen;
+          setCommentsOpen(next);
+          if (next) onReply();
+        }}
         disabled={!post.reactions.canComment}
       />
       <ReactionButton
