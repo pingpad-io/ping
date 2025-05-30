@@ -1,6 +1,7 @@
 "use client";
 
-import { LogOutIcon, UserIcon, UsersIcon } from "lucide-react";
+import { LogOutIcon, MoonIcon, SunIcon, UserIcon, UsersIcon } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAccount, useDisconnect } from "wagmi";
@@ -30,6 +31,11 @@ export function UserMenu({
   const { isConnected } = useAccount();
   const { disconnect: disconnectWallet } = useDisconnect();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    theme === "dark" ? setTheme("light") : setTheme("dark");
+  };
 
   const logout = async () => {
     if (isConnected) {
@@ -60,6 +66,10 @@ export function UserMenu({
           <DropdownMenuItem className="flex gap-2" onSelect={() => setDialogOpen(true)}>
             <UsersIcon size={16} />
             Switch Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem className="flex gap-2" onSelect={toggleTheme}>
+            {theme === "light" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
+            Toggle Theme
           </DropdownMenuItem>
           <DropdownMenuItem className="flex gap-2" onSelect={logout}>
             <LogOutIcon size={16} />
