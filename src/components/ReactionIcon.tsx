@@ -13,18 +13,36 @@ import { PostReactionType } from "./post/Post";
 interface ReactionIconProps {
   reaction: PostReactionType | "Like";
   pressed?: boolean;
+  variant?: "post" | "comment";
 }
 
-const ReactionIcon = forwardRef<SVGSVGElement, ReactionIconProps>(({ reaction, pressed }, ref) => {
-  const iconProps = pressed ? { strokeWidth: 3.5, fill: "hsl(var(--primary))" } : { strokeWidth: 1.8 };
+const ReactionIcon = forwardRef<SVGSVGElement, ReactionIconProps>(({ reaction, pressed, variant = "post" }, ref) => {
+  const isPost = variant === "post";
+  const baseStroke = isPost ? 2.2 : 1.8;
+  const activeStroke = isPost ? 4 : 3.5;
+  const iconProps = pressed
+    ? {
+      // strokeWidth: activeStroke,
+      fill: reaction === "Like" ? "#ffb5cc" : "hsl(var(--primary))",
+      stroke: reaction === "Like" ? "#ffb5cc" : "hsl(var(--primary))",
+    }
+    : { strokeWidth: baseStroke };
   const icons = {
-    Like: <HeartIcon size={15} {...iconProps} ref={ref} />,
-    Upvote: <ArrowBigUp size={20} {...iconProps} strokeWidth={1.5} ref={ref} />,
-    Downvote: <ArrowBigDown size={20} {...iconProps} strokeWidth={1.5} ref={ref} />,
-    Bookmark: <BookmarkIcon size={16} {...iconProps} ref={ref} />,
-    Repost: <Repeat2Icon size={18} strokeWidth={pressed ? 3 : 1.5} ref={ref} />,
-    Collect: <CirclePlusIcon size={16} strokeWidth={pressed ? 3.3 : 2} ref={ref} />,
-    Comment: <MessageSquareIcon size={15} ref={ref} />,
+    Like: <HeartIcon size={isPost ? 18 : 15} {...iconProps} ref={ref} />,
+    Upvote: <ArrowBigUp size={isPost ? 24 : 20} {...iconProps} strokeWidth={isPost ? 1.8 : 1.5} ref={ref} />,
+    Downvote: <ArrowBigDown size={isPost ? 24 : 20} {...iconProps} strokeWidth={isPost ? 1.8 : 1.5} ref={ref} />,
+    Bookmark: <BookmarkIcon size={isPost ? 18 : 16} {...iconProps} ref={ref} />,
+    Repost: (
+      <Repeat2Icon size={isPost ? 20 : 18} strokeWidth={pressed ? (isPost ? 3.5 : 3) : isPost ? 2 : 1.5} ref={ref} />
+    ),
+    Collect: (
+      <CirclePlusIcon
+        size={isPost ? 18 : 16}
+        strokeWidth={pressed ? (isPost ? 3.5 : 3.3) : isPost ? 2.4 : 2}
+        ref={ref}
+      />
+    ),
+    Comment: <MessageSquareIcon size={isPost ? 18 : 15} ref={ref} />,
   };
 
   return icons[reaction] || null;

@@ -8,6 +8,7 @@ type ReactionButtonProps = {
   reaction: { count: number; isActive: boolean };
   onClick: () => void;
   disabled?: boolean;
+  variant?: "post" | "comment";
 };
 
 export const ReactionButton: React.FC<ReactionButtonProps> = ({
@@ -15,6 +16,7 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
   reaction,
   onClick,
   disabled = false,
+  variant = "post",
 }) => (
   <Button
     size="sm"
@@ -23,12 +25,13 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
       e.stopPropagation();
       onClick();
     }}
-    className="w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full hover:bg-transparent text-sm sm:text-base"
+    className={`border-0 px-0 place-content-center items-center flex flex-row gap-2 hover:bg-transparent text-sm sm:text-base 
+      ${variant === "post" ? "w-14 h-9" : "w-12 h-full"}`}
     disabled={disabled}
   >
     {reactionType !== "Upvote" && reactionType !== "Downvote" && (
       <ReactionCount isPressed={reaction.isActive} amount={reaction.count} persistent={false} />
     )}
-    <ReactionBadge isPressed={reaction.isActive} reaction={reactionType} amount={reaction.count} />
+    <ReactionBadge variant={variant} isPressed={reaction.isActive} reaction={reactionType} amount={reaction.count} />
   </Button>
 );

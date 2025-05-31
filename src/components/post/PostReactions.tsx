@@ -42,9 +42,13 @@ export function ReactionsList({
     Like: { count: post.reactions.Upvote, isActive: post.reactions.isUpvoted },
   });
 
-  const heartShape = useMemo(() => confetti.shapeFromPath({
-    path: "M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
-  }), []);
+  const heartShape = useMemo(
+    () =>
+      confetti.shapeFromPath({
+        path: "M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z",
+      }),
+    [],
+  );
 
   const explosionController = useRef<any>();
 
@@ -111,12 +115,14 @@ export function ReactionsList({
   return (
     <div className="flex flex-row items-center justify-between sm:justify-start gap-3 sm:gap-12 w-full -mb-2 -ml-2 mt-2">
       <ReactionButton
+        variant={isComment ? "comment" : "post"}
         reactionType="Comment"
         reaction={reactions.Comment}
         onClick={() => setCommentsOpen(!isCommentsOpen)}
         disabled={!post.reactions.canComment}
       />
       <ReactionButton
+        variant={isComment ? "comment" : "post"}
         reactionType="Repost"
         reaction={reactions.Repost}
         onClick={() => updateReaction("Repost")}
@@ -126,6 +132,7 @@ export function ReactionsList({
         {isComment ? (
           <span className="flex flex-row gap-1 ">
             <ReactionButton
+              variant="comment"
               reactionType="Upvote"
               reaction={{ count: reactions.score, isActive: reactions.Upvote.isActive }}
               onClick={() => updateReaction("Upvote")}
@@ -138,6 +145,7 @@ export function ReactionsList({
               />
             </span>
             <ReactionButton
+              variant="comment"
               reactionType="Downvote"
               reaction={{ count: reactions.score, isActive: reactions.Downvote.isActive }}
               onClick={() => updateReaction("Downvote")}
@@ -169,6 +177,7 @@ export function ReactionsList({
         <div className="opacity-0 group-hover:opacity-100 duration-300 delay-150">
           {!collapsed && (
             <ReactionButton
+              variant={isComment ? "comment" : "post"}
               reactionType="Bookmark"
               reaction={reactions.Bookmark}
               onClick={() => updateReaction("Bookmark")}
