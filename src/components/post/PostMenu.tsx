@@ -1,5 +1,14 @@
 "use client";
-import { EditIcon, ExternalLinkIcon, LinkIcon, MaximizeIcon, Share2Icon, ShareIcon, TrashIcon } from "lucide-react";
+import {
+  EditIcon,
+  ExternalLinkIcon,
+  LinkIcon,
+  MaximizeIcon,
+  MessageCircleIcon,
+  Share2Icon,
+  ShareIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "~/components/Link";
@@ -7,7 +16,13 @@ import { Button } from "../ui/button";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
 
-export const PostMenu = ({ post }: { post: Post }) => {
+export const PostMenu = ({
+  post,
+  onReply,
+}: {
+  post: Post;
+  onReply?: () => void;
+}) => {
   const router = useRouter();
   const author = post.author;
   const { user } = useUser();
@@ -47,6 +62,12 @@ export const PostMenu = ({ post }: { post: Post }) => {
 
   return (
     <>
+      {onReply && (
+        <Button size="context" variant="ghost" onClick={onReply}>
+          <MessageCircleIcon size={12} className="mr-2 h-4 w-4" />
+          reply
+        </Button>
+      )}
       <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
         <MaximizeIcon size={12} className="mr-2 h-4 w-4" />
         expand

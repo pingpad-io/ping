@@ -86,7 +86,11 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   );
 };
 
-export default function PostWizard({ user, replyingTo, onSuccess }: { user?: User; replyingTo?: Post; onSuccess?: () => void }) {
+export default function PostWizard({
+  user,
+  replyingTo,
+  onSuccess,
+}: { user?: User; replyingTo?: Post; onSuccess?: () => void }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPosting, setPosting] = useState(false);
@@ -113,6 +117,8 @@ export default function PostWizard({ user, replyingTo, onSuccess }: { user?: Use
       content: "",
     },
   });
+  const watchedContent = form.watch("content");
+  const isEmpty = !watchedContent.trim() && !imageFile;
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setPosting(true);
@@ -165,14 +171,14 @@ export default function PostWizard({ user, replyingTo, onSuccess }: { user?: Use
 
       const postData = replyingTo
         ? {
-          contentUri,
-          commentOn: {
-            post: replyingTo.id,
-          },
-        }
+            contentUri,
+            commentOn: {
+              post: replyingTo.id,
+            },
+          }
         : {
-          contentUri,
-        };
+            contentUri,
+          };
 
       const result = await post(client, postData)
         .andThen(handleOperationWith(walletClient))
@@ -380,9 +386,11 @@ export default function PostWizard({ user, replyingTo, onSuccess }: { user?: Use
               </FormItem>
             )}
           />
-          <Button disabled={isPosting} size="icon" type="submit" className="h-10 w-10">
-            {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon />}
-          </Button>
+          {!isEmpty && (
+            <Button disabled={isPosting} size="icon" type="submit" className="h-10 w-10">
+              {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon />}
+            </Button>
+          )}
         </form>
       </Form>
     </div>
