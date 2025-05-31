@@ -34,6 +34,8 @@ export type Post = {
   metadata: any;
   reactions?: Partial<PostReactions>;
   updatedAt?: Date;
+  commentOn?: Post;
+  quoteOn?: Post;
   reply?: Post;
 };
 
@@ -59,6 +61,8 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
       reactions: getReactions(item),
       comments: getCommentsFromItem(item),
       reply: getReplyFromItem(item),
+      commentOn: getCommentOnFromItem(item),
+      quoteOn: getQuoteOnFromItem(item),
       metadata: item.metadata,
       createdAt: new Date(timestamp),
       updatedAt: new Date(timestamp),
@@ -93,11 +97,11 @@ function getReactions(post: LensPost): Partial<PostReactions> {
     canDecrypt: false,
     totalReactions:
       post.stats?.upvotes +
-      post.stats?.downvotes +
-      post.stats?.bookmarks +
-      post.stats?.collects +
-      post.stats?.comments +
-      post.stats?.reposts || 0,
+        post.stats?.downvotes +
+        post.stats?.bookmarks +
+        post.stats?.collects +
+        post.stats?.comments +
+        post.stats?.reposts || 0,
   };
 }
 
@@ -129,16 +133,30 @@ function processComment(comment: any) {
   };
 }
 
+function getCommentOnFromItem(origin: LensPost) {
+  if (!origin) return undefined;
+  if (origin.__typename === "Post" && (origin as any).commentOn) {
+    return lensItemToPost((origin as any).commentOn);
+  }
+  return undefined;
+}
+
+function getQuoteOnFromItem(origin: LensPost) {
+  if (!origin) return undefined;
+  if (origin.__typename === "Post" && (origin as any).quoteOn) {
+    return lensItemToPost((origin as any).quoteOn);
+  }
+  return undefined;
+}
+
 function getReplyFromItem(origin: LensPost) {
   if (!origin) return undefined;
 
-  if (origin.__typename === "Post" && origin.commentOn) {
-    return lensItemToPost(origin.commentOn);
-  }
+  const commentOn = getCommentOnFromItem(origin);
+  if (commentOn) return commentOn;
 
-  if (origin.__typename === "Post" && origin.quoteOf) {
-    return lensItemToPost(origin.quoteOf);
-  }
+  const quoteOn = getQuoteOnFromItem(origin);
+  if (quoteOn) return quoteOn;
 
   return undefined;
 }
