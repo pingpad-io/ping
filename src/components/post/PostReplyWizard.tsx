@@ -6,15 +6,19 @@ export const PostReplyWizard = ({
   post,
   level,
   isOpen,
-  setOpen
+  setOpen,
+  onCommentAdded,
 }: {
   post: Post;
   level: number;
   isOpen: boolean;
   setOpen?: (open: boolean) => void;
+  onCommentAdded?: (comment?: Post | null) => void;
 }) => {
   return (
-    <div className={`w-full flex flex-col items-end justify-center text-xs sm:text-sm ${level === 2 ? "w-[90%] ml-auto" : "w-[94%] ml-auto"}`}>
+    <div
+      className={`w-full flex flex-col items-end justify-center text-xs sm:text-sm ${level === 2 ? "w-[90%] ml-auto" : "w-[94%] ml-auto"}`}
+    >
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -27,7 +31,13 @@ export const PostReplyWizard = ({
             }}
             className="w-[90%]"
           >
-            <PostWizard replyingTo={post} onSuccess={() => setOpen?.(false)} />
+            <PostWizard
+              replyingTo={post}
+              onSuccess={(comment) => {
+                onCommentAdded?.(comment);
+                setOpen?.(false);
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>

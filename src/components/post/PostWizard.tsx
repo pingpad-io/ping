@@ -29,6 +29,7 @@ import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
+import { lensItemToPost } from "./Post";
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
@@ -86,11 +87,16 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   );
 };
 
+
 export default function PostWizard({
   user,
   replyingTo,
   onSuccess,
-}: { user?: User; replyingTo?: Post; onSuccess?: () => void }) {
+}: {
+  user?: User;
+  replyingTo?: Post;
+  onSuccess?: (post?: Post | null) => void;
+}) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPosting, setPosting] = useState(false);
@@ -191,7 +197,8 @@ export default function PostWizard({
         form.setValue("content", "");
         resetHeight();
         setImageFile(null);
-        onSuccess?.();
+        const newPost = lensItemToPost(result.value);
+        onSuccess?.(newPost);
       } else {
         console.error("Failed to create post:", result.error);
         toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });

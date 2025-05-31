@@ -1,7 +1,8 @@
 "use client";
 
+import confetti from "canvas-confetti";
 import { ChevronDownIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Explosion from "react-canvas-confetti/dist/presets/explosion";
 import { ReactionButton } from "../ReactionButton";
 import { ReactionCount } from "../ReactionCount";
@@ -40,6 +41,10 @@ export function ReactionsList({
     Bookmark: { count: post.reactions.Bookmark, isActive: post.reactions.isBookmarked },
     Like: { count: post.reactions.Upvote, isActive: post.reactions.isUpvoted },
   });
+
+  const heartShape = useMemo(() => confetti.shapeFromPath({
+    path: "M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
+  }), []);
 
   const explosionController = useRef<any>();
 
@@ -149,12 +154,13 @@ export function ReactionsList({
           globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
           decorateOptions={(defaultOptions) => ({
             ...defaultOptions,
-            colors: ["#fff", "#ccc", "#555"],
+            colors: ["#ff4d6d", "#ff82a9", "#ffa1c0"],
             scalar: 1,
             particleCount: 15,
             ticks: 60,
             startVelocity: 8,
-            shapes: ["star", "circle", "square"],
+            flat: true,
+            shapes: [heartShape],
           })}
         />
       </span>
