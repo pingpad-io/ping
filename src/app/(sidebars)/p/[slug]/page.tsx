@@ -1,7 +1,7 @@
 import { Post, PostReferenceType } from "@lens-protocol/client";
 import { fetchPost, fetchPostReferences } from "@lens-protocol/client/actions";
 import type { Metadata } from "next";
-import { lensItemToPost } from "~/components/post/Post";
+import { type Post as NativePost, lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
 import { Card } from "~/components/ui/card";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -77,7 +77,19 @@ const post = async ({ params }: { params: { slug: string } }) => {
     });
 
   if (!lensPost) throw new Error("(╥_╥) Post not found");
-  console.log(lensPost);
+  const thread: NativePost[] = [];
+  let current: NativePost | undefined = lensPost;
+  while (current && (current.commentOn || current.quoteOn)) {
+    const parentId = current.commentOn?.id ?? current.quoteOn?.id;
+    if (!parentId) break;
+    const parent = await fetchPost(client, { post: parentId })
+      .unwrapOr(null)
+      .then((data) => lensItemToPost(data))
+      .catch(() => null);
+    if (!parent) break;
+    thread.unshift(parent);
+    current = parent;
+  }
 
   const lensComments = await fetchPostReferences(client, {
     referenceTypes: [PostReferenceType.CommentOn],
@@ -92,9 +104,16 @@ const post = async ({ params }: { params: { slug: string } }) => {
   lensPost.comments = lensComments;
 
   return (
-    <Card className="z-[30] hover:bg-card p-4 border-0">
-      <PostView item={lensPost} />
-    </Card>
+    <div className="flex flex-col gap-4">
+      {thread.map((p) => (
+        <Card key={p.id} className="z-[30] hover:bg-card p-4 border-0">
+          <PostView item={p} />
+        </Card>
+      ))}
+      <Card className="z-[30] hover:bg-card p-4 border-0">
+        <PostView item={lensPost} />
+      </Card>
+    </div>
   );
 };
 
