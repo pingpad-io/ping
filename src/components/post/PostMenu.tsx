@@ -1,23 +1,43 @@
 "use client";
-import { EditIcon, ExternalLinkIcon, LinkIcon, MaximizeIcon, Share2Icon, ShareIcon, TrashIcon } from "lucide-react";
+import {
+  EditIcon,
+  ExternalLinkIcon,
+  LinkIcon,
+  MaximizeIcon,
+  MessageCircleIcon,
+  ReplyIcon,
+  Share2Icon,
+  ShareIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "~/components/Link";
 import { Button } from "../ui/button";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
+import { getBaseUrl } from "~/utils/getBaseUrl";
 
-export const PostMenu = ({ post }: { post: Post }) => {
+export const PostMenu = ({
+  post,
+  onReply,
+  onMenuAction,
+}: {
+  post: Post;
+  onReply?: () => void;
+  onMenuAction?: () => void;
+}) => {
   const router = useRouter();
   const author = post.author;
   const { user } = useUser();
 
-  const origin = typeof window !== "undefined" && window.location.origin ? window.location.origin : "";
-  const postLink = `${origin}/p/${post.id}`;
-  const shareLink = `https://share.lens.xyz/p/${post.id}`;
+  const baseUrl = getBaseUrl();
+  const postLink = `${baseUrl}p/${post.id}`;
+  const shareLink = postLink;
 
   const setEditingQuery = () => {
     toast.error("Not implemented yet");
+    onMenuAction?.();
   };
 
   const deletePost = async () => {
@@ -32,6 +52,7 @@ export const PostMenu = ({ post }: { post: Post }) => {
     } else {
       toast.error(`${data.error}`);
     }
+    onMenuAction?.();
   };
 
   const share = () => {
@@ -43,16 +64,37 @@ export const PostMenu = ({ post }: { post: Post }) => {
         toast.error("Error copying link to clipboard!");
       },
     );
+    onMenuAction?.();
+  };
+
+  const handleReply = () => {
+    onReply?.();
+    onMenuAction?.();
+  };
+
+  const handleExpand = () => {
+    router.push(`/p/${post.id}`);
+    onMenuAction?.();
+  };
+
+  const handleOpenInNewTab = () => {
+    onMenuAction?.();
   };
 
   return (
     <>
-      <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
+      {onReply && (
+        <Button size="context" variant="ghost" onClick={handleReply}>
+          <ReplyIcon size={12} className="mr-2 h-4 w-4" />
+          reply
+        </Button>
+      )}
+      <Button size="context" variant="ghost" onClick={handleExpand}>
         <MaximizeIcon size={12} className="mr-2 h-4 w-4" />
         expand
       </Button>
       <Link href={postLink} referrerPolicy="no-referrer" target="_blank">
-        <Button size="context" variant="ghost" onClick={() => router.push(`/p/${post.id}`)}>
+        <Button size="context" variant="ghost" onClick={handleOpenInNewTab}>
           <ExternalLinkIcon size={12} className="mr-2 h-4 w-4" />
           open in new tab
         </Button>
