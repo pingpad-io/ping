@@ -25,7 +25,8 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
       e.stopPropagation();
       onClick();
     }}
-    className={`border-0 px-0 place-content-center items-center flex flex-row gap-1 hover:bg-transparent text-sm sm:text-base ${variant === "post" ? "w-14 h-9" : "w-12 h-full"}`}
+    className={`border-0 px-0 place-content-center items-center flex flex-row gap-2 hover:bg-transparent text-sm sm:text-base 
+      ${variant === "post" ? "w-14 h-9" : "w-12 h-full"}`}
     disabled={disabled}
   >
     {reactionType !== "Upvote" && reactionType !== "Downvote" && (
