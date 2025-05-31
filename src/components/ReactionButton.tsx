@@ -23,7 +23,7 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
       e.stopPropagation();
       onClick();
     }}
-    className="w-12 border-0 px-0 place-content-center items-center flex flex-row gap-1 h-full hover:bg-transparent text-sm sm:text-base"
+    className="w-14 h-9 border-0 px-0 place-content-center items-center flex flex-row gap-1 hover:bg-transparent text-sm sm:text-base"
     disabled={disabled}
   >
     {reactionType !== "Upvote" && reactionType !== "Downvote" && (

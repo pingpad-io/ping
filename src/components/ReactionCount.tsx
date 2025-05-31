@@ -15,7 +15,9 @@ export const ReactionCount = ({
   }).format(amount);
 
   return (
-    <span className={isPressed ? "font-semibold text-accent-foreground" : ""}>
+    <span
+      className={`inline-flex items-center leading-none ${isPressed ? "font-semibold text-accent-foreground" : ""}`}
+    >
       <span className="w-fit font-medium">{formattedAmount}</span>
     </span>
   );
