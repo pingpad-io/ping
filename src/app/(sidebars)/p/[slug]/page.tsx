@@ -1,9 +1,8 @@
 import { Post, PostReferenceType } from "@lens-protocol/client";
 import { fetchPost, fetchPostReferences } from "@lens-protocol/client/actions";
 import type { Metadata } from "next";
-import { lensItemToPost } from "~/components/post/Post";
-import { PostView } from "~/components/post/PostView";
-import { Card } from "~/components/ui/card";
+import { type Post as NativePost, lensItemToPost } from "~/components/post/Post";
+import { PostThread } from "~/components/post/PostThread";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 /**
@@ -77,7 +76,6 @@ const post = async ({ params }: { params: { slug: string } }) => {
     });
 
   if (!lensPost) throw new Error("(╥_╥) Post not found");
-  console.log(lensPost);
 
   const lensComments = await fetchPostReferences(client, {
     referenceTypes: [PostReferenceType.CommentOn],
@@ -91,11 +89,7 @@ const post = async ({ params }: { params: { slug: string } }) => {
 
   lensPost.comments = lensComments;
 
-  return (
-    <Card className="z-[30] hover:bg-card p-4 border-0">
-      <PostView item={lensPost} />
-    </Card>
-  );
+  return <PostThread post={lensPost} />;
 };
 
 export default post;
