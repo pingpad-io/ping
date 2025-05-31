@@ -6,15 +6,17 @@ export const ReactionBadge = ({
   reaction,
   amount,
   isPressed,
+  variant = "post",
 }: {
   reaction: PostReactionType | "Like";
   amount: number;
   isPressed?: boolean;
+  variant?: "post" | "comment";
 }) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
-        <ReactionIcon pressed={isPressed} reaction={reaction} />
+        <ReactionIcon variant={variant} pressed={isPressed} reaction={reaction} />
       </TooltipTrigger>
       <TooltipContent>
         <p>{`${amount} ${reaction.toLowerCase()}${amount === 1 ? "" : "s"}`}</p>
