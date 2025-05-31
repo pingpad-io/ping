@@ -1,12 +1,18 @@
-import Link from "~/components/Link";
 import { useState } from "react";
+import Link from "~/components/Link";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import type { Post } from "./Post";
 import { PostMenu } from "./PostMenu";
 
-export const PostInfo = ({ post }: { post: Post }) => {
+export const PostInfo = ({
+  post,
+  onReply,
+}: {
+  post: Post;
+  onReply?: () => void;
+}) => {
   const [open, setOpen] = useState(false);
   const author = post.author;
   const isGlobalHandle = author.namespace === undefined;
@@ -54,7 +60,7 @@ export const PostInfo = ({ post }: { post: Post }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="flex flex-col w-max gap-1 p-1 hover:bg-card border">
-          <PostMenu post={post} onMenuAction={handleMenuAction} />
+          <PostMenu post={post} onReply={onReply} onMenuAction={handleMenuAction} />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
