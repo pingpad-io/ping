@@ -69,7 +69,7 @@ export const PostView = ({
             </span>
             <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
               {!settings.isComment && !settings.inThread && <ReplyInfo post={item} />}
-              <PostInfo post={item} />
+              <PostInfo post={item} onReply={handleReply} />
               <PostContent ref={postContentRef} post={item} collapsed={collapsed} setCollapsed={setCollapsed} />
               {settings?.showBadges && (
                 <ReactionsList
