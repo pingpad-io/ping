@@ -29,6 +29,7 @@ import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
+import { lensItemToPost } from "./Post";
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
@@ -86,7 +87,6 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   );
 };
 
-import { lensItemToPost } from "./Post";
 
 export default function PostWizard({
   user,
@@ -123,6 +123,8 @@ export default function PostWizard({
       content: "",
     },
   });
+  const watchedContent = form.watch("content");
+  const isEmpty = !watchedContent.trim() && !imageFile;
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setPosting(true);
@@ -391,9 +393,11 @@ export default function PostWizard({
               </FormItem>
             )}
           />
-          <Button disabled={isPosting} size="icon" type="submit" className="h-10 w-10">
-            {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon />}
-          </Button>
+          {!isEmpty && (
+            <Button disabled={isPosting} size="icon" type="submit" className="h-10 w-10">
+              {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon />}
+            </Button>
+          )}
         </form>
       </Form>
     </div>
