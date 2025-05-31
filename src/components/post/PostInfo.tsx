@@ -1,4 +1,5 @@
 import Link from "~/components/Link";
+import { useState } from "react";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -6,6 +7,7 @@ import type { Post } from "./Post";
 import { PostMenu } from "./PostMenu";
 
 export const PostInfo = ({ post }: { post: Post }) => {
+  const [open, setOpen] = useState(false);
   const author = post.author;
   const isGlobalHandle = author.namespace === undefined;
   const handle = author.handle;
@@ -24,6 +26,10 @@ export const PostInfo = ({ post }: { post: Post }) => {
     }
   });
 
+  const handleMenuAction = () => {
+    setOpen(false);
+  };
+
   return (
     <div
       suppressHydrationWarning
@@ -41,14 +47,14 @@ export const PostInfo = ({ post }: { post: Post }) => {
       )}
       <span>{"·"}</span>
       <TimeElapsedSince date={post.createdAt} />
-      <DropdownMenu modal={false}>
+      <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm" className="text-xs font-light leading-4 text-base-content sm:text-sm h-6">
             {"···"}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="flex flex-col w-max gap-1 p-1 hover:bg-card border">
-          <PostMenu post={post} />
+          <PostMenu post={post} onMenuAction={handleMenuAction} />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
