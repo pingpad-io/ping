@@ -8,6 +8,7 @@ import { UserProvider } from "~/components/user/UserContext";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
+import Menu from "~/components/menu/Menu";
 
 const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
 
@@ -35,8 +36,11 @@ export default async function RootLayout({ children }) {
             <UserProvider user={user}>
               <AuthWatcher />
               <Toaster position="top-right" offset={16} />
+              <Menu />
 
-              <PageTransition>{children}</PageTransition>
+              <PageTransition>
+                <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>
+              </PageTransition>
             </UserProvider>
           </NotificationsProvider>
         </Providers>
