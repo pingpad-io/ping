@@ -50,7 +50,7 @@ export function UserMenu({
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="w-12 h-12 p-1.5">
+          <Button variant="ghost" size="icon" className="w-12 h-12 p-1.5 transition hover:animate-bounce">
             <div className="w-8 h-8 rounded-lg overflow-hidden">
               <UserAvatar link={false} card={false} user={user} />
             </div>

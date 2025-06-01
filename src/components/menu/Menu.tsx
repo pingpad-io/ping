@@ -19,7 +19,7 @@ export default async function Menu() {
     <div className="fixed bottom-0 left-0 w-full p-2 pb-6 sm:bottom-auto sm:top-1/2 sm:right-2 sm:left-auto sm:w-auto sm:-translate-y-1/2 sm:p-2 z-50 bg-background/80 backdrop-blur-md rounded-2xl">
       <div className="flex flex-row sm:flex-col items-center justify-around sm:justify-center gap-6 sm:gap-6">
         <Link href="/home" className="flex-shrink-0">
-          <Button variant="ghost" size="icon" className="w-12 h-12">
+          <Button variant="ghost" size="icon" className="w-12 h-12 transition hover:animate-bounce">
             <AtSign size={20} strokeWidth={2.5} />
           </Button>
         </Link>
@@ -34,9 +34,13 @@ export default async function Menu() {
               <NotificationButton />
             </div>
 
-            <Dialog  modal={true}>
+            <Dialog modal={true}>
               <DialogTrigger asChild>
-                <Button variant="secondary" size="icon" className="w-12 h-12 flex-shrink-0">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="w-12 h-12 flex-shrink-0 transition hover:animate-bounce"
+                >
                   <PlusIcon size={20} strokeWidth={2.5} />
                 </Button>
               </DialogTrigger>
@@ -53,7 +57,7 @@ export default async function Menu() {
             </div>
 
             <Link href="/bookmarks" className="flex-shrink-0">
-              <Button variant="ghost" size="icon" className="w-12 h-12">
+              <Button variant="ghost" size="icon" className="w-12 h-12 transition hover:animate-bounce">
                 <BookmarkIcon size={20} strokeWidth={2.5} />
               </Button>
             </Link>

@@ -18,7 +18,7 @@ export const NotificationButton = () => {
 
   return (
     <Link href="/notifications" onClick={handleClick}>
-      <Button variant="ghost" size="icon" className="w-12 h-12 relative">
+      <Button variant="ghost" size="icon" className={`w-12 h-12 relative ${newCount > 0 ? "animate-bounce" : ""}`}>
         <BellIcon size={20} strokeWidth={2.5} />
         {newCount > 0 && (
           <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
