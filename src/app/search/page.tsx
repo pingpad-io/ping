@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FeedSuspense } from "~/components/FeedSuspense";
-import { Search } from "../../../components/Search";
+import { Search } from "~/components/Search";
 
 export async function generateMetadata({ searchParams }: { searchParams: { q: string } }): Promise<Metadata> {
   const query = searchParams.q;
