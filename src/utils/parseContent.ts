@@ -26,6 +26,13 @@ class ContentParser {
     const linkRegex = /<?((?:https?:\/\/|www\.)?[\w-]+(?:\.[\w-]+)*\.[a-zA-Z]{2,}(?:\/[^\s<>*_~`]*)?)>?/gi;
     this.content = this.content.replace(linkRegex, (match, link) => {
       const url = link.startsWith("http") ? link : `https://${link}`;
+
+      // Skip image URLs
+      const isImage = /\.(png|jpe?g|gif|webp|svg)$/i.test(url) || url.includes("api.grove.storage");
+      if (isImage) {
+        return match;
+      }
+
       const linkWithoutProtocol = link.replace(/^https?:\/\//, "");
       return `[${linkWithoutProtocol}](${url})`;
     });
