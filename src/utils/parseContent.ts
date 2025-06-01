@@ -32,6 +32,21 @@ class ContentParser {
     return this;
   }
 
+  parseImages(): ContentParser {
+    const imageLinkRegex = /\[([^\]]+)\]\(((?:https?:\/\/|www\.)[^)\s]+)\)/g;
+    this.content = this.content.replace(imageLinkRegex, (match, text, url) => {
+      const normalizedUrl = url.startsWith("http") ? url : `https://${url}`;
+      const urlWithoutProtocol = normalizedUrl.replace(/^https?:\/\//, "");
+      const isAutoLink = text === urlWithoutProtocol;
+      const isImage = /\.(png|jpe?g|gif|webp|svg)$/i.test(normalizedUrl) || normalizedUrl.includes("api.grove.storage");
+      if (isAutoLink && isImage) {
+        return `![${text}](${normalizedUrl})`;
+      }
+      return match;
+    });
+    return this;
+  }
+
   toString(): string {
     return this.content;
   }

@@ -4,12 +4,13 @@ import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { parseContent } from "~/utils/parseContent";
+import { ImageViewer } from "./ImageViewer";
 import { CommunityHandle } from "./communities/CommunityHandle";
 import { UserLazyHandle } from "./user/UserLazyHandle";
 
 const BASE_URL = getBaseUrl();
 const Markdown: React.FC<{ content: string }> = ({ content }) => {
-  const processedText = parseContent(content).replaceHandles().parseLinks().toString();
+  const processedText = parseContent(content).replaceHandles().parseLinks().parseImages().toString();
   return (
     <ReactMarkdown
       className="prose dark:prose-invert prose-p:m-0 prose-p:inline
@@ -19,6 +20,7 @@ const Markdown: React.FC<{ content: string }> = ({ content }) => {
       components={{
         h1: "h2",
         a: CustomLink,
+        img: CustomImage,
       }}
     >
       {processedText}
@@ -37,6 +39,12 @@ const CustomLink: Components["a"] = ({ node, ...props }) => {
     }
   }
   return <a {...props}>{children}</a>;
+};
+
+const CustomImage: Components["img"] = ({ node, ...props }) => {
+  const { src, alt } = props;
+  if (!src) return null;
+  return <ImageViewer src={src} alt={alt} className="rounded-lg" />;
 };
 
 export default Markdown;
