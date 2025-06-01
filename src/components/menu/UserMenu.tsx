@@ -1,6 +1,7 @@
 "use client";
 
 import { LogOutIcon, MoonIcon, SunIcon, UserIcon, UsersIcon } from "lucide-react";
+import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -50,10 +51,16 @@ export function UserMenu({
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="w-12 h-12 p-1.5">
-            <div className="w-8 h-8 rounded-lg overflow-hidden">
-              <UserAvatar link={false} card={false} user={user} />
-            </div>
+          <Button variant="ghost" size="icon" className="w-12 h-12 p-1.5" asChild>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", bounce: 0.3 }}
+            >
+              <div className="w-8 h-8 rounded-lg overflow-hidden">
+                <UserAvatar link={false} card={false} user={user} />
+              </div>
+            </motion.button>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="flex flex-col w-40 gap-1 p-1 border">

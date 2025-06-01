@@ -1,13 +1,14 @@
 "use client";
 
 import { useLogout } from "@lens-protocol/react";
-import { FamilyIcon, GlobeIcon } from "../Icons";
 import { Grid2X2, LogInIcon, SquareIcon, UserMinusIcon, UsersIcon } from "lucide-react";
+import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { type PropsWithChildren, useState } from "react";
 import { toast } from "sonner";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { clearCookies } from "../../utils/clearCookies";
+import { FamilyIcon, GlobeIcon } from "../Icons";
 import { WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
@@ -71,8 +72,14 @@ export function ConnectWalletButton() {
   return (
     <Dialog onOpenChange={(open) => setDialogOpen(open)} open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="w-12 h-12" onClick={(_e) => setDialogOpen(true)}>
-          <LogInIcon size={20} strokeWidth={2.5} />
+        <Button size="sm" className="w-12 h-12" onClick={(_e) => setDialogOpen(true)} asChild>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", bounce: 0.3 }}
+          >
+            <LogInIcon size={20} strokeWidth={2.5} />
+          </motion.button>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-sm flex flex-col justify-center">

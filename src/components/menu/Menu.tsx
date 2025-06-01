@@ -1,4 +1,5 @@
 import { AtSign, BookmarkIcon, PlusIcon } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -19,8 +20,14 @@ export default async function Menu() {
     <div className="fixed bottom-0 left-0 w-full p-2 pb-6 sm:bottom-auto sm:top-1/2 sm:right-2 sm:left-auto sm:w-auto sm:-translate-y-1/2 sm:p-2 z-50 bg-background/80 backdrop-blur-md rounded-2xl">
       <div className="flex flex-row sm:flex-col items-center justify-around sm:justify-center gap-6 sm:gap-6">
         <Link href="/home" className="flex-shrink-0">
-          <Button variant="ghost" size="icon" className="w-12 h-12">
-            <AtSign size={20} strokeWidth={2.5} />
+          <Button variant="ghost" size="icon" className="w-12 h-12" asChild>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", bounce: 0.3 }}
+            >
+              <AtSign size={20} strokeWidth={2.5} />
+            </motion.button>
           </Button>
         </Link>
 
@@ -34,10 +41,16 @@ export default async function Menu() {
               <NotificationButton />
             </div>
 
-            <Dialog  modal={true}>
+            <Dialog modal={true}>
               <DialogTrigger asChild>
-                <Button variant="secondary" size="icon" className="w-12 h-12 flex-shrink-0">
-                  <PlusIcon size={20} strokeWidth={2.5} />
+                <Button variant="secondary" size="icon" className="w-12 h-12 flex-shrink-0" asChild>
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: "spring", bounce: 0.3 }}
+                  >
+                    <PlusIcon size={20} strokeWidth={2.5} />
+                  </motion.button>
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-full sm:max-w-[700px]">
@@ -53,8 +66,14 @@ export default async function Menu() {
             </div>
 
             <Link href="/bookmarks" className="flex-shrink-0">
-              <Button variant="ghost" size="icon" className="w-12 h-12">
-                <BookmarkIcon size={20} strokeWidth={2.5} />
+              <Button variant="ghost" size="icon" className="w-12 h-12" asChild>
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ type: "spring", bounce: 0.3 }}
+                >
+                  <BookmarkIcon size={20} strokeWidth={2.5} />
+                </motion.button>
               </Button>
             </Link>
           </ServerSignedIn>
