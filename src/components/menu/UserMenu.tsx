@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOutIcon, MoonIcon, SunIcon, UserIcon, UsersIcon } from "lucide-react";
+import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon, UserIcon, UsersIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -67,6 +67,12 @@ export function UserMenu({
             <UsersIcon size={16} />
             Switch Profile
           </DropdownMenuItem>
+          <Link href="/settings">
+            <DropdownMenuItem className="flex gap-2">
+              <SettingsIcon size={16} />
+              Settings
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem className="flex gap-2" onSelect={toggleTheme}>
             {theme === "light" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
             Toggle Theme
