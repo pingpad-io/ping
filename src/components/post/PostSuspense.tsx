@@ -3,7 +3,7 @@ import { Card } from "../ui/card";
 export const PostSuspense = () => {
   const avatar = (
     <div className="flex h-full items-center justify-center">
-      <div className="h-12 w-12 animate-pulse rounded-full bg-muted" />
+      <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
     </div>
   );
   const content = (
@@ -14,7 +14,7 @@ export const PostSuspense = () => {
   );
 
   return (
-    <Card className="flex h-fit flex-row gap-4 p-2 sm:p-4">
+    <Card className="flex h-fit flex-row gap-4 p-2 sm:p-4 bg-transparent hover:bg-accent/20 backdrop-blur-3xl backdrop-opacity-80">
       {avatar}
       <div className="h-12 w-full grow">{content}</div>
     </Card>

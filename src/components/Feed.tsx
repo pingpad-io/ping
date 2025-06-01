@@ -72,7 +72,7 @@ export const Feed = ({ ItemView, initialData, initialCursor, endpoint, manualNex
   const list = data.filter(Boolean).map((item) => <ItemView key={item.id} item={item} />);
 
   return (
-    <>
+    <div className="flex flex-col gap-0.5">
       {list}
       {manualNextPage && cursor !== null && (
         <Button
@@ -89,6 +89,6 @@ export const Feed = ({ ItemView, initialData, initialCursor, endpoint, manualNex
           <LoadingSpinner />
         </div>
       )}
-    </>
+    </div>
   );
 };

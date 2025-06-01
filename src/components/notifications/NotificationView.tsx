@@ -77,7 +77,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const content = item?.actedOn?.metadata && "content" in item.actedOn.metadata ? item?.actedOn?.metadata?.content : "";
 
   return (
-    <Card className={highlight ? "bg-accent/20" : undefined}>
+    <Card className={highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"}>
       <CardContent className="flex h-fit w-full flex-row gap-4 p-2 sm:p-4">
         <div className="shrink-0 grow-0 rounded-full">
           <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />

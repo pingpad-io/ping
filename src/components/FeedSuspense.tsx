@@ -1,6 +1,10 @@
 import { PostSuspense } from "./post/PostSuspense";
 
 export const FeedSuspense = () => {
-  // biome-ignore lint/suspicious/noArrayIndexKey: stable list
-  return [...Array(12)].map((_v, idx) => <PostSuspense key={`suspense-${idx}`} />);
+  const items = [...Array(12)].map((_v, idx) => <PostSuspense key={`suspense-${idx}`} />);
+  return (
+    <div className="flex flex-col gap-0.5">
+      {items}
+    </div>
+  );
 };
