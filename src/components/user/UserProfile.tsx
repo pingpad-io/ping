@@ -3,7 +3,7 @@ import { CalendarIcon, EditIcon, MessageCircleIcon, User2Icon } from "lucide-rea
 import { notFound } from "next/navigation";
 import Link from "~/components/Link";
 import { TimeSince } from "~/components/TimeLabel";
-import { UserAvatar } from "~/components/user/UserAvatar";
+import { AvatarViewer } from "~/components/user/AvatarViewer";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { Feed } from "../Feed";
 import { FollowButton } from "../FollowButton";
@@ -32,7 +32,7 @@ export const UserProfile = async ({
     <div className="p-4 z-20 flex w-full flex-row gap-4 bg-card drop-shadow-md rounded-b-2xl">
       <div className="flex flex-col gap-2">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
-          <UserAvatar card={false} user={user} />
+          <AvatarViewer user={user} />
         </div>
       </div>
 
@@ -61,11 +61,7 @@ export const UserProfile = async ({
           <MessageCircleIcon size={14} />
           {postsCount} Posts
         </div>
-        <UserFollowing
-          user={user}
-          followingCount={followingCount}
-          followersCount={followersCount}
-        />
+        <UserFollowing user={user} followingCount={followingCount} followersCount={followersCount} />
       </div>
     </div>
   );
