@@ -10,10 +10,11 @@ import { UserLazyHandle } from "./user/UserLazyHandle";
 
 const BASE_URL = getBaseUrl();
 const Markdown: React.FC<{ content: string }> = ({ content }) => {
-  const processedText = parseContent(content).replaceHandles().parseLinks().parseImages().toString();
+  const processedText = parseContent(content).replaceHandles().toString();
+
   return (
     <ReactMarkdown
-      className="prose dark:prose-invert prose-p:m-0 prose-p:inline
+      className="prose dark:prose-invert prose-p:my-0 prose-p:inline prose-img:my-2 prose-hr:my-3 prose-hr:w-[50%] prose-hr:mx-auto prose-img:inline
         prose-ul:m-0 prose-h2:m-0 prose-h1:m-0 prose-li:m-0 prose-li:whitespace-normal prose-p:whitespace-normal
         prose-ul:leading-4 prose-ol:leading-4 prose-ol:m-0"
       remarkPlugins={[remarkGfm, remarkBreaks]}
