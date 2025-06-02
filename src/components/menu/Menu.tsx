@@ -63,7 +63,7 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
     {
       icon: Bell,
       label: "Notifications",
-      onClick: () => { }
+      onClick: () => router.push("/notifications")
     },
     {
       icon: PlusIcon,
