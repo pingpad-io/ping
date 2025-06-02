@@ -62,8 +62,8 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
           <Icon className="w-5 h-5" />
         ) : null}
         <span className={cn(
-          "absolute -left-2 top-1/2 -translate-y-1/2 -translate-x-full",
-          "px-2 py-1 rounded text-xs",
+          "absolute px-2 py-1 rounded text-xs",
+          "-top-12 left-1/2 -translate-x-1/2 sm:-left-2 sm:top-1/2 sm:-translate-y-1/2 sm:-translate-x-full",
           "bg-popover text-popover-foreground",
           "opacity-0 group-hover:opacity-100",
           "transition-opacity whitespace-nowrap pointer-events-none"
@@ -81,7 +81,8 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
     return (
       <div ref={ref} className={cn("flex items-center justify-center", className)}>
         <div className={cn(
-          "flex flex-col items-center gap-2 p-2 rounded-2xl",
+          "flex items-center gap-2 p-2 rounded-2xl w-full",
+          "flex-row justify-around sm:flex-col sm:justify-center sm:w-auto",
           "backdrop-blur-lg border shadow-lg",
           "bg-background/90 border-border",
           "hover:shadow-xl transition-shadow duration-300"
