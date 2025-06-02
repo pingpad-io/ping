@@ -14,14 +14,18 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { ConnectedWalletLabel } from "./ConnnectedWalletLabel";
 import { LensProfileSelect } from "./LensProfileSelect";
 
-export function ConnectWalletButton() {
-  const [dialogOpen, setDialogOpen] = useState(false);
+interface ConnectWalletButtonProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+export function ConnectWalletButton({ open, setOpen }: ConnectWalletButtonProps) {
   const { connectors, connect } = useConnect({
     mutation: {
       onError: (error) => {
         toast.error("Connection Failed", { description: error.message });
 
-        setDialogOpen(false);
+        setOpen(false);
       },
     },
   });
@@ -69,12 +73,7 @@ export function ConnectWalletButton() {
   });
 
   return (
-    <Dialog onOpenChange={(open) => setDialogOpen(open)} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" className="w-12 h-12" onClick={(_e) => setDialogOpen(true)}>
-          <LogInIcon size={20} strokeWidth={2.5} />
-        </Button>
-      </DialogTrigger>
+    <Dialog onOpenChange={(open) => setOpen(open)} open={open}>
       <DialogContent className="max-w-sm flex flex-col justify-center">
         <DialogHeader>
           <DialogTitle>{!walletConnected ? "Select a wallet to connect" : "Select a Profile"}</DialogTitle>
@@ -83,7 +82,7 @@ export function ConnectWalletButton() {
           </DialogDescription>
         </DialogHeader>
 
-        {!walletConnected ? <>{connectorList}</> : <LensProfileSelect setDialogOpen={setDialogOpen} />}
+        {!walletConnected ? <>{connectorList}</> : <LensProfileSelect setDialogOpen={setOpen} />}
       </DialogContent>
     </Dialog>
   );

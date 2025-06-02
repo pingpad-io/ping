@@ -1,65 +1,105 @@
-import { AtSign, BookmarkIcon, PlusIcon } from "lucide-react";
-import Link from "~/components/Link";
-import { Button } from "~/components/ui/button";
-import { getServerAuth } from "~/utils/getServerAuth";
-import { ServerSignedIn } from "../auth/ServerSignedIn";
-import { NotificationButton } from "../notifications/NotificationButton";
-import PostWizard from "../post/PostWizard";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
-import type { User } from "../user/User";
-import { ConnectWalletButton } from "../web3/WalletButtons";
-import { SearchButton } from "./Search";
-import { UserMenu } from "./UserMenu";
+"use client";
 
-export default async function Menu() {
-  const { handle, profileId, user } = await getServerAuth();
-  const handleOrProfileId = handle ?? profileId;
+import { AtSign, BookmarkIcon, PlusIcon, Bell, LogInIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Dock } from "~/components/ui/dock";
+import PostWizard from "../post/PostWizard";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { UserAvatar } from "../user/UserAvatar";
+import { ConnectWalletButton } from "../web3/WalletButtons";
+
+interface MenuClientProps {
+  isAuthenticated: boolean;
+  handle?: string | null;
+  profileId?: string | null;
+  user: any;
+}
+
+export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientProps) {
+  const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
+  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    router.prefetch("/home");
+    router.prefetch("/bookmarks");
+    if (handle) {
+      router.prefetch(`/u/${handle}`);
+    }
+  }, [router, handle]);
+
+  if (!isAuthenticated) {
+    const dockItems = [
+      {
+        icon: AtSign,
+        label: "Home",
+        onClick: () => router.push("/home")
+      },
+      {
+        icon: LogInIcon,
+        label: "Connect Wallet",
+        onClick: () => setIsWalletDialogOpen(true)
+      }
+    ];
+
+    return (
+      <>
+        <div className="fixed bottom-0 left-0 w-full p-2 pb-6 sm:bottom-auto sm:top-1/2 sm:right-2 sm:left-auto sm:w-auto sm:-translate-y-1/2 sm:p-2 z-50">
+          <Dock items={dockItems} />
+        </div>
+
+        <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />
+      </>
+    );
+  }
+
+  const dockItems = [
+    {
+      icon: AtSign,
+      label: "Home",
+      onClick: () => router.push("/home")
+    },
+    {
+      icon: Bell,
+      label: "Notifications",
+      onClick: () => { }
+    },
+    {
+      icon: PlusIcon,
+      label: "Create Post",
+      onClick: () => setIsPostDialogOpen(true)
+    },
+    {
+      customIcon: (
+        <div className="w-full h-full rounded-md overflow-hidden">
+          <UserAvatar link={false} card={false} user={user} />
+        </div>
+      ),
+      label: "Profile",
+      onClick: () => router.push(`/u/${handle}`)
+    },
+    {
+      icon: BookmarkIcon,
+      label: "Bookmarks",
+      onClick: () => router.push("/bookmarks")
+    }
+  ];
 
   return (
-    <div className="fixed bottom-0 left-0 w-full p-2 pb-6 sm:bottom-auto sm:top-1/2 sm:right-2 sm:left-auto sm:w-auto sm:-translate-y-1/2 sm:p-2 z-50 bg-background/80 backdrop-blur-md rounded-2xl">
-      <div className="flex flex-row sm:flex-col items-center justify-around sm:justify-center gap-6 sm:gap-6">
-        <Link href="/home" className="flex-shrink-0">
-          <Button variant="ghost" size="icon" className="w-12 h-12">
-            <AtSign size={20} strokeWidth={2.5} />
-          </Button>
-        </Link>
-
-        {!profileId ? (
-          <div className="flex-shrink-0">
-            <ConnectWalletButton />
-          </div>
-        ) : (
-          <ServerSignedIn>
-            <div className="flex-shrink-0">
-              <NotificationButton />
-            </div>
-
-            <Dialog  modal={true}>
-              <DialogTrigger asChild>
-                <Button variant="secondary" size="icon" className="w-12 h-12 flex-shrink-0">
-                  <PlusIcon size={20} strokeWidth={2.5} />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-full sm:max-w-[700px]">
-                <DialogTitle className="text-center">What's going on?</DialogTitle>
-                <div className="pr-4">
-                  <PostWizard user={user} />
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <div className="flex-shrink-0">
-              <UserMenu handle={handleOrProfileId} user={user} />
-            </div>
-
-            <Link href="/bookmarks" className="flex-shrink-0">
-              <Button variant="ghost" size="icon" className="w-12 h-12">
-                <BookmarkIcon size={20} strokeWidth={2.5} />
-              </Button>
-            </Link>
-          </ServerSignedIn>
-        )}
+    <>
+      <div className="fixed bottom-0 left-0 w-full p-2 pb-6 sm:bottom-auto sm:top-1/2 sm:right-2 sm:left-auto sm:w-auto sm:-translate-y-1/2 sm:p-2 z-50">
+        <Dock items={dockItems} />
       </div>
-    </div>
+
+      <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen} modal={true}>
+        <DialogContent className="max-w-full sm:max-w-[700px]">
+          <DialogTitle className="text-center">What's going on?</DialogTitle>
+          <div className="pr-4">
+            <PostWizard user={user} />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

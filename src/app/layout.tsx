@@ -8,7 +8,7 @@ import { UserProvider } from "~/components/user/UserContext";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
-import Menu from "~/components/menu/Menu";
+import { Menu } from "~/components/menu/Menu";
 
 const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
 
@@ -23,7 +23,7 @@ export const metadata = {
 export const maxDuration = 60;
 
 export default async function RootLayout({ children }) {
-  const { user, client } = await getServerAuth();
+  const { handle, profileId, user } = await getServerAuth();
 
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans overflow-x-hidden overflow-y-scroll`} lang="en">
@@ -36,7 +36,7 @@ export default async function RootLayout({ children }) {
             <UserProvider user={user}>
               <AuthWatcher />
               <Toaster position="top-right" offset={16} />
-              <Menu />
+              <Menu isAuthenticated={!!profileId} user={user} handle={handle} profileId={profileId} />
 
               <PageTransition>
                 <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>
