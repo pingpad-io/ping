@@ -31,6 +31,7 @@ const bookmarks = async () => {
     throw new Error("Failed to get bookmarks (╥_╥)");
   }
 
+  console.log(bookmarks);
   return <Feed ItemView={PostView} endpoint={endpoint} initialData={bookmarks} initialCursor={nextCursor} />;
 };
 

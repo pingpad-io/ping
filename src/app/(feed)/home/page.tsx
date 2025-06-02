@@ -20,7 +20,6 @@ export const metadata: Metadata = {
     ],
   },
 };
-import { getBaseUrl } from "~/utils/getBaseUrl";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 const authenticatedEndpoint = "/api/posts/feed";

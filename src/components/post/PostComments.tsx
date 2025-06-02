@@ -1,6 +1,6 @@
 import { PlusIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
 import { CommentSkeleton } from "./PostCommentSkeleton";
@@ -22,13 +22,15 @@ export const PostComments = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [cursor, setCursor] = useState(undefined);
+  const isLoadingRef = useRef(false);
 
   useEffect(() => {
     isOpen ? loadMoreComments() : setComments(post.comments);
   }, [isOpen]);
 
   const loadMoreComments = useCallback(async () => {
-    if (loading) return;
+    if (loading || isLoadingRef.current) return;
+    isLoadingRef.current = true;
     setLoading(true);
     try {
       const res = await fetch(`/api/posts/${post.id}/comments?${cursor ? `cursor=${cursor}` : ""}`, {
@@ -43,6 +45,7 @@ export const PostComments = ({
       setError(`Could not fetch comments: ${err.message}`);
     } finally {
       setLoading(false);
+      isLoadingRef.current = false;
     }
   }, [cursor, loading, post.id]);
 

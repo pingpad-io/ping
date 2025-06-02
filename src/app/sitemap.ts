@@ -9,15 +9,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "/tos", changefreq: "monthly", priority: 0.4 },
   ];
 
-  // const res = await fetch("https://pingpad.io/api/posts/explore?type=curated&limit=50", { method: "GET" });
-  // if (!res.ok) console.error(res)
-
-  // const { data } = await res.json();
-  // const postPages = data.map((post: Post) => ({
-  //   url: `/p/${post.id}`,
-  //   changefreq: "hourly",
-  //   priority: 0.6,
-  // }));
-
   return [...staticPages];
 }

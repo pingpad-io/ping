@@ -44,7 +44,7 @@ export const PostView = ({
   };
 
   return (
-    <div className={"flex flex-col gap-2 w-full"}>
+    <div className={"flex flex-col w-full gap-0.5"}>
       <PostContextMenu post={item} onReply={handleReply}>
         <Card
           className="hover:bg-accent/20 bg-transparent backdrop-blur-3xl backdrop-opacity-80"
@@ -85,19 +85,23 @@ export const PostView = ({
           </CardContent>
         </Card>
       </PostContextMenu>
-      <PostReplyWizard
-        level={settings.level || 1}
-        isOpen={isReplyWizardOpen}
-        post={item}
-        setOpen={setReplyWizardOpen}
-      />
-      <PostComments
-        level={settings.level + 1}
-        isOpen={isCommentsOpen}
-        post={item}
-        comments={comments}
-        setComments={setComments}
-      />
+      {isReplyWizardOpen && (
+        <PostReplyWizard
+          level={settings.level || 1}
+          isOpen={isReplyWizardOpen}
+          post={item}
+          setOpen={setReplyWizardOpen}
+        />
+      )}
+      {isCommentsOpen && (
+        <PostComments
+          level={settings.level + 1}
+          isOpen={isCommentsOpen}
+          post={item}
+          comments={comments}
+          setComments={setComments}
+        />
+      )}
     </div>
   );
 };
