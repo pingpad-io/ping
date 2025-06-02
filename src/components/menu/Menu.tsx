@@ -68,7 +68,8 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
     {
       icon: PlusIcon,
       label: "Create Post",
-      onClick: () => setIsPostDialogOpen(true)
+      onClick: () => setIsPostDialogOpen(true),
+      variant: "secondary" as const
     },
     {
       customIcon: (

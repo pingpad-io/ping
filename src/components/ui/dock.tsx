@@ -11,6 +11,7 @@ interface DockProps {
     label: string
     onClick?: () => void
     customComponent?: React.ReactNode
+    variant?: "default" | "secondary" | "primary"
   }[]
 }
 
@@ -21,10 +22,11 @@ interface DockIconButtonProps {
   onClick?: () => void
   className?: string
   customComponent?: React.ReactNode
+  variant?: "default" | "secondary" | "primary"
 }
 
 const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
-  ({ icon: Icon, customIcon, label, onClick, className, customComponent }, ref) => {
+  ({ icon: Icon, customIcon, label, onClick, className, customComponent, variant = "default" }, ref) => {
     if (customComponent) {
       return (
         <div className="w-full">
@@ -32,6 +34,12 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
         </div>
       );
     }
+
+    const variantClasses = {
+      default: "hover:bg-secondary",
+      secondary: "bg-secondary hover:bg-primary hover:text-primary-foreground",
+      primary: "bg-primary text-primary-foreground hover:bg-primary/90"
+    };
 
     return (
       <motion.button
@@ -41,7 +49,8 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
         onClick={onClick}
         className={cn(
           "relative group p-3 rounded-lg w-12 h-12 flex items-center justify-center",
-          "hover:bg-secondary transition-colors",
+          "transition-colors",
+          variantClasses[variant],
           className
         )}
       >
@@ -50,7 +59,7 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
             {customIcon}
           </div>
         ) : Icon ? (
-          <Icon className="w-5 h-5 text-foreground" />
+          <Icon className="w-5 h-5" />
         ) : null}
         <span className={cn(
           "absolute -left-2 top-1/2 -translate-y-1/2 -translate-x-full",
