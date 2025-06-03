@@ -177,14 +177,14 @@ export default function PostWizard({
 
       const postData = replyingTo
         ? {
-            contentUri,
-            commentOn: {
-              post: replyingTo.id,
-            },
-          }
+          contentUri,
+          commentOn: {
+            post: replyingTo.id,
+          },
+        }
         : {
-            contentUri,
-          };
+          contentUri,
+        };
 
       const result = await post(client, postData)
         .andThen(handleOperationWith(walletClient))
@@ -193,12 +193,19 @@ export default function PostWizard({
 
       if (result.isOk()) {
         console.log("Post created successfully:", result.value);
-        toast.success("Post published successfully!", { id: toastId });
+        const newPost = lensItemToPost(result.value);
+        toast.success("Post published successfully!", {
+          id: toastId,
+          action: {
+            label: "Show me",
+            onClick: () => newPost && router.push(`/p/${newPost.id}`),
+          },
+        });
         form.setValue("content", "");
         resetHeight();
         setImageFile(null);
-        const newPost = lensItemToPost(result.value);
         onSuccess?.(newPost);
+
       } else {
         console.error("Failed to create post:", result.error);
         toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
