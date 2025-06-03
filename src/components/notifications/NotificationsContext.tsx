@@ -1,6 +1,5 @@
 "use client";
 
-import { P } from "@lens-protocol/client/dist/clients-BTRwdEON";
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, createContext, useContext, useEffect, useState } from "react";
 import type { Notification } from "./Notification";
