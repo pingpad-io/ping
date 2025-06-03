@@ -71,9 +71,9 @@ const DropdownMenuContent = React.forwardRef<
     <AnimatePresence>
       <DropdownMenuPrimitive.Content asChild ref={ref} sideOffset={sideOffset} {...props}>
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, height: 0, y: -10 }}
+          animate={{ opacity: 1, height: "auto", y: 0 }}
+          exit={{ opacity: 0, height: 0, y: -10 }}
           transition={{ duration: 0.2 }}
           className={cn(
             "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md",

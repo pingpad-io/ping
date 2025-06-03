@@ -1,6 +1,6 @@
 "use client";
 
-import { AtSign, BookmarkIcon, PlusIcon, Bell, LogInIcon } from "lucide-react";
+import { AtSign, Bell, BookmarkIcon, LogInIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Dock } from "~/components/ui/dock";
@@ -8,6 +8,7 @@ import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
+import { UserMenuButtons } from "./UserMenu";
 
 interface MenuClientProps {
   isAuthenticated: boolean;
@@ -34,13 +35,13 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
       {
         icon: AtSign,
         label: "Home",
-        onClick: () => router.push("/home")
+        onClick: () => router.push("/home"),
       },
       {
         icon: LogInIcon,
         label: "Connect Wallet",
-        onClick: () => setIsWalletDialogOpen(true)
-      }
+        onClick: () => setIsWalletDialogOpen(true),
+      },
     ];
 
     return (
@@ -58,18 +59,18 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
     {
       icon: AtSign,
       label: "Home",
-      onClick: () => router.push("/home")
+      onClick: () => router.push("/home"),
     },
     {
       icon: Bell,
       label: "Notifications",
-      onClick: () => router.push("/notifications")
+      onClick: () => router.push("/notifications"),
     },
     {
       icon: PlusIcon,
       label: "Create Post",
       onClick: () => setIsPostDialogOpen(true),
-      variant: "secondary" as const
+      variant: "secondary" as const,
     },
     {
       customIcon: (
@@ -78,13 +79,13 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
         </div>
       ),
       label: "Profile",
-      onClick: () => router.push(`/u/${handle}`)
+      extra: <UserMenuButtons handle={handle!} user={user} />,
     },
     {
       icon: BookmarkIcon,
       label: "Bookmarks",
-      onClick: () => router.push("/bookmarks")
-    }
+      onClick: () => router.push("/bookmarks"),
+    },
   ];
 
   return (
