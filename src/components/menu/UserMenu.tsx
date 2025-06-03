@@ -109,7 +109,7 @@ export function UserMenuDropdown({ handle, user }: { handle: string; user: User 
 
   return (
     <>
-      <div className="flex flex-col w-40 gap-1 p-1 border">
+      <div className="flex flex-col w-40 gap-1 p-1">
         <Link href={`/u/${handle}`}>
           <DropdownMenuItem className="flex gap-2">
             <UserIcon size={16} />
@@ -134,6 +134,75 @@ export function UserMenuDropdown({ handle, user }: { handle: string; user: User 
           <LogOutIcon size={16} />
           Log out
         </DropdownMenuItem>
+      </div>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Select Profile</DialogTitle>
+          </DialogHeader>
+          <LensProfileSelect setDialogOpen={setDialogOpen} />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+export function UserMenuButtons({ handle, user }: { handle: string; user: User }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { isConnected } = useAccount();
+  const { disconnect: disconnectWallet } = useDisconnect();
+  const router = useRouter();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    theme === "dark" ? setTheme("light") : setTheme("dark");
+  };
+
+  const logout = async () => {
+    if (isConnected) {
+      disconnectWallet();
+    }
+    await clearCookies();
+    router.push("/home");
+    router.refresh();
+  };
+
+  return (
+    <>
+      <div className="flex flex-col w-40 gap-1 p-1">
+        <Link href={`/u/${handle}`}>
+          <button className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors">
+            <UserIcon size={16} />
+            Profile
+          </button>
+        </Link>
+        <button
+          className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors"
+          onClick={() => setDialogOpen(true)}
+        >
+          <UsersIcon size={16} />
+          Switch Profile
+        </button>
+        <Link href="/settings">
+          <button className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors">
+            <SettingsIcon size={16} />
+            Settings
+          </button>
+        </Link>
+        <button
+          className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors"
+          onClick={toggleTheme}
+        >
+          {theme === "light" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
+          Toggle Theme
+        </button>
+        <button
+          className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors"
+          onClick={logout}
+        >
+          <LogOutIcon size={16} />
+          Log out
+        </button>
       </div>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-sm">

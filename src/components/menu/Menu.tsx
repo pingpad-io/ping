@@ -8,7 +8,7 @@ import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
-import { UserMenuDropdown } from "./UserMenu";
+import { UserMenuButtons } from "./UserMenu";
 
 interface MenuClientProps {
   isAuthenticated: boolean;
@@ -79,7 +79,7 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
         </div>
       ),
       label: "Profile",
-      dropdown: <UserMenuDropdown handle={handle!} user={user} />,
+      extra: <UserMenuButtons handle={handle!} user={user} />,
     },
     {
       icon: BookmarkIcon,

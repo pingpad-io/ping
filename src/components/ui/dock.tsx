@@ -1,8 +1,8 @@
 import { cn } from "@/src/utils";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { LucideIcon } from "lucide-react";
 import * as React from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./dropdown-menu";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface DockProps {
   className?: string;
@@ -12,7 +12,7 @@ interface DockProps {
     label: string;
     onClick?: () => void;
     customComponent?: React.ReactNode;
-    dropdown?: React.ReactNode;
+    extra?: React.ReactNode;
     variant?: "default" | "secondary" | "primary";
   }[];
 }
@@ -24,12 +24,27 @@ interface DockIconButtonProps {
   onClick?: () => void;
   className?: string;
   customComponent?: React.ReactNode;
-  dropdown?: React.ReactNode;
+  extra?: React.ReactNode;
   variant?: "default" | "secondary" | "primary";
+  onHover?: () => void;
+  onLeave?: () => void;
+  buttonRef?: React.RefObject<HTMLButtonElement>;
 }
 
 const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
-  ({ icon: Icon, customIcon, label, onClick, className, customComponent, dropdown, variant = "default" }, ref) => {
+  ({
+    icon: Icon,
+    customIcon,
+    label,
+    onClick,
+    className,
+    customComponent,
+    extra,
+    variant = "default",
+    onHover,
+    onLeave,
+    buttonRef
+  }, ref) => {
     if (customComponent) {
       return <div className="w-full">{customComponent}</div>;
     }
@@ -40,12 +55,14 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
       primary: "bg-primary text-primary-foreground hover:bg-primary/90",
     };
 
-    const button = (
+    return (
       <motion.button
-        ref={ref}
+        ref={buttonRef || ref}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onClick}
+        onMouseEnter={onHover}
+        onMouseLeave={onLeave}
         className={cn(
           "relative group p-3 rounded-lg w-12 h-12 flex items-center justify-center",
           "transition-colors",
@@ -58,40 +75,164 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
         ) : Icon ? (
           <Icon className="w-5 h-5" />
         ) : null}
-        <span
-          className={cn(
-            "absolute px-2 py-1 rounded text-xs",
-            "-top-12 left-1/2 -translate-x-1/2 sm:-left-2 sm:top-1/2 sm:-translate-y-1/2 sm:-translate-x-full",
-            "bg-popover text-popover-foreground",
-            "opacity-0 group-hover:opacity-100",
-            "transition-opacity whitespace-nowrap pointer-events-none",
-          )}
-        >
-          {label}
-        </span>
       </motion.button>
     );
-
-    if (dropdown) {
-      return (
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>{button}</DropdownMenuTrigger>
-          <DropdownMenuContent side="left" align="start">
-            {dropdown}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    }
-
-    return button;
   },
 );
 DockIconButton.displayName = "DockIconButton";
 
 const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, ref) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [showExtra, setShowExtra] = useState(false);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout>();
+  const dockRef = useRef<HTMLDivElement>(null);
+
+  // Initialize refs immediately with the current items length
+  const buttonRefs = useRef<(React.RefObject<HTMLButtonElement>)[]>(
+    items.map(() => React.createRef<HTMLButtonElement>())
+  );
+
+  // Update refs when items change
+  React.useEffect(() => {
+    if (buttonRefs.current.length !== items.length) {
+      buttonRefs.current = items.map(() => React.createRef<HTMLButtonElement>());
+    }
+  }, [items.length]);
+
+  const handleMouseEnter = useCallback((index: number) => {
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+    setPreviousIndex(hoveredIndex);
+    setHoveredIndex(index);
+    setShowExtra(true);
+  }, [hoveredIndex, items]);
+
+  const handleMouseLeave = useCallback(() => {
+    hideTimeoutRef.current = setTimeout(() => {
+      setShowExtra(false);
+      setHoveredIndex(null);
+      setPreviousIndex(null);
+    }, 200); // 0.2s delay
+  }, []);
+
+  const handleExtraMouseEnter = useCallback(() => {
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+  }, []);
+
+  const handleExtraMouseLeave = useCallback(() => {
+    hideTimeoutRef.current = setTimeout(() => {
+      setShowExtra(false);
+      setHoveredIndex(null);
+      setPreviousIndex(null);
+    }, 200);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const getExtraPosition = () => {
+    if (hoveredIndex === null || !buttonRefs.current[hoveredIndex]?.current || !dockRef.current) {
+      return { top: 0, left: 0 };
+    }
+
+    const button = buttonRefs.current[hoveredIndex].current!;
+    const dock = dockRef.current;
+
+    const buttonRect = button.getBoundingClientRect();
+    const dockRect = dock.getBoundingClientRect();
+
+    const buttonTop = buttonRect.top - dockRect.top;
+    const buttonLeft = buttonRect.left - dockRect.left;
+    const buttonCenterY = buttonTop + buttonRect.height / 2;
+    const buttonCenterX = buttonLeft + buttonRect.width / 2;
+
+    if (window.innerWidth >= 640) {
+      return {
+        top: buttonCenterY - 18,
+        right: dockRect.width - buttonLeft + 12,
+      };
+    } else {
+      return {
+        bottom: dockRect.height - buttonTop + 12,
+        left: buttonCenterX - buttonRect.width
+      };
+    }
+  };
+
+  const hoveredItem = hoveredIndex !== null ? items[hoveredIndex] : null;
+  const extraPosition = getExtraPosition();
+
+  // Calculate content animation direction
+  const getContentAnimationY = () => {
+    if (previousIndex === null || hoveredIndex === null) return 0;
+
+    // If transitioning down (higher index), animate content up (negative Y)
+    // If transitioning up (lower index), animate content down (positive Y)
+    const direction = hoveredIndex > previousIndex ? -10 : 10;
+    return direction;
+  };
+
   return (
-    <div ref={ref} className={cn("flex items-center justify-center", className)}>
+    <div ref={ref} className={cn("flex items-center justify-center relative", className)}>
+      <AnimatePresence>
+        {showExtra && hoveredItem && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 25,
+            }}
+            layout
+            onMouseEnter={handleExtraMouseEnter}
+            onMouseLeave={handleExtraMouseLeave}
+            className={cn(
+              "absolute z-50 pointer-events-auto",
+              "backdrop-blur-lg border shadow-lg rounded-xl",
+              "bg-background/95 border-border",
+            )}
+            style={{
+              ...extraPosition,
+              transformOrigin: window.innerWidth >= 640 ? "right center" : "center bottom",
+              transform: window.innerWidth >= 640 ? "translateY(-50%)" : undefined
+            }}
+          >
+            <motion.div
+              key={hoveredIndex} // Key to trigger re-render on index change
+              initial={{ y: getContentAnimationY(), opacity: 0.7 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              {hoveredItem.extra ? (
+                <div className="w-auto">
+                  {hoveredItem.extra}
+                </div>
+              ) : (
+                <div className="px-3 py-2 text-sm font-medium text-foreground whitespace-nowrap">
+                  {hoveredItem.label}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div
+        ref={dockRef}
         className={cn(
           "flex items-center gap-2 p-2 rounded-2xl w-full",
           "flex-row justify-around sm:flex-col sm:justify-center sm:w-auto",
@@ -100,8 +241,14 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
           "hover:shadow-xl transition-shadow duration-300",
         )}
       >
-        {items.map((item) => (
-          <DockIconButton key={item.label} {...item} />
+        {items.map((item, index) => (
+          <DockIconButton
+            key={item.label}
+            {...item}
+            buttonRef={buttonRefs.current[index]}
+            onHover={() => handleMouseEnter(index)}
+            onLeave={handleMouseLeave}
+          />
         ))}
       </div>
     </div>
