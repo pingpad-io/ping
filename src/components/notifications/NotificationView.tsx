@@ -74,14 +74,49 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     return <span key={`${profile.id + item.id + item.type}comma`}>, {userLink}</span>;
   });
 
-  const metadata = item?.actedOn?.metadata as any;
-  const content = metadata && "content" in metadata ? (metadata.content as string) : "";
-  let image: string | undefined;
-  if (metadata) {
-    if ("image" in metadata && metadata.image) {
-      image = (metadata.image as any).item as string;
-    } else if ("attachments" in metadata && Array.isArray(metadata.attachments) && metadata.attachments[0]) {
-      image = (metadata.attachments[0] as any).item as string;
+  // For Comment notifications, we need to handle original post vs comment content
+  let originalPostContent = "";
+  let originalPostImage: string | undefined;
+  let replyContent = "";
+  let replyImage: string | undefined;
+
+  if (item.type === "Comment" && item.actedOn) {
+    // The comment itself (actedOn)
+    const commentMetadata = item.actedOn.metadata as any;
+    replyContent = commentMetadata && "content" in commentMetadata ? (commentMetadata.content as string) : "";
+
+    if (commentMetadata) {
+      if ("image" in commentMetadata && commentMetadata.image) {
+        replyImage = (commentMetadata.image as any).item as string;
+      } else if ("attachments" in commentMetadata && Array.isArray(commentMetadata.attachments) && commentMetadata.attachments[0]) {
+        replyImage = (commentMetadata.attachments[0] as any).item as string;
+      }
+    }
+
+    // The original post that was commented on
+    const originalPost = item.actedOn.commentOn || item.actedOn.reply;
+    if (originalPost) {
+      const originalMetadata = originalPost.metadata as any;
+      originalPostContent = originalMetadata && "content" in originalMetadata ? (originalMetadata.content as string) : "";
+
+      if (originalMetadata) {
+        if ("image" in originalMetadata && originalMetadata.image) {
+          originalPostImage = (originalMetadata.image as any).item as string;
+        } else if ("attachments" in originalMetadata && Array.isArray(originalMetadata.attachments) && originalMetadata.attachments[0]) {
+          originalPostImage = (originalMetadata.attachments[0] as any).item as string;
+        }
+      }
+    }
+  } else {
+    // For non-comment notifications, use existing logic
+    const metadata = item?.actedOn?.metadata as any;
+    originalPostContent = metadata && "content" in metadata ? (metadata.content as string) : "";
+    if (metadata) {
+      if ("image" in metadata && metadata.image) {
+        originalPostImage = (metadata.image as any).item as string;
+      } else if ("attachments" in metadata && Array.isArray(metadata.attachments) && metadata.attachments[0]) {
+        originalPostImage = (metadata.attachments[0] as any).item as string;
+      }
     }
   }
 
@@ -96,10 +131,32 @@ export const NotificationView = ({ item }: { item: Notification }) => {
             {usersText}
             <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
           </div>
-          <div className="flex flex-row items-center gap-2 text-muted-foreground text-sm line-clamp-1 text-ellipsis overflow-hidden">
-            {image && <img src={image} alt="" className="w-6 h-6 object-cover rounded" />}
-            {content && <TruncatedText text={content} maxLength={150} />}
-          </div>
+
+          {(originalPostContent || originalPostImage) && (
+            <Link
+              href={`/p/${item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
+                ? (item.actedOn.commentOn?.id || item.actedOn.reply?.id)
+                : item?.actedOn?.id}`}
+              className="block rounded p-1 -m-1"
+            >
+              <div className="flex flex-row items-center gap-2 text-muted-foreground/60 text-sm line-clamp-1 text-ellipsis overflow-hidden">
+                {originalPostImage && <img src={originalPostImage} alt="" className="w-6 h-6 object-cover rounded opacity-60 grayscale" />}
+                {originalPostContent && <TruncatedText text={originalPostContent} maxLength={150} className="text-muted-foreground" />}
+              </div>
+            </Link>
+          )}
+
+          {item.type === "Comment" && (replyContent || replyImage) && (
+            <Link
+              href={`/p/${item.actedOn?.id}`}
+              className="block rounded p-1 -m-1"
+            >
+              <div className="flex flex-row items-center gap-2 text-foreground text-sm line-clamp-2 text-ellipsis overflow-hidden">
+                {replyImage && <img src={replyImage} alt="" className="w-6 h-6 object-cover rounded" />}
+                {replyContent && <TruncatedText text={replyContent} maxLength={200} className="text-foreground" />}
+              </div>
+            </Link>
+          )}
         </div>
       </CardContent>
     </Card>
