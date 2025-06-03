@@ -1,4 +1,4 @@
-import { PlusIcon } from "lucide-react";
+import { ChevronDownIcon, PlusIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
@@ -108,8 +108,8 @@ export const PostComments = ({
           </motion.div>
         )}
         {isOpen && cursor && !loading && (
-          <Button variant="ghost" onMouseEnter={loadMoreComments} disabled={loading} className="cursor-pointer">
-            <PlusIcon /> Load more Comments
+          <Button variant="ghost" onMouseEnter={loadMoreComments} disabled={loading} className="cursor-pointer gap-2">
+            <ChevronDownIcon className="w-4 h-4" /> Load more
           </Button>
         )}
       </div>
