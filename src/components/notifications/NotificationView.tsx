@@ -74,7 +74,16 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     return <span key={`${profile.id + item.id + item.type}comma`}>, {userLink}</span>;
   });
 
-  const content = item?.actedOn?.metadata && "content" in item.actedOn.metadata ? item?.actedOn?.metadata?.content : "";
+  const metadata = item?.actedOn?.metadata as any;
+  const content = metadata && "content" in metadata ? (metadata.content as string) : "";
+  let image: string | undefined;
+  if (metadata) {
+    if ("image" in metadata && metadata.image) {
+      image = (metadata.image as any).item as string;
+    } else if ("attachments" in metadata && Array.isArray(metadata.attachments) && metadata.attachments[0]) {
+      image = (metadata.attachments[0] as any).item as string;
+    }
+  }
 
   return (
     <Card className={highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"}>
@@ -87,8 +96,9 @@ export const NotificationView = ({ item }: { item: Notification }) => {
             {usersText}
             <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
           </div>
-          <div className="text-muted-foreground text-sm line-clamp-1 text-ellipsis overflow-hidden">
-            <TruncatedText text={content as string} maxLength={150} />
+          <div className="flex flex-row items-center gap-2 text-muted-foreground text-sm line-clamp-1 text-ellipsis overflow-hidden">
+            {image && <img src={image} alt="" className="w-6 h-6 object-cover rounded" />}
+            {content && <TruncatedText text={content} maxLength={150} />}
           </div>
         </div>
       </CardContent>
