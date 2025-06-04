@@ -156,7 +156,7 @@ export function ReactionsList({
         )}
         <Explosion
           onInit={onInitHandler}
-          className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[30] select-none pointer-events-none"
+          className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[50] select-none pointer-events-none"
           width={400}
           height={400}
           globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
