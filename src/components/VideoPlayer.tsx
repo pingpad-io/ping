@@ -69,9 +69,8 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
   return (
     <div
       ref={playerWithControlsRef}
-      className={`relative w-full flex justify-center items-center rounded-xl border ${
-        isFullscreen ? "fullscreen" : "mt-2"
-      }`}
+      className={`relative w-full flex justify-center items-center rounded-lg  overflow-hidden border ${isFullscreen ? "fullscreen" : "mt-2"
+        }`}
       onClick={() => {
         if (isFullscreen) handleFullscreen();
       }}
@@ -118,7 +117,23 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
             loop
           />
         ) : (
-          <img src={preview} alt="" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+          <div >
+            <img src={preview} alt="" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
+              <button
+                type="button"
+                className="flex items-center justify-center w-16 h-16 rounded-full transition-all duration-200 hover:scale-110"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setShown(true);
+                  handlePlayPause();
+                }}
+              >
+                <PlayIcon className="w-8 h-8 text-primary fill-primary ml-1" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
@@ -132,7 +147,7 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
             e.stopPropagation();
             e.preventDefault();
           }}
-          className="z-10 w-full rounded-b-lg border-t transition-all absolute bottom-0 flex justify-between items-center backdrop-blur-sm text-secondary-foreground p-2 bg-secondary/50 cursor-pointer"
+          className="z-10 w-full border-t transition-all absolute bottom-0 flex justify-between items-center backdrop-blur-sm text-secondary-foreground p-2 bg-secondary/50 cursor-pointer"
         >
           <button type="button" onClick={handlePlayPause}>
             {playing ? <PauseIcon /> : <PlayIcon />}
