@@ -6,6 +6,8 @@ import type { Post } from "./Post";
 import { CommentSkeleton } from "./PostCommentSkeleton";
 import { PostView } from "./PostView";
 
+const PAGE_SIZE = 10;
+
 export const PostComments = ({
   post,
   level,
@@ -72,6 +74,11 @@ export const PostComments = ({
     </motion.li>
   ));
 
+  const skeletonCount = Math.max(0, Math.min(post.reactions.Comment - comments.length, PAGE_SIZE));
+  const skeletonElements = Array.from({ length: skeletonCount }).map(() => (
+    <CommentSkeleton key={crypto.randomUUID()} />
+  ));
+
   if (error) throw new Error(error);
 
   return (
@@ -104,7 +111,7 @@ export const PostComments = ({
               ease: "easeInOut",
             }}
           >
-            <CommentSkeleton />
+            {skeletonElements}
           </motion.div>
         )}
         {isOpen && cursor && !loading && (
