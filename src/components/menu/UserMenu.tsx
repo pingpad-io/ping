@@ -171,7 +171,10 @@ export function UserMenuButtons({ handle, user }: { handle: string; user: User }
     <>
       <div className="flex flex-col w-40 gap-1 p-1">
         <Link href={`/u/${handle}`}>
-          <button className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors">
+          <button
+            type="button"
+            className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors"
+          >
             <UserIcon size={16} />
             Profile
           </button>
@@ -179,12 +182,16 @@ export function UserMenuButtons({ handle, user }: { handle: string; user: User }
         <button
           className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors"
           onClick={() => setDialogOpen(true)}
+          type="button"
         >
           <UsersIcon size={16} />
           Switch Profile
         </button>
         <Link href="/settings">
-          <button className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors">
+          <button
+            type="button"
+            className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors"
+          >
             <SettingsIcon size={16} />
             Settings
           </button>
@@ -192,6 +199,7 @@ export function UserMenuButtons({ handle, user }: { handle: string; user: User }
         <button
           className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors"
           onClick={toggleTheme}
+          type="button"
         >
           {theme === "light" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
           Toggle Theme
@@ -199,6 +207,7 @@ export function UserMenuButtons({ handle, user }: { handle: string; user: User }
         <button
           className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary transition-colors"
           onClick={logout}
+          type="button"
         >
           <LogOutIcon size={16} />
           Log out

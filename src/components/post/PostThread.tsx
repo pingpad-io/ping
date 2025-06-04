@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Post } from "./Post";
 import { PostView } from "./PostView";
 
@@ -38,12 +38,12 @@ export function PostThread({ post }: { post: Post }) {
         setThread((prev) => {
           requestAnimationFrame(() => {
             const newContainerTop = containerRef.current?.getBoundingClientRect().top || 0;
-            const heightDifference = (currentScrollY + containerTop) - (currentScrollY + newContainerTop);
+            const heightDifference = currentScrollY + containerTop - (currentScrollY + newContainerTop);
 
             if (heightDifference > 0) {
               window.scrollTo({
                 top: currentScrollY + heightDifference,
-                behavior: 'instant'
+                behavior: "instant",
               });
             }
           });
@@ -64,12 +64,12 @@ export function PostThread({ post }: { post: Post }) {
     <div ref={containerRef} className="flex flex-col">
       {thread.map((p) => (
         <div key={p.id} className="relative">
-          <PostView settings={{ inThread: true }} item={p} />
+          <PostView settings={{ inThread: true }} item={p} threadDepth={Number.POSITIVE_INFINITY} />
         </div>
       ))}
 
       <div className="relative min-h-screen">
-        <PostView item={post} />
+        <PostView item={post} threadDepth={Number.POSITIVE_INFINITY} />
       </div>
     </div>
   );

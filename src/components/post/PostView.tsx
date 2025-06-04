@@ -11,6 +11,7 @@ import { PostInfo } from "./PostInfo";
 import { ReactionsList } from "./PostReactions";
 import { ReplyInfo } from "./PostReplyInfo";
 import { PostReplyWizard } from "./PostReplyWizard";
+import { PostSelfThread } from "./PostSelfThread";
 
 type PostViewSettings = {
   showBadges?: boolean;
@@ -24,7 +25,13 @@ export const PostView = ({
   item,
   settings = { isComment: false, showBadges: true, level: 1 },
   defaultReplyOpen = false,
-}: { item: Post; settings?: PostViewSettings; defaultReplyOpen?: boolean }) => {
+  threadDepth = 3,
+}: {
+  item: Post;
+  settings?: PostViewSettings;
+  defaultReplyOpen?: boolean;
+  threadDepth?: number;
+}) => {
   const content = "content" in item.metadata ? (item.metadata.content as string) : "";
   const [collapsed, setCollapsed] = useState(content.length > 400);
   const [isCommentsOpen, setCommentsOpen] = useState(false);
@@ -93,6 +100,7 @@ export const PostView = ({
           setOpen={setReplyWizardOpen}
         />
       )}
+      {threadDepth !== 0 && <PostSelfThread post={item} depth={threadDepth} />}
       {isCommentsOpen && (
         <PostComments
           level={settings.level + 1}
