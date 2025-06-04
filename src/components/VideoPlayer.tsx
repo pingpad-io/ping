@@ -1,7 +1,6 @@
 "use client";
 
 import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
@@ -59,18 +58,18 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
     setProgress(value);
   };
 
-  const previewImage = (
-    <>
-      <div className="relative w-full aspect-square">
-        <img className="object-cover border w-full h-full rounded-xl" src={preview} alt={""} />
-      </div>
-    </>
-  );
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = preview;
+    img.onload = () => setAspectRatio(img.height / img.width);
+  }, [preview]);
 
   return (
     <div
       ref={playerWithControlsRef}
-      className={`relative w-full h-full flex justify-center items-center rounded-xl border ${
+      className={`relative w-full flex justify-center items-center rounded-xl border ${
         isFullscreen ? "fullscreen" : "mt-2"
       }`}
       onClick={() => {
@@ -86,33 +85,41 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
+          if (!shown) {
+            setShown(true);
+          }
           handlePlayPause();
         }}
-        className={shown ? "w-auto h-auto" : "w-full h-full"}
         onKeyDown={(e) => {
           if (e.key === " ") {
             handlePlayPause();
           }
         }}
+        className="relative w-full"
+        style={{ paddingTop: aspectRatio ? `${aspectRatio * 100}%` : undefined }}
       >
-        <ReactPlayer
-          ref={playerRef}
-          playing={playing}
-          style={{
-            borderRadius: "0.5rem",
-            overflow: "hidden",
-          }}
-          light={previewImage}
-          onProgress={handleProgress}
-          progressInterval={50}
-          onClickPreview={() => setShown(true)}
-          controls={false} // disable default controls to use custom controls
-          muted={muted}
-          height="auto"
-          width="auto"
-          url={url}
-          loop
-        />
+        {shown ? (
+          <ReactPlayer
+            ref={playerRef}
+            playing={playing}
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "0.5rem",
+              overflow: "hidden",
+            }}
+            onProgress={handleProgress}
+            progressInterval={50}
+            controls={false} // disable default controls to use custom controls
+            muted={muted}
+            height="100%"
+            width="100%"
+            url={url}
+            loop
+          />
+        ) : (
+          <img src={preview} alt="" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+        )}
       </div>
 
       {shown && (
