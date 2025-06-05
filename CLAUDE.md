@@ -108,8 +108,8 @@ Environment validation is handled by Zod schemas in `/src/env.mjs`.
 4. **Theme System**: Custom background gradients stored in localStorage
 5. **Authentication**: Server-side auth utilities in `/src/utils/getServerAuth.ts`
 
-### Current Development State
-
-- Active branch: `cursor/add-custom-background-gradients-6b30`
-- Recent features: Custom background themes, notification improvements
-- No test framework currently configured
+### Commit Message Guidelines
+- Use lowercase commit messages
+- Keep commit messages short
+- Do not add authors
+- Example format: "add x, fix y, update z"

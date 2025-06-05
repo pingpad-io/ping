@@ -1,4 +1,3 @@
-import { Card } from "../ui/card";
 
 export const PostSuspense = () => {
   const avatar = (
@@ -14,9 +13,11 @@ export const PostSuspense = () => {
   );
 
   return (
-    <Card className="flex h-fit flex-row gap-4 p-2 sm:p-4 glass-post">
-      {avatar}
-      <div className="h-12 w-full grow">{content}</div>
-    </Card>
+    <div className="flex flex-col w-full gap-0.5 glass-post rounded-lg">
+      <div className="flex flex-row p-2 sm:p-4 gap-4">
+        {avatar}
+        <div className="h-12 w-full grow">{content}</div>
+      </div>
+    </div>
   );
 };
