@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
 import { UserMenuButtons } from "./UserMenu";
+import { useNotifications } from "../notifications/NotificationsContext";
 
 interface MenuClientProps {
   isAuthenticated: boolean;
@@ -21,6 +22,7 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
   const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
   const router = useRouter();
+  const { newCount } = useNotifications();
 
   useEffect(() => {
     router.prefetch("/home");
@@ -62,7 +64,16 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
       onClick: () => router.push("/home"),
     },
     {
-      icon: Bell,
+      customIcon: (
+        <div className="relative w-full h-full flex items-center justify-center">
+          <Bell className="w-5 h-5" />
+          {newCount > 0 && (
+            <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-primary text-primary-foreground text-[9px] flex items-center justify-center font-medium">
+              {newCount > 9 ? "9+" : newCount}
+            </span>
+          )}
+        </div>
+      ),
       label: "Notifications",
       onClick: () => router.push("/notifications"),
     },
