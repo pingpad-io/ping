@@ -1,7 +1,7 @@
 import { PawPrintIcon, WalletIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { PingButton } from "~/components/SettingsPageItems";
-import { ThemeButtons } from "~/components/ThemeToggle";
+import { ThemeSettings } from "~/components/ThemeSettings";
 import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 
@@ -32,15 +32,13 @@ const settings = async () => {
   return (
     <ServerSignedIn>
       <div className="space-y-4">
+        <ThemeSettings />
+
         <Card className="hover:bg-card">
           <CardHeader>
             <CardTitle>App</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
-            <Label className="text-lg">Theme</Label>
-            <span className="flex gap-2">
-              <ThemeButtons />
-            </span>
             <Label className="text-lg">Misc</Label>
             <PingButton />
           </CardContent>

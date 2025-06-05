@@ -5,6 +5,7 @@ import { Providers } from "~/components/Providers";
 import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
 import { Toaster } from "~/components/ui/sonner";
 import { UserProvider } from "~/components/user/UserContext";
+import { BackgroundGradient } from "~/components/BackgroundGradient";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }) {
         <Providers>
           <NotificationsProvider>
             <UserProvider user={user}>
+              <BackgroundGradient />
               <AuthWatcher />
               <Toaster position="top-right" offset={16} />
               <Menu isAuthenticated={!!profileId} user={user} handle={handle} profileId={profileId} />
