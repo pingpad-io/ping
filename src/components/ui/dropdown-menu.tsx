@@ -76,7 +76,7 @@ const DropdownMenuContent = React.forwardRef<
           exit={{ opacity: 0, height: 0, y: -10 }}
           transition={{ duration: 0.2 }}
           className={cn(
-            "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
+            "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md glass",
             className,
           )}
         >

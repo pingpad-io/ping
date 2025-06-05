@@ -1,20 +1,21 @@
 "use client";
 
+import { useEffect } from "react";
 import { useBackgroundTheme } from "~/hooks/useBackgroundTheme";
 
 export function BackgroundGradient() {
-  const { currentGradient, mounted } = useBackgroundTheme();
-  
+  const { mounted, applyTheme } = useBackgroundTheme();
+
+  // Apply theme on mount and when it changes
+  useEffect(() => {
+    if (mounted) {
+      applyTheme();
+    }
+  }, [mounted, applyTheme]);
+
   if (!mounted) {
     return null;
   }
 
-  return (
-    <div 
-      className="fixed inset-0 -z-10 pointer-events-none"
-      style={{
-        background: currentGradient
-      }}
-    />
-  );
+  return <div className="fixed inset-0 -z-10 pointer-events-none bg-gradient" />;
 }

@@ -1,6 +1,6 @@
 import { cn } from "@/src/utils";
-import { AnimatePresence, motion } from "motion/react";
 import { LucideIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -32,19 +32,22 @@ interface DockIconButtonProps {
 }
 
 const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
-  ({
-    icon: Icon,
-    customIcon,
-    label,
-    onClick,
-    className,
-    customComponent,
-    extra,
-    variant = "default",
-    onHover,
-    onLeave,
-    buttonRef
-  }, ref) => {
+  (
+    {
+      icon: Icon,
+      customIcon,
+      label,
+      onClick,
+      className,
+      customComponent,
+      extra,
+      variant = "default",
+      onHover,
+      onLeave,
+      buttonRef,
+    },
+    ref,
+  ) => {
     if (customComponent) {
       return <div className="w-full">{customComponent}</div>;
     }
@@ -89,8 +92,8 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
   const dockRef = useRef<HTMLDivElement>(null);
 
   // Initialize refs immediately with the current items length
-  const buttonRefs = useRef<(React.RefObject<HTMLButtonElement>)[]>(
-    items.map(() => React.createRef<HTMLButtonElement>())
+  const buttonRefs = useRef<React.RefObject<HTMLButtonElement>[]>(
+    items.map(() => React.createRef<HTMLButtonElement>()),
   );
 
   // Update refs when items change
@@ -100,14 +103,17 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
     }
   }, [items.length]);
 
-  const handleMouseEnter = useCallback((index: number) => {
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
-    }
-    setPreviousIndex(hoveredIndex);
-    setHoveredIndex(index);
-    setShowExtra(true);
-  }, [hoveredIndex, items]);
+  const handleMouseEnter = useCallback(
+    (index: number) => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+      setPreviousIndex(hoveredIndex);
+      setHoveredIndex(index);
+      setShowExtra(true);
+    },
+    [hoveredIndex, items],
+  );
 
   const handleMouseLeave = useCallback(() => {
     hideTimeoutRef.current = setTimeout(() => {
@@ -163,7 +169,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
     } else {
       return {
         bottom: dockRect.height - buttonTop + 12,
-        left: buttonCenterX - buttonRect.width
+        left: buttonCenterX - buttonRect.width,
       };
     }
   };
@@ -200,15 +206,11 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
             layout
             onMouseEnter={handleExtraMouseEnter}
             onMouseLeave={handleExtraMouseLeave}
-            className={cn(
-              "absolute z-50 pointer-events-auto",
-              "backdrop-blur-lg border shadow-lg rounded-xl",
-              "bg-background/95 border-border",
-            )}
+            className={cn("absolute z-50 pointer-events-auto", "border shadow-lg rounded-xl", "border-border glass")}
             style={{
               ...extraPosition,
               transformOrigin: window.innerWidth >= 640 ? "right center" : "center bottom",
-              transform: window.innerWidth >= 640 ? "translateY(-50%)" : undefined
+              transform: window.innerWidth >= 640 ? "translateY(-50%)" : undefined,
             }}
           >
             <motion.div
@@ -218,9 +220,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
               {hoveredItem.extra ? (
-                <div className="w-auto">
-                  {hoveredItem.extra}
-                </div>
+                <div className="w-auto">{hoveredItem.extra}</div>
               ) : (
                 <div className="px-3 py-2 text-sm font-medium text-foreground whitespace-nowrap">
                   {hoveredItem.label}

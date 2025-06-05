@@ -13,7 +13,7 @@ export default async function layout({ children }: PropsWithChildren) {
   const { user } = await getServerAuth();
 
   return (
-    <Card className="z-[30] hover:bg-card p-4 py-0 border-0">
+    <div className="z-[30] p-4 py-0">
       <ServerSignedIn>
         {/* <Navigation /> */}
         <div className="py-4">
@@ -21,6 +21,6 @@ export default async function layout({ children }: PropsWithChildren) {
         </div>
       </ServerSignedIn>
       {children}
-    </Card>
+    </div>
   );
 }
