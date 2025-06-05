@@ -6,7 +6,7 @@ export const GallerySuspense = () => {
   return (
     <div className="grid grid-cols-3 gap-2">
       {placeholders.map((id) => (
-        <Card key={id} className="overflow-hidden p-0">
+        <Card key={id} className="overflow-hidden p-0 glass-post">
           <div className="aspect-square w-full animate-pulse bg-muted/60" />
         </Card>
       ))}

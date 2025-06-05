@@ -4,7 +4,7 @@ import { Card } from "../ui/card";
 
 export const CommentSkeleton = ({ isLastComment = false }: { isLastComment?: boolean }) => {
   return (
-    <Card className="min-h-[96px]">
+    <Card className="min-h-[96px] glass-post">
       <CardContent className="flex flex-row p-2 sm:p-2 sm:pb-4 gap-2">
         <span className="min-h-full flex flex-col justify-start items-center relative">
           <div className="shrink-0 grow-0 rounded-full w-6 h-6 bg-muted animate-pulse" />

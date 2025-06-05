@@ -30,7 +30,7 @@ export default async function layout({
       <UserProfile user={user} stats={stats} />
       <UserNavigation handle={handle} />
 
-      <Card className="z-[30] hover:bg-card p-4 border-0">{children}</Card>
+      <div className="z-[30] p-4">{children}</div>
     </>
   );
 }

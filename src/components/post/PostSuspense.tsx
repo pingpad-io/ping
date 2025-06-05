@@ -14,7 +14,7 @@ export const PostSuspense = () => {
   );
 
   return (
-    <Card className="flex h-fit flex-row gap-4 p-2 sm:p-4 bg-transparent hover:bg-accent/20 backdrop-blur-3xl backdrop-opacity-80">
+    <Card className="flex h-fit flex-row gap-4 p-2 sm:p-4 glass-post">
       {avatar}
       <div className="h-12 w-full grow">{content}</div>
     </Card>

@@ -19,7 +19,7 @@ export const GalleryPostView = ({ item }: { item: Post }) => {
 
   return (
     <Link href={`/p/${item.id}`}>
-      <Card className="overflow-hidden p-0">
+      <Card className="overflow-hidden p-0 glass-post">
         <img src={src} alt="" className="object-cover w-full aspect-square" />
       </Card>
     </Link>
