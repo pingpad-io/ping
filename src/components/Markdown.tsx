@@ -13,9 +13,11 @@ const Markdown: React.FC<{ content: string; className?: string }> = ({ content, 
   const processedText = parseContent(content).replaceHandles().toString();
 
   // Extract color classes to pass to custom components
-  const colorClasses = className.split(' ').filter(cls =>
-    cls.includes('text-')
-  ).join(' ') || '';
+  const colorClasses =
+    className
+      .split(" ")
+      .filter((cls) => cls.includes("text-"))
+      .join(" ") || "";
 
   // Create a custom link component with the color classes in closure
   const createCustomLink = (colorClasses: string): Components["a"] => {
@@ -37,7 +39,11 @@ const Markdown: React.FC<{ content: string; className?: string }> = ({ content, 
           );
         }
       }
-      return <a {...props} className={colorClasses}>{children}</a>;
+      return (
+        <a {...props} className={colorClasses}>
+          {children}
+        </a>
+      );
     };
   };
 

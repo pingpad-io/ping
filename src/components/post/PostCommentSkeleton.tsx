@@ -1,4 +1,3 @@
-
 export const CommentSkeleton = ({ isLastComment = false }: { isLastComment?: boolean }) => {
   return (
     <div className="min-h-[96px]">

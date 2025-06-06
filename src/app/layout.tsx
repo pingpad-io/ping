@@ -1,11 +1,11 @@
 import dynamic from "next/dynamic";
 import Script from "next/script";
+import { BackgroundGradient } from "~/components/BackgroundGradient";
 import { PageTransition } from "~/components/PageTransition";
 import { Providers } from "~/components/Providers";
 import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
 import { Toaster } from "~/components/ui/sonner";
 import { UserProvider } from "~/components/user/UserContext";
-import { BackgroundGradient } from "~/components/BackgroundGradient";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";

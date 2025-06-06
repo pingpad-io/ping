@@ -1,13 +1,13 @@
 "use client";
 
 import { useLogout } from "@lens-protocol/react";
-import { FamilyIcon, GlobeIcon } from "../Icons";
 import { Grid2X2, LogInIcon, SquareIcon, UserMinusIcon, UsersIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type PropsWithChildren, useState } from "react";
 import { toast } from "sonner";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { clearCookies } from "../../utils/clearCookies";
+import { FamilyIcon, GlobeIcon } from "../Icons";
 import { WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";

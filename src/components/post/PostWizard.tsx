@@ -87,7 +87,6 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   );
 };
 
-
 export default function PostWizard({
   user,
   replyingTo,
@@ -177,14 +176,14 @@ export default function PostWizard({
 
       const postData = replyingTo
         ? {
-          contentUri,
-          commentOn: {
-            post: replyingTo.id,
-          },
-        }
+            contentUri,
+            commentOn: {
+              post: replyingTo.id,
+            },
+          }
         : {
-          contentUri,
-        };
+            contentUri,
+          };
 
       const result = await post(client, postData)
         .andThen(handleOperationWith(walletClient))
@@ -205,7 +204,6 @@ export default function PostWizard({
         resetHeight();
         setImageFile(null);
         onSuccess?.(newPost);
-
       } else {
         console.error("Failed to create post:", result.error);
         toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });

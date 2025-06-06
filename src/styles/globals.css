@@ -24,12 +24,14 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.65rem;
-    
+
     /* Background gradient variables - Purple theme default */
     --bg-gradient-1: rgba(139, 92, 246, 0.55);
     --bg-gradient-2: rgba(236, 72, 153, 0.55);
     --bg-gradient-3: rgba(168, 85, 247, 0.55);
-    --bg-gradient-pattern: radial-gradient(ellipse at top, var(--bg-gradient-1) 0%, transparent 50%), radial-gradient(ellipse at bottom right, var(--bg-gradient-2) 0%, transparent 50%), radial-gradient(ellipse at center left, var(--bg-gradient-3) 0%, transparent 50%);
+    --bg-gradient-pattern: radial-gradient(ellipse at top, var(--bg-gradient-1) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, var(--bg-gradient-2) 0%, transparent 50%),
+      radial-gradient(ellipse at center left, var(--bg-gradient-3) 0%, transparent 50%);
   }
 
   .dark {
@@ -52,7 +54,7 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
-    
+
     /* Background gradient variables for dark mode - Purple theme default */
     --bg-gradient-1: rgba(139, 92, 246, 0.5);
     --bg-gradient-2: rgba(236, 72, 153, 0.5);
@@ -75,7 +77,6 @@
 
 @layer utilities {
   @layer utilities {
-
     /* Hide scrollbar for Chrome, Safari and Opera */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -89,13 +90,13 @@
       /* Firefox */
     }
   }
-  
+
   /* Background gradient utility */
   .bg-gradient {
     background: var(--bg-gradient-pattern);
     transition: background 0.3s ease;
   }
-  
+
   /* Glass morphism for cards and menus */
   .glass {
     background-color: hsl(var(--card) / 0.85);
@@ -103,20 +104,20 @@
     -webkit-backdrop-filter: blur(10px);
     transition: background-color 0.2s ease;
   }
-  
+
   .glass:hover {
     background-color: hsl(var(--card) / 0.95);
   }
-  
+
   /* For dark mode glass effect */
   .dark .glass {
     background-color: hsl(var(--card) / 0.7);
   }
-  
+
   .dark .glass:hover {
     background-color: hsl(var(--card) / 0.85);
   }
-  
+
   /* Stronger glass effect for posts */
   .glass-post {
     background-color: hsl(var(--card) / 0.6);
@@ -124,16 +125,16 @@
     -webkit-backdrop-filter: blur(12px);
     transition: background-color 0.2s ease;
   }
-  
+
   .glass-post:hover {
     background-color: hsl(var(--card) / 0.85);
   }
-  
+
   /* For dark mode stronger glass effect */
   .dark .glass-post {
     background-color: hsl(var(--card) / 0.45);
   }
-  
+
   .dark .glass-post:hover {
     background-color: hsl(var(--card) / 0.75);
   }

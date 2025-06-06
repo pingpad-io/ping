@@ -75,12 +75,7 @@ export const Feed = ({ ItemView, initialData, initialCursor, endpoint, manualNex
     <div className="flex flex-col gap-2">
       {list}
       {manualNextPage && cursor !== null && (
-        <Button
-          variant="outline"
-          className="w-full mt-4"
-          onClick={loadNextBatch}
-          disabled={loading}
-        >
+        <Button variant="outline" className="w-full mt-4" onClick={loadNextBatch} disabled={loading}>
           {loading ? "Loading..." : "Load more"}
         </Button>
       )}

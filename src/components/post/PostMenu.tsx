@@ -13,10 +13,10 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "~/components/Link";
+import { getBaseUrl } from "~/utils/getBaseUrl";
 import { Button } from "../ui/button";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
-import { getBaseUrl } from "~/utils/getBaseUrl";
 
 export const PostMenu = ({
   post,

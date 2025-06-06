@@ -4,12 +4,12 @@ import { AtSign, Bell, BookmarkIcon, LogInIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Dock } from "~/components/ui/dock";
+import { useNotifications } from "../notifications/NotificationsContext";
 import PostWizard from "../post/PostWizard";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
 import { UserMenuButtons } from "./UserMenu";
-import { useNotifications } from "../notifications/NotificationsContext";
 
 interface MenuClientProps {
   isAuthenticated: boolean;

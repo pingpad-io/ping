@@ -166,12 +166,11 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
         top: buttonCenterY - 18,
         right: dockRect.width - buttonLeft + 12,
       };
-    } else {
-      return {
-        bottom: dockRect.height - buttonTop + 12,
-        left: buttonCenterX - buttonRect.width,
-      };
     }
+    return {
+      bottom: dockRect.height - buttonTop + 12,
+      left: buttonCenterX - buttonRect.width,
+    };
   };
 
   const hoveredItem = hoveredIndex !== null ? items[hoveredIndex] : null;

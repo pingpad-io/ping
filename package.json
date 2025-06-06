@@ -6,7 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "check": "bun x @biomejs/biome check --apply-unsafe ./src/*"
+    "check": "bun x @biomejs/biome check --write --unsafe ./src/*"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.775.0",

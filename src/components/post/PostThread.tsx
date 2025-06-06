@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Post } from "./Post";
 import { PostView } from "./PostView";
 
@@ -38,12 +38,12 @@ export function PostThread({ post }: { post: Post }) {
         setThread((prev) => {
           requestAnimationFrame(() => {
             const newContainerTop = containerRef.current?.getBoundingClientRect().top || 0;
-            const heightDifference = (currentScrollY + containerTop) - (currentScrollY + newContainerTop);
+            const heightDifference = currentScrollY + containerTop - (currentScrollY + newContainerTop);
 
             if (heightDifference > 0) {
               window.scrollTo({
                 top: currentScrollY + heightDifference,
-                behavior: 'instant'
+                behavior: "instant",
               });
             }
           });

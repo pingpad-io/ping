@@ -55,4 +55,4 @@ export const UserFollowing = ({ user, followingCount, followersCount }: UserFoll
       </Dialog>
     </div>
   );
-}; 
+};

@@ -69,8 +69,9 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
   return (
     <div
       ref={playerWithControlsRef}
-      className={`relative w-full flex justify-center items-center rounded-lg  overflow-hidden border ${isFullscreen ? "fullscreen" : "mt-2"
-        }`}
+      className={`relative w-full flex justify-center items-center rounded-lg  overflow-hidden border ${
+        isFullscreen ? "fullscreen" : "mt-2"
+      }`}
       onClick={() => {
         if (isFullscreen) handleFullscreen();
       }}
@@ -117,7 +118,7 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
             loop
           />
         ) : (
-          <div >
+          <div>
             <img src={preview} alt="" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
               <button

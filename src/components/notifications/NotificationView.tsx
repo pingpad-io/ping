@@ -88,7 +88,11 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     if (commentMetadata) {
       if ("image" in commentMetadata && commentMetadata.image) {
         replyImage = (commentMetadata.image as any).item as string;
-      } else if ("attachments" in commentMetadata && Array.isArray(commentMetadata.attachments) && commentMetadata.attachments[0]) {
+      } else if (
+        "attachments" in commentMetadata &&
+        Array.isArray(commentMetadata.attachments) &&
+        commentMetadata.attachments[0]
+      ) {
         replyImage = (commentMetadata.attachments[0] as any).item as string;
       }
     }
@@ -97,12 +101,17 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     const originalPost = item.actedOn.commentOn || item.actedOn.reply;
     if (originalPost) {
       const originalMetadata = originalPost.metadata as any;
-      originalPostContent = originalMetadata && "content" in originalMetadata ? (originalMetadata.content as string) : "";
+      originalPostContent =
+        originalMetadata && "content" in originalMetadata ? (originalMetadata.content as string) : "";
 
       if (originalMetadata) {
         if ("image" in originalMetadata && originalMetadata.image) {
           originalPostImage = (originalMetadata.image as any).item as string;
-        } else if ("attachments" in originalMetadata && Array.isArray(originalMetadata.attachments) && originalMetadata.attachments[0]) {
+        } else if (
+          "attachments" in originalMetadata &&
+          Array.isArray(originalMetadata.attachments) &&
+          originalMetadata.attachments[0]
+        ) {
           originalPostImage = (originalMetadata.attachments[0] as any).item as string;
         }
       }
@@ -134,23 +143,26 @@ export const NotificationView = ({ item }: { item: Notification }) => {
 
           {(originalPostContent || originalPostImage) && (
             <Link
-              href={`/p/${item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
-                ? (item.actedOn.commentOn?.id || item.actedOn.reply?.id)
-                : item?.actedOn?.id}`}
+              href={`/p/${
+                item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
+                  ? item.actedOn.commentOn?.id || item.actedOn.reply?.id
+                  : item?.actedOn?.id
+              }`}
               className="block rounded p-1 -m-1"
             >
               <div className="flex flex-row items-center gap-2 text-muted-foreground/60 text-sm line-clamp-1 text-ellipsis overflow-hidden">
-                {originalPostImage && <img src={originalPostImage} alt="" className="w-6 h-6 object-cover rounded opacity-60 grayscale" />}
-                {originalPostContent && <TruncatedText text={originalPostContent} maxLength={150} className="text-muted-foreground" />}
+                {originalPostImage && (
+                  <img src={originalPostImage} alt="" className="w-6 h-6 object-cover rounded opacity-60 grayscale" />
+                )}
+                {originalPostContent && (
+                  <TruncatedText text={originalPostContent} maxLength={150} className="text-muted-foreground" />
+                )}
               </div>
             </Link>
           )}
 
           {item.type === "Comment" && (replyContent || replyImage) && (
-            <Link
-              href={`/p/${item.actedOn?.id}`}
-              className="block rounded p-1 -m-1"
-            >
+            <Link href={`/p/${item.actedOn?.id}`} className="block rounded p-1 -m-1">
               <div className="flex flex-row items-center gap-2 text-foreground text-sm line-clamp-2 text-ellipsis overflow-hidden">
                 {replyImage && <img src={replyImage} alt="" className="w-6 h-6 object-cover rounded" />}
                 {replyContent && <TruncatedText text={replyContent} maxLength={200} className="text-foreground" />}

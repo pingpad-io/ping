@@ -20,13 +20,15 @@ export const TruncatedText = ({
   const ellipsis = isTruncated ? "..." : "";
 
   // Extract color-related classes to pass to Markdown component
-  const colorClasses = className?.split(' ').filter(cls =>
-    cls.includes('text-') || cls.includes('prose-')
-  ).join(' ') || '';
+  const colorClasses =
+    className
+      ?.split(" ")
+      .filter((cls) => cls.includes("text-") || cls.includes("prose-"))
+      .join(" ") || "";
 
   // Generate prose link classes to match text color
   const generateProseClasses = (colorClasses: string) => {
-    if (!colorClasses) return '';
+    if (!colorClasses) return "";
 
     // Extract the main color from text- classes
     const textColorMatch = colorClasses.match(/text-([^\s]+)/);
@@ -34,16 +36,18 @@ export const TruncatedText = ({
       const colorName = textColorMatch[1];
       return `prose-a:text-${colorName} prose-a:no-underline hover:prose-a:underline`;
     }
-    return '';
+    return "";
   };
 
   const proseClasses = generateProseClasses(colorClasses);
   const allColorClasses = `${colorClasses} ${proseClasses}`.trim();
 
   // Non-color classes for the span wrapper
-  const wrapperClasses = className?.split(' ').filter(cls =>
-    !cls.includes('text-') && !cls.includes('prose-')
-  ).join(' ') || '';
+  const wrapperClasses =
+    className
+      ?.split(" ")
+      .filter((cls) => !cls.includes("text-") && !cls.includes("prose-"))
+      .join(" ") || "";
 
   return (
     <span

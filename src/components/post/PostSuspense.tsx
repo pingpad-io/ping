@@ -1,4 +1,3 @@
-
 export const PostSuspense = () => {
   const avatar = (
     <div className="flex h-full items-center justify-center">
