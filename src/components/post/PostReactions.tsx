@@ -1,9 +1,8 @@
 "use client";
 
-import confetti from "canvas-confetti";
 import { ChevronDownIcon } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
-import Explosion from "react-canvas-confetti/dist/presets/explosion";
+import { useRef, useState } from "react";
+import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
 import { ReactionCount } from "../ReactionCount";
 import { Button } from "../ui/button";
@@ -42,25 +41,10 @@ export function ReactionsList({
     Like: { count: post.reactions.Upvote, isActive: post.reactions.isUpvoted },
   });
 
-  const heartShape = useMemo(
-    () =>
-      confetti.shapeFromPath({
-        path: "M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z",
-      }),
-    [],
-  );
-
-  const explosionController = useRef<any>();
-
-  const onInitHandler = ({ conductor }) => {
-    explosionController.current = conductor;
-  };
-
-  const shootEffect = () => {
-    if (explosionController.current) {
-      explosionController.current.shoot();
-    }
-  };
+  const { triggerExplosion } = useExplosion();
+  const likeButtonRef = useRef<HTMLSpanElement>(null);
+  const upvoteButtonRef = useRef<HTMLSpanElement>(null);
+  const downvoteButtonRef = useRef<HTMLSpanElement>(null);
 
   const updateReaction = async (reactionType: PostReactionType | "Like") => {
     if (reactionType === "Upvote" || reactionType === "Downvote") {
@@ -97,9 +81,13 @@ export function ReactionsList({
       }));
     }
 
-    // Fire explosion only for Like and Upvote
-    if (["Like", "Upvote"].includes(reactionType) && !reactions[reactionType]?.isActive) {
-      shootEffect();
+    // Fire explosion effects
+    if (reactionType === "Like" && !reactions.Like.isActive && likeButtonRef.current) {
+      triggerExplosion("like", likeButtonRef.current);
+    } else if (reactionType === "Upvote" && !reactions.Upvote.isActive && upvoteButtonRef.current) {
+      triggerExplosion("upvote", upvoteButtonRef.current);
+    } else if (reactionType === "Downvote" && !reactions.Downvote.isActive && downvoteButtonRef.current) {
+      triggerExplosion("downvote", downvoteButtonRef.current);
     }
 
     const route = reactionType === "Like" ? "upvote" : reactionType.toLowerCase();
@@ -128,22 +116,24 @@ export function ReactionsList({
         onClick={() => updateReaction("Repost")}
         disabled={!post.reactions.canRepost}
       />
-      <span className="relative overflow-shown">
-        {isComment ? (
-          <span className="flex flex-row gap-1 ">
+      {isComment ? (
+        <span className="flex flex-row gap-1 ">
+          <span ref={upvoteButtonRef}>
             <ReactionButton
               variant="comment"
               reactionType="Upvote"
               reaction={{ count: reactions.score, isActive: reactions.Upvote.isActive }}
               onClick={() => updateReaction("Upvote")}
             />
-            <span className="-mx-2">
-              <ReactionCount
-                isPressed={reactions.Upvote.isActive || reactions.Downvote.isActive}
-                amount={reactions.score}
-                persistent={true}
-              />
-            </span>
+          </span>
+          <span className="-mx-2">
+            <ReactionCount
+              isPressed={reactions.Upvote.isActive || reactions.Downvote.isActive}
+              amount={reactions.score}
+              persistent={true}
+            />
+          </span>
+          <span ref={downvoteButtonRef}>
             <ReactionButton
               variant="comment"
               reactionType="Downvote"
@@ -151,27 +141,12 @@ export function ReactionsList({
               onClick={() => updateReaction("Downvote")}
             />
           </span>
-        ) : (
+        </span>
+      ) : (
+        <span ref={likeButtonRef}>
           <ReactionButton reactionType="Like" reaction={reactions.Like} onClick={() => updateReaction("Like")} />
-        )}
-        <Explosion
-          onInit={onInitHandler}
-          className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[30] select-none pointer-events-none"
-          width={400}
-          height={400}
-          globalOptions={{ useWorker: true, disableForReducedMotion: true, resize: true }}
-          decorateOptions={(defaultOptions) => ({
-            ...defaultOptions,
-            colors: ["#ff4d6d", "#ff82a9", "#ffa1c0"],
-            scalar: 1,
-            particleCount: 15,
-            ticks: 60,
-            startVelocity: 8,
-            flat: true,
-            shapes: [heartShape],
-          })}
-        />
-      </span>
+        </span>
+      )}
 
       <div className="ml-auto">
         <div className="opacity-0 group-hover:opacity-100 duration-300 delay-150">

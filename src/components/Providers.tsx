@@ -14,6 +14,7 @@ import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { wagmiLocalStorage } from "~/utils/localStorage";
+import { ExplosionProvider } from "./ExplosionPortal";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
@@ -129,7 +130,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <ConnectKitProvider>
-            <LensProvider client={publicClient}>{children}</LensProvider>
+            <LensProvider client={publicClient}>
+              <ExplosionProvider>{children}</ExplosionProvider>
+            </LensProvider>
           </ConnectKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
