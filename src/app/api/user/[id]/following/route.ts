@@ -1,3 +1,4 @@
+import { PageSize } from "@lens-protocol/client";
 import { fetchFollowing } from "@lens-protocol/client/actions";
 import { NextRequest, NextResponse } from "next/server";
 import { lensAcountToUser } from "~/components/user/User";
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     const result = await fetchFollowing(client, {
       cursor,
-      pageSize: 50,
+      pageSize: PageSize.Fifty,
       account: id,
     });
 
@@ -23,7 +24,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const following = result.value;
-    // In the new API, each following item has a 'following' property that contains the account
     const users = following.items.map((item) => lensAcountToUser(item.following));
 
     return NextResponse.json({ data: users, nextCursor: following.pageInfo.next }, { status: 200 });
