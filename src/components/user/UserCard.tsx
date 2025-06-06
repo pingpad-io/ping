@@ -20,16 +20,12 @@ export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: st
     }
   };
 
-  // const _avatar = user?.profilePictureUrl;
-  // const _banner = data?.metadata?.coverPicture?.optimized
-  //   ? data?.metadata?.coverPicture?.optimized
-  //   : data?.metadata?.coverPicture?.raw;
   const isFollowingMe = user?.actions?.following;
 
   return (
     <HoverCard defaultOpen={false} onOpenChange={(open: boolean) => open && loadCard()} closeDelay={100}>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent className="w-full max-w-sm z-50 min-w-[18rem] p-4 not-prose" side="top">
+      <HoverCardContent className="w-full max-w-sm min-w-[18rem] p-4 not-prose" side="top">
         {(loading || !user) && <LoadingSpinner />}
         {error && <div>Error: {error}</div>}
         {user && (
@@ -53,8 +49,8 @@ export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: st
                 <FollowButton className="text-sm h-fit w-fit p-1 px-3" user={user} />
               </div>
             </div>
-            <span className="text-xs leading-4">
-              <TruncatedText className="text-xs" text={user.description} maxLength={200} isMarkdown={true} />
+            <span className="mt-2 leading-4">
+              <TruncatedText className="text-sm" text={user.description} maxLength={200} isMarkdown={true} />
             </span>
           </div>
         )}
