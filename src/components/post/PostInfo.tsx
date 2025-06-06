@@ -59,7 +59,7 @@ export const PostInfo = ({
             {"···"}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="flex flex-col w-max gap-1 p-1 hover:bg-card border">
+        <DropdownMenuContent className="flex flex-col w-max gap-1 p-1 hover:bg-card rounded-lg border">
           <PostMenu post={post} onReply={onReply} onMenuAction={handleMenuAction} />
         </DropdownMenuContent>
       </DropdownMenu>

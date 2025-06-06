@@ -22,7 +22,7 @@ export const PostContextMenu = (props: PropsWithChildren & { post: Post; onReply
         onContextMenu={(e) => {
           e.stopPropagation();
         }}
-        className="flex flex-col w-max gap-1 p-1 hover:bg-card border"
+        className="flex flex-col w-max gap-1 p-1 hover:bg-card rounded-lg border"
       >
         <PostMenu post={props.post} onReply={props.onReply} onMenuAction={handleMenuAction} />
       </ContextMenuContent>
