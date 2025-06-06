@@ -133,29 +133,6 @@ export const Navigation = () => {
   );
 };
 
-export const ExploreNavigation = () => {
-  return (
-    <nav className="z-[40] flex flex-row justify-start items-center gap-2 p-4 px-0 sticky top-3 border border-muted bg-background/50 backdrop-blur-lg rounded-b-lg overflow-visible">
-      <NavigationItem href={"/explore/curated"}>
-        <NewspaperIcon size={18} />
-        explore
-      </NavigationItem>
-      <NavigationItem href={"/explore/collected"}>
-        <PlusCircleIcon size={18} />
-        collected
-      </NavigationItem>
-      <NavigationItem href={"/explore/latest"}>
-        <ClockIcon size={18} />
-        latest
-      </NavigationItem>
-      <NavigationItem href={"/explore/trends"} disabled>
-        <TrendingUpIcon size={18} />
-        trending
-      </NavigationItem>
-    </nav>
-  );
-};
-
 export const NavigationItem = ({
   children,
   href,
@@ -167,7 +144,7 @@ export const NavigationItem = ({
 
   return (
     <Link
-      className={`rounded-md w-max h-10 disabled p-1 px-2.5 overflow-hidden inline-flex gap-1 items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted
+      className={`rounded-md w-max h-9 disabled p-2 px-3 overflow-hidden inline-flex gap-1 items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted
         hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
       ${selectedStyle(href)} ${disabledStyle}`}
       href={disabled ? "" : href}

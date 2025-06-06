@@ -13,6 +13,7 @@ const client = z.object({
   NEXT_PUBLIC_APP_ADDRESS_TESTNET: z.string().optional(),
   NEXT_PUBLIC_APP_ADDRESS: z.string().optional(),
   NEXT_PUBLIC_NODE_ENV: z.enum(["development", "test", "production"]),
+  NEXT_PUBLIC_SITE_URL: z.string().optional(),
 });
 
 /**
@@ -27,6 +28,7 @@ const processEnv = {
   NEXT_PUBLIC_APP_ADDRESS_TESTNET: process.env.NEXT_PUBLIC_APP_ADDRESS_TESTNET,
   NEXT_PUBLIC_APP_ADDRESS: process.env.NEXT_PUBLIC_APP_ADDRESS,
   NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
+  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
 };
 
 const merged = server.merge(client);
