@@ -7,7 +7,7 @@ export function UserAvatar({ user, link = true, card = true }: { user: User; lin
   const fallback = user?.name?.slice(0, 2) ?? user?.handle?.slice(0, 2) ?? "";
   const avatar = (
     <Avatar suppressHydrationWarning className="w-full h-full m-0">
-      <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} className="m-0" />
+      <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} className="m-0 object-cover" />
       <AvatarFallback>{fallback.toLowerCase()}</AvatarFallback>
     </Avatar>
   );
