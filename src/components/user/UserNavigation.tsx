@@ -5,7 +5,7 @@ import { NavigationItem } from "../menu/Navigation";
 
 export const UserNavigation = ({ handle }: { handle: string }) => {
   return (
-    <nav className="sticky top-3 w-fit max-w-2xl mx-auto bg-background/50 backdrop-blur-lg border border-muted rounded-xl z-[40] flex flex-row justify-start items-start gap-2 p-1 mt-2">
+    <nav className="sticky top-3 w-fit max-w-2xl mx-auto bg-background/50 backdrop-blur-lg border border-muted rounded-xl z-[40] flex flex-row justify-start items-start gap-2 p-1">
       <NavigationItem href={`/u/${handle}`}>
         <MessageCircle size={18} />
         posts

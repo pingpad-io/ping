@@ -26,11 +26,11 @@ export default async function layout({
   const stats = await fetchAccountStats(client, { account: user.address }).unwrapOr(null);
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <UserProfile user={user} stats={stats} />
       <UserNavigation handle={handle} />
 
-      <div className="z-[30] p-4">{children}</div>
-    </>
+      <div className="z-[30]">{children}</div>
+    </div>
   );
 }

@@ -22,10 +22,9 @@ const ReactionIcon = forwardRef<SVGSVGElement, ReactionIconProps>(({ reaction, p
   const activeStroke = isPost ? 4 : 3.5;
   const iconProps = pressed
     ? {
-      // strokeWidth: activeStroke,
-      fill: reaction === "Like" ? "#ffb5cc" : "hsl(var(--primary))",
-      stroke: reaction === "Like" ? "#ffb5cc" : "hsl(var(--primary))",
-    }
+        fill: "hsl(var(--primary))",
+        stroke: "hsl(var(--primary))",
+      }
     : { strokeWidth: baseStroke };
   const icons = {
     Like: <HeartIcon size={isPost ? 18 : 15} {...iconProps} ref={ref} />,
