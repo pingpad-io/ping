@@ -30,9 +30,6 @@ export function lensAcountToUser(account: Account): User {
 
   const imageUrl = account?.metadata?.picture;
 
-  //// FIXME: Temporary interests
-  const interests = [];
-
   const actions = {
     followed: account?.operations?.isFollowedByMe,
     following: account?.operations?.isFollowingMe,
@@ -45,7 +42,6 @@ export function lensAcountToUser(account: Account): User {
     address: account.address,
     createdAt: account.createdAt,
     description: account?.metadata?.bio,
-    interests,
     actions,
     name: account?.metadata?.name,
     handle: account.username?.localName,
