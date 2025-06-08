@@ -33,7 +33,7 @@ bun start
 npm run start
 
 # Format and lint code (required before commits)
-bun x @biomejs/biome check --apply-unsafe ./src/*
+bun x @biomejs/biome check --write --unsafe ./src/*
 # or
 npm run check
 ```
@@ -98,7 +98,7 @@ Environment validation is handled by Zod schemas in `/src/env.mjs`.
   - 2 spaces indentation
   - 120 character line width
   - Some rules disabled for React/Next.js compatibility
-- Run `bun x @biomejs/biome check --apply-unsafe ./src/*` before committing
+- Run `bun x @biomejs/biome check --write --unsafe ./src/*` before committing
 
 ### Important Patterns
 

@@ -61,9 +61,14 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
   const [aspectRatio, setAspectRatio] = useState<number | null>(null);
 
   useEffect(() => {
-    const img = new Image();
-    img.src = preview;
-    img.onload = () => setAspectRatio(img.height / img.width);
+    if (preview) {
+      const img = new Image();
+      img.src = preview;
+      img.onload = () => setAspectRatio(img.height / img.width);
+    } else {
+      // Default aspect ratio for videos without preview (16:9)
+      setAspectRatio(9 / 16);
+    }
   }, [preview]);
 
   return (
@@ -119,7 +124,11 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
           />
         ) : (
           <div>
-            <img src={preview} alt="" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+            {preview ? (
+              <img src={preview} alt="" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+            ) : (
+              <div className="absolute inset-0 bg-muted rounded-xl" />
+            )}
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
               <button
                 type="button"

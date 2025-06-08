@@ -104,7 +104,7 @@ export const ImageView = ({ metadata }: { metadata: ImageMetadataDetails }) => {
 
 export const VideoView = ({ metadata }: { metadata: VideoMetadataDetails }) => {
   const url = metadata?.video?.item;
-  const cover = metadata?.video.cover;
+  const cover = metadata?.video?.cover || undefined;
 
   return (
     <div>
