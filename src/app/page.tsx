@@ -24,10 +24,20 @@ import { FadeIn } from "~/components/Transitions";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Squares } from "~/components/ui/squares";
 
 const LandingPage = () => {
   return (
-    <div className={"flex flex-col min-h-screen mx-auto max-w-5xl min-w-0"}>
+    <div className="relative min-h-screen">
+      <div className="fixed inset-0 -z-10">
+        <Squares
+          direction="diagonal"
+          speed={0.5}
+          borderColor="#1a1a1a"
+          hoverFillColor="#0a0a0a"
+        />
+      </div>
+      <div className={"flex flex-col min-h-screen mx-auto max-w-5xl min-w-0 relative z-10"}>
       <div className="w-full h-full">
         <div className="p-4 rounded-t-none flex place-content-between">
           <Link className="flex flex-row gap-4 items-center " href="/">
@@ -35,16 +45,14 @@ const LandingPage = () => {
             <div className="text-3xl font-semibold dark:drop-shadow-glow drop-shadow-md  -mt-1.5 -ml-2">pingpad</div>
           </Link>
 
-          <div className="flex gap-4 items-center ">
+          <div className="flex gap-4 items-center">
             <ThemeToggle />
-            <div className="dark:drop-shadow-glow drop-shadow-md ">
-              <Link href="/home">
-                <Button variant="default" size="sm_icon">
-                  <div className="hidden sm:flex mr-2">Join</div>
-                  <LogInIcon />
-                </Button>
-              </Link>
-            </div>
+            <Link href="/home">
+              <Button variant="secondary" className="p-3 rounded-lg h-12 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 hover:bg-primary hover:text-primary-foreground">
+                <span className="hidden sm:flex text-sm font-medium">Join</span>
+                <LogInIcon className="w-5 h-5" />
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -125,30 +133,31 @@ const LandingPage = () => {
         </FadeIn> */}
 
         <FadeIn className="">
-          <div className="flex flex-col md:flex-row gap-8 place-items-center justify-center p-4 drop-shadow-lg dark:drop-shadow-glow my-20">
-            <Link href="https://kualta.dev">
-              <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-                <Heart /> by kualta
-              </Button>
-            </Link>
-            <Link href="https://github.com/pingpad-io/ping">
-              <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-                <Github /> github
-              </Button>
-            </Link>
-            <Link href="/about">
-              <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-                <InfoIcon /> about
-              </Button>
-            </Link>
-            {/* <Link href="https://ping.kualta.dev/policy">
-            <Button variant="ghost" className="p-1 px-4 text-lg gap-4 flex flex-row w-fit rounded-full">
-              <Cookie /> Privacy
-            </Button>
-          </Link> */}
+          <div className="flex flex-col md:flex-row gap-2 place-items-center justify-center p-4 my-20">
+            <div className="flex items-center gap-2 p-2 rounded-2xl backdrop-blur-lg border shadow-lg bg-background/90 border-border hover:shadow-xl transition-shadow duration-300">
+              <Link href="https://kualta.dev">
+                <Button variant="ghost" className="p-3 rounded-lg h-12 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95">
+                  <Heart className="w-5 h-5" />
+                  <span className="text-sm font-medium">by kualta</span>
+                </Button>
+              </Link>
+              <Link href="https://github.com/pingpad-io/ping">
+                <Button variant="ghost" className="p-3 rounded-lg h-12 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95">
+                  <Github className="w-5 h-5" />
+                  <span className="text-sm font-medium">github</span>
+                </Button>
+              </Link>
+              <Link href="/about">
+                <Button variant="ghost" className="p-3 rounded-lg h-12 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95">
+                  <InfoIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">about</span>
+                </Button>
+              </Link>
+            </div>
           </div>
         </FadeIn>
       </div>
+    </div>
     </div>
   );
 };

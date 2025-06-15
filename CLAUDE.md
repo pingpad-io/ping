@@ -113,3 +113,9 @@ Environment validation is handled by Zod schemas in `/src/env.mjs`.
 - Keep commit messages short
 - Do not add authors
 - Example format: "add x, fix y, update z"
+
+## Development Workflow Reminders
+- Whenever we make a change run `bunx tsc --noEmit` and fix errors until there's none left. do not run `bun run dev` or `bun run build`. assume dev server is always runinng.
+
+## Code Style
+Prioritize having fewer files. Only create new files when absolutely necessary. Only use individual exports in files, do not create index files.

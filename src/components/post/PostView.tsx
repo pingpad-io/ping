@@ -47,7 +47,7 @@ export const PostView = ({
     <div className={"flex flex-col w-full gap-0.5"}>
       <PostContextMenu post={item} onReply={handleReply}>
         <Card
-          className="glass-post"
+          className="glass-post relative z-20"
           onClick={() => {
             setCollapsed(false);
           }}

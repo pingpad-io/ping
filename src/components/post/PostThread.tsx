@@ -8,6 +8,8 @@ export function PostThread({ post }: { post: Post }) {
   const [thread, setThread] = useState<Post[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const previousHeightRef = useRef(0);
+  const isFirstLoadRef = useRef(true);
+  const mainPostRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,14 +39,22 @@ export function PostThread({ post }: { post: Post }) {
       if (parent && !cancelled) {
         setThread((prev) => {
           requestAnimationFrame(() => {
-            const newContainerTop = containerRef.current?.getBoundingClientRect().top || 0;
-            const heightDifference = currentScrollY + containerTop - (currentScrollY + newContainerTop);
-
-            if (heightDifference > 0) {
+            if (isFirstLoadRef.current) {
+              isFirstLoadRef.current = false;
               window.scrollTo({
-                top: currentScrollY + heightDifference,
+                top: document.documentElement.scrollHeight,
                 behavior: "instant",
               });
+            } else {
+              const newContainerTop = containerRef.current?.getBoundingClientRect().top || 0;
+              const heightDifference = currentScrollY + containerTop - (currentScrollY + newContainerTop);
+
+              if (heightDifference > 0) {
+                window.scrollTo({
+                  top: currentScrollY + heightDifference,
+                  behavior: "instant",
+                });
+              }
             }
           });
 
@@ -68,7 +78,7 @@ export function PostThread({ post }: { post: Post }) {
         </div>
       ))}
 
-      <div className="relative min-h-screen">
+      <div ref={mainPostRef} className="relative min-h-screen">
         <PostView item={post} />
       </div>
     </div>
