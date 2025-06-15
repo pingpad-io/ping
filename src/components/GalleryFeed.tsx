@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { FeedSuspense } from "./FeedSuspense";
+import { GallerySuspense } from "./GallerySuspense";
 import { LoadingSpinner } from "./LoadingSpinner";
 
 export const GalleryFeed = ({ ItemView, endpoint }) => {
@@ -61,7 +61,7 @@ export const GalleryFeed = ({ ItemView, endpoint }) => {
   }, [loadNextBatch]);
 
   if (error) throw new Error(error);
-  if (!data) return <FeedSuspense />;
+  if (!data) return <GallerySuspense />;
 
   const list = data.filter(Boolean).map((item) => <ItemView key={item.id} item={item} />);
 

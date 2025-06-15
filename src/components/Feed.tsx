@@ -42,7 +42,7 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
 
   useEffect(() => {
     if (!data) {
-      loadNextBatch();
+    loadNextBatch();
     }
   }, []);
 
