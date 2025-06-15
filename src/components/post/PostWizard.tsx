@@ -135,7 +135,7 @@ export default function PostWizard({
 
     let metadata: any;
     try {
-      const content = data.content;
+      const content = data.content.length > 0 ? data.content : undefined;
 
       if (imageFile) {
         toast.loading("Uploading image...", { id: toastId });
