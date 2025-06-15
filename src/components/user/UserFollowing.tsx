@@ -29,8 +29,6 @@ export const UserFollowing = ({ user, followingCount, followersCount }: UserFoll
             <Feed
               ItemView={UserView}
               endpoint={`/api/user/${user.id}/following`}
-              initialCursor={undefined}
-              initialData={undefined}
             />
           </ScrollArea>
         </DialogContent>
@@ -47,8 +45,6 @@ export const UserFollowing = ({ user, followingCount, followersCount }: UserFoll
             <Feed
               ItemView={UserView}
               endpoint={`/api/user/${user.id}/followers`}
-              initialCursor={undefined}
-              initialData={undefined}
             />
           </ScrollArea>
         </DialogContent>

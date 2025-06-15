@@ -5,14 +5,14 @@ import { FeedSuspense } from "./FeedSuspense";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { Button } from "./ui/button";
 
-export const Feed = ({ ItemView, initialData, initialCursor, endpoint, manualNextPage = false }) => {
-  const [data, setData] = useState(initialData);
-  const [cursor, setCursor] = useState(initialCursor);
+export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
+  const [data, setData] = useState(null);
+  const [cursor, setCursor] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const loadNextBatch = useCallback(async () => {
-    if (loading || cursor === null) return;
+    if (loading || (cursor === null && data !== null)) return;
 
     setLoading(true);
 
@@ -38,26 +38,26 @@ export const Feed = ({ ItemView, initialData, initialCursor, endpoint, manualNex
     } finally {
       setLoading(false);
     }
-  }, [cursor, loading]);
+  }, [cursor, loading, data]);
 
   useEffect(() => {
-    const handleInitialLoad = () => {
-      if (!data) {
-        loadNextBatch();
-      }
-    };
+    if (!data) {
+      loadNextBatch();
+    }
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       /// FIXME: There's probably a better way to do this
       const threshold = 10000;
       if (
-        window.innerHeight + document.documentElement.scrollTop + threshold >= document.documentElement.offsetHeight &&
+        window.innerHeight + document.documentElement.scrollTop 
+        + threshold >= document.documentElement.offsetHeight &&
         !loading
       ) {
         loadNextBatch();
       }
     };
-
-    handleInitialLoad();
 
     // Only add scroll listener if not using manual pagination
     if (!manualNextPage) {

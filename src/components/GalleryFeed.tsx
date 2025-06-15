@@ -4,14 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 import { FeedSuspense } from "./FeedSuspense";
 import { LoadingSpinner } from "./LoadingSpinner";
 
-export const GalleryFeed = ({ ItemView, initialData, initialCursor, endpoint }) => {
-  const [data, setData] = useState(initialData);
-  const [cursor, setCursor] = useState(initialCursor);
+export const GalleryFeed = ({ ItemView, endpoint }) => {
+  const [data, setData] = useState(null);
+  const [cursor, setCursor] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const loadNextBatch = useCallback(async () => {
-    if (loading || cursor === null) return;
+    if (loading || (cursor === null && data !== null)) return;
 
     setLoading(true);
 
@@ -37,14 +37,15 @@ export const GalleryFeed = ({ ItemView, initialData, initialCursor, endpoint }) 
     } finally {
       setLoading(false);
     }
-  }, [cursor, loading]);
+  }, [cursor, loading, data]);
 
   useEffect(() => {
-    const handleInitialLoad = () => {
-      if (!data) {
-        loadNextBatch();
-      }
-    };
+    if (!data) {
+      loadNextBatch();
+    }
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       const threshold = 10000;
       if (
@@ -55,7 +56,6 @@ export const GalleryFeed = ({ ItemView, initialData, initialCursor, endpoint }) 
       }
     };
 
-    handleInitialLoad();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loadNextBatch]);
