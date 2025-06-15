@@ -39,15 +39,6 @@ const settings = async () => {
 
       <Card className="hover:bg-card">
         <CardHeader>
-          <CardTitle>App</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-2">
-          <Label className="text-lg">Misc</Label>
-        </CardContent>
-      </Card>
-
-      <Card className="hover:bg-card">
-        <CardHeader>
           <CardTitle>Account</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">

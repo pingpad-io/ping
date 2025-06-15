@@ -30,6 +30,7 @@ import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { lensItemToPost } from "./Post";
+import { env } from "~/env.mjs";
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
@@ -174,16 +175,22 @@ export default function PostWizard({
         return;
       }
 
+      // const feed = env.NEXT_PUBLIC_FEED_ADDRESS ? env.NEXT_PUBLIC_FEED_ADDRESS : undefined;
+      const feed = undefined;
+
       const postData = replyingTo
         ? {
-            contentUri,
-            commentOn: {
-              post: replyingTo.id,
-            },
-          }
+          feed,
+          contentUri,
+          commentOn: {
+            post: replyingTo.id,
+          },
+        }
         : {
-            contentUri,
-          };
+          feed,
+          contentUri,
+        };
+
 
       const result = await post(client, postData)
         .andThen(handleOperationWith(walletClient))

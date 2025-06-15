@@ -1,9 +1,10 @@
 import { PostType, TimelineEventItemType } from "@lens-protocol/client";
-import { fetchPosts, fetchTimeline } from "@lens-protocol/client/actions";
+import { fetchPosts, fetchPostsToExplore, fetchTimeline } from "@lens-protocol/client/actions";
 import type { Metadata } from "next";
 import { Feed } from "~/components/Feed";
 import { lensItemToPost } from "~/components/post/Post";
 import { PostView } from "~/components/post/PostView";
+import { env } from "~/env.mjs";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -49,7 +50,6 @@ const getInitialFeed = async () => {
         filter: {
           eventType: [TimelineEventItemType.Post],
         },
-        // cursor,
       });
 
       if (result.isErr()) {

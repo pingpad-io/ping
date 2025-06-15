@@ -10,6 +10,7 @@ export type UserActions = {
   followed: boolean;
   following: boolean;
   blocked: boolean;
+  muted: boolean;
 };
 
 export type User = {
@@ -34,6 +35,7 @@ export function lensAcountToUser(account: Account): User {
     followed: account?.operations?.isFollowedByMe,
     following: account?.operations?.isFollowingMe,
     blocked: account?.operations?.isBlockedByMe,
+    muted: account?.operations?.isMutedByMe,
   };
 
   return {

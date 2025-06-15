@@ -12,6 +12,7 @@ const client = z.object({
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: z.string().optional(),
   NEXT_PUBLIC_APP_ADDRESS_TESTNET: z.string().optional(),
   NEXT_PUBLIC_APP_ADDRESS: z.string().optional(),
+  NEXT_PUBLIC_FEED_ADDRESS: z.string().optional(),
   NEXT_PUBLIC_NODE_ENV: z.enum(["development", "test", "production"]),
   NEXT_PUBLIC_SITE_URL: z.string().optional(),
 });
@@ -27,6 +28,7 @@ const processEnv = {
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
   NEXT_PUBLIC_APP_ADDRESS_TESTNET: process.env.NEXT_PUBLIC_APP_ADDRESS_TESTNET,
   NEXT_PUBLIC_APP_ADDRESS: process.env.NEXT_PUBLIC_APP_ADDRESS,
+  NEXT_PUBLIC_FEED_ADDRESS: process.env.NEXT_PUBLIC_FEED_ADDRESS,
   NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
 };
