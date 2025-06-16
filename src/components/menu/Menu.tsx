@@ -1,6 +1,7 @@
 "use client";
 
-import { AtSign, Bell, BookmarkIcon, Github, LogInIcon, PlusIcon } from "lucide-react";
+import { Bell, BookmarkIcon, Github, LogInIcon, PlusIcon } from "lucide-react";
+import PingLogo from "~/components/icons/PingLogo";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Dock } from "~/components/ui/dock";
@@ -37,7 +38,7 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
   if (!isAuthenticated) {
     const dockItems = [
       {
-        icon: AtSign,
+        icon: PingLogo,
         label: "Home",
         onClick: () => router.push("/home"),
       },
@@ -66,7 +67,7 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
 
   const dockItems = [
     {
-      icon: AtSign,
+      icon: PingLogo,
       label: "Home",
       onClick: () => router.push("/home"),
     },

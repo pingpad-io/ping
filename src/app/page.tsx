@@ -1,4 +1,4 @@
-import { AtSign, Github, Heart, InfoIcon, LogInIcon } from "lucide-react";
+import { Github, Heart, InfoIcon, LogInIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { EmailSubscription } from "~/components/EmailSubscription";
 import { LensTextDark, LensTextLight } from "~/components/Icons";
