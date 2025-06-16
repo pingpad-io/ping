@@ -15,6 +15,8 @@ import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { wagmiLocalStorage } from "~/utils/localStorage";
 import { ExplosionProvider } from "./ExplosionPortal";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import "overlayscrollbars/styles/overlayscrollbars.css";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
@@ -131,7 +133,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <QueryClientProvider client={queryClient}>
           <ConnectKitProvider>
             <LensProvider client={publicClient}>
-              <ExplosionProvider>{children}</ExplosionProvider>
+              <ExplosionProvider>
+                <OverlayScrollbarsComponent defer className="h-full">
+                  {children}
+                </OverlayScrollbarsComponent>
+              </ExplosionProvider>
             </LensProvider>
           </ConnectKitProvider>
         </QueryClientProvider>

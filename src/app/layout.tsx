@@ -27,11 +27,11 @@ export default async function RootLayout({ children }) {
   const { handle, profileId, user } = await getServerAuth();
 
   return (
-    <html className={`${quicksand.variable} scroll-smooth font-sans overflow-x-hidden overflow-y-scroll`} lang="en">
+    <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
       <head>
         <Script defer src="https://stats.kualta.dev/script.js" data-website-id="b3bf05cd-46cc-4199-a5c0-aeaf3d70d311" />
       </head>
-      <body className="flex flex-col relative">
+      <body className="flex flex-col relative h-screen overflow-hidden">
         <Providers>
           <NotificationsProvider>
             <UserProvider user={user}>
