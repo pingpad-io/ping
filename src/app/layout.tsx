@@ -33,8 +33,8 @@ export default async function RootLayout({ children }) {
       </head>
       <body className="flex flex-col relative h-screen overflow-hidden">
         <Providers>
-          <NotificationsProvider>
-            <UserProvider user={user}>
+          <UserProvider user={user}>
+            <NotificationsProvider>
               <BackgroundGradient />
               <AuthWatcher />
               <Toaster position="top-right" offset={16} />
@@ -43,8 +43,8 @@ export default async function RootLayout({ children }) {
               <PageTransition>
                 <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>
               </PageTransition>
-            </UserProvider>
-          </NotificationsProvider>
+            </NotificationsProvider>
+          </UserProvider>
         </Providers>
       </body>
     </html>

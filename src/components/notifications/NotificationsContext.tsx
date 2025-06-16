@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, createContext, useContext, useEffect, useState } from "react";
 import type { Notification } from "./Notification";
+import { useUser } from "../user/UserContext";
 
 interface NotificationsContextValue {
   notifications: Notification[];
@@ -40,6 +41,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   const [baseTitle, setBaseTitle] = useState<string>("");
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useUser();
 
   const computeNewCount = (items: Notification[]) => {
     const newNotifications = items.filter((n) => {
@@ -78,9 +80,18 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   };
 
   const refresh = async () => {
+    if (!user) {
+      console.log("Skipping notification refresh - user not logged in");
+      return;
+    }
+    
     try {
       console.log("Refreshing notifications...");
       const res = await fetch("/api/notifications");
+      if (res.status === 401) {
+        console.log("Not authenticated - skipping notification refresh");
+        return;
+      }
       if (!res.ok) {
         console.error("Failed to refresh notifications:", res.statusText);
         return;
@@ -96,10 +107,12 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    refresh();
-    const interval = setInterval(refresh, 30_000); // 30 seconds
-    return () => clearInterval(interval);
-  }, [lastSeen]);
+    if (user) {
+      refresh();
+      const interval = setInterval(refresh, 30_000); // 30 seconds
+      return () => clearInterval(interval);
+    }
+  }, [lastSeen, user]);
 
   useEffect(() => {
     setBaseTitle(document.title);
