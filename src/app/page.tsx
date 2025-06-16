@@ -29,7 +29,7 @@ import { Squares } from "~/components/ui/squares";
 const LandingPage = () => {
   return (
     <div className="relative min-h-screen">
-      <div className="fixed inset-0 -z-10">
+      <div className="fixed inset-0 -z-10 dark:block hidden">
         <Squares
           direction="up"
           speed={0.5}
