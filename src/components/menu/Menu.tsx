@@ -1,7 +1,7 @@
 "use client";
 
-import { AtSign, Bell, BookmarkIcon, LogInIcon, PlusIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { AtSign, Bell, BookmarkIcon, Github, LogInIcon, PlusIcon } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Dock } from "~/components/ui/dock";
 import { useNotifications } from "../notifications/NotificationsContext";
@@ -22,7 +22,9 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
   const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const { newCount } = useNotifications();
+  const isLandingPage = pathname === "/";
 
   useEffect(() => {
     router.prefetch("/home");
@@ -44,6 +46,11 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
         label: "Connect Wallet",
         onClick: () => setIsWalletDialogOpen(true),
       },
+      ...(isLandingPage ? [{
+        icon: Github,
+        label: "GitHub",
+        onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+      }] : []),
     ];
 
     return (
@@ -97,6 +104,11 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
       label: "Bookmarks",
       onClick: () => router.push("/bookmarks"),
     },
+    ...(isLandingPage ? [{
+      icon: Github,
+      label: "GitHub",
+      onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+    }] : []),
   ];
 
   return (
