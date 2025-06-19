@@ -1,18 +1,18 @@
 import { ImageResponse } from "@vercel/og";
 import { ImageResponseOptions } from "next/server";
+import { readFile } from "fs/promises";
+import path from "path";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
-  const geistFontMedium = await fetch(
-    new URL("/fonts/Geist-Medium.ttf", request.url)
-  ).then((res) => res.arrayBuffer());
+  const fontsDir = path.join(process.cwd(), "public", "fonts");
 
-  const geistFontRegular = await fetch(
-    new URL("/fonts/Geist-Regular.ttf", request.url)
-  ).then((res) => res.arrayBuffer());
+  const geistFontMedium = await readFile(path.join(fontsDir, "Geist-Medium.ttf"));
+
+  const geistFontRegular = await readFile(path.join(fontsDir, "Geist-Regular.ttf"));
 
   const handle = searchParams.get("handle");
   const name = searchParams.get("name");
