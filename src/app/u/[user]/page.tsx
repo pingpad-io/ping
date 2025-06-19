@@ -19,22 +19,23 @@ export async function generateMetadata({ params }: { params: { user: string } })
   const title = `${displayName} (@${handle})`;
   const description = user.description || `@${handle} on Pingpad`;
 
+  const ogImageURL = `${
+    process.env.NEXT_PUBLIC_SITE_URL
+  }/og/user?handle=${handle}&name=${encodeURIComponent(
+    displayName
+  )}&profilePictureUrl=${user.profilePictureUrl}`;
+
   return {
     title,
     description,
     openGraph: {
-      type: "profile",
+      images: [ogImageURL],
       title,
       description,
-      images: user.profilePictureUrl
-        ? [
-            {
-              url: user.profilePictureUrl,
-              width: 256,
-              height: 256,
-            },
-          ]
-        : [],
+      type: "profile",
+      url: `https://pingpad.io/u/${handle}`,
+      siteName: "Pingpad",
+      locale: "en_US",
     },
   };
 }

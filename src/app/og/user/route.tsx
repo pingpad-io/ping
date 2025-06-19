@@ -1,0 +1,75 @@
+import { ImageResponse } from "@vercel/og";
+import { ImageResponseOptions } from "next/server";
+
+export const runtime = "edge";
+
+export async function GET(request: Request) { 
+  const { searchParams } = new URL(request.url);
+
+  const geistFontMedium = await fetch(
+    new URL("/fonts/Geist-Medium.ttf", request.url)
+  ).then((res) => res.arrayBuffer());
+
+  const geistFontRegular = await fetch(
+    new URL("/fonts/Geist-Regular.ttf", request.url)
+  ).then((res) => res.arrayBuffer());
+
+  const handle = searchParams.get("handle");
+  const name = searchParams.get("name");
+  const profilePictureUrl = searchParams.get("profilePictureUrl");
+
+
+  const pageConfig = {
+    width: 1200,
+    height: 630,
+    fonts: [
+      {
+        name: "Geist",
+        data: geistFontRegular,
+        style: "normal",
+        weight: 400,
+      },
+      {
+        name: "Geist",
+        data: geistFontMedium,
+        style: "normal",
+        weight: 500,
+      },
+    ],
+  } as ImageResponseOptions;
+
+  if (!handle) {
+    return new ImageResponse(<div tw="flex items-center justify-center w-full h-full bg-[#1e1e1e] p-8 text-white flex-col">
+      <div tw="text-white text-4xl font-bold pb-12">Page not found</div>
+      <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`} tw="h-8" />
+    </div>, pageConfig);
+  }
+
+  return new ImageResponse(
+    (
+      <div tw="w-full h-full flex flex-col justify-start p-10 px-14 bg-[#1e1e1e]">
+        <div tw="flex items-center justify-center w-56 h-56 overflow-hidden rounded-full">
+          {profilePictureUrl && <img src={profilePictureUrl} tw="rounded-full" />}
+        </div>
+        <div tw="flex flex-col">
+          {name && (
+            <div tw="flex flex-col justify-center pt-4">
+              <div tw="text-white text-left text-6xl font-bold flex leading-[70px]">
+                {name.trim()}
+              </div>
+            </div>
+          )}
+          <div tw="flex items-center pt-1 opacity-65">
+            <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`} tw="h-7" 
+              style={{ transform: 'translateY(2px)' }}
+            />
+            <div tw={`text-white text-4xl font-light flex pl-2 leading-[36px]`}>
+              {handle}
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+    pageConfig
+  );
+}
