@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import { BackgroundGradient } from "~/components/BackgroundGradient";
@@ -13,7 +14,8 @@ import { Menu } from "~/components/menu/Menu";
 
 const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
 
-export const metadata = {
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://pingpad.io"),
   title: {
     default: "Pingpad",
     template: "%s | Pingpad",
