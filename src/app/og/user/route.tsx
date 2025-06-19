@@ -1,9 +1,9 @@
 import { ImageResponse } from "@vercel/og";
 import { ImageResponseOptions } from "next/server";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
-export async function GET(request: Request) { 
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
   const geistFontMedium = await fetch(
@@ -60,7 +60,7 @@ export async function GET(request: Request) {
             </div>
           )}
           <div tw="flex items-center pt-1 opacity-65">
-            <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`} tw="h-7" 
+            <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`} tw="h-7"
               style={{ transform: 'translateY(2px)' }}
             />
             <div tw={`text-white text-4xl font-light flex pl-2 leading-[36px]`}>
