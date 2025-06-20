@@ -1,6 +1,6 @@
 import type { Notification as LensNotification } from "@lens-protocol/client";
-import { type Post, lensItemToPost } from "../post/Post";
-import { type User, lensAcountToUser } from "../user/User";
+import { lensItemToPost, type Post } from "../post/Post";
+import { lensAcountToUser, type User } from "../user/User";
 
 export type NotificationType = "Reaction" | "Comment" | "Follow" | "Repost" | "Action" | "Mention" | "Quote";
 

@@ -1,24 +1,17 @@
 import type { AccountStats } from "@lens-protocol/client";
-import { CalendarIcon, EditIcon, MessageCircleIcon, User2Icon } from "lucide-react";
+import { CalendarIcon, EditIcon, MessageCircleIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import Link from "~/components/Link";
 import { TimeSince } from "~/components/TimeLabel";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
 import { getServerAuth } from "~/utils/getServerAuth";
-import { Feed } from "../Feed";
 import { FollowButton } from "../FollowButton";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { type User } from "./User";
 import { UserFollowing } from "./UserFollowing";
 
-export const UserProfile = async ({
-  user,
-  stats,
-}: {
-  user?: User;
-  stats?: AccountStats | null;
-}) => {
+export const UserProfile = async ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
   if (!user) return notFound();
 
   const { user: authedUser } = await getServerAuth();

@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     ],
   },
 };
+
 import Link from "~/components/Link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";

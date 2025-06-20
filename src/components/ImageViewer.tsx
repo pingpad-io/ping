@@ -7,15 +7,7 @@ import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 
-export function ImageViewer({
-  src,
-  alt,
-  className,
-}: {
-  src: string;
-  alt?: string;
-  className?: string;
-}) {
+export function ImageViewer({ src, alt, className }: { src: string; alt?: string; className?: string }) {
   const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(1);
 

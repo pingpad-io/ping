@@ -1,9 +1,9 @@
 "use client";
 
 import { Bell, BookmarkIcon, Github, LogInIcon, PlusIcon } from "lucide-react";
-import PingLogo from "~/components/icons/PingLogo";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import PingLogo from "~/components/icons/PingLogo";
 import { Dock } from "~/components/ui/dock";
 import { useNotifications } from "../notifications/NotificationsContext";
 import PostWizard from "../post/PostWizard";
@@ -47,11 +47,15 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
         label: "Connect Wallet",
         onClick: () => setIsWalletDialogOpen(true),
       },
-      ...(isLandingPage ? [{
-        icon: Github,
-        label: "GitHub",
-        onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
-      }] : []),
+      ...(isLandingPage
+        ? [
+            {
+              icon: Github,
+              label: "GitHub",
+              onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+            },
+          ]
+        : []),
     ];
 
     return (
@@ -105,11 +109,15 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
       label: "Bookmarks",
       onClick: () => router.push("/bookmarks"),
     },
-    ...(isLandingPage ? [{
-      icon: Github,
-      label: "GitHub",
-      onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
-    }] : []),
+    ...(isLandingPage
+      ? [
+          {
+            icon: Github,
+            label: "GitHub",
+            onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+          },
+        ]
+      : []),
   ];
 
   return (

@@ -64,13 +64,7 @@ function UserProfileSkeleton() {
   );
 }
 
-export default function layout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { user: string };
-}) {
+export default function layout({ children, params }: { children: React.ReactNode; params: { user: string } }) {
   return (
     <div className="flex flex-col gap-2">
       <Suspense fallback={<UserProfileSkeleton />}>

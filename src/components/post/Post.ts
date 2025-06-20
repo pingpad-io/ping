@@ -1,7 +1,5 @@
-import { FeedItem } from "@lens-protocol/api-bindings";
-import type { AnyPost, Post as LensPost, Repost, TimelineItem } from "@lens-protocol/client";
-import { PostMetadata } from "@lens-protocol/metadata";
-import { type User, lensAcountToUser } from "../user/User";
+import type { AnyPost, Post as LensPost, TimelineItem } from "@lens-protocol/client";
+import { lensAcountToUser, type User } from "../user/User";
 
 export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number> & {

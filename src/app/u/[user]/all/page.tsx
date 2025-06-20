@@ -27,12 +27,7 @@ const user = async ({ params }: { params: { user: string } }) => {
   const handle = params.user;
   const user = await getUserByUsername(handle);
 
-  return (
-    <Feed
-      ItemView={PostView}
-      endpoint={`/api/posts?address=${user.address}&type=all`}
-    />
-  );
+  return <Feed ItemView={PostView} endpoint={`/api/posts?address=${user.address}&type=all`} />;
 };
 
 export default user;

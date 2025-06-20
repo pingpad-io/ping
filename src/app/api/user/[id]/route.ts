@@ -5,7 +5,7 @@ import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   const id = params.id;
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });

@@ -62,7 +62,6 @@
   }
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -75,7 +74,6 @@
 
 @layer utilities {
   @layer utilities {
-
     /* Hide scrollbar for Chrome, Safari and Opera */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -214,5 +212,7 @@
 }
 
 .os-scrollbar {
-  transition: width 0.2s ease, height 0.2s ease;
+  transition:
+    width 0.2s ease,
+    height 0.2s ease;
 }

@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { FadeIn } from "~/components/Transitions";
-import { Squares } from "~/components/ui/squares";
 
 export const metadata: Metadata = {
   title: "Pingpad",
@@ -22,7 +20,7 @@ const LandingPage = () => {
   return (
     <div className="relative min-h-screen">
       {/* <div className="fixed inset-0 -z-10 dark:block hidden"> */}
-        {/* <Squares
+      {/* <Squares
           direction="up"
           speed={0}
           borderColor="#1a1a1a"
@@ -35,7 +33,6 @@ const LandingPage = () => {
             a <b>better</b> social
           </h1>
         </div>
-
       </div>
     </div>
   );

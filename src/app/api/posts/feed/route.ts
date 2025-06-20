@@ -1,4 +1,4 @@
-import { fetchPosts, fetchTimeline } from "@lens-protocol/client/actions";
+import { fetchTimeline } from "@lens-protocol/client/actions";
 import { TimelineEventItemType } from "@lens-protocol/react";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";

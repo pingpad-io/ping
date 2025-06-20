@@ -26,10 +26,7 @@ export const UserFollowing = ({ user, followingCount, followersCount }: UserFoll
             {user.handle}'s follows ({followingCount})
           </DialogTitle>
           <ScrollArea className="max-h-96">
-            <Feed
-              ItemView={UserView}
-              endpoint={`/api/user/${user.id}/following`}
-            />
+            <Feed ItemView={UserView} endpoint={`/api/user/${user.id}/following`} />
           </ScrollArea>
         </DialogContent>
       </Dialog>
@@ -42,10 +39,7 @@ export const UserFollowing = ({ user, followingCount, followersCount }: UserFoll
             {user.handle}'s followers ({followersCount})
           </DialogTitle>
           <ScrollArea className="max-h-96">
-            <Feed
-              ItemView={UserView}
-              endpoint={`/api/user/${user.id}/followers`}
-            />
+            <Feed ItemView={UserView} endpoint={`/api/user/${user.id}/followers`} />
           </ScrollArea>
         </DialogContent>
       </Dialog>

@@ -1,42 +1,25 @@
 import {
-  ArticleMetadata,
   ArticleMetadataDetails,
-  AudioMetadata,
   AudioMetadataDetails,
-  CheckingInMetadata,
   CheckingInMetadataDetails,
-  EmbedMetadata,
   EmbedMetadataDetails,
-  EventMetadata,
   EventMetadataDetails,
-  ImageMetadata,
   ImageMetadataDetails,
-  LinkMetadata,
   LinkMetadataDetails,
-  LiveStreamMetadata,
   LiveStreamMetadataDetails,
-  MintMetadata,
   MintMetadataDetails,
-  PostMetadata,
-  PostMetadataSchemaId,
-  SpaceMetadata,
   SpaceMetadataDetails,
-  StoryMetadata,
   StoryMetadataDetails,
-  TextOnlyMetadata,
   TextOnlyMetadataDetails,
-  ThreeDMetadata,
   ThreeDMetadataDetails,
-  TransactionMetadata,
   TransactionMetadataDetails,
-  VideoMetadata,
   VideoMetadataDetails,
 } from "@lens-protocol/metadata";
 import { AudioPlayer } from "../AudioPlayer";
 import { ImageViewer } from "../ImageViewer";
 import Markdown from "../Markdown";
-import { VideoPlayer } from "../VideoPlayer";
 import { Badge } from "../ui/badge";
+import { VideoPlayer } from "../VideoPlayer";
 
 export const getPostMetadataView = (metadata: any) => {
   switch (metadata.__typename) {

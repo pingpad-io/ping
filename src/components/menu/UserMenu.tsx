@@ -1,8 +1,8 @@
 "use client";
 
 import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon, UserIcon, UsersIcon } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { useState } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 import Link from "~/components/Link";
@@ -14,13 +14,7 @@ import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { LensProfileSelect } from "../web3/LensProfileSelect";
 
-export function UserMenu({
-  handle,
-  user,
-}: {
-  handle: string;
-  user: User;
-}) {
+export function UserMenu({ handle, user }: { handle: string; user: User }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { isConnected } = useAccount();
   const { disconnect: disconnectWallet } = useDisconnect();

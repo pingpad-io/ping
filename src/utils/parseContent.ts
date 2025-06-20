@@ -9,7 +9,7 @@ class ContentParser {
 
   replaceHandles(): ContentParser {
     if (!this.content) return this;
-    const userHandleRegex = /(?<!\/)@[\w^\/]+(?!\/)/g;
+    const userHandleRegex = /(?<!\/)@[\w^/]+(?!\/)/g;
     const communityHandleRegex = /(?<!\S)\/\w+(?!\S)/g;
     const BASE_URL = getBaseUrl();
     this.content = this.content

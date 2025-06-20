@@ -1,36 +1,33 @@
 "use client";
 
-import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
-import { MediaImageMimeType, image, textOnly } from "@lens-protocol/metadata";
-import { useSessionClient } from "@lens-protocol/react";
+import { image, MediaImageMimeType, textOnly } from "@lens-protocol/metadata";
 import { useAccounts } from "@lens-protocol/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { ImageIcon, SendHorizontalIcon, SmileIcon } from "lucide-react";
-import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
 import * as z from "zod";
+import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
-import { LoadingSpinner } from "../LoadingSpinner";
 import { getCommunityTags } from "../communities/Community";
+import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { lensItemToPost } from "./Post";
-import { env } from "~/env.mjs";
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
@@ -180,17 +177,16 @@ export default function PostWizard({
 
       const postData = replyingTo
         ? {
-          feed,
-          contentUri,
-          commentOn: {
-            post: replyingTo.id,
-          },
-        }
+            feed,
+            contentUri,
+            commentOn: {
+              post: replyingTo.id,
+            },
+          }
         : {
-          feed,
-          contentUri,
-        };
-
+            feed,
+            contentUri,
+          };
 
       const result = await post(client, postData)
         .andThen(handleOperationWith(walletClient))

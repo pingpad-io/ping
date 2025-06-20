@@ -1,6 +1,6 @@
 "use client";
 
-import { ImagesIcon, MessageCircle, MessageCircleCode, MessageSquare, PlusCircleIcon } from "lucide-react";
+import { ImagesIcon, MessageCircle, MessageCircleCode, MessageSquare } from "lucide-react";
 import { NavigationItem } from "../menu/Navigation";
 
 export const UserNavigation = ({ handle }: { handle: string }) => {

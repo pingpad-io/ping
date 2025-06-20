@@ -7,7 +7,7 @@ import {
   MessageSquareIcon,
   Repeat2Icon,
 } from "lucide-react";
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { PostReactionType } from "./post/Post";
 
 interface ReactionIconProps {

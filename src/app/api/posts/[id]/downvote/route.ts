@@ -1,11 +1,11 @@
-import { PostReactionType, UnauthenticatedError } from "@lens-protocol/client";
+import { PostReactionType } from "@lens-protocol/client";
 import { addReaction, fetchPost, undoReaction } from "@lens-protocol/client/actions";
 import { NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(_req: Request, { params }: { params: { id: string } }) {
   const id = params.id;
 
   if (!id) {

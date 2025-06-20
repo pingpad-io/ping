@@ -1,5 +1,5 @@
-import { PageSize, PostType, type Result } from "@lens-protocol/client";
-import { deletePost, fetchPosts, fetchPostsToExplore, fetchTimeline, post } from "@lens-protocol/client/actions";
+import { PageSize, PostType } from "@lens-protocol/client";
+import { deletePost, fetchPosts, post } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";

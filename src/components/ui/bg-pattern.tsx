@@ -1,5 +1,5 @@
-import { cn } from "@/src/utils";
 import React from "react";
+import { cn } from "@/src/utils";
 
 type BGVariantType = "dots" | "diagonal-stripes" | "grid" | "horizontal-lines" | "vertical-lines" | "checkerboard";
 type BGMaskType =

@@ -1,5 +1,5 @@
 import { fetchAccount } from "@lens-protocol/client/actions";
-import { type User, lensAcountToUser } from "~/components/user/User";
+import { lensAcountToUser, type User } from "~/components/user/User";
 import { getServerAuth } from "./getServerAuth";
 
 export const getUserByUsername = async (username: string): Promise<User | null> => {

@@ -42,7 +42,7 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
 
   useEffect(() => {
     if (!data) {
-    loadNextBatch();
+      loadNextBatch();
     }
   }, []);
 
@@ -51,8 +51,7 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
       /// FIXME: There's probably a better way to do this
       const threshold = 10000;
       if (
-        window.innerHeight + document.documentElement.scrollTop 
-        + threshold >= document.documentElement.offsetHeight &&
+        window.innerHeight + document.documentElement.scrollTop + threshold >= document.documentElement.offsetHeight &&
         !loading
       ) {
         loadNextBatch();

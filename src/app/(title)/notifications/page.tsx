@@ -21,12 +21,7 @@ export const metadata: Metadata = {
 const endpoint = "/api/notifications";
 
 const notifications = async () => {
-  return (
-    <Feed
-      ItemView={NotificationView}
-      endpoint={endpoint}
-    />
-  );
+  return <Feed ItemView={NotificationView} endpoint={endpoint} />;
 };
 
 export default notifications;

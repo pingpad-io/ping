@@ -1,4 +1,4 @@
-import { ChevronDownIcon, PlusIcon } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";

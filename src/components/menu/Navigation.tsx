@@ -6,7 +6,6 @@ import {
   Bitcoin,
   CameraIcon,
   CircleSlashIcon,
-  ClockIcon,
   CrownIcon,
   FrameIcon,
   GlobeIcon,
@@ -18,13 +17,10 @@ import {
   LibraryIcon,
   LineChartIcon,
   MusicIcon,
-  NewspaperIcon,
   PaletteIcon,
   PartyPopperIcon,
-  PlusCircleIcon,
   SproutIcon,
   TreeDeciduousIcon,
-  TrendingUpIcon,
   WrenchIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";

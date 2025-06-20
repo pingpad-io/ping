@@ -4,8 +4,8 @@ import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { parseContent } from "~/utils/parseContent";
-import { ImageViewer } from "./ImageViewer";
 import { CommunityHandle } from "./communities/CommunityHandle";
+import { ImageViewer } from "./ImageViewer";
 import { UserLazyHandle } from "./user/UserLazyHandle";
 
 const BASE_URL = getBaseUrl();

@@ -1,7 +1,6 @@
 import { PageSize } from "@lens-protocol/client";
 import { fetchPostBookmarks } from "@lens-protocol/client/actions";
 import type { NextRequest } from "next/server";
-import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
 

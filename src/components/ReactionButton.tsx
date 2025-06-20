@@ -1,6 +1,6 @@
+import { PostReactionType } from "./post/Post";
 import { ReactionBadge } from "./ReactionBadge";
 import { ReactionCount } from "./ReactionCount";
-import { PostReactionType } from "./post/Post";
 import { Button } from "./ui/button";
 
 type ReactionButtonProps = {

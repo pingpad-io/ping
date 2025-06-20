@@ -1,9 +1,9 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, createContext, useContext, useEffect, useState } from "react";
-import type { Notification } from "./Notification";
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { useUser } from "../user/UserContext";
+import type { Notification } from "./Notification";
 
 interface NotificationsContextValue {
   notifications: Notification[];
@@ -84,7 +84,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       console.log("Skipping notification refresh - user not logged in");
       return;
     }
-    
+
     try {
       console.log("Refreshing notifications...");
       const res = await fetch("/api/notifications");

@@ -1,8 +1,7 @@
 "use client";
 
-import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { PauseIcon, PlayIcon } from "lucide-react";
+import { useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
 import { Button } from "./ui/button";
@@ -13,7 +12,12 @@ export const AudioPlayer = ({
   cover,
   author,
   title,
-}: { url: string; cover: string; author: string; title: string }) => {
+}: {
+  url: string;
+  cover: string;
+  author: string;
+  title: string;
+}) => {
   const playerWithControlsRef = useRef(null);
   const playerRef = useRef(null);
   const progressRef = useRef(null);

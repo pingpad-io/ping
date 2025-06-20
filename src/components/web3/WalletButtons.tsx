@@ -1,16 +1,15 @@
 "use client";
 
 import { useLogout } from "@lens-protocol/react";
-import { Grid2X2, LogInIcon, SquareIcon, UserMinusIcon, UsersIcon } from "lucide-react";
+import { UserMinusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type PropsWithChildren, useState } from "react";
+import { type PropsWithChildren } from "react";
 import { toast } from "sonner";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { clearCookies } from "../../utils/clearCookies";
-import { FamilyIcon, GlobeIcon } from "../Icons";
-import { WalletConnectIcon } from "../Icons";
+import { FamilyIcon, GlobeIcon, WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { ConnectedWalletLabel } from "./ConnnectedWalletLabel";
 import { LensProfileSelect } from "./LensProfileSelect";
 
@@ -82,7 +81,7 @@ export function ConnectWalletButton({ open, setOpen }: ConnectWalletButtonProps)
           </DialogDescription>
         </DialogHeader>
 
-        {!walletConnected ? <>{connectorList}</> : <LensProfileSelect setDialogOpen={setOpen} />}
+        {!walletConnected ? connectorList : <LensProfileSelect setDialogOpen={setOpen} />}
       </DialogContent>
     </Dialog>
   );

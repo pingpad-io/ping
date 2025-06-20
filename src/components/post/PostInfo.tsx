@@ -6,13 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dr
 import type { Post } from "./Post";
 import { PostMenu } from "./PostMenu";
 
-export const PostInfo = ({
-  post,
-  onReply,
-}: {
-  post: Post;
-  onReply?: () => void;
-}) => {
+export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }) => {
   const [open, setOpen] = useState(false);
   const author = post.author;
   const isGlobalHandle = author.namespace === undefined;

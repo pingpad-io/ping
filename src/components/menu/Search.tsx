@@ -2,14 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SearchIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import Link from "~/components/Link";
 import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-
-import { usePathname } from "next/navigation";
-import Link from "~/components/Link";
 import { Button } from "../ui/button";
 
 export const SearchButton = () => {

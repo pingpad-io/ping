@@ -1,21 +1,19 @@
 "use client";
 
 import { chains } from "@lens-chain/sdk/viem";
-import { LensProvider, PublicClient, mainnet } from "@lens-protocol/react";
+import { LensProvider, mainnet, PublicClient } from "@lens-protocol/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+import { ConnectKitProvider } from "connectkit";
 import { familyAccountsConnector } from "family";
 import { ThemeProvider } from "next-themes";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { createClient } from "viem";
-import { http, WagmiProvider, createConfig } from "wagmi";
+import { createConfig, http, WagmiProvider } from "wagmi";
 import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
-import { wagmiLocalStorage } from "~/utils/localStorage";
 import { ExplosionProvider } from "./ExplosionPortal";
-import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import "overlayscrollbars/styles/overlayscrollbars.css";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;

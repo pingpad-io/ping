@@ -1,7 +1,7 @@
-import { Post, PostReferenceType } from "@lens-protocol/client";
+import { PostReferenceType } from "@lens-protocol/client";
 import { fetchPost, fetchPostReferences } from "@lens-protocol/client/actions";
 import type { Metadata } from "next";
-import { type Post as NativePost, lensItemToPost } from "~/components/post/Post";
+import { lensItemToPost } from "~/components/post/Post";
 import { PostThread } from "~/components/post/PostThread";
 import { getServerAuth } from "~/utils/getServerAuth";
 

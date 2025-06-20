@@ -19,10 +19,8 @@ export async function generateMetadata({ params }: { params: { user: string } })
   const title = `${displayName} (@${handle})`;
   const description = user.description || `@${handle} on Pingpad`;
 
-  const ogImageURL = `${
-    process.env.NEXT_PUBLIC_SITE_URL
-  }/og/user?handle=${handle}&name=${encodeURIComponent(
-    displayName
+  const ogImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}/og/user?handle=${handle}&name=${encodeURIComponent(
+    displayName,
   )}&profilePictureUrl=${user.profilePictureUrl}`;
 
   return {
@@ -46,12 +44,7 @@ const user = async ({ params }: { params: { user: string } }) => {
 
   if (!user) return notFound();
 
-  return (
-    <Feed
-      ItemView={PostView}
-      endpoint={`/api/posts?address=${user.address}&type=post`}
-    />
-  );
+  return <Feed ItemView={PostView} endpoint={`/api/posts?address=${user.address}&type=post`} />;
 };
 
 export default user;

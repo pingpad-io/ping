@@ -7,7 +7,7 @@ import { LoadingSpinner } from "../LoadingSpinner";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
-import { type User, lensAcountToUser } from "./User";
+import { lensAcountToUser, type User } from "./User";
 import { UserAvatar } from "./UserAvatar";
 
 export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: string }) => {

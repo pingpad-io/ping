@@ -28,10 +28,7 @@ const userGallery = async ({ params }: { params: { user: string } }) => {
   const user = await getUserByUsername(handle);
 
   return (
-    <GalleryFeed
-      ItemView={GalleryPostView}
-      endpoint={`/api/posts?address=${user.address}&type=post&media=true`}
-    />
+    <GalleryFeed ItemView={GalleryPostView} endpoint={`/api/posts?address=${user.address}&type=post&media=true`} />
   );
 };
 

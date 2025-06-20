@@ -1,9 +1,6 @@
 "use client";
 
 import { useSessionClient } from "@lens-protocol/react";
-import { setCookie } from "cookies-next";
-import { getCookie } from "cookies-next";
-import { useEffect } from "react";
 
 export default function AuthWatcher() {
   const { data: session } = useSessionClient();

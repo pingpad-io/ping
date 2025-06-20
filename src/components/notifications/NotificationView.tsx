@@ -67,7 +67,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
         {userName}
       </Link>
     );
-    const lastText = wasTruncated ? <>{amountTruncated} others</> : <>{userLink}</>;
+    const lastText = wasTruncated ? <>{amountTruncated} others</> : userLink;
 
     if (i === 0) return <span key={`${profile.id + item.id + item.type}first`}>{userLink}</span>;
     if (i === arr.length - 1) return <span key={`${profile.id + item.id + item.type}last`}> and {lastText}</span>;

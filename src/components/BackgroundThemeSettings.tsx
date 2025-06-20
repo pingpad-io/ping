@@ -2,7 +2,6 @@
 
 import { CheckIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Slider } from "~/components/ui/slider";
 import { type BackgroundTheme, useBackgroundTheme } from "~/hooks/useBackgroundTheme";
