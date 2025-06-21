@@ -1,70 +1,49 @@
 "use client";
 
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
-import relativeTime from "dayjs/plugin/relativeTime";
-import updateLocale from "dayjs/plugin/updateLocale";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { formatDate, formatMonthYear, getTimeAgo } from "~/utils/formatTime";
 
-dayjs.extend(relativeTime);
-dayjs.extend(updateLocale);
-dayjs.extend(duration);
-
-dayjs.updateLocale("en", {
-  relativeTime: {
-    future: "in %s",
-    past: "%s ago",
-    s: "just now",
-    m: "1 minute",
-    mm: "%d minutes",
-    h: "1 hour",
-    hh: "%d hours",
-    d: "1 day",
-    dd: "%d days",
-    M: "1 month",
-    MM: "%d months",
-    y: "1 year",
-    yy: "%d years",
-  },
-});
-
-export const TimeElapsedSince = ({ date }: { date: Date }) => {
-  const fullDate = dayjs(date);
-  const [timeSince, setTimeSince] = useState(fullDate.fromNow());
+export const TimeElapsedSince = ({ date }: { date: Date | string }) => {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const [timeSince, setTimeSince] = useState(() => getTimeAgo(dateObj));
   const { refresh } = useRouter();
-  const diff = dayjs().diff(fullDate);
 
   useEffect(() => {
+    const updateTime = () => {
+      setTimeSince(getTimeAgo(dateObj));
+    };
+
     const onFocus = () => {
-      setTimeSince(fullDate.fromNow());
+      updateTime();
     };
 
     window.addEventListener("focus", onFocus);
 
+    const diffInMs = Date.now() - dateObj.getTime();
+    const diffInHours = diffInMs / (1000 * 60 * 60);
+    
+    if (diffInHours <= 1) {
+      const interval = setInterval(updateTime, 60000);
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener("focus", onFocus);
+      };
+    }
+
     return () => {
       window.removeEventListener("focus", onFocus);
     };
-  }, [refresh]);
+  }, [dateObj, refresh]);
 
-  useEffect(() => {
-    if (diff > dayjs.duration(1, "hour").asMilliseconds()) return;
-
-    const interval = setInterval(() => setTimeSince(fullDate.fromNow()), 1000 * 60);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  if (diff > dayjs.duration(3, "weeks").asMilliseconds()) {
-    return <span>{fullDate.format("MMM DD")}</span>;
+  const diffInWeeks = (Date.now() - dateObj.getTime()) / (1000 * 60 * 60 * 24 * 7);
+  if (diffInWeeks > 3) {
+    return <span>{formatDate(dateObj)}</span>;
   }
 
-  return <span suppressHydrationWarning>{timeSince}</span>;
+  return <span>{timeSince}</span>;
 };
 
-export const TimeSince = ({ date }: { date: Date }) => {
-  const timeSince = dayjs(date).format("MMM YYYY");
-
-  return <span suppressHydrationWarning>{timeSince}</span>;
+export const TimeSince = ({ date }: { date: Date | string }) => {
+  return <span>{formatMonthYear(date)}</span>;
 };
