@@ -11,6 +11,13 @@ export function PostThread({ post }: { post: Post }) {
   const isFirstLoadRef = useRef(true);
   const mainPostRef = useRef<HTMLDivElement>(null);
 
+  // Initialize the previous height when component mounts
+  useEffect(() => {
+    if (containerRef.current) {
+      previousHeightRef.current = containerRef.current.scrollHeight;
+    }
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -31,30 +38,37 @@ export function PostThread({ post }: { post: Post }) {
       const parentId = current.commentOn?.id ?? current.quoteOn?.id;
       if (!parentId) return;
 
-      const currentScrollY = window.scrollY;
-      const containerTop = containerRef.current?.getBoundingClientRect().top || 0;
-      const scrollFromContainer = currentScrollY + containerTop;
-
       const parent = await fetchParent(parentId);
       if (parent && !cancelled) {
+        // Capture scroll position before state update
+        const viewport = containerRef.current?.closest('[data-overlayscrollbars-viewport]') as HTMLElement | null;
+        const currentScrollTop = viewport?.scrollTop || 0;
+        
         setThread((prev) => {
           requestAnimationFrame(() => {
-            if (isFirstLoadRef.current) {
+            const currentViewport = containerRef.current?.closest('[data-overlayscrollbars-viewport]') as HTMLElement | null;
+            if (!currentViewport) {
+              console.log("No viewport found, skipping scroll adjustment");
+              return;
+            }
+            
+            if (isFirstLoadRef.current && mainPostRef.current) {
               isFirstLoadRef.current = false;
-              window.scrollTo({
-                top: document.documentElement.scrollHeight,
-                behavior: "instant",
-              });
-            } else {
-              const newContainerTop = containerRef.current?.getBoundingClientRect().top || 0;
-              const heightDifference = currentScrollY + containerTop - (currentScrollY + newContainerTop);
-
+              // Scroll to the main post at the bottom
+              currentViewport.scrollTop = mainPostRef.current.offsetTop;
+            } else if (containerRef.current) {
+              // Calculate how much height was added above the current scroll position
+              const newHeight = containerRef.current.scrollHeight;
+              const heightDifference = newHeight - previousHeightRef.current;
+              
               if (heightDifference > 0) {
-                window.scrollTo({
-                  top: currentScrollY + heightDifference,
-                  behavior: "instant",
-                });
+                // Adjust scroll position to maintain visual position
+                currentViewport.scrollTop = currentScrollTop + heightDifference;
               }
+            }
+            
+            if (containerRef.current) {
+              previousHeightRef.current = containerRef.current.scrollHeight;
             }
           });
 
