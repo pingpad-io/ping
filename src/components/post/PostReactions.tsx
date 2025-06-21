@@ -7,6 +7,7 @@ import { ReactionButton } from "../ReactionButton";
 import { ReactionCount } from "../ReactionCount";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
+import RepostDropdown from "./RepostDropdown";
 
 type ReactionState = {
   [key in PostReactionType | "Like"]: {
@@ -109,12 +110,20 @@ export function ReactionsList({
         onClick={() => setCommentsOpen(!isCommentsOpen)}
         disabled={!post.reactions.canComment}
       />
-      <ReactionButton
-        variant={isComment ? "comment" : "post"}
-        reactionType="Repost"
-        reaction={reactions.Repost}
-        onClick={() => updateReaction("Repost")}
-        disabled={!post.reactions.canRepost}
+      <RepostDropdown
+        post={post}
+        reactions={{
+          reacted: reactions.Repost.isActive,
+          count: reactions.Repost.count,
+          canRepost: post.reactions.canRepost,
+          canQuote: post.reactions.canQuote,
+        }}
+        onRepostChange={(isReposted, count) => {
+          setReactions((prev) => ({
+            ...prev,
+            Repost: { count, isActive: isReposted },
+          }));
+        }}
       />
       {isComment ? (
         <span className="flex flex-row gap-1 ">

@@ -88,10 +88,16 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
 export default function PostWizard({
   user,
   replyingTo,
+  quotedPost,
+  postType = "post",
+  onClose,
   onSuccess,
 }: {
   user?: User;
   replyingTo?: Post;
+  quotedPost?: Post;
+  postType?: "post" | "reply";
+  onClose?: () => void;
   onSuccess?: (post?: Post | null) => void;
 }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
@@ -101,7 +107,7 @@ export default function PostWizard({
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const placeholderText = replyingTo ? "write your reply..." : "write a new post...";
+  const placeholderText = replyingTo ? "write your reply..." : quotedPost ? "add your thoughts..." : "write a new post...";
   const pathname = usePathname().split("/");
   const community = pathname[1] === "c" ? pathname[2] : "";
   const router = useRouter();
@@ -183,33 +189,62 @@ export default function PostWizard({
               post: replyingTo.id,
             },
           }
+        : quotedPost
+        ? {
+            feed,
+            contentUri,
+            quoteOf: {
+              post: quotedPost.id,
+            },
+          }
         : {
             feed,
             contentUri,
           };
 
-      const result = await post(client, postData)
-        .andThen(handleOperationWith(walletClient))
-        .andThen(client.waitForTransaction)
-        .andThen((txHash) => fetchPost(client, { txHash }));
-
-      if (result.isOk()) {
-        console.log("Post created successfully:", result.value);
-        const newPost = lensItemToPost(result.value);
-        toast.success("Post published successfully!", {
-          id: toastId,
-          action: {
-            label: "Show me",
-            onClick: () => newPost && router.push(`/p/${newPost.id}`),
-          },
+      if (quotedPost) {
+        const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: data.content }),
         });
-        form.setValue("content", "");
-        resetHeight();
-        setImageFile(null);
-        onSuccess?.(newPost);
+
+        if (response.ok) {
+          toast.success("Quote posted successfully!", { id: toastId });
+          form.setValue("content", "");
+          resetHeight();
+          setImageFile(null);
+          onSuccess?.(null);
+          onClose?.();
+        } else {
+          const error = await response.json();
+          console.error("Failed to create quote:", error);
+          toast.error(`Failed to quote: ${error.error || "Unknown error"}`, { id: toastId });
+        }
       } else {
-        console.error("Failed to create post:", result.error);
-        toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
+        const result = await post(client, postData)
+          .andThen(handleOperationWith(walletClient))
+          .andThen(client.waitForTransaction)
+          .andThen((txHash) => fetchPost(client, { txHash }));
+
+        if (result.isOk()) {
+          console.log("Post created successfully:", result.value);
+          const newPost = lensItemToPost(result.value);
+          toast.success("Post published successfully!", {
+            id: toastId,
+            action: {
+              label: "Show me",
+              onClick: () => newPost && router.push(`/p/${newPost.id}`),
+            },
+          });
+          form.setValue("content", "");
+          resetHeight();
+          setImageFile(null);
+          onSuccess?.(newPost);
+        } else {
+          console.error("Failed to create post:", result.error);
+          toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
+        }
       }
     } catch (error) {
       console.error("Error creating post:", error);
@@ -396,6 +431,21 @@ export default function PostWizard({
                 {imageFile && (
                   <div className="mt-2">
                     <img src={URL.createObjectURL(imageFile)} alt="selected" className="max-h-40 rounded-md" />
+                  </div>
+                )}
+                {quotedPost && (
+                  <div className="mt-2 p-3 border rounded-lg bg-muted/50">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-4 h-4">
+                        <UserAvatar user={quotedPost.author} link={false} card={false} />
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {quotedPost.author.name} @{quotedPost.author.handle}
+                      </span>
+                    </div>
+                    <p className="text-sm line-clamp-3">
+                      {quotedPost.metadata?.content || ""}
+                    </p>
                   </div>
                 )}
               </FormItem>

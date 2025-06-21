@@ -1,4 +1,5 @@
-import { fetchPost, repost } from "@lens-protocol/client/actions";
+import { PostReferenceType, postId } from "@lens-protocol/client";
+import { deletePost, fetchPost, fetchPostReferences, repost } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
 
@@ -12,7 +13,11 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
   }
 
   try {
-    const { client, sessionClient } = await getServerAuth();
+    const { client, sessionClient, user } = await getServerAuth();
+    
+    if (!user) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
 
     const publicationResult = await fetchPost(client, {
       post: id,
@@ -28,7 +33,25 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: "Cannot repost a share publication", result: false }, { status: 400 });
     }
 
-    // Using the new repost method instead of mirrorOnMomoka or mirrorOnchain
+    const referencesResult = await fetchPostReferences(client, {
+      referencedPost: postId(id),
+      referenceTypes: [PostReferenceType.RepostOf],
+      authors: [user.address],
+    });
+
+    if (referencesResult.isOk() && referencesResult.value.items.length > 0) {
+      const existingRepost = referencesResult.value.items[0];
+      const deleteResult = await deletePost(sessionClient, {
+        post: existingRepost.id,
+      });
+
+      if (deleteResult.isErr()) {
+        return NextResponse.json({ error: deleteResult.error.message, result: false }, { status: 500 });
+      }
+
+      return NextResponse.json({ result: true, action: "deleted" }, { status: 200 });
+    }
+
     const result = await repost(sessionClient, {
       post: id,
     });
@@ -37,8 +60,7 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: result.error.message, result: false }, { status: 500 });
     }
 
-    // Handle the result based on the new API response structure
-    return NextResponse.json({ result: true }, { status: 200 });
+    return NextResponse.json({ result: true, action: "created" }, { status: 200 });
   } catch (error) {
     console.error("Failed to repost: ", error.message);
     return NextResponse.json({ error: `${error.message}`, result: false }, { status: 500 });
