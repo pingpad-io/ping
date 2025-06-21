@@ -95,11 +95,11 @@ function getReactions(post: LensPost): Partial<PostReactions> {
     canDecrypt: false,
     totalReactions:
       post.stats?.upvotes +
-        post.stats?.downvotes +
-        post.stats?.bookmarks +
-        post.stats?.collects +
-        post.stats?.comments +
-        post.stats?.reposts || 0,
+      post.stats?.downvotes +
+      post.stats?.bookmarks +
+      post.stats?.collects +
+      post.stats?.comments +
+      post.stats?.reposts || 0,
   };
 }
 
@@ -141,8 +141,8 @@ function getCommentOnFromItem(origin: LensPost) {
 
 function getQuoteOnFromItem(origin: LensPost) {
   if (!origin) return undefined;
-  if (origin.__typename === "Post" && (origin as any).quoteOn) {
-    return lensItemToPost((origin as any).quoteOn);
+  if (origin.__typename === "Post" && origin.quoteOf) {
+    return lensItemToPost(origin.quoteOf);
   }
   return undefined;
 }
