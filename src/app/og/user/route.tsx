@@ -10,9 +10,9 @@ export async function GET(request: Request) {
 
   const fontsDir = path.join(process.cwd(), "public", "fonts");
 
-  const geistFontMedium = await readFile(path.join(fontsDir, "Geist-Medium.ttf"));
+  const quicksandSemiBold = await readFile(path.join(fontsDir, "Quicksand-SemiBold.ttf"));
 
-  const geistFontRegular = await readFile(path.join(fontsDir, "Geist-Regular.ttf"));
+  const quicksandMedium = await readFile(path.join(fontsDir, "Quicksand-Medium.ttf"));
 
   const handle = searchParams.get("handle");
   const name = searchParams.get("name");
@@ -23,16 +23,16 @@ export async function GET(request: Request) {
     height: 630,
     fonts: [
       {
-        name: "Geist",
-        data: geistFontRegular,
+        name: "Quicksand",
+        data: quicksandMedium,
         style: "normal",
         weight: 400,
       },
       {
-        name: "Geist",
-        data: geistFontMedium,
+        name: "Quicksand",
+        data: quicksandSemiBold,
         style: "normal",
-        weight: 500,
+        weight: 600,
       },
     ],
   } as ImageResponseOptions;
