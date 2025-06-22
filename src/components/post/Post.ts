@@ -35,13 +35,25 @@ export type Post = {
   commentOn?: Post;
   quoteOn?: Post;
   reply?: Post;
+  isRepost?: boolean;
+  repostedBy?: User;
+  repostedAt?: Date;
 };
 
 export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
   if (!item) return null;
 
   if (item.__typename === "Repost") {
-    return null;
+    const repostItem = item as any;
+    const originalPost = lensItemToPost(repostItem.repostOf);
+    if (!originalPost) return null;
+    
+    return {
+      ...originalPost,
+      isRepost: true,
+      repostedBy: lensAcountToUser(repostItem.author),
+      repostedAt: new Date(repostItem.timestamp),
+    };
   }
 
   if (item.__typename === "TimelineItem") {

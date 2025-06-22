@@ -83,18 +83,17 @@ export default function RepostDropdown({ post, reactions, onRepostChange }: Repo
             type="button"
             disabled={isLoading || (!reactions.canRepost && !reactions.canQuote)}
             className={cn(
-              "group flex flex-row items-center gap-1 text-sm font-medium transition-all",
-              reactions.reacted && "text-green-500",
+              "group flex flex-row items-center gap-2 text-sm font-medium transition-all",
             )}
           >
+            <span className={cn("min-w-[1ch]", reactions.reacted && "font-semibold")}>
+              {reactions.count > 0 && reactions.count}
+            </span>
             <Repeat2Icon
               size={20}
               strokeWidth={reactions.reacted ? 3 : 2}
-              className={cn("transition-all", reactions.reacted && "text-green-500")}
+              className="transition-all"
             />
-            <span className={cn("min-w-[1ch]", reactions.reacted && "text-green-500")}>
-              {reactions.count > 0 && reactions.count}
-            </span>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="center">

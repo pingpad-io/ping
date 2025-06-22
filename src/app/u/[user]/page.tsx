@@ -44,7 +44,7 @@ const user = async ({ params }: { params: { user: string } }) => {
 
   if (!user) return notFound();
 
-  return <Feed ItemView={PostView} endpoint={`/api/posts?address=${user.address}&type=post`} />;
+  return <Feed ItemView={PostView} endpoint={`/api/posts?address=${user.address}&type=all`} />;
 };
 
 export default user;

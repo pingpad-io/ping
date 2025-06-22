@@ -14,10 +14,10 @@ export const ReplyInfo = ({ post }: { post: Post }) => {
   if (!post?.reply) return null;
 
   return (
-    <Link href={`/p/${id ?? ""}`} className="flex flex-row items-center gap-1 -mt-2 text-xs font-light leading-3">
-      <ReplyIcon size={14} className="shrink-0 scale-x-[-1] transform" />
+    <Link href={`/p/${id ?? ""}`} className="flex flex-row items-center gap-1 -mt-2 text-xs font-light leading-3 text-muted-foreground">
+      <ReplyIcon size={14} className="shrink-0 scale-x-[-1] transform text-muted-foreground" />
       <span className="pb-0.5">@{username}:</span>
-      <span className="truncate pb-0.5 ">{content}</span>
+      <span className="truncate pb-0.5">{content}</span>
     </Link>
   );
 };
