@@ -87,7 +87,11 @@ function getReactions(post: LensPost): Partial<PostReactions> {
     isDownvoted: post.operations?.hasDownvoted || false,
     isBookmarked: post.operations?.hasBookmarked || false,
     isCollected: post.operations?.hasSimpleCollected || false,
-    isReposted: post.operations?.hasReposted.optimistic || false,
+    isReposted: post.operations?.hasReposted
+      ? typeof post.operations.hasReposted === "boolean"
+        ? post.operations.hasReposted
+        : post.operations.hasReposted.optimistic || post.operations.hasReposted.onChain
+      : false,
     canCollect: post.operations?.canSimpleCollect.__typename === "SimpleCollectValidationPassed" || false,
     canComment: post.operations?.canComment.__typename === "PostOperationValidationPassed" || false,
     canRepost: post.operations?.canRepost.__typename === "PostOperationValidationPassed" || false,
@@ -95,11 +99,11 @@ function getReactions(post: LensPost): Partial<PostReactions> {
     canDecrypt: false,
     totalReactions:
       post.stats?.upvotes +
-      post.stats?.downvotes +
-      post.stats?.bookmarks +
-      post.stats?.collects +
-      post.stats?.comments +
-      post.stats?.reposts || 0,
+        post.stats?.downvotes +
+        post.stats?.bookmarks +
+        post.stats?.collects +
+        post.stats?.comments +
+        post.stats?.reposts || 0,
   };
 }
 

@@ -27,23 +27,26 @@ export default function RepostDropdown({ post, reactions, onRepostChange }: Repo
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
 
-  const handleRepost = async () => {
+  const handleRepost = async (action: "toggle" | "create" = "toggle") => {
     if (!reactions.canRepost) {
       toast.error("You cannot repost this post");
       return;
     }
 
     setDropdownOpen(false);
-    
-    const newCount = reactions.reacted ? reactions.count - 1 : reactions.count + 1;
+
+    const isUndo = action === "toggle" && reactions.reacted;
+    const newCount = isUndo ? reactions.count - 1 : reactions.count + 1;
     const wasReacted = reactions.reacted;
-    
-    onRepostChange(!wasReacted, newCount);
-    
+
+    onRepostChange(action === "create" ? true : !wasReacted, newCount);
+
     setIsLoading(true);
     try {
       const response = await fetch(`/api/posts/${post.id}/repost`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
       });
 
       if (!response.ok) {
@@ -95,10 +98,16 @@ export default function RepostDropdown({ post, reactions, onRepostChange }: Repo
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="center">
-          <DropdownMenuItem onClick={handleRepost} disabled={!reactions.canRepost} className="gap-2">
+          <DropdownMenuItem onClick={() => handleRepost("toggle")} disabled={!reactions.canRepost} className="gap-2">
             <Repeat2Icon size={18} strokeWidth={2} />
             <span>{reactions.reacted ? "Undo repost" : "Repost"}</span>
           </DropdownMenuItem>
+          {reactions.reacted && (
+            <DropdownMenuItem onClick={() => handleRepost("create")} disabled={!reactions.canRepost} className="gap-2">
+              <Repeat2Icon size={18} strokeWidth={2} />
+              <span>Repost again</span>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={handleQuote} disabled={!reactions.canQuote} className="gap-2">
             <EditIcon size={18} strokeWidth={2} />
             <span>Quote</span>

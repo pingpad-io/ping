@@ -108,15 +108,15 @@ export function ReactionsList({
         reactionType="Comment"
         reaction={reactions.Comment}
         onClick={() => setCommentsOpen(!isCommentsOpen)}
-        disabled={!post.reactions.canComment}
+        disabled={!post.reactions?.canComment}
       />
       <RepostDropdown
         post={post}
         reactions={{
           reacted: reactions.Repost.isActive,
           count: reactions.Repost.count,
-          canRepost: post.reactions.canRepost,
-          canQuote: post.reactions.canQuote,
+          canRepost: post.reactions?.canRepost || false,
+          canQuote: post.reactions?.canQuote || false,
         }}
         onRepostChange={(isReposted, count) => {
           setReactions((prev) => ({
