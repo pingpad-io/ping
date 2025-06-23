@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { formatDate, formatMonthYear, getTimeAgo } from "~/utils/formatTime";
 
 export const TimeElapsedSince = ({ date }: { date: Date | string }) => {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === "string" ? new Date(date) : date;
   const [timeSince, setTimeSince] = useState(() => getTimeAgo(dateObj));
   const { refresh } = useRouter();
 
@@ -22,7 +22,7 @@ export const TimeElapsedSince = ({ date }: { date: Date | string }) => {
 
     const diffInMs = Date.now() - dateObj.getTime();
     const diffInHours = diffInMs / (1000 * 60 * 60);
-    
+
     if (diffInHours <= 1) {
       const interval = setInterval(updateTime, 60000);
       return () => {

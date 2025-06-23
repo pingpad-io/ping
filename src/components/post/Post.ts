@@ -47,7 +47,7 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
     const repostItem = item as any;
     const originalPost = lensItemToPost(repostItem.repostOf);
     if (!originalPost) return null;
-    
+
     return {
       ...originalPost,
       isRepost: true,

@@ -1,5 +1,5 @@
 export function getTimeAgo(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === "string" ? new Date(date) : date;
   const now = new Date();
   const diffInMs = now.getTime() - dateObj.getTime();
   const diffInSeconds = Math.floor(diffInMs / 1000);
@@ -47,7 +47,7 @@ export function getTimeAgo(date: Date | string): string {
 }
 
 export function formatDate(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === "string" ? new Date(date) : date;
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const month = months[dateObj.getMonth()];
   const day = dateObj.getDate();
@@ -55,7 +55,7 @@ export function formatDate(date: Date | string): string {
 }
 
 export function formatMonthYear(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === "string" ? new Date(date) : date;
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const month = months[dateObj.getMonth()];
   const year = dateObj.getFullYear();

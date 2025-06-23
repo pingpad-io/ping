@@ -25,7 +25,7 @@ export const GalleryPostView = ({ item }: { item: Post }) => {
 
   return (
     <Link href={`/p/${item.id}`}>
-      <Card className="overflow-hidden p-0 glass-post">
+      <Card className="overflow-hidden p-0 glass">
         {isVideo && !metadata?.video?.cover ? (
           <div className="relative w-full aspect-square bg-muted flex items-center justify-center">
             <svg className="w-12 h-12 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">

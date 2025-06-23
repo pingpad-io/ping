@@ -107,7 +107,11 @@ export default function PostWizard({
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const placeholderText = replyingTo ? "write your reply..." : quotedPost ? "add your thoughts..." : "write a new post...";
+  const placeholderText = replyingTo
+    ? "write your reply..."
+    : quotedPost
+      ? "add your thoughts..."
+      : "write a new post...";
   const pathname = usePathname().split("/");
   const community = pathname[1] === "c" ? pathname[2] : "";
   const router = useRouter();
@@ -190,17 +194,17 @@ export default function PostWizard({
             },
           }
         : quotedPost
-        ? {
-            feed,
-            contentUri,
-            quoteOf: {
-              post: quotedPost.id,
-            },
-          }
-        : {
-            feed,
-            contentUri,
-          };
+          ? {
+              feed,
+              contentUri,
+              quoteOf: {
+                post: quotedPost.id,
+              },
+            }
+          : {
+              feed,
+              contentUri,
+            };
 
       if (quotedPost) {
         const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
@@ -443,9 +447,7 @@ export default function PostWizard({
                         {quotedPost.author.name} @{quotedPost.author.handle}
                       </span>
                     </div>
-                    <p className="text-sm line-clamp-3">
-                      {quotedPost.metadata?.content || ""}
-                    </p>
+                    <p className="text-sm line-clamp-3">{quotedPost.metadata?.content || ""}</p>
                   </div>
                 )}
               </FormItem>

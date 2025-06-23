@@ -10,8 +10,8 @@ import { PostContextMenu } from "./PostContextMenu";
 import { PostInfo } from "./PostInfo";
 import { ReactionsList } from "./PostReactions";
 import { ReplyInfo } from "./PostReplyInfo";
-import { RepostInfo } from "./PostRepostInfo";
 import { PostReplyWizard } from "./PostReplyWizard";
+import { RepostInfo } from "./PostRepostInfo";
 
 type PostViewSettings = {
   showBadges?: boolean;
@@ -52,14 +52,14 @@ export const PostView = ({
     <div className={"flex flex-col w-full gap-0.5"}>
       <PostContextMenu post={item} onReply={handleReply}>
         <Card
-          className="glass-post relative z-20"
+          className="glass-relative z-20 transition-all duration-300 hover:bg-secondary/70 dark:hover:bg-secondary/50"
           onClick={() => {
             setCollapsed(false);
           }}
         >
           <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
             <span className="min-h-full flex flex-col justify-start items-center relative">
-              <div className={`shrink-0 z-20 grow-0 rounded-full" ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
+              <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
                 <UserAvatar user={item.author} />
               </div>
               {(settings.isComment || settings.inThread) && (

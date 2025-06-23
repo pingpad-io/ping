@@ -13,8 +13,9 @@ export const PostContent = forwardRef<
   return (
     <div ref={ref} className="space-y-2">
       <div
-        className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${collapsed ? "line-clamp-5" : "line-clamp-none"
-          }`}
+        className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
+          collapsed ? "line-clamp-5" : "line-clamp-none"
+        }`}
       >
         {metadata}
       </div>

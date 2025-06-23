@@ -88,6 +88,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [showExtra, setShowExtra] = useState(false);
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [extraPosition, setExtraPosition] = useState<any>({ top: 0, left: 0 });
   const hideTimeoutRef = useRef<NodeJS.Timeout>();
   const dockRef = useRef<HTMLDivElement>(null);
 
@@ -145,7 +146,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
     };
   }, []);
 
-  const getExtraPosition = () => {
+  const calculateExtraPosition = useCallback(() => {
     if (hoveredIndex === null || !buttonRefs.current[hoveredIndex]?.current || !dockRef.current) {
       return { top: 0, left: 0 };
     }
@@ -171,10 +172,19 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
       bottom: dockRect.height - buttonTop + 12,
       left: buttonCenterX - buttonRect.width,
     };
-  };
+  }, [hoveredIndex]);
+
+  // Update position when hoveredIndex changes or on initial show
+  useEffect(() => {
+    if (showExtra && hoveredIndex !== null) {
+      // Use requestAnimationFrame to ensure DOM has updated
+      requestAnimationFrame(() => {
+        setExtraPosition(calculateExtraPosition());
+      });
+    }
+  }, [showExtra, hoveredIndex, calculateExtraPosition]);
 
   const hoveredItem = hoveredIndex !== null ? items[hoveredIndex] : null;
-  const extraPosition = getExtraPosition();
 
   // Calculate content animation direction
   const getContentAnimationY = () => {
@@ -205,7 +215,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
             layout
             onMouseEnter={handleExtraMouseEnter}
             onMouseLeave={handleExtraMouseLeave}
-            className={cn("absolute z-50 pointer-events-auto", "border shadow-lg rounded-xl", "border-border glass")}
+            className={cn("absolute z-50 pointer-events-auto", "shadow-lg rounded-xl", "glass glass-dim")}
             style={{
               ...extraPosition,
               transformOrigin: window.innerWidth >= 640 ? "right center" : "center bottom",
@@ -235,9 +245,8 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
         className={cn(
           "flex items-center gap-2 p-2 rounded-2xl w-full",
           "flex-row justify-around sm:flex-col sm:justify-center sm:w-auto",
-          "backdrop-blur-lg border shadow-lg",
-          "bg-background/90 border-border",
-          "hover:shadow-xl transition-shadow duration-300",
+          "shadow-lg",
+          "glass",
         )}
       >
         {items.map((item, index) => (
