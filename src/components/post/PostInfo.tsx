@@ -53,7 +53,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
             {"···"}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="flex flex-col w-max gap-1 p-1 hover:bg-card rounded-lg border">
+        <DropdownMenuContent className="flex flex-col w-max gap-1 p-1 rounded-lg border">
           <PostMenu post={post} onReply={onReply} onMenuAction={handleMenuAction} />
         </DropdownMenuContent>
       </DropdownMenu>

@@ -134,9 +134,11 @@
     background: hsl(var(--secondary) / 0.7);
   }
 
-  /* Dimmer glass effect */
   .glass-dim {
-    background: hsl(var(--secondary) / 0.3);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border: 1px solid hsl(var(--border) / 0.1);
+    box-shadow: 0 0 0 1px hsl(var(--border) / 0.1);
   }
 
   /* Dark mode glass effect */
@@ -163,10 +165,6 @@
     background: hsl(var(--secondary) / 0.5);
   }
 
-  /* Dark mode dimmer glass effect */
-  .dark .glass-dim {
-    background: hsl(var(--secondary) / 0.15);
-  }
 }
 
 .fullscreen {
