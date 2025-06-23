@@ -25,6 +25,12 @@ export async function GET(req: NextRequest) {
       case "repost":
         postTypes = [PostType.Repost];
         break;
+      case "quote":
+        postTypes = [PostType.Quote];
+        break;
+      case "main":
+        postTypes = [PostType.Root, PostType.Repost, PostType.Quote];
+        break;
       case "all":
         postTypes = [PostType.Root, PostType.Comment, PostType.Repost, PostType.Quote];
         break;
