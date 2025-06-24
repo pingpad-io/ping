@@ -29,9 +29,12 @@
     --bg-gradient-1: rgba(139, 92, 246, 0.55);
     --bg-gradient-2: rgba(236, 72, 153, 0.55);
     --bg-gradient-3: rgba(168, 85, 247, 0.55);
-    --bg-gradient-pattern: radial-gradient(ellipse at top, var(--bg-gradient-1) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom right, var(--bg-gradient-2) 0%, transparent 50%),
-      radial-gradient(ellipse at center left, var(--bg-gradient-3) 0%, transparent 50%);
+    --bg-gradient-pattern: radial-gradient(ellipse at top, var(--bg-gradient-1) 0%, transparent 70%),
+      radial-gradient(ellipse at bottom right, var(--bg-gradient-2) 0%, transparent 70%),
+      radial-gradient(ellipse at center left, var(--bg-gradient-3) 0%, transparent 70%);
+    --bg-image-url: none;
+    --bg-blur: 0px;
+    --bg-opacity: 0.5;
   }
 
   .dark {
@@ -59,6 +62,9 @@
     --bg-gradient-1: rgba(139, 92, 246, 0.5);
     --bg-gradient-2: rgba(236, 72, 153, 0.5);
     --bg-gradient-3: rgba(168, 85, 247, 0.5);
+    --bg-image-url: none;
+    --bg-blur: 0px;
+    --bg-opacity: 0.5;
   }
 }
 
@@ -89,10 +95,19 @@
     }
   }
 
-  /* Background gradient utility */
+  /* Background utilities */
   .bg-gradient {
     background: var(--bg-gradient-pattern);
-    transition: background 0.3s ease;
+    filter: blur(var(--bg-blur));
+  }
+  
+  .bg-image {
+    background-image: var(--bg-image-url);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: hsl(var(--background));
+    filter: blur(var(--bg-blur));
   }
 
   /* Simple glass effect */

@@ -89,6 +89,11 @@ Required environment variables (see `.env.example`):
 - `NEXT_PUBLIC_APP_ADDRESS_TESTNET` - Testnet Lens app address
 - `NEXT_PUBLIC_NODE_ENV` - Environment (development/test/production)
 
+Optional environment variables:
+- `NEXT_PUBLIC_UNSPLASH_ACCESS_KEY` - Unsplash API key for background images
+  - Copy `.env.example` to `.env` and add your key
+  - Get a free key at https://unsplash.com/developers
+
 Environment validation is handled by Zod schemas in `/src/env.mjs`.
 
 ### Code Style and Quality

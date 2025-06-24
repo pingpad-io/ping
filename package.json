@@ -59,6 +59,7 @@
     "framer-motion": "^12.15.0",
     "got": "^13.0.0",
     "i18next": "^23.16.8",
+    "jotai": "^2.12.5",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.511.0",
@@ -99,6 +100,7 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "theme-change": "^2.5.0",
+    "unsplash-js": "^7.0.19",
     "viem": "^2.30.3",
     "wagmi": "^2.15.4",
     "zod": "^3.24.2"

@@ -1,210 +1,199 @@
 "use client";
 
-import { useTheme } from "next-themes";
-import { useCallback, useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { useCallback } from "react";
+import {
+  backgroundColorIdAtom,
+  backgroundImageUrlAtom,
+  backgroundModeAtom,
+  blurAtom,
+  imageCreditsAtom,
+  imageLoadingAtom,
+  imageTypeAtom,
+  intensityAtom,
+} from "~/atoms/backgroundTheme";
+import { type PhotoCredits, unsplash } from "~/utils/unsplash";
 
-export interface BackgroundTheme {
-  id: string;
-  name: string;
-  lightColors: {
-    color1: string;
-    color2: string;
-    color3: string;
-  };
-  darkColors: {
-    color1: string;
-    color2: string;
-    color3: string;
-  };
-}
+export type BackgroundMode = "none" | "gradient" | "image";
 
-// Configurable opacity for gradients
-const LIGHT_OPACITY = 0.55;
-const DARK_OPACITY = 0.5;
-
-export const backgroundThemes: BackgroundTheme[] = [
+export const backgroundColors: BackgroundColor[] = [
   {
     id: "default",
     name: "Default",
-    lightColors: {
-      color1: `rgba(59, 130, 246, ${LIGHT_OPACITY})`,
-      color2: `rgba(16, 185, 129, ${LIGHT_OPACITY})`,
-      color3: `rgba(34, 197, 94, ${LIGHT_OPACITY})`,
-    },
-    darkColors: {
-      color1: `rgba(59, 130, 246, ${DARK_OPACITY})`,
-      color2: `rgba(16, 185, 129, ${DARK_OPACITY})`,
-      color3: `rgba(34, 197, 94, ${DARK_OPACITY})`,
-    },
+    rgb: { r: 148, g: 158, b: 158 }, // A neutral gray-green that matches the theme
   },
   {
-    id: "purple",
-    name: "Purple",
-    lightColors: {
-      color1: `rgba(139, 92, 246, ${LIGHT_OPACITY})`,
-      color2: `rgba(236, 72, 153, ${LIGHT_OPACITY})`,
-      color3: `rgba(168, 85, 247, ${LIGHT_OPACITY})`,
-    },
-    darkColors: {
-      color1: `rgba(139, 92, 246, ${DARK_OPACITY})`,
-      color2: `rgba(236, 72, 153, ${DARK_OPACITY})`,
-      color3: `rgba(168, 85, 247, ${DARK_OPACITY})`,
-    },
+    id: "black_and_white",
+    name: "B&W",
+    rgb: { r: 128, g: 128, b: 128 },
+  },
+  {
+    id: "yellow",
+    name: "Yellow",
+    rgb: { r: 251, g: 191, b: 36 },
   },
   {
     id: "orange",
     name: "Orange",
-    lightColors: {
-      color1: `rgba(251, 146, 60, ${LIGHT_OPACITY})`,
-      color2: `rgba(239, 68, 68, ${LIGHT_OPACITY})`,
-      color3: `rgba(245, 101, 101, ${LIGHT_OPACITY})`,
-    },
-    darkColors: {
-      color1: `rgba(251, 146, 60, ${DARK_OPACITY})`,
-      color2: `rgba(239, 68, 68, ${DARK_OPACITY})`,
-      color3: `rgba(245, 101, 101, ${DARK_OPACITY})`,
-    },
+    rgb: { r: 251, g: 146, b: 60 },
+  },
+  {
+    id: "red",
+    name: "Red",
+    rgb: { r: 239, g: 68, b: 68 },
+  },
+  {
+    id: "purple",
+    name: "Purple",
+    rgb: { r: 139, g: 92, b: 246 },
+  },
+  {
+    id: "magenta",
+    name: "Magenta",
+    rgb: { r: 236, g: 72, b: 153 },
+  },
+  {
+    id: "green",
+    name: "Green",
+    rgb: { r: 34, g: 197, b: 94 },
   },
   {
     id: "teal",
     name: "Teal",
-    lightColors: {
-      color1: `rgba(6, 182, 212, ${LIGHT_OPACITY})`,
-      color2: `rgba(16, 185, 129, ${LIGHT_OPACITY})`,
-      color3: `rgba(14, 165, 233, ${LIGHT_OPACITY})`,
-    },
-    darkColors: {
-      color1: `rgba(6, 182, 212, ${DARK_OPACITY})`,
-      color2: `rgba(16, 185, 129, ${DARK_OPACITY})`,
-      color3: `rgba(14, 165, 233, ${DARK_OPACITY})`,
-    },
+    rgb: { r: 6, g: 182, b: 212 },
   },
   {
-    id: "rose",
-    name: "Rose",
-    lightColors: {
-      color1: `rgba(244, 63, 94, ${LIGHT_OPACITY})`,
-      color2: `rgba(251, 113, 133, ${LIGHT_OPACITY})`,
-      color3: `rgba(236, 72, 153, ${LIGHT_OPACITY})`,
-    },
-    darkColors: {
-      color1: `rgba(244, 63, 94, ${DARK_OPACITY})`,
-      color2: `rgba(251, 113, 133, ${DARK_OPACITY})`,
-      color3: `rgba(236, 72, 153, ${DARK_OPACITY})`,
-    },
-  },
-  {
-    id: "indigo",
-    name: "Indigo",
-    lightColors: {
-      color1: `rgba(99, 102, 241, ${LIGHT_OPACITY})`,
-      color2: `rgba(139, 92, 246, ${LIGHT_OPACITY})`,
-      color3: `rgba(124, 58, 237, ${LIGHT_OPACITY})`,
-    },
-    darkColors: {
-      color1: `rgba(99, 102, 241, ${DARK_OPACITY})`,
-      color2: `rgba(139, 92, 246, ${DARK_OPACITY})`,
-      color3: `rgba(124, 58, 237, ${DARK_OPACITY})`,
-    },
+    id: "blue",
+    name: "Blue",
+    rgb: { r: 59, g: 130, b: 246 },
   },
 ];
 
-const STORAGE_KEY = "pingpad-background-theme";
-const INTENSITY_KEY = "pingpad-background-intensity";
+export interface BackgroundColor {
+  id: string;
+  name: string;
+  rgb: {
+    r: number;
+    g: number;
+    b: number;
+  };
+}
+
+const COLOR_QUERIES: Record<string, string> = {
+  default: "abstract minimal neutral texture",
+  black_and_white: "abstract minimalist monochrome",
+  yellow: "yellow abstract warm golden",
+  orange: "orange abstract sunset warm",
+  red: "red abstract vibrant bold",
+  purple: "purple abstract violet gradient",
+  magenta: "magenta pink abstract vibrant",
+  green: "green nature abstract fresh",
+  teal: "teal turquoise abstract ocean",
+  blue: "blue abstract sky ocean",
+};
 
 export function useBackgroundTheme() {
-  const { theme: colorTheme, resolvedTheme } = useTheme();
-  const [backgroundThemeId, setBackgroundThemeId] = useState<string>("purple");
-  const [intensity, setIntensity] = useState<number>(0.15); // 0 to 0.3, where 0 is no gradient
-  const [mounted, setMounted] = useState(false);
+  const [backgroundColorId, setBackgroundColorId] = useAtom(backgroundColorIdAtom);
+  const [backgroundMode, setBackgroundMode] = useAtom(backgroundModeAtom);
+  const [backgroundImageUrl, setBackgroundImageUrl] = useAtom(backgroundImageUrlAtom);
+  const [imageCredits, setImageCredits] = useAtom(imageCreditsAtom);
+  const [imageLoading, setImageLoading] = useAtom(imageLoadingAtom);
+  const [imageType, setImageType] = useAtom(imageTypeAtom);
+  const [intensity, setIntensity] = useAtom(intensityAtom);
+  const [blur, setBlur] = useAtom(blurAtom);
 
-  // Load theme from localStorage on mount
-  useEffect(() => {
-    const storedTheme = localStorage.getItem(STORAGE_KEY);
-    if (storedTheme) {
-      const foundTheme = backgroundThemes.find((t) => t.id === storedTheme);
-      if (foundTheme) {
-        setBackgroundThemeId(storedTheme);
+  const currentColor = backgroundColors.find((c) => c.id === backgroundColorId) || backgroundColors[0];
+
+  const fetchRandomImage = useCallback(
+    async (colorId: string) => {
+      const query = COLOR_QUERIES[colorId] || "abstract wallpaper";
+      setImageLoading(true);
+
+      try {
+        const UNSPLASH_ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
+
+        if (UNSPLASH_ACCESS_KEY) {
+          const result = await unsplash.photos.getRandom({
+            query,
+            orientation: "landscape",
+            count: 1,
+          });
+
+          if (result.type === "success" && result.response) {
+            const photo = Array.isArray(result.response) ? result.response[0] : result.response;
+            const imageUrl = photo.urls.regular || photo.urls.full;
+
+            const credits: PhotoCredits = {
+              id: photo.id,
+              username: photo.user.username,
+              name: photo.user.name,
+              portfolioUrl: photo.user.portfolio_url || undefined,
+              photoUrl: photo.links.html,
+            };
+
+            setBackgroundImageUrl(imageUrl);
+            setImageCredits(credits);
+            setImageType("unsplash");
+
+            if (photo.links.download_location) {
+              unsplash.photos.trackDownload({ downloadLocation: photo.links.download_location });
+            }
+
+            setImageLoading(false);
+            return imageUrl;
+          }
+          if (result.errors && result.errors[0]?.includes("Rate Limit")) {
+            alert("Unsplash rate limit exceeded. Please try again later or use a local image.");
+          } else {
+            console.error("Unsplash API error:", result);
+          }
+        } else {
+          alert("Please add your Unsplash API key to use random images.");
+        }
+      } catch (error: any) {
+        console.error("Failed to fetch image:", error);
+        if (error.message?.includes("403") || error.status === 403) {
+          alert("Unsplash rate limit exceeded. Please try again later or use a local image.");
+        }
       }
-    }
 
-    const storedIntensity = localStorage.getItem(INTENSITY_KEY);
-    if (storedIntensity) {
-      const parsedIntensity = Number.parseFloat(storedIntensity);
-      if (!Number.isNaN(parsedIntensity) && parsedIntensity >= 0 && parsedIntensity <= 0.3) {
-        setIntensity(parsedIntensity);
-      }
-    }
+      setImageLoading(false);
+      return null;
+    },
+    [setBackgroundImageUrl, setImageCredits, setImageLoading, setImageType]
+  );
 
-    setMounted(true);
-  }, []);
-
-  // Save theme to localStorage when changed
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem(STORAGE_KEY, backgroundThemeId);
-    }
-  }, [backgroundThemeId, mounted]);
-
-  // Save intensity to localStorage when changed
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem(INTENSITY_KEY, intensity.toString());
-    }
-  }, [intensity, mounted]);
-
-  // Apply theme by updating CSS variables
-  const applyTheme = useCallback(() => {
-    const theme = backgroundThemes.find((t) => t.id === backgroundThemeId) || backgroundThemes[0];
-    const isDark = resolvedTheme === "dark" || colorTheme === "dark";
-    const baseColors = isDark ? theme.darkColors : theme.lightColors;
-
-    // Parse the base colors and apply intensity
-    const applyIntensityToColor = (colorString: string, intensityMultiplier = 1) => {
-      // Extract rgba values
-      const match = colorString.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
-      if (match) {
-        const [_, r, g, b, a] = match;
-        const baseOpacity = Number.parseFloat(a);
-        const newOpacity = baseOpacity * intensity * intensityMultiplier;
-        return `rgba(${r}, ${g}, ${b}, ${newOpacity})`;
-      }
-      return colorString;
-    };
-
-    // Update CSS variables on the document root
-    const root = document.documentElement;
-    // Make top gradient (color1) less intensive (75% of current intensity)
-    root.style.setProperty("--bg-gradient-1", applyIntensityToColor(baseColors.color1, 0.75));
-    root.style.setProperty("--bg-gradient-2", applyIntensityToColor(baseColors.color2));
-    root.style.setProperty("--bg-gradient-3", applyIntensityToColor(baseColors.color3));
-    root.style.setProperty("--bg-gradient-intensity", intensity.toString());
-
-    console.log("Applied background theme:", {
-      themeId: backgroundThemeId,
-      isDark,
-      intensity,
-      colors: baseColors,
-    });
-  }, [backgroundThemeId, colorTheme, resolvedTheme, intensity]);
-
-  // Apply theme when theme or background changes
-  useEffect(() => {
-    if (mounted) {
-      applyTheme();
-    }
-  }, [backgroundThemeId, colorTheme, resolvedTheme, intensity, mounted, applyTheme]);
-
-  const currentTheme = backgroundThemes.find((t) => t.id === backgroundThemeId) || backgroundThemes[0];
+  const selectLocalImage = useCallback(
+    (file: File) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        setBackgroundImageUrl(imageUrl);
+        setImageCredits(null);
+        setImageType("local");
+      };
+      reader.readAsDataURL(file);
+    },
+    [setBackgroundImageUrl, setImageCredits, setImageType]
+  );
 
   return {
-    backgroundThemeId,
-    setBackgroundThemeId,
-    currentTheme,
-    availableThemes: backgroundThemes,
+    backgroundColorId,
+    setBackgroundColorId,
+    backgroundMode,
+    setBackgroundMode,
+    backgroundImageUrl,
+    setBackgroundImageUrl,
+    imageCredits,
+    imageLoading,
+    imageType,
     intensity,
     setIntensity,
-    mounted,
-    applyTheme,
+    blur,
+    setBlur,
+    currentColor,
+    availableColors: backgroundColors,
+    fetchRandomImage,
+    selectLocalImage,
   };
 }

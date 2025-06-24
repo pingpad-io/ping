@@ -35,9 +35,10 @@ const settings = async () => {
     <div className="space-y-4">
       <ThemeSettings />
 
-      <Card className="hover:bg-card">
+      <Card>
         <CardHeader>
           <CardTitle>Account</CardTitle>
+          <p className="text-sm text-muted-foreground">Manage your wallet connection</p>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <Accordion className="w-full" type="multiple">
