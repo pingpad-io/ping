@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { motion } from "framer-motion";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
@@ -12,13 +13,23 @@ export const PostContent = forwardRef<
 
   return (
     <div ref={ref} className="space-y-2">
-      <div
-        className={`truncate whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight h-auto ${
-          collapsed ? "line-clamp-5" : "line-clamp-none"
-        }`}
+      <motion.div
+        initial={false}
+        animate={{
+          height: collapsed ? "7.5rem" : "auto"
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 25,
+          mass: 0.5
+        }}
+        className="overflow-hidden relative"
       >
-        {metadata}
-      </div>
+        <div className="whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight">
+          {metadata}
+        </div>
+      </motion.div>
 
       {post.quoteOn && (
         <Card className="p-3 mt-2 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer">
