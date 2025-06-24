@@ -173,7 +173,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
               style={{
                 ...(isDesktop ? {
                   right: `calc(100% + 6px)`,
-                  top: `${buttonRefs.current[hoveredIndex]?.offsetTop + 6}px`,
+                  top: `${buttonRefs.current[hoveredIndex]?.offsetTop}px`,
                   transform: `translateY(calc(-50% + ${buttonRefs.current[hoveredIndex]?.offsetHeight / 2}px))`,
                 } : {
                   bottom: `calc(100% + 6px)`,
