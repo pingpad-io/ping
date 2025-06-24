@@ -44,7 +44,6 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
       variant = "default",
       onHover,
       onLeave,
-      buttonRef,
     },
     ref,
   ) => {
@@ -60,7 +59,7 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
 
     return (
       <motion.button
-        ref={buttonRef || ref}
+        ref={ref}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onClick}
@@ -88,21 +87,8 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [showExtra, setShowExtra] = useState(false);
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
-  const [extraPosition, setExtraPosition] = useState<any>({ top: 0, left: 0 });
   const hideTimeoutRef = useRef<NodeJS.Timeout>();
-  const dockRef = useRef<HTMLDivElement>(null);
-
-  // Initialize refs immediately with the current items length
-  const buttonRefs = useRef<React.RefObject<HTMLButtonElement>[]>(
-    items.map(() => React.createRef<HTMLButtonElement>()),
-  );
-
-  // Update refs when items change
-  React.useEffect(() => {
-    if (buttonRefs.current.length !== items.length) {
-      buttonRefs.current = items.map(() => React.createRef<HTMLButtonElement>());
-    }
-  }, [items.length]);
+  const buttonRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const handleMouseEnter = useCallback(
     (index: number) => {
@@ -113,7 +99,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
       setHoveredIndex(index);
       setShowExtra(true);
     },
-    [hoveredIndex, items],
+    [hoveredIndex],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -146,119 +132,112 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
     };
   }, []);
 
-  const calculateExtraPosition = useCallback(() => {
-    if (hoveredIndex === null || !buttonRefs.current[hoveredIndex]?.current || !dockRef.current) {
-      return { top: 0, left: 0 };
-    }
-
-    const button = buttonRefs.current[hoveredIndex].current!;
-    const dock = dockRef.current;
-
-    const buttonRect = button.getBoundingClientRect();
-    const dockRect = dock.getBoundingClientRect();
-
-    const buttonTop = buttonRect.top - dockRect.top;
-    const buttonLeft = buttonRect.left - dockRect.left;
-    const buttonCenterY = buttonTop + buttonRect.height / 2;
-    const buttonCenterX = buttonLeft + buttonRect.width / 2;
-
-    if (window.innerWidth >= 640) {
-      return {
-        top: buttonCenterY - 18,
-        right: dockRect.width - buttonLeft + 12,
-      };
-    }
-    return {
-      bottom: dockRect.height - buttonTop + 12,
-      left: buttonCenterX - buttonRect.width,
-    };
-  }, [hoveredIndex]);
-
-  // Update position when hoveredIndex changes or on initial show
-  useEffect(() => {
-    if (showExtra && hoveredIndex !== null) {
-      // Use requestAnimationFrame to ensure DOM has updated
-      requestAnimationFrame(() => {
-        setExtraPosition(calculateExtraPosition());
-      });
-    }
-  }, [showExtra, hoveredIndex, calculateExtraPosition]);
-
-  const hoveredItem = hoveredIndex !== null ? items[hoveredIndex] : null;
-
-  // Calculate content animation direction
   const getContentAnimationY = () => {
     if (previousIndex === null || hoveredIndex === null) return 0;
 
-    // If transitioning down (higher index), animate content up (negative Y)
-    // If transitioning up (lower index), animate content down (positive Y)
-    const direction = hoveredIndex > previousIndex ? -10 : 10;
+    const direction = hoveredIndex > previousIndex ? 5 : -5;
     return direction;
   };
 
-  return (
-    <div ref={ref} className={cn("flex items-center justify-center relative", className)}>
-      <AnimatePresence>
-        {showExtra && hoveredItem && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 25,
-            }}
-            layout
-            onMouseEnter={handleExtraMouseEnter}
-            onMouseLeave={handleExtraMouseLeave}
-            className={cn("absolute z-50 pointer-events-auto", "shadow-lg rounded-xl", "glass glass-dim")}
-            style={{
-              ...extraPosition,
-              transformOrigin: window.innerWidth >= 640 ? "right center" : "center bottom",
-              transform: window.innerWidth >= 640 ? "translateY(-50%)" : undefined,
-            }}
-          >
-            <motion.div
-              key={hoveredIndex} // Key to trigger re-render on index change
-              initial={{ y: getContentAnimationY(), opacity: 0.7 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              {hoveredItem.extra ? (
-                <div className="w-auto">{hoveredItem.extra}</div>
-              ) : (
-                <div className="px-3 py-2 text-sm font-medium text-foreground whitespace-nowrap">
-                  {hoveredItem.label}
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+  const hoveredItem = hoveredIndex !== null ? items[hoveredIndex] : null;
+  const [isDesktop, setIsDesktop] = useState(true);
 
-      <div
-        ref={dockRef}
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 640);
+    };
+
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  return (
+    <div ref={ref} className={cn("flex items-center justify-center", className)}>
+      <motion.div
+        layout
         className={cn(
-          "flex items-center gap-2 p-2 rounded-2xl w-full",
+          "relative flex items-center gap-2 p-2 rounded-2xl w-full",
           "flex-row justify-around sm:flex-col sm:justify-center sm:w-auto",
           "shadow-lg",
           "glass",
         )}
       >
+        <AnimatePresence mode="popLayout">
+          {showExtra && hoveredItem && hoveredIndex !== null && buttonRefs.current[hoveredIndex] && (
+            <div
+              className={cn(
+                "absolute z-50 pointer-events-auto",
+                !isDesktop && "-translate-x-1/2",
+              )}
+              style={{
+                ...(isDesktop ? {
+                  right: `calc(100% + 6px)`,
+                  top: `${buttonRefs.current[hoveredIndex]?.offsetTop + 6}px`,
+                  transform: `translateY(calc(-50% + ${buttonRefs.current[hoveredIndex]?.offsetHeight / 2}px))`,
+                } : {
+                  bottom: `calc(100% + 6px)`,
+                  left: `${buttonRefs.current[hoveredIndex]?.offsetLeft + buttonRefs.current[hoveredIndex]?.offsetWidth / 2}px`,
+                }),
+              }}
+            >
+              <motion.div
+                layoutId="dock-extra"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  transition: {
+                    opacity: { duration: 0.05 },
+                    scale: { type: "spring", stiffness: 300, damping: 25 },
+                    layout: { type: "spring", stiffness: 300, damping: 25 }
+                  }
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.8,
+                  transition: { duration: 0.05 }
+                }}
+                onMouseEnter={handleExtraMouseEnter}
+                onMouseLeave={handleExtraMouseLeave}
+                className={cn(
+                  "shadow-lg rounded-xl",
+                  "glass glass-dim",
+                )}
+              >
+                <motion.div
+                  key={hoveredIndex}
+                  initial={{ y: getContentAnimationY(), opacity: 0.7 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                >
+                  {hoveredItem.extra ? (
+                    <div className="w-auto">{hoveredItem.extra}</div>
+                  ) : (
+                    <div className="px-3 py-2 text-sm font-medium text-foreground whitespace-nowrap">
+                      {hoveredItem.label}
+                    </div>
+                  )}
+                </motion.div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
         {items.map((item, index) => (
-          <DockIconButton
+          <div
             key={item.label}
-            {...item}
-            buttonRef={buttonRefs.current[index]}
-            onHover={() => handleMouseEnter(index)}
-            onLeave={handleMouseLeave}
-          />
+            ref={el => { buttonRefs.current[index] = el; }}
+            className="relative"
+          >
+            <DockIconButton
+              {...item}
+              onHover={() => handleMouseEnter(index)}
+              onLeave={handleMouseLeave}
+            />
+          </div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 });
