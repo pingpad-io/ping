@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import type { Post } from "./Post";
-import PostWizard from "./PostWizard";
+import PostComposer from "./PostComposer";
 
-export const PostReplyWizard = ({
+export const PostReplyComposer = ({
   post,
   level,
   isOpen,
@@ -31,7 +31,7 @@ export const PostReplyWizard = ({
             }}
             className="w-[90%]"
           >
-            <PostWizard
+            <PostComposer
               replyingTo={post}
               onSuccess={(comment) => {
                 onCommentAdded?.(comment);

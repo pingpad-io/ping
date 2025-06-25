@@ -85,7 +85,7 @@ const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   );
 };
 
-export default function PostWizard({
+export default function PostComposer({
   user,
   replyingTo,
   quotedPost,
@@ -187,24 +187,24 @@ export default function PostWizard({
 
       const postData = replyingTo
         ? {
-            feed,
-            contentUri,
-            commentOn: {
-              post: replyingTo.id,
-            },
-          }
+          feed,
+          contentUri,
+          commentOn: {
+            post: replyingTo.id,
+          },
+        }
         : quotedPost
           ? {
-              feed,
-              contentUri,
-              quoteOf: {
-                post: quotedPost.id,
-              },
-            }
+            feed,
+            contentUri,
+            quoteOf: {
+              post: quotedPost.id,
+            },
+          }
           : {
-              feed,
-              contentUri,
-            };
+            feed,
+            contentUri,
+          };
 
       if (quotedPost) {
         const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
@@ -369,95 +369,99 @@ export default function PostWizard({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-row gap-2 w-full h-fit place-items-end justify-center"
+          className="flex flex-row gap-2 w-full items-center"
         >
           {user && (
-            <div className="w-10 h-10">
+            <div className="w-10 h-10 self-start">
               <UserAvatar user={user} link={true} card={false} />
             </div>
           )}
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem className="grow relative">
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    onChange={handleInputChange}
-                    onKeyDown={onKeyDown}
-                    placeholder={placeholderText}
-                    disabled={isPosting}
-                    autoComplete="off"
-                    className="min-h-8 resize-none px-2 py-2"
-                    ref={textarea}
-                    rows={1}
-                  />
-                </FormControl>
-
-                <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger className="absolute right-[3px] bottom-[3px]" asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="p-0 m-0 rounded-full w-8 h-8"
-                      onClick={() => setEmojiPickerOpen(!isEmojiPickerOpen)}
-                    >
-                      <SmileIcon className="h-5 w-5 text-base-content" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <EmojiPicker
-                      theme={theme as Theme}
-                      className="bg-card text-card-foreground"
-                      onEmojiClick={handleEmojiClick}
+          <div className="grow">
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem className="relative">
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      onChange={handleInputChange}
+                      onKeyDown={onKeyDown}
+                      placeholder={placeholderText}
+                      disabled={isPosting}
+                      autoComplete="off"
+                      className="min-h-[32px] resize-none px-3 py-1.5 glass glass-dim !bg-background/60 rounded-xl"
+                      ref={textarea}
+                      rows={1}
                     />
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <input ref={fileInputRef} onChange={handleFileChange} type="file" accept="image/*" className="hidden" />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="p-0 m-0 rounded-full w-8 h-8 absolute right-[35px] bottom-[3px]"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <ImageIcon className="h-5 w-5 text-base-content" />
-                </Button>
-                {showPopup && (
-                  <UserSearchPopup
-                    query={searchQuery}
-                    onSelectUser={handleSelectUser}
-                    onClose={() => setShowPopup(false)}
-                    position={popupPosition}
+                  </FormControl>
+                  {showPopup && (
+                    <UserSearchPopup
+                      query={searchQuery}
+                      onSelectUser={handleSelectUser}
+                      onClose={() => setShowPopup(false)}
+                      position={popupPosition}
+                    />
+                  )}
+                </FormItem>
+              )}
+            />
+
+            <div className="flex items-center gap-2 mt-2">
+              <input ref={fileInputRef} onChange={handleFileChange} type="file" accept="image/*" className="hidden" />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="p-0 m-0 rounded-full w-8 h-8"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <ImageIcon className="h-5 w-5 text-base-content" />
+              </Button>
+
+              <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="p-0 m-0 rounded-full w-8 h-8"
+                    onClick={() => setEmojiPickerOpen(!isEmojiPickerOpen)}
+                  >
+                    <SmileIcon className="h-5 w-5 text-base-content" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <EmojiPicker
+                    theme={theme as Theme}
+                    className="bg-card text-card-foreground"
+                    onEmojiClick={handleEmojiClick}
                   />
-                )}
-                {imageFile && (
-                  <div className="mt-2">
-                    <img src={URL.createObjectURL(imageFile)} alt="selected" className="max-h-40 rounded-md" />
-                  </div>
-                )}
-                {quotedPost && (
-                  <div className="mt-2 p-3 border rounded-lg bg-muted/50">
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="w-4 h-4">
-                        <UserAvatar user={quotedPost.author} link={false} card={false} />
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {quotedPost.author.name} @{quotedPost.author.handle}
-                      </span>
-                    </div>
-                    <p className="text-sm line-clamp-3">{quotedPost.metadata?.content || ""}</p>
-                  </div>
-                )}
-              </FormItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {imageFile && (
+              <div className="mt-2">
+                <img src={URL.createObjectURL(imageFile)} alt="selected" className="max-h-40 rounded-md" />
+              </div>
             )}
-          />
-          {!isEmpty && (
-            <Button disabled={isPosting} size="icon" type="submit" className="h-10 w-10">
-              {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon />}
-            </Button>
-          )}
+            {quotedPost && (
+              <div className="mt-2 p-3 border rounded-lg bg-muted/50">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-4 h-4">
+                    <UserAvatar user={quotedPost.author} link={false} card={false} />
+                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    {quotedPost.author.name} @{quotedPost.author.handle}
+                  </span>
+                </div>
+                <p className="text-sm line-clamp-3">{quotedPost.metadata?.content || ""}</p>
+              </div>
+            )}
+          </div>
+          <Button disabled={isPosting || isEmpty} size="icon" type="submit" className="h-8 w-8 self-start">
+            {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon className="h-4 w-4" />}
+          </Button>
         </form>
       </Form>
     </div>

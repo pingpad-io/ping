@@ -10,7 +10,7 @@ import { PostContextMenu } from "./PostContextMenu";
 import { PostInfo } from "./PostInfo";
 import { ReactionsList } from "./PostReactions";
 import { ReplyInfo } from "./PostReplyInfo";
-import { PostReplyWizard } from "./PostReplyWizard";
+import { PostReplyComposer } from "./PostReplyComposer";
 import { RepostInfo } from "./PostRepostInfo";
 
 type PostViewSettings = {
@@ -92,7 +92,7 @@ export const PostView = ({
         </Card>
       </PostContextMenu>
       {isReplyWizardOpen && (
-        <PostReplyWizard
+        <PostReplyComposer
           level={settings.level || 1}
           isOpen={isReplyWizardOpen}
           post={item}

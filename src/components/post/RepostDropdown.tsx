@@ -8,7 +8,7 @@ import { cn } from "~/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import type { Post } from "./Post";
-import PostWizard from "./PostWizard";
+import PostComposer from "./PostComposer";
 
 interface RepostDropdownProps {
   post: Post;
@@ -113,7 +113,7 @@ export default function RepostDropdown({ post, reactions, onRepostChange }: Repo
           <DialogHeader>
             <DialogTitle>Quote Post</DialogTitle>
           </DialogHeader>
-          <PostWizard
+          <PostComposer
             postType="post"
             quotedPost={post}
             onClose={() => setShowQuoteDialog(false)}
