@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
 import { motion } from "framer-motion";
+import { forwardRef } from "react";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
@@ -16,19 +16,17 @@ export const PostContent = forwardRef<
       <motion.div
         initial={false}
         animate={{
-          height: collapsed ? "7.5rem" : "auto"
+          height: collapsed ? "7.5rem" : "auto",
         }}
         transition={{
           type: "spring",
           stiffness: 300,
           damping: 25,
-          mass: 0.5
+          mass: 0.5,
         }}
         className="overflow-hidden relative"
       >
-        <div className="whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight">
-          {metadata}
-        </div>
+        <div className="whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight">{metadata}</div>
       </motion.div>
 
       {post.quoteOn && (

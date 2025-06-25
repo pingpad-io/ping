@@ -1,7 +1,6 @@
 "use client";
 import { BellIcon, BookmarkIcon, HomeIcon, SettingsIcon, UsersIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { BGPattern } from "./ui/bg-pattern";
 
 export const RouteTitle = () => {
   const pathname = usePathname();

@@ -7,7 +7,7 @@ import PingLogo from "~/components/icons/PingLogo";
 import { Dock } from "~/components/ui/dock";
 import { useNotifications } from "../notifications/NotificationsContext";
 import PostComposer from "../post/PostComposer";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent } from "../ui/dialog";
 import { UserAvatar } from "../user/UserAvatar";
 import { ConnectWalletButton } from "../web3/WalletButtons";
 import { UserMenuButtons } from "./UserMenu";
@@ -49,12 +49,12 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
       },
       ...(isLandingPage
         ? [
-          {
-            icon: Github,
-            label: "GitHub",
-            onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
-          },
-        ]
+            {
+              icon: Github,
+              label: "GitHub",
+              onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+            },
+          ]
         : []),
     ];
 
@@ -111,12 +111,12 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
     },
     ...(isLandingPage
       ? [
-        {
-          icon: Github,
-          label: "GitHub",
-          onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
-        },
-      ]
+          {
+            icon: Github,
+            label: "GitHub",
+            onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+          },
+        ]
       : []),
   ];
 

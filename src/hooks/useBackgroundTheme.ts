@@ -142,7 +142,7 @@ export function useBackgroundTheme() {
             setImageLoading(false);
             return imageUrl;
           }
-          if (result.errors && result.errors[0]?.includes("Rate Limit")) {
+          if (result.errors?.[0]?.includes("Rate Limit")) {
             alert("Unsplash rate limit exceeded. Please try again later or use a local image.");
           } else {
             console.error("Unsplash API error:", result);
@@ -160,7 +160,7 @@ export function useBackgroundTheme() {
       setImageLoading(false);
       return null;
     },
-    [setBackgroundImageUrl, setImageCredits, setImageLoading, setImageType]
+    [setBackgroundImageUrl, setImageCredits, setImageLoading, setImageType],
   );
 
   const selectLocalImage = useCallback(
@@ -174,7 +174,7 @@ export function useBackgroundTheme() {
       };
       reader.readAsDataURL(file);
     },
-    [setBackgroundImageUrl, setImageCredits, setImageType]
+    [setBackgroundImageUrl, setImageCredits, setImageType],
   );
 
   return {

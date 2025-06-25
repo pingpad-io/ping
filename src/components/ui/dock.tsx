@@ -148,8 +148,8 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
     };
 
     checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
   }, []);
 
   return (
@@ -166,19 +166,18 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
         <AnimatePresence mode="popLayout">
           {showExtra && hoveredItem && hoveredIndex !== null && buttonRefs.current[hoveredIndex] && (
             <div
-              className={cn(
-                "absolute z-50 pointer-events-auto",
-                !isDesktop && "-translate-x-1/2",
-              )}
+              className={cn("absolute z-50 pointer-events-auto", !isDesktop && "-translate-x-1/2")}
               style={{
-                ...(isDesktop ? {
-                  right: `calc(100% + 6px)`,
-                  top: `${buttonRefs.current[hoveredIndex]?.offsetTop}px`,
-                  transform: `translateY(calc(-50% + ${buttonRefs.current[hoveredIndex]?.offsetHeight / 2}px))`,
-                } : {
-                  bottom: `calc(100% + 6px)`,
-                  left: `${buttonRefs.current[hoveredIndex]?.offsetLeft + buttonRefs.current[hoveredIndex]?.offsetWidth / 2}px`,
-                }),
+                ...(isDesktop
+                  ? {
+                      right: "calc(100% + 6px)",
+                      top: `${buttonRefs.current[hoveredIndex]?.offsetTop}px`,
+                      transform: `translateY(calc(-50% + ${buttonRefs.current[hoveredIndex]?.offsetHeight / 2}px))`,
+                    }
+                  : {
+                      bottom: "calc(100% + 6px)",
+                      left: `${buttonRefs.current[hoveredIndex]?.offsetLeft + buttonRefs.current[hoveredIndex]?.offsetWidth / 2}px`,
+                    }),
               }}
             >
               <motion.div
@@ -190,20 +189,17 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
                   transition: {
                     opacity: { duration: 0.05 },
                     scale: { type: "spring", stiffness: 300, damping: 25 },
-                    layout: { type: "spring", stiffness: 300, damping: 25 }
-                  }
+                    layout: { type: "spring", stiffness: 300, damping: 25 },
+                  },
                 }}
                 exit={{
                   opacity: 0,
                   scale: 0.8,
-                  transition: { duration: 0.05 }
+                  transition: { duration: 0.05 },
                 }}
                 onMouseEnter={handleExtraMouseEnter}
                 onMouseLeave={handleExtraMouseLeave}
-                className={cn(
-                  "shadow-lg rounded-xl",
-                  "glass glass-dim",
-                )}
+                className={cn("shadow-lg rounded-xl", "glass glass-dim")}
               >
                 <motion.div
                   key={hoveredIndex}
@@ -227,14 +223,12 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
         {items.map((item, index) => (
           <div
             key={item.label}
-            ref={el => { buttonRefs.current[index] = el; }}
+            ref={(el) => {
+              buttonRefs.current[index] = el;
+            }}
             className="relative"
           >
-            <DockIconButton
-              {...item}
-              onHover={() => handleMouseEnter(index)}
-              onLeave={handleMouseLeave}
-            />
+            <DockIconButton {...item} onHover={() => handleMouseEnter(index)} onLeave={handleMouseLeave} />
           </div>
         ))}
       </motion.div>

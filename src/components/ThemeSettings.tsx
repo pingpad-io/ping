@@ -62,13 +62,13 @@ export function ThemeSettings() {
     setBlur,
     selectLocalImage,
   } = useBackgroundTheme();
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleModeChange = (mode: "none" | "gradient" | "image") => {
     setBackgroundMode(mode);
   };
-  
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -180,19 +180,8 @@ export function ThemeSettings() {
           {backgroundMode === "image" && (
             <div className="space-y-3 mt-4">
               <div className="flex gap-2">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="text-xs"
-                >
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+                <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="text-xs">
                   <ImageIcon className="w-3 h-3 mr-1" />
                   Choose an image
                 </Button>

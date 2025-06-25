@@ -10,6 +10,7 @@ import { ImageIcon, SendHorizontalIcon, SmileIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
@@ -101,12 +102,26 @@ export default function PostComposer({
   onSuccess?: (post?: Post | null) => void;
 }) {
   const textarea = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPosting, setPosting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      setImageFile(file);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+    onDrop,
+    accept: { "image/*": [] },
+    noClick: true,
+    noKeyboard: true,
+  });
+
   const placeholderText = replyingTo
     ? "write your reply..."
     : quotedPost
@@ -187,24 +202,24 @@ export default function PostComposer({
 
       const postData = replyingTo
         ? {
-          feed,
-          contentUri,
-          commentOn: {
-            post: replyingTo.id,
-          },
-        }
-        : quotedPost
-          ? {
             feed,
             contentUri,
-            quoteOf: {
-              post: quotedPost.id,
+            commentOn: {
+              post: replyingTo.id,
             },
           }
+        : quotedPost
+          ? {
+              feed,
+              contentUri,
+              quoteOf: {
+                post: quotedPost.id,
+              },
+            }
           : {
-            feed,
-            contentUri,
-          };
+              feed,
+              contentUri,
+            };
 
       if (quotedPost) {
         const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
@@ -270,11 +285,6 @@ export default function PostComposer({
       textarea.current.style.height = "auto";
       textarea.current.style.height = `${textarea.current.scrollHeight + 2}px`;
     }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setImageFile(file);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -365,12 +375,15 @@ export default function PostComposer({
   const { theme } = useTheme();
 
   return (
-    <div className="w-full">
+    <div className="w-full" {...getRootProps()}>
+      <input {...getInputProps()} />
+      {isDragActive && (
+        <div className="absolute inset-0 bg-black/20 z-50 flex items-center justify-center rounded-lg border-2 border-dashed border-primary">
+          <p className="text-white text-lg">Drop image to upload</p>
+        </div>
+      )}
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-row gap-2 w-full items-center"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row gap-2 w-full items-center">
           {user && (
             <div className="w-10 h-10 self-start">
               <UserAvatar user={user} link={true} card={false} />
@@ -393,6 +406,7 @@ export default function PostComposer({
                       className="min-h-[32px] resize-none px-3 py-1.5 glass glass-dim !bg-background/60 rounded-xl"
                       ref={textarea}
                       rows={1}
+                      {...getRootProps()}
                     />
                   </FormControl>
                   {showPopup && (
@@ -408,17 +422,15 @@ export default function PostComposer({
             />
 
             <div className="flex items-center gap-2 mt-2">
-              <input ref={fileInputRef} onChange={handleFileChange} type="file" accept="image/*" className="hidden" />
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
                 className="p-0 m-0 rounded-full w-8 h-8"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={open}
               >
                 <ImageIcon className="h-5 w-5 text-base-content" />
               </Button>
-
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button
