@@ -62,16 +62,6 @@ export const PostView = ({
               <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
                 <UserAvatar user={item.author} />
               </div>
-              {(settings.isComment || settings.inThread) && (
-                <div
-                  className={`w-full h-[90%] z-10 relative
-                    ${settings.isLastComment && "before:rounded-bl-lg before:border-b before:border-l before:w-[50%]"} 
-                    ${settings.inThread && "-mr-10 -mt-2"} 
-                    ${settings.isComment && "-mr-6 -mt-4 "} 
-                    ${(settings.isComment || settings.inThread) && !settings.isLastComment && "min-h-[calc(100%+2rem)] before:w-[50%]"} 
-                    before:absolute before:left-0 before:top-0 before:border-l before:border-border before:h-full`}
-                />
-              )}
             </span>
             <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
               {!settings.isComment && !settings.inThread && <RepostInfo post={item} />}

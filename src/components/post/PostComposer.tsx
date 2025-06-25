@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "../user/UserContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
@@ -101,6 +102,8 @@ export default function PostComposer({
   onClose?: () => void;
   onSuccess?: (post?: Post | null) => void;
 }) {
+  const { user: contextUser } = useUser();
+  const currentUser = user || contextUser;
   const textarea = useRef<HTMLTextAreaElement>(null);
   const [isPosting, setPosting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -384,9 +387,9 @@ export default function PostComposer({
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row gap-2 w-full items-center">
-          {user && (
-            <div className="w-10 h-10 self-start">
-              <UserAvatar user={user} link={true} card={false} />
+          {currentUser && (
+            <div className={`${replyingTo ? "w-8 h-8" : "w-10 h-10"} self-start`}>
+              <UserAvatar user={currentUser} link={true} card={false} />
             </div>
           )}
           <div className="grow">
