@@ -28,14 +28,16 @@ export const PostView = ({
   item,
   settings = { isComment: false, showBadges: true, level: 1 },
   defaultReplyOpen = false,
+  defaultExpanded = false,
 }: {
   item: Post;
   settings?: PostViewSettings;
   defaultReplyOpen?: boolean;
+  defaultExpanded?: boolean;
 }) => {
   const pathname = usePathname();
   const content = "content" in item.metadata ? (item.metadata.content as string) : "";
-  const [collapsed, setCollapsed] = useState(content.length > 400);
+  const [collapsed, setCollapsed] = useState(defaultExpanded ? false : content.length > 400);
   const [isCommentsOpen, setCommentsOpen] = useState(false);
   const [isReplyWizardOpen, setReplyWizardOpen] = useState(defaultReplyOpen);
   const [comments, setComments] = useState(item.comments);

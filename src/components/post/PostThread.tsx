@@ -95,7 +95,7 @@ export function PostThread({ post }: { post: Post }) {
       ))}
 
       <div ref={mainPostRef} className="relative min-h-screen">
-        <PostView item={post} />
+        <PostView item={post} defaultExpanded={true} />
       </div>
     </div>
   );
