@@ -82,7 +82,7 @@ export default function RepostDropdown({ post, reactions, onRepostChange }: Repo
           <button
             type="button"
             disabled={isLoading || (!reactions.canRepost && !reactions.canQuote)}
-            className={cn("group flex flex-row items-center gap-2 text-sm font-medium transition-all")}
+            className={cn("group flex flex-row items-center gap-2 text-sm sm:text-base font-medium transition-all")}
           >
             <span className={cn("min-w-[1ch]", reactions.reacted && "font-semibold")}>
               {reactions.count > 0 && reactions.count}
