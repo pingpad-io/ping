@@ -9,19 +9,44 @@ import {
   Repeat2Icon,
   UserPlusIcon,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "~/components/Link";
 import { TruncatedText } from "../TruncatedText";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatarArray } from "../user/UserAvatar";
 import type { Notification } from "./Notification";
 import { useNotifications } from "./NotificationsContext";
+import { useFilteredUsers } from "../FilteredUsersContext";
+import { ContextMenu as Context, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
+import { ExternalLinkIcon, ShieldIcon, ShieldOffIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
+import { useUserActions } from "~/hooks/useUserActions";
+import { useUser } from "../user/UserContext";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const NotificationView = ({ item }: { item: Notification }) => {
   const { markAllAsRead, lastSeen } = useNotifications();
+  const { mutedUsers, blockedUsers } = useFilteredUsers();
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user } = useUser();
+  const [isDissolving, setIsDissolving] = useState(false);
+  const [shouldHide, setShouldHide] = useState(false);
+  
+  // Get the primary user (first in the list) for context menu actions
+  const primaryUser = item.who[0];
+  const { muteUser, unmuteUser, blockUser, unblockUser } = useUserActions(primaryUser || undefined);
 
   const notificationTime = new Date(item.createdAt).getTime();
   const highlight = lastSeen !== null && notificationTime > lastSeen;
+
+  const hasMutedUser = item.who.some((user) => user.actions?.muted || mutedUsers.has(user.id));
+  const hasBlockedUser = item.who.some((user) => user.actions?.blocked || blockedUsers.has(user.id));
+  const isJustMuted = item.who.some((user) => mutedUsers.has(user.id));
+  const isJustBlocked = item.who.some((user) => blockedUsers.has(user.id));
+  
+  const isOnUserProfile = item.who.some((user) => pathname?.startsWith(`/u/${user.handle}`));
 
   useEffect(() => {
     setTimeout(() => {
@@ -31,6 +56,20 @@ export const NotificationView = ({ item }: { item: Notification }) => {
       }
     }, 300);
   }, [highlight]);
+
+  useEffect(() => {
+    if ((isJustMuted || isJustBlocked) && !isOnUserProfile) {
+      setIsDissolving(true);
+      const timer = setTimeout(() => {
+        setShouldHide(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isJustMuted, isJustBlocked, isOnUserProfile]);
+
+  if (((hasMutedUser || hasBlockedUser) && !isOnUserProfile) || shouldHide) {
+    return null;
+  }
 
   const post = (
     <Link className="hover:underline" href={`/p/${item?.actedOn?.id}`}>
@@ -130,8 +169,99 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   }
 
   return (
-    <Card className={highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"}>
-      <CardContent className="flex h-fit w-full flex-row gap-4 p-2 sm:p-4">
+    <>
+      {isDissolving && (
+        <svg className="absolute" width="0" height="0">
+          <defs>
+            <filter id={`dissolve-${item.id}`}>
+              <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="turbulence" />
+              <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="20" xChannelSelector="R" yChannelSelector="G" />
+              <feGaussianBlur stdDeviation="5" />
+              <animate attributeName="stdDeviation" values="0;10" dur="1s" fill="freeze" />
+            </filter>
+          </defs>
+        </svg>
+      )}
+      <Context>
+        <ContextMenuContent
+          onContextMenu={(e) => {
+            e.stopPropagation();
+          }}
+          className="flex flex-col w-max gap-1 p-1 rounded-lg border"
+        >
+          {primaryUser && (
+            <>
+              <ContextMenuItem 
+                onClick={() => {
+                  router.push(`/u/${primaryUser.handle}`);
+                }}
+              >
+                <ExternalLinkIcon size={12} className="mr-2 h-4 w-4" />
+                view profile
+              </ContextMenuItem>
+              
+              {user?.id !== primaryUser.id && (
+                <>
+                  <ContextMenuItem
+                    onClick={() => {
+                      if (primaryUser.actions?.muted) {
+                        unmuteUser();
+                      } else {
+                        muteUser();
+                      }
+                    }}
+                  >
+                    {primaryUser.actions?.muted ? (
+                      <Volume2Icon size={12} className="mr-2 h-4 w-4" />
+                    ) : (
+                      <VolumeXIcon size={12} className="mr-2 h-4 w-4" />
+                    )}
+                    {primaryUser.actions?.muted ? "unmute user" : "mute user"}
+                  </ContextMenuItem>
+                  
+                  <ContextMenuItem
+                    onClick={() => {
+                      if (primaryUser.actions?.blocked) {
+                        unblockUser();
+                      } else {
+                        blockUser();
+                      }
+                    }}
+                  >
+                    {primaryUser.actions?.blocked ? (
+                      <ShieldOffIcon size={12} className="mr-2 h-4 w-4" />
+                    ) : (
+                      <ShieldIcon size={12} className="mr-2 h-4 w-4" />
+                    )}
+                    {primaryUser.actions?.blocked ? "unblock user" : "block user"}
+                  </ContextMenuItem>
+                </>
+              )}
+              
+              {item.who.length > 1 && (
+                <ContextMenuItem
+                  onClick={() => {
+                    toast.info(`This notification involves ${item.who.length} users`);
+                  }}
+                  disabled
+                  className="text-muted-foreground text-xs"
+                >
+                  +{item.who.length - 1} more {item.who.length - 1 === 1 ? "user" : "users"}
+                </ContextMenuItem>
+              )}
+            </>
+          )}
+        </ContextMenuContent>
+        <ContextMenuTrigger asChild>
+          <Card 
+            className={highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"}
+            style={{
+              filter: isDissolving ? `url(#dissolve-${item.id})` : undefined,
+              opacity: isDissolving ? 0 : 1,
+              transition: "opacity 1s ease-out",
+            }}
+          >
+            <CardContent className="flex h-fit w-full flex-row gap-4 p-2 sm:p-4">
         <div className="shrink-0 grow-0 rounded-full">
           <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />
         </div>
@@ -170,7 +300,10 @@ export const NotificationView = ({ item }: { item: Notification }) => {
             </Link>
           )}
         </div>
-      </CardContent>
-    </Card>
+            </CardContent>
+          </Card>
+        </ContextMenuTrigger>
+      </Context>
+    </>
   );
 };

@@ -44,17 +44,10 @@ export const PostView = ({
   const postContentRef = useRef<HTMLDivElement>(null);
   const { mutedUsers, blockedUsers } = useFilteredUsers();
 
-  // Generate a unique filter ID for this post's dissolve effect
   const dissolveFilterId = useMemo(() => `dissolve-${item.id}-${Date.now()}`, [item.id]);
-
-  // Check if the post author is muted or blocked
   const isMuted = item.author.actions?.muted;
   const isBlocked = item.author.actions?.blocked;
-
-  // Check if we're on the muted/blocked user's profile page
   const isOnUserProfile = pathname?.startsWith(`/u/${item.author.handle}`);
-
-  // Check if user was just muted or blocked
   const isJustMuted = mutedUsers.has(item.author.id);
   const isJustBlocked = blockedUsers.has(item.author.id);
 
