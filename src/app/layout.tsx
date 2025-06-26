@@ -7,6 +7,7 @@ import { PageTransition } from "~/components/PageTransition";
 import { Providers } from "~/components/Providers";
 import { Toaster } from "~/components/ui/sonner";
 import { UserProvider } from "~/components/user/UserContext";
+import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
@@ -36,16 +37,18 @@ export default async function RootLayout({ children }) {
       <body className="flex flex-col relative h-screen overflow-hidden">
         <Providers>
           <UserProvider user={user}>
-            <NotificationsProvider>
-              <BackgroundGradient />
-              <AuthWatcher />
-              <Toaster position="top-right" offset={16} />
-              <Menu isAuthenticated={!!profileId} user={user} handle={handle} profileId={profileId} />
+            <FilteredUsersProvider>
+              <NotificationsProvider>
+                <BackgroundGradient />
+                <AuthWatcher />
+                <Toaster position="top-right" offset={16} />
+                <Menu isAuthenticated={!!profileId} user={user} handle={handle} profileId={profileId} />
 
-              <PageTransition>
-                <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>
-              </PageTransition>
-            </NotificationsProvider>
+                <PageTransition>
+                  <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>
+                </PageTransition>
+              </NotificationsProvider>
+            </FilteredUsersProvider>
           </UserProvider>
         </Providers>
       </body>

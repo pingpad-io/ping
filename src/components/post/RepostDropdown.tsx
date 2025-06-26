@@ -110,9 +110,6 @@ export default function RepostDropdown({ post, reactions, onRepostChange }: Repo
 
       <Dialog open={showQuoteDialog} onOpenChange={setShowQuoteDialog}>
         <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Quote Post</DialogTitle>
-          </DialogHeader>
           <PostComposer
             postType="post"
             quotedPost={post}

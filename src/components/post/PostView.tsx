@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
+import { usePathname } from "next/navigation";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
@@ -12,6 +13,8 @@ import { ReactionsList } from "./PostReactions";
 import { ReplyInfo } from "./PostReplyInfo";
 import { PostReplyComposer } from "./PostReplyComposer";
 import { RepostInfo } from "./PostRepostInfo";
+import { useFilteredUsers } from "../FilteredUsersContext";
+import { DissolveFilter } from "../DissolveFilter";
 
 type PostViewSettings = {
   showBadges?: boolean;
@@ -30,12 +33,44 @@ export const PostView = ({
   settings?: PostViewSettings;
   defaultReplyOpen?: boolean;
 }) => {
+  const pathname = usePathname();
   const content = "content" in item.metadata ? (item.metadata.content as string) : "";
   const [collapsed, setCollapsed] = useState(content.length > 400);
   const [isCommentsOpen, setCommentsOpen] = useState(false);
   const [isReplyWizardOpen, setReplyWizardOpen] = useState(defaultReplyOpen);
   const [comments, setComments] = useState(item.comments);
+  const [isDissolving, setIsDissolving] = useState(false);
+  const [shouldHide, setShouldHide] = useState(false);
   const postContentRef = useRef<HTMLDivElement>(null);
+  const { filteredUsers } = useFilteredUsers();
+  
+  // Generate a unique filter ID for this post's dissolve effect
+  const dissolveFilterId = useMemo(() => `dissolve-${item.id}-${Date.now()}`, [item.id]);
+
+  // Check if the post author is muted
+  const isMuted = item.author.actions?.muted;
+  
+  // Check if we're on the muted user's profile page
+  const isOnUserProfile = pathname?.startsWith(`/u/${item.author.handle}`);
+  
+  // Check if user was just muted
+  const isJustMuted = filteredUsers.has(item.author.id);
+  
+  useEffect(() => {
+    if (isJustMuted && !isOnUserProfile) {
+      setIsDissolving(true);
+      // Start dissolve animation
+      const timer = setTimeout(() => {
+        setShouldHide(true);
+      }, 1000); // Duration of dissolve animation
+      return () => clearTimeout(timer);
+    }
+  }, [isJustMuted, isOnUserProfile]);
+  
+  // Don't show posts from muted users unless we're on their profile page
+  if ((isMuted && !isOnUserProfile) || shouldHide) {
+    return null;
+  }
 
   const handleReply = () => {
     setReplyWizardOpen(true);
@@ -49,7 +84,18 @@ export const PostView = ({
   };
 
   return (
-    <div className={"flex flex-col w-full gap-0.5"}>
+    <>
+      {isDissolving && <DissolveFilter filterId={dissolveFilterId} />}
+      <div 
+        className={`flex flex-col w-full gap-0.5 overflow-hidden ${isDissolving ? 'dissolving' : ''}`}
+        style={{
+          filter: isDissolving ? `url(#${dissolveFilterId})` : 'none',
+          opacity: isDissolving ? 0 : 1,
+          maxHeight: isDissolving ? '0px' : '9999px',
+          transition: 'opacity 1s ease-out, max-height 1.0s ease-out',
+          marginBottom: isDissolving ? '0' : undefined,
+        }}
+      >
       <PostContextMenu post={item} onReply={handleReply}>
         <Card
           className="glass duration-300 transition-all z-20"
@@ -98,6 +144,7 @@ export const PostView = ({
           setComments={setComments}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 };

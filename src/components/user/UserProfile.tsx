@@ -1,25 +1,50 @@
+"use client";
+
 import type { AccountStats } from "@lens-protocol/client";
-import { CalendarIcon, EditIcon, MessageCircleIcon } from "lucide-react";
-import { notFound } from "next/navigation";
+import { CalendarIcon, EditIcon, MessageCircleIcon, VolumeXIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import Link from "~/components/Link";
 import { TimeSince } from "~/components/TimeLabel";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
-import { getServerAuth } from "~/utils/getServerAuth";
 import { FollowButton } from "../FollowButton";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import { type User } from "./User";
 import { UserFollowing } from "./UserFollowing";
+import { useUser } from "./UserContext";
+import { useFilteredUsers } from "../FilteredUsersContext";
 
-export const UserProfile = async ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
-  if (!user) return notFound();
+export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
+  if (!user) return null;
 
-  const { user: authedUser } = await getServerAuth();
+  const router = useRouter();
+  const { user: authedUser } = useUser();
+  const { removeFilteredUser } = useFilteredUsers();
+  const [isHovered, setIsHovered] = useState(false);
   const isUserProfile = user.id === authedUser?.id;
   const isFollowingMe = user.actions.following;
+  const isMuted = user.actions?.muted;
   const postsCount = (stats?.feedStats.posts ?? 0) + (stats?.feedStats.comments ?? 0);
   const followingCount = stats?.graphFollowStats.following ?? 0;
   const followersCount = stats?.graphFollowStats.followers ?? 0;
+
+  const unmuteUser = async () => {
+    removeFilteredUser(user.id);
+    const result = await fetch(`/api/user/${user.id}/unmute`, {
+      method: "POST",
+    });
+    const data = await result.json();
+  
+    if (result.ok) {
+      toast.success("User unmuted successfully!");
+      router.refresh();
+    } else {
+      toast.error(`${data.error}`);
+    }
+  };
 
   return (
     <div className="p-4 z-20 flex w-full flex-row gap-4 glass drop-shadow-md mt-4 rounded-xl">
@@ -32,8 +57,27 @@ export const UserProfile = async ({ user, stats }: { user?: User; stats?: Accoun
       <div className="flex flex-col grow place-content-around">
         <div className="flex flex-row gap-2 items-center justify-between h-10">
           <span className="flex flex-row gap-2 items-center">
-            <div className="text-lg font-bold w-fit truncate">{user.name}</div>
-            <div className="text-sm text-base-content font-light">@{user.handle}</div>
+            <div className="text-lg font-bold w-fit truncate leading-none">{user.name}</div>
+            <div className="text-sm text-base-content font-light leading-none">@{user.handle}</div>
+            {isMuted && !isUserProfile && (
+              <div
+                className="flex items-center"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={unmuteUser}
+                  className={`h-6 px-2 transition-all duration-200 ${isHovered ? 'pr-2' : ''}`}
+                >
+                  <VolumeXIcon size={16} className="shrink-0" />
+                  <span className={`text-xs ml-1 overflow-hidden transition-all duration-200 ${isHovered ? 'max-w-[45px] opacity-100' : 'max-w-0 opacity-0'}`}>
+                    Unmute
+                  </span>
+                </Button>
+              </div>
+            )}
             {isUserProfile && (
               <Link className="btn btn-square btn-sm btn-ghost" href="/settings">
                 <EditIcon size={14} />

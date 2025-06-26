@@ -216,6 +216,16 @@
   --epr-text-color: var(--card-foreground);
 }
 
+/* Dissolve animation helper - actual effect is handled by SVG filter */
+.dissolving {
+  pointer-events: none;
+  position: relative;
+}
+
+.dissolving > * {
+  transform-origin: top center;
+}
+
 /* OverlayScrollbars Custom Theme */
 .os-scrollbar {
   --os-size: 6px;

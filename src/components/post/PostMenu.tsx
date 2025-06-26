@@ -1,5 +1,5 @@
 "use client";
-import { EditIcon, ExternalLinkIcon, MaximizeIcon, ReplyIcon, Share2Icon, TrashIcon } from "lucide-react";
+import { EditIcon, ExternalLinkIcon, MaximizeIcon, ReplyIcon, Share2Icon, TrashIcon, UserXIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "~/components/Link";
@@ -7,6 +7,7 @@ import { getBaseUrl } from "~/utils/getBaseUrl";
 import { Button } from "../ui/button";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
+import { useFilteredUsers } from "../FilteredUsersContext";
 
 export const PostMenu = ({
   post,
@@ -20,10 +21,12 @@ export const PostMenu = ({
   const router = useRouter();
   const author = post.author;
   const { user } = useUser();
+  const { addFilteredUser, removeFilteredUser } = useFilteredUsers();
 
   const baseUrl = getBaseUrl();
   const postLink = `${baseUrl}p/${post.id}`;
   const shareLink = postLink;
+  const isMuted = post.author.actions.muted;
 
   const setEditingQuery = () => {
     toast.error("Not implemented yet");
@@ -39,6 +42,57 @@ export const PostMenu = ({
 
     if (result.ok) {
       toast.success("Post deleted successfully!");
+    } else {
+      toast.error(`${data.error}`);
+    }
+    onMenuAction?.();
+  };
+
+  const muteUser = async () => {
+    // Add to muted users immediately to trigger animation
+    addFilteredUser(author.id);
+    
+    const result = await fetch(`/api/user/${author.id}/mute`, {
+      method: "POST",
+    });
+    const data = await result.json();
+
+    if (result.ok) {
+      toast.success("User muted successfully!", {
+        action: {
+          label: "Undo",
+          onClick: () => {
+            removeFilteredUser(author.id);
+            unmuteUser();
+          },
+        },
+      });
+      router.refresh();
+    } else {
+      // Revert on error
+      removeFilteredUser(author.id);
+      toast.error(`${data.error}`);
+    }
+    onMenuAction?.();
+  };
+
+  const unmuteUser = async () => {
+    // Remove from muted users
+    removeFilteredUser(author.id);
+    
+    const result = await fetch(`/api/user/${author.id}/unmute`, {
+      method: "POST",
+    });
+    const data = await result.json();
+  
+    if (result.ok) {
+      toast.success("User unmuted successfully!", {
+        action: {
+          label: "Undo",
+          onClick: () => muteUser(),
+        },
+      });
+      router.refresh();
     } else {
       toast.error(`${data.error}`);
     }
@@ -93,6 +147,18 @@ export const PostMenu = ({
         <Share2Icon size={12} className="mr-2 h-4 w-4" />
         share
       </Button>
+      {user?.id !== author.id && (
+        <Button
+          size="context"
+          variant="ghost"
+          onClick={() => {
+            isMuted ? unmuteUser() : muteUser();
+          }}
+        >
+          {isMuted ? <Volume2Icon size={12} className="mr-2 h-4 w-4" /> : <VolumeXIcon size={12} className="mr-2 h-4 w-4" />}
+          {isMuted ? "unmute user" : "mute user"}
+        </Button>
+      )}
       {user?.id === author.id && (
         <>
           <Button size="context" variant="ghost" onClick={setEditingQuery} disabled>
