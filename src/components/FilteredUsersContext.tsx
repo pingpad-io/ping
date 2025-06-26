@@ -1,24 +1,40 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 
 type FilteredUsersContextType = {
-  filteredUsers: Set<string>;
-  addFilteredUser: (userId: string) => void;
-  removeFilteredUser: (userId: string) => void;
+  mutedUsers: Set<string>;
+  blockedUsers: Set<string>;
+  addMutedUser: (userId: string) => void;
+  removeMutedUser: (userId: string) => void;
+  addBlockedUser: (userId: string) => void;
+  removeBlockedUser: (userId: string) => void;
 };
 
 const FilteredUsersContext = createContext<FilteredUsersContextType | undefined>(undefined);
 
 export const FilteredUsersProvider = ({ children }: { children: ReactNode }) => {
-  const [filteredUsers, setFilteredUsers] = useState<Set<string>>(new Set());
+  const [mutedUsers, setMutedUsers] = useState<Set<string>>(new Set());
+  const [blockedUsers, setBlockedUsers] = useState<Set<string>>(new Set());
 
-  const addFilteredUser = (userId: string) => {
-    setFilteredUsers((prev) => new Set(prev).add(userId));
+  const addMutedUser = (userId: string) => {
+    setMutedUsers((prev) => new Set(prev).add(userId));
   };
 
-  const removeFilteredUser = (userId: string) => {
-    setFilteredUsers((prev) => {
+  const removeMutedUser = (userId: string) => {
+    setMutedUsers((prev) => {
+      const next = new Set(prev);
+      next.delete(userId);
+      return next;
+    });
+  };
+
+  const addBlockedUser = (userId: string) => {
+    setBlockedUsers((prev) => new Set(prev).add(userId));
+  };
+
+  const removeBlockedUser = (userId: string) => {
+    setBlockedUsers((prev) => {
       const next = new Set(prev);
       next.delete(userId);
       return next;
@@ -26,7 +42,9 @@ export const FilteredUsersProvider = ({ children }: { children: ReactNode }) => 
   };
 
   return (
-    <FilteredUsersContext.Provider value={{ filteredUsers, addFilteredUser, removeFilteredUser }}>
+    <FilteredUsersContext.Provider
+      value={{ mutedUsers, blockedUsers, addMutedUser, removeMutedUser, addBlockedUser, removeBlockedUser }}
+    >
       {children}
     </FilteredUsersContext.Provider>
   );

@@ -1,7 +1,9 @@
 "use client";
 
-import { useRef, useState, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { DissolveFilter } from "../DissolveFilter";
+import { useFilteredUsers } from "../FilteredUsersContext";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
@@ -10,11 +12,9 @@ import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
 import { PostInfo } from "./PostInfo";
 import { ReactionsList } from "./PostReactions";
-import { ReplyInfo } from "./PostReplyInfo";
 import { PostReplyComposer } from "./PostReplyComposer";
+import { ReplyInfo } from "./PostReplyInfo";
 import { RepostInfo } from "./PostRepostInfo";
-import { useFilteredUsers } from "../FilteredUsersContext";
-import { DissolveFilter } from "../DissolveFilter";
 
 type PostViewSettings = {
   showBadges?: boolean;
@@ -42,33 +42,34 @@ export const PostView = ({
   const [isDissolving, setIsDissolving] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const postContentRef = useRef<HTMLDivElement>(null);
-  const { filteredUsers } = useFilteredUsers();
-  
+  const { mutedUsers, blockedUsers } = useFilteredUsers();
+
   // Generate a unique filter ID for this post's dissolve effect
   const dissolveFilterId = useMemo(() => `dissolve-${item.id}-${Date.now()}`, [item.id]);
 
-  // Check if the post author is muted
+  // Check if the post author is muted or blocked
   const isMuted = item.author.actions?.muted;
-  
-  // Check if we're on the muted user's profile page
+  const isBlocked = item.author.actions?.blocked;
+
+  // Check if we're on the muted/blocked user's profile page
   const isOnUserProfile = pathname?.startsWith(`/u/${item.author.handle}`);
-  
-  // Check if user was just muted
-  const isJustMuted = filteredUsers.has(item.author.id);
-  
+
+  // Check if user was just muted or blocked
+  const isJustMuted = mutedUsers.has(item.author.id);
+  const isJustBlocked = blockedUsers.has(item.author.id);
+
   useEffect(() => {
-    if (isJustMuted && !isOnUserProfile) {
+    if ((isJustMuted || isJustBlocked) && !isOnUserProfile) {
       setIsDissolving(true);
-      // Start dissolve animation
       const timer = setTimeout(() => {
         setShouldHide(true);
-      }, 1000); // Duration of dissolve animation
+      }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [isJustMuted, isOnUserProfile]);
-  
-  // Don't show posts from muted users unless we're on their profile page
-  if ((isMuted && !isOnUserProfile) || shouldHide) {
+  }, [isJustMuted, isJustBlocked, isOnUserProfile]);
+
+  // Don't show posts from muted or blocked users unless we're on their profile page
+  if (((isMuted || isBlocked) && !isOnUserProfile) || shouldHide) {
     return null;
   }
 
@@ -76,74 +77,69 @@ export const PostView = ({
     setReplyWizardOpen(true);
   };
 
-  const handleCommentAdded = (comment?: Post | null) => {
-    if (comment) {
-      setComments((prev) => [...prev, comment]);
-      setCommentsOpen(true);
-    }
-  };
-
   return (
     <>
       {isDissolving && <DissolveFilter filterId={dissolveFilterId} />}
-      <div 
-        className={`flex flex-col w-full gap-0.5 overflow-hidden ${isDissolving ? 'dissolving' : ''}`}
+      <div
+        className={`flex flex-col w-full gap-0.5 overflow-hidden ${isDissolving ? "dissolving" : ""}`}
         style={{
-          filter: isDissolving ? `url(#${dissolveFilterId})` : 'none',
+          filter: isDissolving ? `url(#${dissolveFilterId})` : "none",
           opacity: isDissolving ? 0 : 1,
-          maxHeight: isDissolving ? '0px' : '9999px',
-          transition: 'opacity 1s ease-out, max-height 1.0s ease-out',
-          marginBottom: isDissolving ? '0' : undefined,
+          maxHeight: isDissolving ? "0px" : "9999px",
+          transition: "opacity 1s ease-out, max-height 1.0s ease-out",
+          marginBottom: isDissolving ? "0" : undefined,
         }}
       >
-      <PostContextMenu post={item} onReply={handleReply}>
-        <Card
-          className="glass duration-300 transition-all z-20"
-          onClick={() => {
-            setCollapsed(false);
-          }}
-        >
-          <CardContent className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}>
-            <span className="min-h-full flex flex-col justify-start items-center relative">
-              <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
-                <UserAvatar user={item.author} />
+        <PostContextMenu post={item} onReply={handleReply}>
+          <Card
+            className="glass duration-300 transition-all z-20"
+            onClick={() => {
+              setCollapsed(false);
+            }}
+          >
+            <CardContent
+              className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}
+            >
+              <span className="min-h-full flex flex-col justify-start items-center relative">
+                <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
+                  <UserAvatar user={item.author} />
+                </div>
+              </span>
+              <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
+                {!settings.isComment && !settings.inThread && <RepostInfo post={item} />}
+                {!settings.isComment && !settings.inThread && !item.quoteOn && <ReplyInfo post={item} />}
+                <PostInfo post={item} onReply={handleReply} />
+                <PostContent ref={postContentRef} post={item} collapsed={collapsed} setCollapsed={setCollapsed} />
+                {settings?.showBadges && (
+                  <ReactionsList
+                    isComment={settings.isComment}
+                    isCommentsOpen={isCommentsOpen}
+                    setCommentsOpen={setCommentsOpen}
+                    collapsed={collapsed}
+                    post={item}
+                  />
+                )}
               </div>
-            </span>
-            <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
-              {!settings.isComment && !settings.inThread && <RepostInfo post={item} />}
-              {!settings.isComment && !settings.inThread && !item.quoteOn && <ReplyInfo post={item} />}
-              <PostInfo post={item} onReply={handleReply} />
-              <PostContent ref={postContentRef} post={item} collapsed={collapsed} setCollapsed={setCollapsed} />
-              {settings?.showBadges && (
-                <ReactionsList
-                  isComment={settings.isComment}
-                  isCommentsOpen={isCommentsOpen}
-                  setCommentsOpen={setCommentsOpen}
-                  collapsed={collapsed}
-                  post={item}
-                />
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </PostContextMenu>
-      {isReplyWizardOpen && (
-        <PostReplyComposer
-          level={settings.level || 1}
-          isOpen={isReplyWizardOpen}
-          post={item}
-          setOpen={setReplyWizardOpen}
-        />
-      )}
-      {isCommentsOpen && (
-        <PostComments
-          level={settings.level + 1}
-          isOpen={isCommentsOpen}
-          post={item}
-          comments={comments}
-          setComments={setComments}
-        />
-      )}
+            </CardContent>
+          </Card>
+        </PostContextMenu>
+        {isReplyWizardOpen && (
+          <PostReplyComposer
+            level={settings.level || 1}
+            isOpen={isReplyWizardOpen}
+            post={item}
+            setOpen={setReplyWizardOpen}
+          />
+        )}
+        {isCommentsOpen && (
+          <PostComments
+            level={settings.level + 1}
+            isOpen={isCommentsOpen}
+            post={item}
+            comments={comments}
+            setComments={setComments}
+          />
+        )}
       </div>
     </>
   );

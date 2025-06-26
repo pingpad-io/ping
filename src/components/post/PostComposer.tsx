@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "../user/UserContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
@@ -28,6 +27,7 @@ import { Textarea } from "../ui/textarea";
 import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
+import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
 import { lensItemToPost } from "./Post";
 
@@ -425,13 +425,7 @@ export default function PostComposer({
             />
 
             <div className="flex items-center gap-2 mt-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="p-0 m-0 rounded-full w-8 h-8"
-                onClick={open}
-              >
+              <Button type="button" variant="ghost" size="sm" className="p-0 m-0 rounded-full w-8 h-8" onClick={open}>
                 <ImageIcon className="h-5 w-5 text-base-content" />
               </Button>
               <DropdownMenu modal={false}>

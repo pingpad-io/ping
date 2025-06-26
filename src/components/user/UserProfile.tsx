@@ -1,50 +1,37 @@
 "use client";
 
 import type { AccountStats } from "@lens-protocol/client";
-import { CalendarIcon, EditIcon, MessageCircleIcon, VolumeXIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { CalendarIcon, EditIcon, MessageCircleIcon, ShieldOffIcon, VolumeXIcon } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import Link from "~/components/Link";
 import { TimeSince } from "~/components/TimeLabel";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
+import { useUserActions } from "~/hooks/useUserActions";
 import { FollowButton } from "../FollowButton";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { type User } from "./User";
-import { UserFollowing } from "./UserFollowing";
 import { useUser } from "./UserContext";
-import { useFilteredUsers } from "../FilteredUsersContext";
+import { UserFollowing } from "./UserFollowing";
 
 export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
+  const { user: authedUser } = useUser();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isBlockedHovered, setIsBlockedHovered] = useState(false);
+  const userActions = user ? useUserActions(user) : null;
+
   if (!user) return null;
 
-  const router = useRouter();
-  const { user: authedUser } = useUser();
-  const { removeFilteredUser } = useFilteredUsers();
-  const [isHovered, setIsHovered] = useState(false);
+  const { muteUser, unmuteUser, blockUser, unblockUser } = userActions!;
+
   const isUserProfile = user.id === authedUser?.id;
   const isFollowingMe = user.actions.following;
   const isMuted = user.actions?.muted;
+  const isBlocked = user.actions?.blocked;
   const postsCount = (stats?.feedStats.posts ?? 0) + (stats?.feedStats.comments ?? 0);
   const followingCount = stats?.graphFollowStats.following ?? 0;
   const followersCount = stats?.graphFollowStats.followers ?? 0;
-
-  const unmuteUser = async () => {
-    removeFilteredUser(user.id);
-    const result = await fetch(`/api/user/${user.id}/unmute`, {
-      method: "POST",
-    });
-    const data = await result.json();
-  
-    if (result.ok) {
-      toast.success("User unmuted successfully!");
-      router.refresh();
-    } else {
-      toast.error(`${data.error}`);
-    }
-  };
 
   return (
     <div className="p-4 z-20 flex w-full flex-row gap-4 glass drop-shadow-md mt-4 rounded-xl">
@@ -69,11 +56,34 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
                   variant="ghost"
                   size="sm"
                   onClick={unmuteUser}
-                  className={`h-6 px-2 transition-all duration-200 ${isHovered ? 'pr-2' : ''}`}
+                  className={`h-6 px-2 transition-all duration-200 ${isHovered ? "pr-2" : ""}`}
                 >
                   <VolumeXIcon size={16} className="shrink-0" />
-                  <span className={`text-xs ml-1 overflow-hidden transition-all duration-200 ${isHovered ? 'max-w-[45px] opacity-100' : 'max-w-0 opacity-0'}`}>
+                  <span
+                    className={`text-xs ml-1 overflow-hidden transition-all duration-200 ${isHovered ? "max-w-[45px] opacity-100" : "max-w-0 opacity-0"}`}
+                  >
                     Unmute
+                  </span>
+                </Button>
+              </div>
+            )}
+            {isBlocked && !isUserProfile && (
+              <div
+                className="flex items-center"
+                onMouseEnter={() => setIsBlockedHovered(true)}
+                onMouseLeave={() => setIsBlockedHovered(false)}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={unblockUser}
+                  className={`h-6 px-2 transition-all duration-200 ${isBlockedHovered ? "pr-2" : ""}`}
+                >
+                  <ShieldOffIcon size={16} className="shrink-0" />
+                  <span
+                    className={`text-xs ml-1 overflow-hidden transition-all duration-200 ${isBlockedHovered ? "max-w-[60px] opacity-100" : "max-w-0 opacity-0"}`}
+                  >
+                    Unblock
                   </span>
                 </Button>
               </div>

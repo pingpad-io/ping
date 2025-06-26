@@ -1,9 +1,9 @@
-import { getServerAuth } from "~/utils/getServerAuth";
-import { NextRequest, NextResponse } from "next/server";
-import { muteAccount } from "@lens-protocol/client/actions";
 import { evmAddress } from "@lens-protocol/client";
+import { muteAccount } from "@lens-protocol/client/actions";
+import { NextRequest, NextResponse } from "next/server";
+import { getServerAuth } from "~/utils/getServerAuth";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
   const id = params.id;
 
   if (!id) {
