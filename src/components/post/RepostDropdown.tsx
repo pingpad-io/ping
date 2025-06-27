@@ -1,6 +1,6 @@
 "use client";
 
-import { EditIcon, Repeat2Icon } from "lucide-react";
+import { EditIcon, RefreshCwIcon, Repeat2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import PostComposer from "./PostComposer";
 
 interface RepostDropdownProps {
   post: Post;
+  variant?: "post" | "comment";
   reactions: {
     reacted: boolean;
     count: number;
@@ -21,7 +22,7 @@ interface RepostDropdownProps {
   onRepostChange: (isReposted: boolean, count: number) => void;
 }
 
-export default function RepostDropdown({ post, reactions, onRepostChange }: RepostDropdownProps) {
+export default function RepostDropdown({ post, variant = "post", reactions, onRepostChange }: RepostDropdownProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [showQuoteDialog, setShowQuoteDialog] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -82,12 +83,22 @@ export default function RepostDropdown({ post, reactions, onRepostChange }: Repo
           <button
             type="button"
             disabled={isLoading || (!reactions.canRepost && !reactions.canQuote)}
-            className={cn("group flex flex-row items-center gap-2 text-sm sm:text-base font-medium transition-all")}
+            className={cn("flex flex-row items-center gap-1.5 h-9 [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95")}
           >
-            <span className={cn("min-w-[1ch]", reactions.reacted && "font-semibold")}>
-              {reactions.count > 0 && reactions.count}
+            <span className="transition-transform">
+              <RefreshCwIcon
+                size={variant === "post" ? 18 : 16}
+                strokeWidth={reactions.reacted ? 3 : 2}
+                stroke={reactions.reacted ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"}
+                className="transition-all duration-200"
+              />
             </span>
-            <Repeat2Icon size={20} strokeWidth={reactions.reacted ? 3 : 2} className="transition-all" />
+            <span className={cn(
+              "min-w-[3ch] text-xs font-bold transition-colors duration-200",
+              reactions.reacted ? "text-primary" : "text-muted-foreground"
+            )}>
+              {reactions.count > 0 ? reactions.count : ""}
+            </span>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="center">

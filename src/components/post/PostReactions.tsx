@@ -102,7 +102,7 @@ export function ReactionsList({
   };
 
   return (
-    <div className="flex flex-row items-center justify-between sm:justify-start gap-3 sm:gap-12 w-full -mb-2 -ml-2 mt-2">
+    <div className="flex flex-row items-center justify-between sm:justify-start gap-6 sm:gap-10 w-full -mb-2  mt-2">
       <ReactionButton
         variant={isComment ? "comment" : "post"}
         reactionType="Comment"
@@ -112,6 +112,7 @@ export function ReactionsList({
       />
       <RepostDropdown
         post={post}
+        variant={isComment ? "comment" : "post"}
         reactions={{
           reacted: reactions.Repost.isActive,
           count: reactions.Repost.count,
@@ -126,7 +127,7 @@ export function ReactionsList({
         }}
       />
       {isComment ? (
-        <span className="flex flex-row gap-1 ">
+        <span className="flex flex-row items-center gap-1">
           <span ref={upvoteButtonRef}>
             <ReactionButton
               variant="comment"
@@ -135,13 +136,11 @@ export function ReactionsList({
               onClick={() => updateReaction("Upvote")}
             />
           </span>
-          <span className="-mx-2">
-            <ReactionCount
-              isPressed={reactions.Upvote.isActive || reactions.Downvote.isActive}
-              amount={reactions.score}
-              persistent={true}
-            />
-          </span>
+          <ReactionCount
+            isPressed={reactions.Upvote.isActive || reactions.Downvote.isActive}
+            amount={reactions.score}
+            persistent={true}
+          />
           <span ref={downvoteButtonRef}>
             <ReactionButton
               variant="comment"

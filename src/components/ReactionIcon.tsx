@@ -4,7 +4,7 @@ import {
   BookmarkIcon,
   CirclePlusIcon,
   HeartIcon,
-  MessageSquareIcon,
+  MessageCircleIcon,
   Repeat2Icon,
 } from "lucide-react";
 import { forwardRef } from "react";
@@ -18,30 +18,82 @@ interface ReactionIconProps {
 
 const ReactionIcon = forwardRef<SVGSVGElement, ReactionIconProps>(({ reaction, pressed, variant = "post" }, ref) => {
   const isPost = variant === "post";
-  const baseStroke = isPost ? 2.2 : 1.8;
-  const activeStroke = isPost ? 4 : 3.5;
-  const iconProps = pressed
-    ? {
-        fill: "hsl(var(--primary))",
-        stroke: "hsl(var(--primary))",
-      }
-    : { strokeWidth: baseStroke };
+  const baseStroke = 2.2;
+  const className = "transition-all duration-200";
+  const strokeColor = pressed ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))";
+  const fillColor = pressed ? "hsl(var(--primary))" : "none";
+  
   const icons = {
-    Like: <HeartIcon size={isPost ? 18 : 15} {...iconProps} ref={ref} />,
-    Upvote: <ArrowBigUp size={isPost ? 24 : 20} {...iconProps} strokeWidth={isPost ? 1.8 : 1.5} ref={ref} />,
-    Downvote: <ArrowBigDown size={isPost ? 24 : 20} {...iconProps} strokeWidth={isPost ? 1.8 : 1.5} ref={ref} />,
-    Bookmark: <BookmarkIcon size={isPost ? 18 : 16} {...iconProps} ref={ref} />,
+    Like: (
+      <HeartIcon 
+        size={isPost ? 18 : 15} 
+        strokeWidth={baseStroke}
+        stroke={strokeColor}
+        fill={fillColor}
+        className={className}
+        ref={ref} 
+      />
+    ),
+    Upvote: (
+      <ArrowBigUp 
+        size={isPost ? 24 : 20} 
+        strokeWidth={1.8}
+        stroke={strokeColor}
+        fill={fillColor}
+        className={className}
+        ref={ref} 
+      />
+    ),
+    Downvote: (
+      <ArrowBigDown 
+        size={isPost ? 24 : 20} 
+        strokeWidth={1.8}
+        stroke={strokeColor}
+        fill={fillColor}
+        className={className}
+        ref={ref} 
+      />
+    ),
+    Bookmark: (
+      <BookmarkIcon 
+        size={isPost ? 18 : 16} 
+        strokeWidth={baseStroke}
+        stroke={strokeColor}
+        fill={fillColor}
+        className={className}
+        ref={ref} 
+      />
+    ),
     Repost: (
-      <Repeat2Icon size={isPost ? 20 : 18} strokeWidth={pressed ? (isPost ? 3.5 : 3) : isPost ? 2 : 1.5} ref={ref} />
+      <Repeat2Icon 
+        size={isPost ? 20 : 18} 
+        strokeWidth={pressed ? 3.5 : 2}
+        stroke={strokeColor}
+        fill="none"
+        className={className}
+        ref={ref} 
+      />
     ),
     Collect: (
       <CirclePlusIcon
         size={isPost ? 18 : 16}
-        strokeWidth={pressed ? (isPost ? 3.5 : 3.3) : isPost ? 2.4 : 2}
+        strokeWidth={pressed ? 3.5 : 2.4}
+        stroke={strokeColor}
+        fill="none"
+        className={className}
         ref={ref}
       />
     ),
-    Comment: <MessageSquareIcon size={isPost ? 18 : 15} ref={ref} />,
+    Comment: (
+      <MessageCircleIcon 
+        size={isPost ? 18 : 15} 
+        strokeWidth={baseStroke}
+        stroke={strokeColor}
+        fill="none"
+        className={className}
+        ref={ref} 
+      />
+    ),
   };
 
   return icons[reaction] || null;

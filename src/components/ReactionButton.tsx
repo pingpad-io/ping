@@ -25,13 +25,14 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
       e.stopPropagation();
       onClick();
     }}
-    className={`border-0 px-0 place-content-center items-center flex flex-row gap-2 hover:bg-transparent text-sm sm:text-base 
-      ${variant === "post" ? "w-14 h-9" : "w-12 h-full"}`}
+    className={`border-0 px-0 place-content-center items-center flex flex-row gap-1.5 hover:bg-transparent [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95`}
     disabled={disabled}
   >
+    <span className="transition-transform">
+      <ReactionBadge variant={variant} isPressed={reaction.isActive} reaction={reactionType} amount={reaction.count} />
+    </span>
     {reactionType !== "Upvote" && reactionType !== "Downvote" && (
       <ReactionCount isPressed={reaction.isActive} amount={reaction.count} persistent={false} />
     )}
-    <ReactionBadge variant={variant} isPressed={reaction.isActive} reaction={reactionType} amount={reaction.count} />
   </Button>
 );

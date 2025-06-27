@@ -7,7 +7,7 @@ export const ReactionCount = ({
   isPressed: boolean;
   persistent: boolean;
 }) => {
-  if (amount <= 0 && !persistent) return null;
+  // if (amount <= 0 && !persistent) return null;
 
   const formattedAmount = Intl.NumberFormat("en-US", {
     notation: "compact",
@@ -16,9 +16,10 @@ export const ReactionCount = ({
 
   return (
     <span
-      className={`inline-flex items-center leading-none ${isPressed ? "font-semibold text-accent-foreground" : ""}`}
+      className={`inline-flex items-center leading-none transition-colors duration-200 text-xs font-bold 
+        ${isPressed ? "text-primary" : "text-muted-foreground"}`}
     >
-      <span className="w-fit font-medium">{formattedAmount}</span>
+      <span className="w-fit min-w-[3ch] text-center">{amount > 0 || persistent ? formattedAmount : ""}</span>
     </span>
   );
 };
