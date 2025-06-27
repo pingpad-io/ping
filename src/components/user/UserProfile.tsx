@@ -34,7 +34,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
   const followersCount = stats?.graphFollowStats.followers ?? 0;
 
   return (
-    <div className="p-4 z-20 flex w-full flex-row gap-4 glass drop-shadow-md mt-4 rounded-xl">
+    <div className="p-4 z-20 flex w-full flex-row gap-4 glass drop-shadow-md mt-4 rounded-xl overflow-hidden">
       <div className="flex flex-col gap-2">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
           <AvatarViewer user={user} />
