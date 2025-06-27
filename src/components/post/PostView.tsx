@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DissolveFilter } from "../DissolveFilter";
 import { useFilteredUsers } from "../FilteredUsersContext";
@@ -36,6 +36,7 @@ export const PostView = ({
   defaultExpanded?: boolean;
 }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const content = "content" in item.metadata ? (item.metadata.content as string) : "";
   const [collapsed, setCollapsed] = useState(defaultExpanded ? false : content.length > 400);
   const [isCommentsOpen, setCommentsOpen] = useState(false);
@@ -63,13 +64,53 @@ export const PostView = ({
     }
   }, [isJustMuted, isJustBlocked, isOnUserProfile]);
 
-  // Don't show posts from muted or blocked users unless we're on their profile page
   if (((isMuted || isBlocked) && !isOnUserProfile) || shouldHide) {
     return null;
   }
 
   const handleReply = () => {
     setReplyWizardOpen(true);
+  };
+
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+      return;
+    }
+
+    const target = e.target as HTMLElement;
+    const interactiveSelectors = [
+      'button', 'a', 'input', 'textarea', 'select',
+      '[role="button"]', '[role="link"]', '[role="menuitem"]',
+      '[data-radix-collection-item]',
+      'img', 'video', 'audio', 'picture', 'svg', 'path',
+      'iframe', 'embed', 'object'
+    ];
+    
+    const isInteractive = interactiveSelectors.some(selector => 
+      target.matches(selector) || target.closest(selector)
+    );
+    
+    if (isInteractive) {
+      return;
+    }
+
+    if (collapsed) {
+      setCollapsed(false);
+      return;
+    }
+
+    if (pathname === `/p/${item.id}`) {
+      return;
+    }
+    
+    router.push(`/p/${item.id}`);
+  };
+
+  const handleCardHover = () => {
+    if (pathname !== `/p/${item.id}`) {
+      router.prefetch(`/p/${item.id}`);
+    }
   };
 
   return (
@@ -87,14 +128,14 @@ export const PostView = ({
       >
         <PostContextMenu post={item} onReply={handleReply}>
           <Card
-            className="glass duration-300 transition-all z-20"
-            onClick={() => {
-              setCollapsed(false);
-            }}
+            className="glass duration-300 transition-all z-20 cursor-pointer hover:bg-muted/10"
+            style={{ userSelect: 'text' } as React.CSSProperties}
+            onClick={handleCardClick}
+            onMouseEnter={handleCardHover}
           >
-            <CardContent
-              className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}
-            >
+              <CardContent
+                className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}
+              >
               <span className="min-h-full flex flex-col justify-start items-center relative">
                 <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
                   <UserAvatar user={item.author} />
