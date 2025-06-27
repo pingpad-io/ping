@@ -23,7 +23,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
 
   if (!user) return null;
 
-  const { muteUser, unmuteUser, blockUser, unblockUser } = userActions!;
+  const { unmuteUser, unblockUser } = userActions!;
 
   const isUserProfile = user.id === authedUser?.id;
   const isFollowingMe = user.actions.following;

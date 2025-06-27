@@ -108,9 +108,12 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (user) {
-      refresh();
-      const interval = setInterval(refresh, 30_000); // 30 seconds
-      return () => clearInterval(interval);
+      const isDev = process.env.NODE_ENV === "development";
+      if (!isDev) {
+        refresh();
+        const interval = setInterval(refresh, 30_000); // 30 seconds
+        return () => clearInterval(interval);
+      }
     }
   }, [lastSeen, user]);
 
