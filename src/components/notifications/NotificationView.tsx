@@ -3,27 +3,30 @@
 import {
   AtSignIcon,
   CirclePlusIcon,
+  ExternalLinkIcon,
   HeartIcon,
   MessageSquareIcon,
   MessageSquareQuoteIcon,
   Repeat2Icon,
+  ShieldIcon,
+  ShieldOffIcon,
   UserPlusIcon,
+  Volume2Icon,
+  VolumeXIcon,
 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 import Link from "~/components/Link";
+import { useUserActions } from "~/hooks/useUserActions";
+import { useFilteredUsers } from "../FilteredUsersContext";
 import { TruncatedText } from "../TruncatedText";
 import { Card, CardContent } from "../ui/card";
+import { ContextMenu as Context, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import { UserAvatarArray } from "../user/UserAvatar";
+import { useUser } from "../user/UserContext";
 import type { Notification } from "./Notification";
 import { useNotifications } from "./NotificationsContext";
-import { useFilteredUsers } from "../FilteredUsersContext";
-import { ContextMenu as Context, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
-import { ExternalLinkIcon, ShieldIcon, ShieldOffIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
-import { useUserActions } from "~/hooks/useUserActions";
-import { useUser } from "../user/UserContext";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export const NotificationView = ({ item }: { item: Notification }) => {
   const { markAllAsRead, lastSeen } = useNotifications();
@@ -33,7 +36,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const { user } = useUser();
   const [isDissolving, setIsDissolving] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  
+
   // Get the primary user (first in the list) for context menu actions
   const primaryUser = item.who[0];
   const { muteUser, unmuteUser, blockUser, unblockUser } = useUserActions(primaryUser || undefined);
@@ -45,7 +48,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const hasBlockedUser = item.who.some((user) => user.actions?.blocked || blockedUsers.has(user.id));
   const isJustMuted = item.who.some((user) => mutedUsers.has(user.id));
   const isJustBlocked = item.who.some((user) => blockedUsers.has(user.id));
-  
+
   const isOnUserProfile = item.who.some((user) => pathname?.startsWith(`/u/${user.handle}`));
 
   useEffect(() => {
@@ -175,7 +178,13 @@ export const NotificationView = ({ item }: { item: Notification }) => {
           <defs>
             <filter id={`dissolve-${item.id}`}>
               <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="turbulence" />
-              <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="20" xChannelSelector="R" yChannelSelector="G" />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="turbulence"
+                scale="20"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
               <feGaussianBlur stdDeviation="5" />
               <animate attributeName="stdDeviation" values="0;10" dur="1s" fill="freeze" />
             </filter>
@@ -191,7 +200,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
         >
           {primaryUser && (
             <>
-              <ContextMenuItem 
+              <ContextMenuItem
                 onClick={() => {
                   router.push(`/u/${primaryUser.handle}`);
                 }}
@@ -199,7 +208,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                 <ExternalLinkIcon size={12} className="mr-2 h-4 w-4" />
                 view profile
               </ContextMenuItem>
-              
+
               {user?.id !== primaryUser.id && (
                 <>
                   <ContextMenuItem
@@ -218,7 +227,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                     )}
                     {primaryUser.actions?.muted ? "unmute user" : "mute user"}
                   </ContextMenuItem>
-                  
+
                   <ContextMenuItem
                     onClick={() => {
                       if (primaryUser.actions?.blocked) {
@@ -237,7 +246,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                   </ContextMenuItem>
                 </>
               )}
-              
+
               {item.who.length > 1 && (
                 <ContextMenuItem
                   onClick={() => {
@@ -253,7 +262,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
           )}
         </ContextMenuContent>
         <ContextMenuTrigger asChild>
-          <Card 
+          <Card
             className={highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"}
             style={{
               filter: isDissolving ? `url(#dissolve-${item.id})` : undefined,
@@ -262,44 +271,50 @@ export const NotificationView = ({ item }: { item: Notification }) => {
             }}
           >
             <CardContent className="flex h-fit w-full flex-row gap-4 p-2 sm:p-4">
-        <div className="shrink-0 grow-0 rounded-full">
-          <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />
-        </div>
-        <div className="flex flex-col shrink group max-w-md grow gap-1 place-content-center">
-          <div className="flex flex-wrap whitespace-pre-wrap truncate text-ellipsis overflow-hidden">
-            {usersText}
-            <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
-          </div>
+              <div className="shrink-0 grow-0 rounded-full">
+                <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />
+              </div>
+              <div className="flex flex-col shrink group max-w-md grow gap-1 place-content-center">
+                <div className="flex flex-wrap whitespace-pre-wrap truncate text-ellipsis overflow-hidden">
+                  {usersText}
+                  <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
+                </div>
 
-          {(originalPostContent || originalPostImage) && (
-            <Link
-              href={`/p/${
-                item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
-                  ? item.actedOn.commentOn?.id || item.actedOn.reply?.id
-                  : item?.actedOn?.id
-              }`}
-              className="block rounded p-1 -m-1"
-            >
-              <div className="flex flex-row items-center gap-2 text-muted-foreground/60 text-sm line-clamp-1 text-ellipsis overflow-hidden">
-                {originalPostImage && (
-                  <img src={originalPostImage} alt="" className="w-6 h-6 object-cover rounded opacity-60 grayscale" />
+                {(originalPostContent || originalPostImage) && (
+                  <Link
+                    href={`/p/${
+                      item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
+                        ? item.actedOn.commentOn?.id || item.actedOn.reply?.id
+                        : item?.actedOn?.id
+                    }`}
+                    className="block rounded p-1 -m-1"
+                  >
+                    <div className="flex flex-row items-center gap-2 text-muted-foreground/60 text-sm line-clamp-1 text-ellipsis overflow-hidden">
+                      {originalPostImage && (
+                        <img
+                          src={originalPostImage}
+                          alt=""
+                          className="w-6 h-6 object-cover rounded opacity-60 grayscale"
+                        />
+                      )}
+                      {originalPostContent && (
+                        <TruncatedText text={originalPostContent} maxLength={150} className="text-muted-foreground" />
+                      )}
+                    </div>
+                  </Link>
                 )}
-                {originalPostContent && (
-                  <TruncatedText text={originalPostContent} maxLength={150} className="text-muted-foreground" />
+
+                {item.type === "Comment" && (replyContent || replyImage) && (
+                  <Link href={`/p/${item.actedOn?.id}`} className="block rounded p-1 -m-1">
+                    <div className="flex flex-row items-center gap-2 text-foreground text-sm line-clamp-2 text-ellipsis overflow-hidden">
+                      {replyImage && <img src={replyImage} alt="" className="w-6 h-6 object-cover rounded" />}
+                      {replyContent && (
+                        <TruncatedText text={replyContent} maxLength={200} className="text-foreground" />
+                      )}
+                    </div>
+                  </Link>
                 )}
               </div>
-            </Link>
-          )}
-
-          {item.type === "Comment" && (replyContent || replyImage) && (
-            <Link href={`/p/${item.actedOn?.id}`} className="block rounded p-1 -m-1">
-              <div className="flex flex-row items-center gap-2 text-foreground text-sm line-clamp-2 text-ellipsis overflow-hidden">
-                {replyImage && <img src={replyImage} alt="" className="w-6 h-6 object-cover rounded" />}
-                {replyContent && <TruncatedText text={replyContent} maxLength={200} className="text-foreground" />}
-              </div>
-            </Link>
-          )}
-        </div>
             </CardContent>
           </Card>
         </ContextMenuTrigger>

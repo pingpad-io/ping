@@ -83,7 +83,9 @@ export default function RepostDropdown({ post, variant = "post", reactions, onRe
           <button
             type="button"
             disabled={isLoading || (!reactions.canRepost && !reactions.canQuote)}
-            className={cn("flex flex-row items-center gap-1.5 h-9 [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95")}
+            className={cn(
+              "flex flex-row items-center gap-1.5 h-9 [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95",
+            )}
           >
             <span className="transition-transform">
               <RefreshCwIcon
@@ -93,10 +95,12 @@ export default function RepostDropdown({ post, variant = "post", reactions, onRe
                 className="transition-all duration-200"
               />
             </span>
-            <span className={cn(
-              "min-w-[3ch] text-xs font-bold transition-colors duration-200",
-              reactions.reacted ? "text-primary" : "text-muted-foreground"
-            )}>
+            <span
+              className={cn(
+                "min-w-[3ch] text-xs font-bold transition-colors duration-200",
+                reactions.reacted ? "text-primary" : "text-muted-foreground",
+              )}
+            >
               {reactions.count > 0 ? reactions.count : ""}
             </span>
           </button>

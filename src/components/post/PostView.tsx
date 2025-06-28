@@ -80,17 +80,28 @@ export const PostView = ({
 
     const target = e.target as HTMLElement;
     const interactiveSelectors = [
-      'button', 'a', 'input', 'textarea', 'select',
-      '[role="button"]', '[role="link"]', '[role="menuitem"]',
-      '[data-radix-collection-item]',
-      'img', 'video', 'audio', 'picture', 'svg', 'path',
-      'iframe', 'embed', 'object'
+      "button",
+      "a",
+      "input",
+      "textarea",
+      "select",
+      '[role="button"]',
+      '[role="link"]',
+      '[role="menuitem"]',
+      "[data-radix-collection-item]",
+      "img",
+      "video",
+      "audio",
+      "picture",
+      "svg",
+      "path",
+      "iframe",
+      "embed",
+      "object",
     ];
-    
-    const isInteractive = interactiveSelectors.some(selector => 
-      target.matches(selector) || target.closest(selector)
-    );
-    
+
+    const isInteractive = interactiveSelectors.some((selector) => target.matches(selector) || target.closest(selector));
+
     if (isInteractive) {
       return;
     }
@@ -103,7 +114,7 @@ export const PostView = ({
     if (pathname === `/p/${item.id}`) {
       return;
     }
-    
+
     router.push(`/p/${item.id}`);
   };
 
@@ -129,13 +140,13 @@ export const PostView = ({
         <PostContextMenu post={item} onReply={handleReply}>
           <Card
             className="glass duration-300 transition-all z-20 cursor-pointer hover:bg-muted/10"
-            style={{ userSelect: 'text' } as React.CSSProperties}
+            style={{ userSelect: "text" } as React.CSSProperties}
             onClick={handleCardClick}
             onMouseEnter={handleCardHover}
           >
-              <CardContent
-                className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}
-              >
+            <CardContent
+              className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}
+            >
               <span className="min-h-full flex flex-col justify-start items-center relative">
                 <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
                   <UserAvatar user={item.author} />

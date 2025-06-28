@@ -22,56 +22,56 @@ const ReactionIcon = forwardRef<SVGSVGElement, ReactionIconProps>(({ reaction, p
   const className = "transition-all duration-200";
   const strokeColor = pressed ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))";
   const fillColor = pressed ? "hsl(var(--primary))" : "none";
-  
+
   const icons = {
     Like: (
-      <HeartIcon 
-        size={isPost ? 18 : 15} 
+      <HeartIcon
+        size={isPost ? 18 : 15}
         strokeWidth={baseStroke}
         stroke={strokeColor}
         fill={fillColor}
         className={className}
-        ref={ref} 
+        ref={ref}
       />
     ),
     Upvote: (
-      <ArrowBigUp 
-        size={isPost ? 24 : 20} 
+      <ArrowBigUp
+        size={isPost ? 24 : 20}
         strokeWidth={1.8}
         stroke={strokeColor}
         fill={fillColor}
         className={className}
-        ref={ref} 
+        ref={ref}
       />
     ),
     Downvote: (
-      <ArrowBigDown 
-        size={isPost ? 24 : 20} 
+      <ArrowBigDown
+        size={isPost ? 24 : 20}
         strokeWidth={1.8}
         stroke={strokeColor}
         fill={fillColor}
         className={className}
-        ref={ref} 
+        ref={ref}
       />
     ),
     Bookmark: (
-      <BookmarkIcon 
-        size={isPost ? 18 : 16} 
+      <BookmarkIcon
+        size={isPost ? 18 : 16}
         strokeWidth={baseStroke}
         stroke={strokeColor}
         fill={fillColor}
         className={className}
-        ref={ref} 
+        ref={ref}
       />
     ),
     Repost: (
-      <Repeat2Icon 
-        size={isPost ? 20 : 18} 
+      <Repeat2Icon
+        size={isPost ? 20 : 18}
         strokeWidth={pressed ? 3.5 : 2}
         stroke={strokeColor}
         fill="none"
         className={className}
-        ref={ref} 
+        ref={ref}
       />
     ),
     Collect: (
@@ -85,13 +85,13 @@ const ReactionIcon = forwardRef<SVGSVGElement, ReactionIconProps>(({ reaction, p
       />
     ),
     Comment: (
-      <MessageCircleIcon 
-        size={isPost ? 18 : 15} 
+      <MessageCircleIcon
+        size={isPost ? 18 : 15}
         strokeWidth={baseStroke}
         stroke={strokeColor}
         fill="none"
         className={className}
-        ref={ref} 
+        ref={ref}
       />
     ),
   };

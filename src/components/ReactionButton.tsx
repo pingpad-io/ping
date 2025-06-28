@@ -25,7 +25,9 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
       e.stopPropagation();
       onClick();
     }}
-    className={`border-0 px-0 place-content-center items-center flex flex-row gap-1.5 hover:bg-transparent [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95`}
+    className={
+      "border-0 px-0 place-content-center items-center flex flex-row gap-1.5 hover:bg-transparent [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95"
+    }
     disabled={disabled}
   >
     <span className="transition-transform">
