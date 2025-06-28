@@ -22,10 +22,10 @@ function parseNotification(raw: any): Notification {
     createdAt: new Date(raw.createdAt),
     actedOn: raw.actedOn
       ? {
-          ...raw.actedOn,
-          createdAt: new Date(raw.actedOn.createdAt),
-          updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
-        }
+        ...raw.actedOn,
+        createdAt: new Date(raw.actedOn.createdAt),
+        updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
+      }
       : undefined,
   } as Notification;
 }
@@ -108,12 +108,9 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (user) {
-      const isDev = process.env.NODE_ENV === "development";
-      if (!isDev) {
-        refresh();
-        const interval = setInterval(refresh, 30_000); // 30 seconds
-        return () => clearInterval(interval);
-      }
+      refresh();
+      const interval = setInterval(refresh, 30_000); // 30 seconds
+      return () => clearInterval(interval);
     }
   }, [lastSeen, user]);
 

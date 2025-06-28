@@ -26,6 +26,7 @@ const wagmiConfig = createConfig({
     [chains.mainnet.id]: http(),
     [chains.testnet.id]: http(),
   },
+  ssr: true,
   connectors: [
     familyAccountsConnector(),
     injected(),
@@ -37,7 +38,6 @@ const wagmiConfig = createConfig({
         url: url,
         icons: ["https://pingpad.io/favicon.ico"],
       },
-
       qrModalOptions: {
         themeMode: "dark",
         themeVariables: {

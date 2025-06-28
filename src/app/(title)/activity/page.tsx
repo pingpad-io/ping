@@ -3,11 +3,11 @@ import { Feed } from "~/components/Feed";
 import { NotificationView } from "~/components/notifications/NotificationView";
 
 export const metadata: Metadata = {
-  title: "Notifications",
-  description: "Your latest notifications",
+  title: "Activity",
+  description: "Your latest activity",
   openGraph: {
-    title: "Notifications",
-    description: "Your latest notifications",
+    title: "Activity",
+    description: "Your latest activity",
     images: [
       {
         url: "/logo.png",

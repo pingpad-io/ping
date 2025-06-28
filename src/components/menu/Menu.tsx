@@ -1,8 +1,9 @@
 "use client";
 
-import { Bell, BookmarkIcon, Github, LogInIcon, PlusIcon } from "lucide-react";
+import { Bookmark, BookmarkIcon, Github, Heart, HeartIcon, LogInIcon, PlusIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { cn } from "~/utils";
 import PingLogo from "~/components/icons/PingLogo";
 import { Dock } from "~/components/ui/dock";
 import { useNotifications } from "../notifications/NotificationsContext";
@@ -35,59 +36,31 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
     }
   }, [router, handle]);
 
-  if (!isAuthenticated) {
-    const dockItems = [
-      {
-        icon: PingLogo,
-        label: "Home",
-        onClick: () => router.push("/home"),
-      },
-      {
-        icon: LogInIcon,
-        label: "Connect Wallet",
-        onClick: () => setIsWalletDialogOpen(true),
-      },
-      ...(isLandingPage
-        ? [
-            {
-              icon: Github,
-              label: "GitHub",
-              onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
-            },
-          ]
-        : []),
-    ];
-
-    return (
-      <>
-        <div className="fixed bottom-0 left-0 w-full p-2 pb-6 sm:bottom-auto sm:top-1/2 sm:right-2 sm:left-auto sm:w-auto sm:-translate-y-1/2 sm:p-2 z-50">
-          <Dock items={dockItems} />
-        </div>
-
-        <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />
-      </>
-    );
-  }
-
-  const dockItems = [
+  const dockItems = isAuthenticated ? [
     {
       icon: PingLogo,
       label: "Home",
       onClick: () => router.push("/home"),
+      isActive: pathname === "/home",
     },
     {
       customIcon: (
         <div className="relative w-full h-full flex items-center justify-center">
-          <Bell className="w-5 h-5" />
+          {pathname === "/activity" ? (
+            <HeartIcon className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.5} />
+          ) : (
+            <Heart className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
+          )}
           {newCount > 0 && (
-            <span className="absolute -bottom-3 -right-3 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] flex items-center justify-center font-medium">
+            <span className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] md:text-[10px] flex items-center justify-center font-medium">
               {newCount > 9 ? "9+" : newCount}
             </span>
           )}
         </div>
       ),
-      label: "Notifications",
-      onClick: () => router.push("/notifications"),
+      label: "Activity",
+      onClick: () => router.push("/activity"),
+      isActive: pathname === "/activity",
     },
     {
       icon: PlusIcon,
@@ -97,40 +70,79 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
     },
     {
       customIcon: (
-        <div className="w-full h-full rounded-md overflow-hidden">
+        <div className={cn(
+          "w-7 h-7 p-0 shrink-0 rounded-full overflow-hidden",
+          (pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`)) && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+        )}>
           <UserAvatar link={false} card={false} user={user} />
         </div>
       ),
       label: "Profile",
       extra: <UserMenuButtons handle={handle!} user={user} />,
+      isActive: pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`),
     },
     {
-      icon: BookmarkIcon,
+      customIcon: pathname === "/bookmarks" ? (
+        <Bookmark className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.5} />
+      ) : (
+        <BookmarkIcon className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
+      ),
       label: "Bookmarks",
       onClick: () => router.push("/bookmarks"),
+      isActive: pathname === "/bookmarks",
     },
     ...(isLandingPage
       ? [
-          {
-            icon: Github,
-            label: "GitHub",
-            onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
-          },
-        ]
+        {
+          icon: Github,
+          label: "GitHub",
+          onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+        },
+      ]
+      : []),
+  ] : [
+    {
+      icon: PingLogo,
+      label: "Home",
+      onClick: () => router.push("/home"),
+      isActive: pathname === "/home",
+    },
+    {
+      icon: LogInIcon,
+      label: "Connect Wallet",
+      onClick: () => setIsWalletDialogOpen(true),
+    },
+    ...(isLandingPage
+      ? [
+        {
+          icon: Github,
+          label: "GitHub",
+          onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+        },
+      ]
       : []),
   ];
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 w-full p-2 pb-6 sm:bottom-auto sm:top-1/2 sm:right-2 sm:left-auto sm:w-auto sm:-translate-y-1/2 sm:p-2 z-50">
-        <Dock items={dockItems} />
+      <div className="fixed backdrop-blur-xl sm:backdrop-blur-none bottom-0 left-0 w-full sm:bottom-auto sm:top-1/2 sm:right-2 sm:left-auto sm:w-auto sm:-translate-y-1/2 z-50">
+        <div className="absolute inset-0 bg-gradient-to-t from-secondary to-transparent pointer-events-none sm:hidden" />
+        <div className="relative ">
+          <Dock items={dockItems} />
+        </div>
       </div>
 
-      <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen} modal={true}>
-        <DialogContent className="max-w-full sm:max-w-[700px]">
-          <PostComposer user={user} />
-        </DialogContent>
-      </Dialog>
+      {isAuthenticated && (
+        <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen} modal={true}>
+          <DialogContent className="max-w-full sm:max-w-[700px]">
+            <PostComposer user={user} />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {!isAuthenticated && (
+        <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />
+      )}
     </>
   );
 }

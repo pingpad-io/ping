@@ -11,7 +11,7 @@ const PingLogo = forwardRef<SVGSVGElement, LucideProps>(
         viewBox="0 0 493 487"
         fill="none"
         stroke={color}
-        strokeWidth={strokeWidth}
+        strokeWidth={Number(strokeWidth) * 20}
         strokeLinecap="round"
         strokeLinejoin="round"
         {...props}

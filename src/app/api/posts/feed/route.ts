@@ -1,5 +1,5 @@
-import { fetchTimeline } from "@lens-protocol/client/actions";
-import { TimelineEventItemType } from "@lens-protocol/react";
+import { fetchPostsToExplore, fetchTimeline } from "@lens-protocol/client/actions";
+import { PageSize, TimelineEventItemType } from "@lens-protocol/react";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -9,47 +9,33 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor") || undefined;
-  const type = searchParams.get("type") || "post";
-
-  // let publicationType: PublicationType;
-  // switch (type) {
-  //   case "post":
-  //     publicationType = PublicationType.Post;
-  //     break;
-  //   case "comment":
-  //     publicationType = PublicationType.Comment;
-  //     break;
-  //   case "quote":
-  //     publicationType = PublicationType.Quote;
-  //     break;
-  //   case "repost":
-  //     publicationType = PublicationType.Mirror;
-  //     break;
-  //   default:
-  //     publicationType = PublicationType.Post;
-  // }
 
   try {
     const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
 
-    // if (!isAuthenticated || !sessionClient) {
-    //   return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    // }
+    let data;
 
-    const data = await fetchTimeline(sessionClient, {
-      account: profileId,
-      filter: {
-        eventType: [TimelineEventItemType.Post],
-      },
-      cursor,
-    });
+    if (isAuthenticated && sessionClient) {
+      data = await fetchTimeline(sessionClient, {
+        account: profileId,
+        filter: {
+          eventType: [TimelineEventItemType.Post],
+        },
+        cursor,
+      });
+    } else {
+      data = await fetchPostsToExplore(client, {
+        pageSize: PageSize.Ten,
+        cursor,
+      });
+    }
 
     if (data.isErr()) {
       return NextResponse.json({ error: data.error.message }, { status: 500 });
     }
 
     const posts = data.value.items.map((item) => {
-      return lensItemToPost(item.primary);
+      return isAuthenticated ? lensItemToPost(item.primary) : lensItemToPost(item);
     });
 
     return NextResponse.json({ data: posts, nextCursor: data.value.pageInfo.next }, { status: 200 });

@@ -14,6 +14,7 @@ interface DockProps {
     customComponent?: React.ReactNode;
     extra?: React.ReactNode;
     variant?: "default" | "secondary" | "primary";
+    isActive?: boolean;
   }[];
 }
 
@@ -26,6 +27,7 @@ interface DockIconButtonProps {
   customComponent?: React.ReactNode;
   extra?: React.ReactNode;
   variant?: "default" | "secondary" | "primary";
+  isActive?: boolean;
   onHover?: () => void;
   onLeave?: () => void;
   buttonRef?: React.RefObject<HTMLButtonElement>;
@@ -42,6 +44,7 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
       customComponent,
       extra,
       variant = "default",
+      isActive,
       onHover,
       onLeave,
     },
@@ -52,8 +55,8 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
     }
 
     const variantClasses = {
-      default: "hover:bg-secondary",
-      secondary: "bg-secondary hover:bg-primary hover:text-primary-foreground",
+      default: "hover:bg-secondary/50",
+      secondary: "bg-secondary/50 hover:bg-primary hover:text-primary-foreground",
       primary: "bg-primary text-primary-foreground hover:bg-primary/90",
     };
 
@@ -66,16 +69,17 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
         onMouseEnter={onHover}
         onMouseLeave={onLeave}
         className={cn(
-          "relative group p-3 rounded-lg w-12 h-12 flex items-center justify-center",
+          "relative group p-3 rounded-2xl w-12 h-12 md:w-14 md:h-14 flex items-center justify-center",
           "transition-colors",
+          isActive ? "text-primary" : "text-muted-foreground",
           variantClasses[variant],
           className,
         )}
       >
         {customIcon ? (
-          <div className="w-5 h-5 flex items-center justify-center">{customIcon}</div>
+          <div className={cn("w-5 h-5 md:w-6 md:h-6 flex items-center justify-center", isActive ? "text-primary" : "text-muted-foreground")}>{customIcon}</div>
         ) : Icon ? (
-          <Icon className="w-5 h-5" />
+          <Icon className={cn("w-5 h-5 md:w-6 md:h-6", isActive ? "text-primary" : "text-muted-foreground")} strokeWidth={2.5} />
         ) : null}
       </motion.button>
     );
@@ -157,10 +161,9 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
       <motion.div
         layout
         className={cn(
-          "relative flex items-center gap-2 p-2 rounded-2xl w-full",
+          "relative flex items-center gap-2 md:gap-3 lg:gap-4 p-2 rounded-2xl w-full",
           "flex-row justify-around sm:flex-col sm:justify-center sm:w-auto",
-          "shadow-lg",
-          "glass",
+          // "shadow-lg",
         )}
       >
         <AnimatePresence mode="popLayout">
