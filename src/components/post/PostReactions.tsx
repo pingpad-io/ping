@@ -4,7 +4,6 @@ import { ChevronDownIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
-import { ReactionCount } from "../ReactionCount";
 import { Button } from "../ui/button";
 import type { Post, PostReactionType } from "./Post";
 import RepostDropdown from "./RepostDropdown";
@@ -14,8 +13,6 @@ type ReactionState = {
     count: number;
     isActive: boolean;
   };
-} & {
-  score: number;
 };
 
 export function ReactionsList({
@@ -32,63 +29,30 @@ export function ReactionsList({
   setCommentsOpen: (open: boolean) => void;
 }) {
   const [reactions, setReactions] = useState<ReactionState>({
-    score: post.reactions.Upvote - post.reactions.Downvote,
-    Upvote: { count: post.reactions.Upvote, isActive: post.reactions.isUpvoted },
-    Downvote: { count: post.reactions.Downvote, isActive: post.reactions.isDownvoted },
     Repost: { count: post.reactions.Repost, isActive: post.reactions.isReposted },
     Comment: { count: post.reactions.Comment, isActive: false },
     Collect: { count: post.reactions.Collect, isActive: post.reactions.isCollected },
     Bookmark: { count: post.reactions.Bookmark, isActive: post.reactions.isBookmarked },
-    Like: { count: post.reactions.Upvote, isActive: post.reactions.isUpvoted },
+    Like: { count: post.reactions.upvotes || 0, isActive: post.reactions.isUpvoted || false },
   });
 
   const { triggerExplosion } = useExplosion();
   const likeButtonRef = useRef<HTMLSpanElement>(null);
-  const upvoteButtonRef = useRef<HTMLSpanElement>(null);
-  const downvoteButtonRef = useRef<HTMLSpanElement>(null);
 
   const updateReaction = async (reactionType: PostReactionType | "Like") => {
-    if (reactionType === "Upvote" || reactionType === "Downvote") {
-      setReactions((prev) => {
-        const isUpvote = reactionType === "Upvote";
-        const isActive = isUpvote ? prev.Upvote.isActive : prev.Downvote.isActive;
-        const otherIsActive = isUpvote ? prev.Downvote.isActive : prev.Upvote.isActive;
-        let scoreDelta = isActive ? -1 : 1;
+    setReactions((prev) => ({
+      ...prev,
+      [reactionType]: {
+        count: prev[reactionType].count + (prev[reactionType].isActive ? -1 : 1),
+        isActive: !prev[reactionType].isActive,
+      },
+    }));
 
-        if (otherIsActive) {
-          scoreDelta *= 2;
-        }
-
-        return {
-          ...prev,
-          score: prev.score + (isUpvote ? scoreDelta : -scoreDelta),
-          Upvote: {
-            count: prev.Upvote.count + (isUpvote ? (isActive ? -1 : 1) : 0),
-            isActive: isUpvote && !isActive,
-          },
-          Downvote: {
-            count: prev.Downvote.count + (!isUpvote ? (isActive ? -1 : 1) : 0),
-            isActive: !isUpvote && !isActive,
-          },
-        };
-      });
-    } else {
-      setReactions((prev) => ({
-        ...prev,
-        [reactionType]: {
-          count: prev[reactionType].count + (prev[reactionType].isActive ? -1 : 1),
-          isActive: !prev[reactionType].isActive,
-        },
-      }));
-    }
-
-    // Fire explosion effects
-    if (reactionType === "Like" && !reactions.Like.isActive && likeButtonRef.current) {
-      triggerExplosion("like", likeButtonRef.current);
-    } else if (reactionType === "Upvote" && !reactions.Upvote.isActive && upvoteButtonRef.current) {
-      triggerExplosion("upvote", upvoteButtonRef.current);
-    } else if (reactionType === "Downvote" && !reactions.Downvote.isActive && downvoteButtonRef.current) {
-      triggerExplosion("downvote", downvoteButtonRef.current);
+    if (reactionType === "Like") {
+      const wasActive = reactions.Like.isActive;
+      if (!wasActive && likeButtonRef.current) {
+        triggerExplosion("like", likeButtonRef.current);
+      }
     }
 
     const route = reactionType === "Like" ? "upvote" : reactionType.toLowerCase();
@@ -126,35 +90,14 @@ export function ReactionsList({
           }));
         }}
       />
-      {isComment ? (
-        <span className="flex flex-row items-center gap-1">
-          <span ref={upvoteButtonRef}>
-            <ReactionButton
-              variant="comment"
-              reactionType="Upvote"
-              reaction={{ count: reactions.score, isActive: reactions.Upvote.isActive }}
-              onClick={() => updateReaction("Upvote")}
-            />
-          </span>
-          <ReactionCount
-            isPressed={reactions.Upvote.isActive || reactions.Downvote.isActive}
-            amount={reactions.score}
-            persistent={true}
-          />
-          <span ref={downvoteButtonRef}>
-            <ReactionButton
-              variant="comment"
-              reactionType="Downvote"
-              reaction={{ count: reactions.score, isActive: reactions.Downvote.isActive }}
-              onClick={() => updateReaction("Downvote")}
-            />
-          </span>
-        </span>
-      ) : (
-        <span ref={likeButtonRef}>
-          <ReactionButton reactionType="Like" reaction={reactions.Like} onClick={() => updateReaction("Like")} />
-        </span>
-      )}
+      <span ref={likeButtonRef}>
+        <ReactionButton
+          variant={isComment ? "comment" : "post"}
+          reactionType="Like"
+          reaction={reactions.Like}
+          onClick={() => updateReaction("Like")}
+        />
+      </span>
 
       <div className="ml-auto">
         <div className="opacity-0 group-hover:opacity-100 duration-300 delay-150">

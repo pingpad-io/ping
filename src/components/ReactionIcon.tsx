@@ -1,12 +1,4 @@
-import {
-  ArrowBigDown,
-  ArrowBigUp,
-  BookmarkIcon,
-  CirclePlusIcon,
-  HeartIcon,
-  MessageCircleIcon,
-  Repeat2Icon,
-} from "lucide-react";
+import { BookmarkIcon, CirclePlusIcon, HeartIcon, MessageCircleIcon, Repeat2Icon } from "lucide-react";
 import { forwardRef } from "react";
 import { PostReactionType } from "./post/Post";
 
@@ -26,28 +18,8 @@ const ReactionIcon = forwardRef<SVGSVGElement, ReactionIconProps>(({ reaction, p
   const icons = {
     Like: (
       <HeartIcon
-        size={isPost ? 18 : 15}
+        size={isPost ? 18 : 16}
         strokeWidth={baseStroke}
-        stroke={strokeColor}
-        fill={fillColor}
-        className={className}
-        ref={ref}
-      />
-    ),
-    Upvote: (
-      <ArrowBigUp
-        size={isPost ? 24 : 20}
-        strokeWidth={1.8}
-        stroke={strokeColor}
-        fill={fillColor}
-        className={className}
-        ref={ref}
-      />
-    ),
-    Downvote: (
-      <ArrowBigDown
-        size={isPost ? 24 : 20}
-        strokeWidth={1.8}
         stroke={strokeColor}
         fill={fillColor}
         className={className}

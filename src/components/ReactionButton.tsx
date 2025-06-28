@@ -1,7 +1,7 @@
 import { PostReactionType } from "./post/Post";
-import { ReactionBadge } from "./ReactionBadge";
-import { ReactionCount } from "./ReactionCount";
+import ReactionIcon from "./ReactionIcon";
 import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 type ReactionButtonProps = {
   reactionType: PostReactionType | "Like";
@@ -17,24 +17,43 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
   onClick,
   disabled = false,
   variant = "post",
-}) => (
-  <Button
-    size="sm"
-    variant="ghost"
-    onClick={(e) => {
-      e.stopPropagation();
-      onClick();
-    }}
-    className={
-      "border-0 px-0 place-content-center items-center flex flex-row gap-1.5 hover:bg-transparent [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95"
-    }
-    disabled={disabled}
-  >
-    <span className="transition-transform">
-      <ReactionBadge variant={variant} isPressed={reaction.isActive} reaction={reactionType} amount={reaction.count} />
-    </span>
-    {reactionType !== "Upvote" && reactionType !== "Downvote" && (
-      <ReactionCount isPressed={reaction.isActive} amount={reaction.count} persistent={false} />
-    )}
-  </Button>
-);
+}) => {
+  const formattedAmount = Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(reaction.count);
+
+  return (
+    <Button
+      size="sm"
+      variant="ghost"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      className={
+        "border-0 px-0 place-content-center items-center flex flex-row gap-1.5 hover:bg-transparent [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95"
+      }
+      disabled={disabled}
+    >
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="transition-transform">
+              <ReactionIcon variant={variant} pressed={reaction.isActive} reaction={reactionType} />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{`${reaction.count} ${reactionType.toLowerCase()}${reaction.count === 1 ? "" : "s"}`}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <span
+        className={`inline-flex items-center leading-none transition-colors duration-200 text-xs font-bold 
+          ${reaction.isActive ? "text-primary" : "text-muted-foreground"}`}
+      >
+        <span className="w-fit min-w-[3ch] text-center">{reaction.count > 0 ? formattedAmount : ""}</span>
+      </span>
+    </Button>
+  );
+};

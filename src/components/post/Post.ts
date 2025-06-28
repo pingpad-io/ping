@@ -1,11 +1,11 @@
 import type { AnyPost, Post as LensPost, TimelineItem } from "@lens-protocol/client";
 import { lensAcountToUser, type User } from "../user/User";
 
-export type PostReactionType = "Upvote" | "Downvote" | "Repost" | "Comment" | "Bookmark" | "Collect";
+export type PostReactionType = "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number> & {
   totalReactions: number;
+  upvotes: number;
   isUpvoted?: boolean;
-  isDownvoted?: boolean;
   isBookmarked?: boolean;
   isCollected?: boolean;
   isReposted?: boolean;
@@ -89,14 +89,12 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
 
 function getReactions(post: LensPost): Partial<PostReactions> {
   return {
-    Upvote: post.stats?.upvotes || 0,
-    Downvote: post.stats?.downvotes || 0,
     Bookmark: post.stats?.bookmarks || 0,
     Collect: post.stats?.collects || 0,
     Comment: post.stats?.comments || 0,
     Repost: post.stats?.reposts || 0,
+    upvotes: post.stats?.upvotes || 0,
     isUpvoted: post.operations?.hasUpvoted || false,
-    isDownvoted: post.operations?.hasDownvoted || false,
     isBookmarked: post.operations?.hasBookmarked || false,
     isCollected: post.operations?.hasSimpleCollected || false,
     isReposted: post.operations?.hasReposted
@@ -110,12 +108,8 @@ function getReactions(post: LensPost): Partial<PostReactions> {
     canQuote: post.operations?.canQuote.__typename === "PostOperationValidationPassed" || false,
     canDecrypt: false,
     totalReactions:
-      post.stats?.upvotes +
-        post.stats?.downvotes +
-        post.stats?.bookmarks +
-        post.stats?.collects +
-        post.stats?.comments +
-        post.stats?.reposts || 0,
+      post.stats?.upvotes + post.stats?.bookmarks + post.stats?.collects + post.stats?.comments + post.stats?.reposts ||
+      0,
   };
 }
 
@@ -127,7 +121,7 @@ function getCommentsFromItem(post: any) {
   }
 
   if (post.__typename === "FeedItem" && post.comments) {
-    return post.comments.filter((comment) => comment.commentOn?.id === post.root?.id).map(processComment);
+    return post.comments.filter((comment: any) => comment.commentOn?.id === post.root?.id).map(processComment);
   }
 
   return comments;
