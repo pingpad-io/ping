@@ -25,7 +25,7 @@ export function Search() {
     <>
       <div className="h-16 flex flex-row gap-2 items-center justify-center sticky top-0 z-10 border-b backdrop-blur-md">
         <Link href={"/"}>
-          <Button variant="outline" size="sm">
+          <Button variant="ghost" size="sm" className="hover:bg-secondary/70">
             <ChevronLeft size={15} />
           </Button>
         </Link>

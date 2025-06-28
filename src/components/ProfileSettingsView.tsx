@@ -56,7 +56,6 @@ export default function ProfileSettings({ user }: { user: User }) {
     <Card>
       <CardHeader>
         <CardTitle>Profile Settings</CardTitle>
-        <Button>Update</Button>
       </CardHeader>
 
       <CardContent>
@@ -104,7 +103,7 @@ export default function ProfileSettings({ user }: { user: User }) {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit" variant="ghost" className="flex gap-4 justify-start w-full">Submit</Button>
           </form>
         </Form>
       </CardContent>

@@ -163,40 +163,44 @@ export function UserMenuButtons({ user }: { handle: string; user: User }) {
 
   return (
     <>
-      <div className="flex flex-col w-44 gap-1.5 p-1">
-        <button
+      <div className="flex flex-col w-48 gap-1.5 p-1">
+        <Button
           type="button"
-          className="flex gap-4 items-center w-full px-3 py-2 text-base rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all duration-200"
+          variant="ghost"
+          className="flex gap-4 justify-start w-full"
           onClick={() => setDialogOpen(true)}
         >
           <UsersRoundIcon size={18} />
           Switch Profile
-        </button>
+        </Button>
         <Link href="/settings">
-          <button
+          <Button
             type="button"
-            className="flex gap-4 items-center w-full px-3 py-2 text-base rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all duration-200"
+            variant="ghost"
+            className="flex gap-4 justify-start w-full"
           >
             <SettingsIcon size={18} />
             Settings
-          </button>
+          </Button>
         </Link>
-        <button
+        <Button
           type="button"
-          className="flex gap-4 items-center w-full px-3 py-2 text-base rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all duration-200"
+          variant="ghost"
+          className="flex gap-4 justify-start w-full"
           onClick={toggleTheme}
         >
           {theme === "light" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
           Theme
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="flex gap-4 items-center w-full px-3 py-2 text-base rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all duration-200"
+          variant="ghost"
+          className="flex gap-4 justify-start w-full"
           onClick={logout}
         >
           <LogOutIcon size={18} />
           Log out
-        </button>
+        </Button>
       </div>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-sm">

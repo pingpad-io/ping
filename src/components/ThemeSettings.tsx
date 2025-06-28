@@ -103,26 +103,26 @@ export function ThemeSettings() {
 
           <div className="flex gap-2">
             <Button
-              variant={backgroundMode === "none" ? "default" : "outline"}
+              variant="ghost"
               size="sm"
               onClick={() => handleModeChange("none")}
-              className="flex-1"
+              className={`flex-1 ${backgroundMode === "none" ? "bg-secondary/70" : ""}`}
             >
               None
             </Button>
             <Button
-              variant={backgroundMode === "gradient" ? "default" : "outline"}
+              variant="ghost"
               size="sm"
               onClick={() => handleModeChange("gradient")}
-              className="flex-1"
+              className={`flex-1 ${backgroundMode === "gradient" ? "bg-secondary/70" : ""}`}
             >
               Gradient
             </Button>
             <Button
-              variant={backgroundMode === "image" ? "default" : "outline"}
+              variant="ghost"
               size="sm"
               onClick={() => handleModeChange("image")}
-              className="flex-1"
+              className={`flex-1 ${backgroundMode === "image" ? "bg-secondary/70" : ""}`}
               disabled={imageLoading}
             >
               {imageLoading ? "Loading..." : "Image"}
@@ -181,16 +181,16 @@ export function ThemeSettings() {
             <div className="space-y-3 mt-4">
               <div className="flex gap-2">
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
-                <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="text-xs">
+                <Button variant="ghost" size="sm" onClick={() => fileInputRef.current?.click()} className="text-xs hover:bg-secondary/70">
                   <ImageIcon className="w-3 h-3 mr-1" />
                   Choose an image
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={() => fetchRandomImage(backgroundColorId)}
                   disabled={imageLoading}
-                  className="text-xs"
+                  className="text-xs hover:bg-secondary/70"
                 >
                   <RefreshCwIcon className={`w-3 h-3 mr-1 ${imageLoading ? "animate-spin" : ""}`} />
                   New random image

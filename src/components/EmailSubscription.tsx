@@ -33,10 +33,10 @@ export const EmailSubscription = () => {
           <div className="flex flex-row gap-2">
             <Input className="" type="email" name="email" required placeholder="E-mail" />
 
-            <Button className="hidden sm:flex text-base" name="submit" type="submit">
+            <Button variant="ghost" className="hidden sm:flex text-base hover:bg-secondary/70" name="submit" type="submit">
               Subscribe
             </Button>
-            <Button size="icon" className="flex sm:hidden px-2" name="submit" type="submit">
+            <Button variant="ghost" size="icon" className="flex sm:hidden px-2 hover:bg-secondary/70" name="submit" type="submit">
               <Mail size={24} />
             </Button>
           </div>
