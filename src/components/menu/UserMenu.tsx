@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon, UserIcon, UsersIcon } from "lucide-react";
+import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon, UserIcon, UsersIcon, UsersRoundIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useState } from "react";
@@ -141,7 +141,7 @@ export function UserMenuDropdown({ handle, user }: { handle: string; user: User 
   );
 }
 
-export function UserMenuButtons({ handle, user }: { handle: string; user: User }) {
+export function UserMenuButtons({ user }: { handle: string; user: User }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { isConnected } = useAccount();
   const { disconnect: disconnectWallet } = useDisconnect();
@@ -163,47 +163,38 @@ export function UserMenuButtons({ handle, user }: { handle: string; user: User }
 
   return (
     <>
-      <div className="flex flex-col w-40 gap-1 p-1">
-        <Link href={`/u/${handle}`}>
-          <button
-            type="button"
-            className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary/70 transition-colors"
-          >
-            <UserIcon size={16} />
-            Profile
-          </button>
-        </Link>
+      <div className="flex flex-col w-44 gap-1.5 p-1">
         <button
           type="button"
-          className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary/70 transition-colors"
+          className="flex gap-4 items-center w-full px-3 py-2 text-base rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all duration-200"
           onClick={() => setDialogOpen(true)}
         >
-          <UsersIcon size={16} />
+          <UsersRoundIcon size={18} />
           Switch Profile
         </button>
         <Link href="/settings">
           <button
             type="button"
-            className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary/70 transition-colors"
+            className="flex gap-4 items-center w-full px-3 py-2 text-base rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all duration-200"
           >
-            <SettingsIcon size={16} />
+            <SettingsIcon size={18} />
             Settings
           </button>
         </Link>
         <button
           type="button"
-          className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary/70 transition-colors"
+          className="flex gap-4 items-center w-full px-3 py-2 text-base rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all duration-200"
           onClick={toggleTheme}
         >
-          {theme === "light" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
-          Toggle Theme
+          {theme === "light" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
+          Theme
         </button>
         <button
           type="button"
-          className="flex gap-2 items-center w-full px-3 py-2 text-sm rounded-md hover:bg-secondary/70 transition-colors"
+          className="flex gap-4 items-center w-full px-3 py-2 text-base rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all duration-200"
           onClick={logout}
         >
-          <LogOutIcon size={16} />
+          <LogOutIcon size={18} />
           Log out
         </button>
       </div>

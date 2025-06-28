@@ -47,9 +47,9 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
       customIcon: (
         <div className="relative w-full h-full flex items-center justify-center">
           {pathname === "/activity" ? (
-            <HeartIcon className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.5} />
+            <Heart className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.25} />
           ) : (
-            <Heart className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
+            <Heart className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.25} />
           )}
           {newCount > 0 && (
             <span className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] md:text-[10px] flex items-center justify-center font-medium">
@@ -64,7 +64,7 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
     },
     {
       icon: PlusIcon,
-      label: "Create Post",
+      label: "Post",
       onClick: () => setIsPostDialogOpen(true),
       variant: "secondary" as const,
     },
@@ -72,20 +72,21 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
       customIcon: (
         <div className={cn(
           "w-7 h-7 p-0 shrink-0 rounded-full overflow-hidden",
-          (pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`)) && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+          (pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`)) && "ring-2 ring-primary/50 ring-offset-2 ring-offset-background"
         )}>
           <UserAvatar link={false} card={false} user={user} />
         </div>
       ),
+      onClick: () => router.push(`/u/${handle}`),
       label: "Profile",
       extra: <UserMenuButtons handle={handle!} user={user} />,
       isActive: pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`),
     },
     {
       customIcon: pathname === "/bookmarks" ? (
-        <Bookmark className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.5} />
+        <Bookmark className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.25} />
       ) : (
-        <BookmarkIcon className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
+        <Bookmark className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.25} />
       ),
       label: "Bookmarks",
       onClick: () => router.push("/bookmarks"),

@@ -71,15 +71,15 @@ const DockIconButton = React.forwardRef<HTMLButtonElement, DockIconButtonProps>(
         className={cn(
           "relative group p-3 rounded-2xl w-12 h-12 md:w-14 md:h-14 flex items-center justify-center",
           "transition-colors",
-          isActive ? "text-primary" : "text-muted-foreground",
+          isActive ? "text-primary" : "text-muted-foreground/60",
           variantClasses[variant],
           className,
         )}
       >
         {customIcon ? (
-          <div className={cn("w-5 h-5 md:w-6 md:h-6 flex items-center justify-center", isActive ? "text-primary" : "text-muted-foreground")}>{customIcon}</div>
+          <div className={cn("w-5 h-5 md:w-6 md:h-6 flex items-center justify-center")}>{customIcon}</div>
         ) : Icon ? (
-          <Icon className={cn("w-5 h-5 md:w-6 md:h-6", isActive ? "text-primary" : "text-muted-foreground")} strokeWidth={2.5} />
+          <Icon className={cn("w-5 h-5 md:w-6 md:h-6")} strokeWidth={2.25} />
         ) : null}
       </motion.button>
     );
@@ -161,7 +161,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
       <motion.div
         layout
         className={cn(
-          "relative flex items-center gap-2 md:gap-3 lg:gap-4 p-2 rounded-2xl w-full",
+          "relative flex items-center gap-2 md:gap-3 p-2 rounded-2xl w-full",
           "flex-row justify-around sm:flex-col sm:justify-center sm:w-auto",
           // "shadow-lg",
         )}
@@ -202,7 +202,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
                 }}
                 onMouseEnter={handleExtraMouseEnter}
                 onMouseLeave={handleExtraMouseLeave}
-                className={cn("shadow-lg rounded-xl", "glass glass-dim")}
+                className={cn("shadow-sm rounded-xl", "bg-secondary/40 backdrop-blur-sm")}
               >
                 <motion.div
                   key={hoveredIndex}
@@ -211,9 +211,9 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
                   {hoveredItem.extra ? (
-                    <div className="w-auto">{hoveredItem.extra}</div>
+                    <div className="w-auto shadow-sm rounded-lg">{hoveredItem.extra}</div>
                   ) : (
-                    <div className="px-3 py-2 text-sm font-medium text-foreground whitespace-nowrap">
+                    <div className="px-3 py-2 text-base shadow-sm rounded-lg select-none font-medium text-muted-foreground whitespace-nowrap">
                       {hoveredItem.label}
                     </div>
                   )}
