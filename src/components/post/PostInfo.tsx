@@ -45,8 +45,10 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
           <Link href={`/c/${community}`}>/{community}</Link>
         </>
       )}
-      <span>{"·"}</span>
-      <TimeElapsedSince date={post.createdAt} />
+      <span className="text-muted-foreground">{"·"}</span>
+      <span className="text-muted-foreground">
+        <TimeElapsedSince date={post.createdAt} />
+      </span>
       <div className="ml-auto">
         <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
