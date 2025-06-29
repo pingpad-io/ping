@@ -9,7 +9,7 @@ import type { Post, PostReactionType } from "./Post";
 import RepostDropdown from "./RepostDropdown";
 
 type ReactionState = {
-  [key in PostReactionType | "Like"]: {
+  [key in Exclude<PostReactionType | "Like", "Bookmark">]: {
     count: number;
     isActive: boolean;
   };
@@ -32,14 +32,13 @@ export function ReactionsList({
     Repost: { count: post.reactions.Repost, isActive: post.reactions.isReposted },
     Comment: { count: post.reactions.Comment, isActive: false },
     Collect: { count: post.reactions.Collect, isActive: post.reactions.isCollected },
-    Bookmark: { count: post.reactions.Bookmark, isActive: post.reactions.isBookmarked },
     Like: { count: post.reactions.upvotes || 0, isActive: post.reactions.isUpvoted || false },
   });
 
   const { triggerExplosion } = useExplosion();
   const likeButtonRef = useRef<HTMLSpanElement>(null);
 
-  const updateReaction = async (reactionType: PostReactionType | "Like") => {
+  const updateReaction = async (reactionType: Exclude<PostReactionType | "Like", "Bookmark">) => {
     setReactions((prev) => ({
       ...prev,
       [reactionType]: {
@@ -99,23 +98,13 @@ export function ReactionsList({
         />
       </span>
 
-      <div className="ml-auto">
-        <div className="opacity-0 group-hover:opacity-100 duration-300 delay-150">
-          {!collapsed && (
-            <ReactionButton
-              variant={isComment ? "comment" : "post"}
-              reactionType="Bookmark"
-              reaction={reactions.Bookmark}
-              onClick={() => updateReaction("Bookmark")}
-            />
-          )}
-        </div>
-        {collapsed && (
+      {collapsed && (
+        <div className="ml-auto">
           <Button size="sm" variant="ghost" className="h-max w-12 border-0 px-0 place-content-center items-center">
             <ChevronDownIcon className="h-5" />
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

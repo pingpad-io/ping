@@ -15,6 +15,7 @@ import { ReactionsList } from "./PostReactions";
 import { PostReplyComposer } from "./PostReplyComposer";
 import { ReplyInfo } from "./PostReplyInfo";
 import { RepostInfo } from "./PostRepostInfo";
+import { PostStateProvider } from "./PostStateContext";
 
 type PostViewSettings = {
   showBadges?: boolean;
@@ -137,39 +138,39 @@ export const PostView = ({
           marginBottom: isDissolving ? "0" : undefined,
         }}
       >
-        <PostContextMenu post={item} onReply={handleReply}>
-          <Card
-            className="glass duration-300 transition-all z-20 cursor-pointer hover:bg-muted/10"
-            style={{ userSelect: "text" } as React.CSSProperties}
-            onClick={handleCardClick}
-            onMouseEnter={handleCardHover}
-          >
-            <CardContent
-              className={`flex flex-row p-4 ${settings.isComment ? "gap-2" : "gap-4 "}`}
+        <PostStateProvider post={item} onReply={handleReply}>
+          <PostContextMenu post={item} onReply={handleReply}>
+            <Card
+              className="glass duration-300 transition-all z-20 cursor-pointer hover:bg-muted/10"
+              style={{ userSelect: "text" } as React.CSSProperties}
+              onClick={handleCardClick}
+              onMouseEnter={handleCardHover}
             >
-              <span className="min-h-full flex flex-col justify-start items-center relative">
-                <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
-                  <UserAvatar user={item.author} />
+              <CardContent className={`flex flex-row p-4 ${settings.isComment ? "gap-2" : "gap-4 "}`}>
+                <span className="min-h-full flex flex-col justify-start items-center relative">
+                  <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
+                    <UserAvatar user={item.author} />
+                  </div>
+                </span>
+                <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
+                  {!settings.isComment && !settings.inThread && <RepostInfo post={item} />}
+                  {!settings.isComment && !settings.inThread && !item.quoteOn && <ReplyInfo post={item} />}
+                  <PostInfo post={item} onReply={handleReply} />
+                  <PostContent ref={postContentRef} post={item} collapsed={collapsed} setCollapsed={setCollapsed} />
+                  {settings?.showBadges && (
+                    <ReactionsList
+                      isComment={settings.isComment}
+                      isCommentsOpen={isCommentsOpen}
+                      setCommentsOpen={setCommentsOpen}
+                      collapsed={collapsed}
+                      post={item}
+                    />
+                  )}
                 </div>
-              </span>
-              <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
-                {!settings.isComment && !settings.inThread && <RepostInfo post={item} />}
-                {!settings.isComment && !settings.inThread && !item.quoteOn && <ReplyInfo post={item} />}
-                <PostInfo post={item} onReply={handleReply} />
-                <PostContent ref={postContentRef} post={item} collapsed={collapsed} setCollapsed={setCollapsed} />
-                {settings?.showBadges && (
-                  <ReactionsList
-                    isComment={settings.isComment}
-                    isCommentsOpen={isCommentsOpen}
-                    setCommentsOpen={setCommentsOpen}
-                    collapsed={collapsed}
-                    post={item}
-                  />
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </PostContextMenu>
+              </CardContent>
+            </Card>
+          </PostContextMenu>
+        </PostStateProvider>
         {isReplyWizardOpen && (
           <PostReplyComposer
             level={settings.level || 1}

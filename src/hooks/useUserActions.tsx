@@ -1,3 +1,4 @@
+import { ShieldIcon, ShieldOffIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useFilteredUsers } from "~/components/FilteredUsersContext";
 import type { User } from "~/components/user/User";
@@ -15,7 +16,8 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
     const data = await result.json();
 
     if (result.ok) {
-      toast.success("User muted successfully!", {
+      toast("User muted", {
+        icon: <VolumeXIcon size={16} />,
         action: {
           label: "Undo",
           onClick: () => {
@@ -42,7 +44,8 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
     const data = await result.json();
 
     if (result.ok) {
-      toast.success("User unmuted successfully!", {
+      toast("User unmuted", {
+        icon: <Volume2Icon size={16} />,
         action: {
           label: "Undo",
           onClick: () => muteUser(),
@@ -66,7 +69,8 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
     const data = await result.json();
 
     if (result.ok) {
-      toast.success("User blocked successfully!", {
+      toast("User blocked", {
+        icon: <ShieldIcon size={16} />,
         action: {
           label: "Undo",
           onClick: () => {
@@ -93,7 +97,8 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
     const data = await result.json();
 
     if (result.ok) {
-      toast.success("User unblocked successfully!", {
+      toast("User unblocked", {
+        icon: <ShieldOffIcon size={16} />,
         action: {
           label: "Undo",
           onClick: () => blockUser(),
