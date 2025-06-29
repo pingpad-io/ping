@@ -180,6 +180,36 @@
   .dark .glass-relative:hover {
     background: hsl(var(--secondary) / 0.5);
   }
+
+  /* Button hover effect with expanding background */
+  .hover-expand {
+    position: relative;
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  .hover-expand::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    background: hsl(var(--secondary) / 0.7);
+    border-radius: 9999px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: 
+      opacity 200ms ease-out,
+      transform 100ms ease-out;
+    z-index: -1;
+  }
+
+  .hover-expand:hover::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .dark .hover-expand::before {
+    background: hsl(var(--secondary) / 0.5);
+  }
 }
 
 .fullscreen {

@@ -1,17 +1,5 @@
 "use client";
 
-import {
-  EditIcon,
-  ExternalLinkIcon,
-  MaximizeIcon,
-  ReplyIcon,
-  Share2Icon,
-  ShieldIcon,
-  ShieldOffIcon,
-  TrashIcon,
-  Volume2Icon,
-  VolumeXIcon,
-} from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { PropsWithChildren } from "react";
 import { toast } from "sonner";
@@ -21,6 +9,7 @@ import { getBaseUrl } from "~/utils/getBaseUrl";
 import { ContextMenu as Context, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
+import { menuItems, type MenuItem, type MenuContext } from "./PostMenu";
 
 export const PostContextMenu = (props: PropsWithChildren & { post: Post; onReply?: () => void }) => {
   const router = useRouter();
@@ -70,79 +59,106 @@ export const PostContextMenu = (props: PropsWithChildren & { post: Post; onReply
     router.push(`/p/${props.post.id}`);
   };
 
+  const context: MenuContext = {
+    post: props.post,
+    user,
+    isMuted,
+    isBlocked,
+    share,
+    handleReply,
+    handleExpand,
+    deletePost,
+    setEditingQuery,
+    muteUser,
+    unmuteUser,
+    blockUser,
+    unblockUser,
+    postLink,
+  };
+
+  const shouldShowItem = (item: MenuItem) => {
+    switch (item.condition) {
+      case "always":
+        return true;
+      case "isAuthor":
+        return user?.id === author.id;
+      case "notAuthor":
+        return user?.id !== author.id;
+      case "hasReply":
+        return !!props.onReply;
+      default:
+        return true;
+    }
+  };
+
+  const getItemProps = (item: MenuItem) => {
+    const baseProps = {
+      label: item.label,
+      icon: item.icon,
+      onClick: item.onClick,
+      disabled: item.disabled,
+      variant: item.variant,
+    };
+
+    if (item.getDynamicProps) {
+      return { ...baseProps, ...item.getDynamicProps(context) };
+    }
+
+    switch (item.id) {
+      case "share":
+        return { ...baseProps, onClick: share };
+      case "reply":
+        return { ...baseProps, onClick: handleReply };
+      case "expand":
+        return { ...baseProps, onClick: handleExpand };
+      case "open-new-tab":
+        return { ...baseProps, href: postLink };
+      case "edit-post":
+        return { ...baseProps, onClick: setEditingQuery };
+      case "delete-post":
+        return { ...baseProps, onClick: deletePost };
+      default:
+        return baseProps;
+    }
+  };
+
   return (
     <Context>
       <ContextMenuContent
         onContextMenu={(e) => {
           e.stopPropagation();
         }}
-        className="flex flex-col w-max gap-1 p-1 rounded-lg border"
+        className="w-max"
       >
-        {props.onReply && (
-          <ContextMenuItem onClick={handleReply}>
-            <ReplyIcon size={12} className="mr-2 h-4 w-4" />
-            reply
-          </ContextMenuItem>
-        )}
-        <ContextMenuItem onClick={handleExpand}>
-          <MaximizeIcon size={12} className="mr-2 h-4 w-4" />
-          expand
-        </ContextMenuItem>
-        <ContextMenuItem asChild>
-          <Link href={postLink} referrerPolicy="no-referrer" target="_blank">
-            <ExternalLinkIcon size={12} className="mr-2 h-4 w-4" />
-            open in new tab
-          </Link>
-        </ContextMenuItem>
-        <ContextMenuItem onClick={share}>
-          <Share2Icon size={12} className="mr-2 h-4 w-4" />
-          share
-        </ContextMenuItem>
-        {user?.id !== author.id && (
-          <>
-            <ContextMenuItem
-              onClick={() => {
-                isMuted ? unmuteUser() : muteUser();
-              }}
-            >
-              {isMuted ? (
-                <Volume2Icon size={12} className="mr-2 h-4 w-4" />
-              ) : (
-                <VolumeXIcon size={12} className="mr-2 h-4 w-4" />
-              )}
-              {isMuted ? "unmute user" : "mute user"}
-            </ContextMenuItem>
-            <ContextMenuItem
-              onClick={() => {
-                isBlocked ? unblockUser() : blockUser();
-              }}
-            >
-              {isBlocked ? (
-                <ShieldOffIcon size={12} className="mr-2 h-4 w-4" />
-              ) : (
-                <ShieldIcon size={12} className="mr-2 h-4 w-4" />
-              )}
-              {isBlocked ? "unblock user" : "block user"}
-            </ContextMenuItem>
-          </>
-        )}
-        {user?.id === author.id && (
-          <>
-            <ContextMenuItem onClick={setEditingQuery} disabled>
-              <EditIcon size={12} className="mr-2 h-4 w-4" />
-              edit post
-            </ContextMenuItem>
+        {menuItems.map((item) => {
+          if (!shouldShowItem(item)) return null;
 
+          const itemProps = getItemProps(item);
+          const Icon = itemProps.icon;
+
+          if (item.id === "open-new-tab") {
+            return (
+              <ContextMenuItem key={item.id} asChild>
+                <Link href={postLink} referrerPolicy="no-referrer" target="_blank" className="flex items-center gap-3">
+                  <Icon size={12} className="h-4 w-4" />
+                  {itemProps.label}
+                </Link>
+              </ContextMenuItem>
+            );
+          }
+
+          return (
             <ContextMenuItem
-              onClick={() => {
-                deletePost();
-              }}
+              key={item.id}
+              onClick={itemProps.onClick}
+              disabled={itemProps.disabled}
+              className="flex items-center gap-3"
             >
-              <TrashIcon size={12} className="mr-2 h-4 w-4" />
-              delete post
+              <Icon size={12} className="h-4 w-4" />
+              {itemProps.label}
             </ContextMenuItem>
-          </>
-        )}
+          );
+        })}
       </ContextMenuContent>
       <ContextMenuTrigger>{props.children}</ContextMenuTrigger>
     </Context>

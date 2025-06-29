@@ -2,7 +2,7 @@ import type { LucideProps } from "lucide-react";
 import { forwardRef } from "react";
 
 const PingLogo = forwardRef<SVGSVGElement, LucideProps>(
-  ({ size = 24, strokeWidth = 46, color = "currentColor", ...props }, ref) => {
+  ({ size = 20, strokeWidth = 46, color = "currentColor", ...props }, ref) => {
     return (
       <svg
         ref={ref}
