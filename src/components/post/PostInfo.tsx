@@ -45,7 +45,6 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
           <Link href={`/c/${community}`}>/{community}</Link>
         </>
       )}
-      <span className="text-muted-foreground">{"·"}</span>
       <span className="text-muted-foreground">
         <TimeElapsedSince date={post.createdAt} />
       </span>

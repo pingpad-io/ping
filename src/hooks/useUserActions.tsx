@@ -35,7 +35,6 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
   };
 
   const unmuteUser = async () => {
-    // Optimistic update
     removeMutedUser(user.id);
 
     const result = await fetch(`/api/user/${user.id}/unmute`, {
@@ -52,7 +51,6 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
         },
       });
     } else {
-      // Revert on error
       addMutedUser(user.id);
       toast.error(`${data.error}`);
     }
@@ -60,7 +58,6 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
   };
 
   const blockUser = async () => {
-    // Optimistic update
     addBlockedUser(user.id);
 
     const result = await fetch(`/api/user/${user.id}/block`, {
@@ -70,7 +67,7 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
 
     if (result.ok) {
       toast("User blocked", {
-        icon: <ShieldIcon size={16} />,
+        icon: <ShieldIcon fill="currentColor" size={16} />,
         action: {
           label: "Undo",
           onClick: () => {
@@ -88,7 +85,6 @@ export const useUserActions = (user: User, onComplete?: () => void) => {
   };
 
   const unblockUser = async () => {
-    // Optimistic update
     removeBlockedUser(user.id);
 
     const result = await fetch(`/api/user/${user.id}/unblock`, {

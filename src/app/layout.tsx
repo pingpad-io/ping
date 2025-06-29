@@ -41,7 +41,7 @@ export default async function RootLayout({ children }) {
               <NotificationsProvider>
                 <BackgroundGradient />
                 <AuthWatcher />
-                <Toaster position="top-right" offset={16} />
+                <Toaster position="top-center" offset={16} />
                 <Menu isAuthenticated={!!profileId} user={user} handle={handle} profileId={profileId} />
 
                 <PageTransition>
