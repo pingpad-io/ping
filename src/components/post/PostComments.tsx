@@ -51,28 +51,35 @@ export const PostComments = ({
     }
   }, [cursor, loading, post.id]);
 
-  const commentElements = comments.map((comment, index) => (
-    <motion.li
-      key={comment.id}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{
-        duration: 0.3,
-        ease: "easeInOut",
-      }}
-    >
-      <PostView
-        item={comment}
-        settings={{
-          level,
-          isComment: true,
-          showBadges: true,
-          isLastComment: index === comments.length - 1,
+  const commentElements = comments
+    .filter((comment) => {
+      // Filter out muted/blocked users unless on their profile
+      const isMuted = comment.author.actions?.muted;
+      const isBlocked = comment.author.actions?.blocked;
+      return !isMuted && !isBlocked;
+    })
+    .map((comment, index, filteredComments) => (
+      <motion.li
+        key={comment.id}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
         }}
-      />
-    </motion.li>
-  ));
+      >
+        <PostView
+          item={comment}
+          settings={{
+            level,
+            isComment: true,
+            showBadges: true,
+            isLastComment: index === filteredComments.length - 1,
+          }}
+        />
+      </motion.li>
+    ));
 
   const skeletonCount = Math.max(0, Math.min(post.reactions.Comment - comments.length, PAGE_SIZE));
   const skeletonElements = Array.from({ length: skeletonCount }).map(() => (
@@ -95,8 +102,8 @@ export const PostComments = ({
                 ease: "easeInOut",
               }}
             >
-              <ul className="gap-2 flex flex-col">
-                <div>{commentElements}</div>
+              <ul className="flex flex-col gap-1">
+                {commentElements}
               </ul>
             </motion.div>
           )}
@@ -110,6 +117,7 @@ export const PostComments = ({
               duration: 0.5,
               ease: "easeInOut",
             }}
+            className="flex flex-col gap-1"
           >
             {skeletonElements}
           </motion.div>

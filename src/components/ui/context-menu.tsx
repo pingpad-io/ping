@@ -47,13 +47,14 @@ const ContextMenuSubContent = React.forwardRef<
   <AnimatePresence>
     <ContextMenuPrimitive.SubContent asChild ref={ref} {...props}>
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
+        initial={{ opacity: 0, scale: 0.8, height: 0 }}
+        animate={{ opacity: 1, scale: 1, height: "auto" }}
+        exit={{ opacity: 0, scale: 0.8, height: 0 }}
         transition={{
           duration: 0.1,
           scale: { type: "spring", damping: 20, stiffness: 300 },
           opacity: { duration: 0.1 },
+          height: { type: "spring", damping: 20, stiffness: 300 },
         }}
         className={cn(
           "z-50 min-w-[10rem] overflow-hidden rounded-xl border bg-popover p-1 text-popover-foreground shadow-lg",
@@ -75,15 +76,16 @@ const ContextMenuContent = React.forwardRef<
     <AnimatePresence>
       <ContextMenuPrimitive.Content asChild ref={ref} {...props}>
         <GlassEffect
-          className={cn("z-50 min-w-[10rem] rounded-xl border text-popover-foreground shadow-md", className)}
+          className={cn("z-50 min-w-[10rem] rounded-xl border text-popover-foreground shadow-md overflow-hidden", className)}
           borderRadius={12}
-          initial={{ scale: 0.95, y: -10 }}
-          animate={{ scale: 1, y: 0 }}
-          exit={{ scale: 0.95, y: -10 }}
+          initial={{ scale: 0.95, y: -10, height: 0 }}
+          animate={{ scale: 1, y: 0, height: "auto" }}
+          exit={{ scale: 0.95, y: -10, height: 0 }}
           transition={{
             duration: 0.15,
             scale: { type: "spring", damping: 25, stiffness: 400 },
             y: { type: "spring", damping: 25, stiffness: 400 },
+            height: { type: "spring", damping: 25, stiffness: 400 },
           }}
         >
           <motion.div

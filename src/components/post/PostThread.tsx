@@ -11,7 +11,6 @@ export function PostThread({ post }: { post: Post }) {
   const isFirstLoadRef = useRef(true);
   const mainPostRef = useRef<HTMLDivElement>(null);
 
-  // Initialize the previous height when component mounts
   useEffect(() => {
     if (containerRef.current) {
       previousHeightRef.current = containerRef.current.scrollHeight;
@@ -87,7 +86,7 @@ export function PostThread({ post }: { post: Post }) {
   }, [post.id]);
 
   return (
-    <div ref={containerRef} className="flex flex-col">
+    <div ref={containerRef} className="flex flex-col p-4">
       {thread.map((p) => (
         <div key={p.id} className="relative">
           <PostView settings={{ inThread: true }} item={p} />
@@ -95,7 +94,7 @@ export function PostThread({ post }: { post: Post }) {
       ))}
 
       <div ref={mainPostRef} className="relative min-h-screen">
-        <PostView item={post} defaultExpanded={true} />
+        <PostView item={post} defaultExpanded={true} defaultCommentsOpen={true} defaultReplyOpen={true} />
       </div>
     </div>
   );

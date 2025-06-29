@@ -30,17 +30,19 @@ export const PostView = ({
   settings = { isComment: false, showBadges: true, level: 1 },
   defaultReplyOpen = false,
   defaultExpanded = false,
+  defaultCommentsOpen = false,
 }: {
   item: Post;
   settings?: PostViewSettings;
   defaultReplyOpen?: boolean;
   defaultExpanded?: boolean;
+  defaultCommentsOpen?: boolean;
 }) => {
   const pathname = usePathname();
   const router = useRouter();
   const content = "content" in item.metadata ? (item.metadata.content as string) : "";
   const [collapsed, setCollapsed] = useState(defaultExpanded ? false : content.length > 400);
-  const [isCommentsOpen, setCommentsOpen] = useState(false);
+  const [isCommentsOpen, setCommentsOpen] = useState(defaultCommentsOpen);
   const [isReplyWizardOpen, setReplyWizardOpen] = useState(defaultReplyOpen);
   const [comments, setComments] = useState(item.comments);
   const [isDissolving, setIsDissolving] = useState(false);
@@ -129,7 +131,7 @@ export const PostView = ({
     <>
       {isDissolving && <DissolveFilter filterId={dissolveFilterId} />}
       <div
-        className={`flex flex-col w-full gap-0.5 ${isDissolving ? "dissolving" : ""}`}
+        className={`flex flex-col w-full gap-1 ${isDissolving ? "dissolving" : ""}`}
         style={{
           filter: isDissolving ? `url(#${dissolveFilterId})` : "none",
           opacity: isDissolving ? 0 : 1,
@@ -141,7 +143,7 @@ export const PostView = ({
         <PostStateProvider post={item} onReply={handleReply}>
           <PostContextMenu post={item} onReply={handleReply}>
             <Card
-              className="glass duration-300 transition-all z-20 cursor-pointer hover:bg-muted/10"
+              className="duration-300 transition-all z-20 cursor-pointer hover:bg-muted/10"
               style={{ userSelect: "text" } as React.CSSProperties}
               onClick={handleCardClick}
               onMouseEnter={handleCardHover}

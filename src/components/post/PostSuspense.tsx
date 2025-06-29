@@ -12,7 +12,7 @@ export const PostSuspense = () => {
   );
 
   return (
-    <div className="flex flex-col w-full gap-0.5 glass rounded-lg">
+    <div className="flex flex-col w-full gap-1 glass rounded-lg">
       <div className="flex flex-row p-2 sm:p-4 gap-4">
         {avatar}
         <div className="h-12 w-full grow">{content}</div>
