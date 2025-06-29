@@ -128,7 +128,7 @@ export const PostView = ({
     <>
       {isDissolving && <DissolveFilter filterId={dissolveFilterId} />}
       <div
-        className={`flex flex-col w-full gap-0.5 overflow-hidden ${isDissolving ? "dissolving" : ""}`}
+        className={`flex flex-col w-full gap-0.5 ${isDissolving ? "dissolving" : ""}`}
         style={{
           filter: isDissolving ? `url(#${dissolveFilterId})` : "none",
           opacity: isDissolving ? 0 : 1,
@@ -145,7 +145,7 @@ export const PostView = ({
             onMouseEnter={handleCardHover}
           >
             <CardContent
-              className={`flex flex-row p-2 ${settings.isComment ? "sm:p-2 sm:pb-4 gap-2" : "sm:p-4 gap-4 "}`}
+              className={`flex flex-row p-4 ${settings.isComment ? "gap-2" : "gap-4 "}`}
             >
               <span className="min-h-full flex flex-col justify-start items-center relative">
                 <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>

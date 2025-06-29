@@ -32,7 +32,7 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
         onClick();
       }}
       className={
-        "border-0 px-0 place-content-center items-center flex flex-row gap-1.5 hover:bg-transparent [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95"
+        "border-0 px-0 place-content-center items-center flex flex-row min-w-[2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95"
       }
       disabled={disabled}
     >
@@ -52,7 +52,7 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
         className={`inline-flex items-center leading-none transition-colors duration-200 text-xs font-bold 
           ${reaction.isActive ? "text-primary" : "text-muted-foreground"}`}
       >
-        <span className="w-fit min-w-[3ch] text-center">{reaction.count > 0 ? formattedAmount : ""}</span>
+        <span className="w-fit text-center">{reaction.count > 0 ? formattedAmount : ""}</span>
       </span>
     </Button>
   );

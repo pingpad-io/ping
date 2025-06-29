@@ -152,7 +152,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
   return (
     <div
       suppressHydrationWarning
-      className="group flex flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm"
+      className="group flex h-5 flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm"
     >
       <Link className="flex gap-2" href={`/u/${handle}`}>
         {/* <span className="w-fit truncate font-bold">{author.name}</span> */}
@@ -171,7 +171,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
           <DropdownMenuTrigger asChild>
             <Button
               variant="link"
-              className="flex mr-3 gap-4 w-4 rounded-full hover-expand justify-center"
+              className="flex gap-4 w-4 rounded-full hover-expand justify-center"
             >
               <span className="transition-transform">
                 <EllipsisIcon
