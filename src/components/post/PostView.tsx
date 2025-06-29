@@ -154,7 +154,9 @@ export const PostView = ({
                 </span>
                 <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
                   {!settings.isComment && !settings.inThread && <RepostInfo post={item} />}
-                  {!settings.isComment && !settings.inThread && !item.quoteOn && <ReplyInfo post={item} />}
+                  {!settings.isComment && !settings.inThread && !item.quoteOn && !item.isRepost && (
+                    <ReplyInfo post={item} />
+                  )}
                   <PostInfo post={item} onReply={handleReply} />
                   <PostContent ref={postContentRef} post={item} collapsed={collapsed} setCollapsed={setCollapsed} />
                   {settings?.showBadges && (
