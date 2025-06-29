@@ -1,3 +1,5 @@
+"use client";
+
 import { maybe, never } from "@lens-protocol/shared-kernel";
 
 const safeGlobal = (maybe(() => globalThis) ??

@@ -74,7 +74,12 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
     <div className="flex flex-col gap-2">
       {list}
       {manualNextPage && cursor !== null && (
-        <Button variant="ghost" className="w-full mt-4 hover:bg-secondary/70" onClick={loadNextBatch} disabled={loading}>
+        <Button
+          variant="ghost"
+          className="w-full mt-4 hover:bg-secondary/70"
+          onClick={loadNextBatch}
+          disabled={loading}
+        >
           {loading ? "Loading..." : "Load more"}
         </Button>
       )}

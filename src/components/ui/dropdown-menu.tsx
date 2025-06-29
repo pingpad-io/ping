@@ -4,7 +4,7 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
-
+import { GlassEffect } from "@/src/components/ui/glass-effect";
 import { cn } from "@/src/utils";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
@@ -47,10 +47,14 @@ const DropdownMenuSubContent = React.forwardRef<
   <AnimatePresence>
     <DropdownMenuPrimitive.SubContent asChild ref={ref} {...props}>
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{
+          duration: 0.15,
+          scale: { type: "spring", damping: 20, stiffness: 300 },
+          opacity: { duration: 0.15 },
+        }}
         className={cn(
           "z-50 min-w-[8rem] overflow-hidden rounded-xl border bg-popover p-1 text-popover-foreground shadow-lg",
           className,
@@ -70,18 +74,27 @@ const DropdownMenuContent = React.forwardRef<
   <DropdownMenuPrimitive.Portal>
     <AnimatePresence>
       <DropdownMenuPrimitive.Content asChild ref={ref} sideOffset={sideOffset} {...props}>
-        <motion.div
-          initial={{ opacity: 0, height: 0, y: -10 }}
-          animate={{ opacity: 1, height: "auto", y: 0 }}
-          exit={{ opacity: 0, height: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-          className={cn(
-            "z-50 min-w-[8rem] overflow-hidden rounded-xl border bg-popover p-1 text-popover-foreground shadow-md glass glass-dim",
-            className,
-          )}
+        <GlassEffect
+          className={cn("z-50 min-w-[8rem] rounded-xl border text-popover-foreground shadow-md", className)}
+          initial={{ scale: 0.95, y: -10 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.95, y: -10 }}
+          transition={{
+            duration: 0.15,
+            scale: { type: "spring", damping: 25, stiffness: 400 },
+            y: { type: "spring", damping: 25, stiffness: 400 },
+          }}
         >
-          {children}
-        </motion.div>
+          <motion.div
+            className="p-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            {children}
+          </motion.div>
+        </GlassEffect>
       </DropdownMenuPrimitive.Content>
     </AnimatePresence>
   </DropdownMenuPrimitive.Portal>

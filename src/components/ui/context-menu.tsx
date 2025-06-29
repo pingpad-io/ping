@@ -2,8 +2,9 @@
 
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
-
+import { GlassEffect } from "@/src/components/ui/glass-effect";
 import { cn } from "@/src/utils";
 
 const ContextMenu = ContextMenuPrimitive.Root;
@@ -42,15 +43,27 @@ ContextMenuSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName;
 const ContextMenuSubContent = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.SubContent>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubContent>
->(({ className, ...props }, ref) => (
-  <ContextMenuPrimitive.SubContent
-    ref={ref}
-    className={cn(
-      "z-50 min-w-[10rem] overflow-hidden rounded-xl border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 glass glass-dim",
-      className,
-    )}
-    {...props}
-  />
+>(({ className, children, ...props }, ref) => (
+  <AnimatePresence>
+    <ContextMenuPrimitive.SubContent asChild ref={ref} {...props}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{
+          duration: 0.1,
+          scale: { type: "spring", damping: 20, stiffness: 300 },
+          opacity: { duration: 0.1 },
+        }}
+        className={cn(
+          "z-50 min-w-[10rem] overflow-hidden rounded-xl border bg-popover p-1 text-popover-foreground shadow-lg",
+          className,
+        )}
+      >
+        {children}
+      </motion.div>
+    </ContextMenuPrimitive.SubContent>
+  </AnimatePresence>
 ));
 ContextMenuSubContent.displayName = ContextMenuPrimitive.SubContent.displayName;
 
@@ -59,14 +72,32 @@ const ContextMenuContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content>
 >(({ className, ...props }, ref) => (
   <ContextMenuPrimitive.Portal>
-    <ContextMenuPrimitive.Content
-      ref={ref}
-      className={cn(
-        "z-50 min-w-[10rem] overflow-hidden rounded-xl border bg-popover p-1 text-popover-foreground shadow-md animate-in fade-in-80 data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 glass glass-dim",
-        className,
-      )}
-      {...props}
-    />
+    <AnimatePresence>
+      <ContextMenuPrimitive.Content asChild ref={ref} {...props}>
+        <GlassEffect
+          className={cn("z-50 min-w-[10rem] rounded-xl border text-popover-foreground shadow-md", className)}
+          borderRadius={12}
+          initial={{ scale: 0.95, y: -10 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.95, y: -10 }}
+          transition={{
+            duration: 0.15,
+            scale: { type: "spring", damping: 25, stiffness: 400 },
+            y: { type: "spring", damping: 25, stiffness: 400 },
+          }}
+        >
+          <motion.div
+            className="p-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            {props.children}
+          </motion.div>
+        </GlassEffect>
+      </ContextMenuPrimitive.Content>
+    </AnimatePresence>
   </ContextMenuPrimitive.Portal>
 ));
 ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName;

@@ -1,11 +1,11 @@
 "use client";
 
-import { Bookmark, BookmarkIcon, Github, Heart, HeartIcon, LogInIcon, PlusIcon } from "lucide-react";
+import { Bookmark, Github, Heart, LogInIcon, PlusIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { cn } from "~/utils";
 import PingLogo from "~/components/icons/PingLogo";
 import { Dock } from "~/components/ui/dock";
+import { cn } from "~/utils";
 import { useNotifications } from "../notifications/NotificationsContext";
 import PostComposer from "../post/PostComposer";
 import { Dialog, DialogContent } from "../ui/dialog";
@@ -36,93 +36,99 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
     }
   }, [router, handle]);
 
-  const dockItems = isAuthenticated ? [
-    {
-      icon: PingLogo,
-      label: "Home",
-      onClick: () => router.push("/home"),
-      isActive: pathname === "/home",
-    },
-    {
-      customIcon: (
-        <div className="relative w-full h-full flex items-center justify-center">
-          {pathname === "/activity" ? (
-            <Heart className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.25} />
-          ) : (
-            <Heart className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.25} />
-          )}
-          {newCount > 0 && (
-            <span className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] md:text-[10px] flex items-center justify-center font-medium">
-              {newCount > 9 ? "9+" : newCount}
-            </span>
-          )}
-        </div>
-      ),
-      label: "Activity",
-      onClick: () => router.push("/activity"),
-      isActive: pathname === "/activity",
-    },
-    {
-      icon: PlusIcon,
-      label: "Post",
-      onClick: () => setIsPostDialogOpen(true),
-      variant: "secondary" as const,
-    },
-    {
-      customIcon: (
-        <div className={cn(
-          "w-7 h-7 p-0 shrink-0 rounded-full overflow-hidden",
-          (pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`)) && "ring-2 ring-primary/50 ring-offset-2 ring-offset-background"
-        )}>
-          <UserAvatar link={false} card={false} user={user} />
-        </div>
-      ),
-      onClick: () => router.push(`/u/${handle}`),
-      label: "Profile",
-      extra: <UserMenuButtons handle={handle!} user={user} />,
-      isActive: pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`),
-    },
-    {
-      customIcon: pathname === "/bookmarks" ? (
-        <Bookmark className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.25} />
-      ) : (
-        <Bookmark className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.25} />
-      ),
-      label: "Bookmarks",
-      onClick: () => router.push("/bookmarks"),
-      isActive: pathname === "/bookmarks",
-    },
-    ...(isLandingPage
-      ? [
+  const dockItems = isAuthenticated
+    ? [
         {
-          icon: Github,
-          label: "GitHub",
-          onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+          icon: PingLogo,
+          label: "Home",
+          onClick: () => router.push("/home"),
+          isActive: pathname === "/home",
         },
-      ]
-      : []),
-  ] : [
-    {
-      icon: PingLogo,
-      label: "Home",
-      onClick: () => router.push("/home"),
-      isActive: pathname === "/home",
-    },
-    {
-      icon: LogInIcon,
-      label: "Connect Wallet",
-      onClick: () => setIsWalletDialogOpen(true),
-    },
-    ...(isLandingPage
-      ? [
         {
-          icon: Github,
-          label: "GitHub",
-          onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+          customIcon: (
+            <div className="relative w-full h-full flex items-center justify-center">
+              {pathname === "/activity" ? (
+                <Heart className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.25} />
+              ) : (
+                <Heart className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.25} />
+              )}
+              {newCount > 0 && (
+                <span className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] md:text-[10px] flex items-center justify-center font-medium">
+                  {newCount > 9 ? "9+" : newCount}
+                </span>
+              )}
+            </div>
+          ),
+          label: "Activity",
+          onClick: () => router.push("/activity"),
+          isActive: pathname === "/activity",
         },
+        {
+          icon: PlusIcon,
+          label: "Post",
+          onClick: () => setIsPostDialogOpen(true),
+          variant: "secondary" as const,
+        },
+        {
+          customIcon: (
+            <div
+              className={cn(
+                "w-7 h-7 p-0 shrink-0 rounded-full overflow-hidden",
+                (pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`)) &&
+                  "ring-2 ring-primary/50 ring-offset-2 ring-offset-background",
+              )}
+            >
+              <UserAvatar link={false} card={false} user={user} />
+            </div>
+          ),
+          onClick: () => router.push(`/u/${handle}`),
+          label: "Profile",
+          extra: <UserMenuButtons handle={handle!} user={user} />,
+          isActive: pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`),
+        },
+        {
+          customIcon:
+            pathname === "/bookmarks" ? (
+              <Bookmark className="w-5 h-5 md:w-6 md:h-6 fill-current" strokeWidth={2.25} />
+            ) : (
+              <Bookmark className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.25} />
+            ),
+          label: "Bookmarks",
+          onClick: () => router.push("/bookmarks"),
+          isActive: pathname === "/bookmarks",
+        },
+        ...(isLandingPage
+          ? [
+              {
+                icon: Github,
+                label: "GitHub",
+                onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+              },
+            ]
+          : []),
       ]
-      : []),
-  ];
+    : [
+        {
+          icon: PingLogo,
+          label: "Home",
+          onClick: () => router.push("/home"),
+          isActive: pathname === "/home",
+        },
+        {
+          icon: LogInIcon,
+          label: "Connect Wallet",
+          onClick: () => setIsWalletDialogOpen(true),
+        },
+        ...(isLandingPage
+          ? [
+              {
+                icon: Github,
+                label: "GitHub",
+                onClick: () => window.open("https://github.com/pingpad-io/ping", "_blank"),
+              },
+            ]
+          : []),
+      ];
 
   return (
     <>
@@ -141,9 +147,7 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
         </Dialog>
       )}
 
-      {!isAuthenticated && (
-        <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />
-      )}
+      {!isAuthenticated && <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />}
     </>
   );
 }

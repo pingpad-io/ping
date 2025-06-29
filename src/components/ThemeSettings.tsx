@@ -181,7 +181,12 @@ export function ThemeSettings() {
             <div className="space-y-3 mt-4">
               <div className="flex gap-2">
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
-                <Button variant="ghost" size="sm" onClick={() => fileInputRef.current?.click()} className="text-xs hover:bg-secondary/70">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-xs hover:bg-secondary/70"
+                >
                   <ImageIcon className="w-3 h-3 mr-1" />
                   Choose an image
                 </Button>
