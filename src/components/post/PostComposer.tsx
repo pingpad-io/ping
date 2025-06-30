@@ -425,18 +425,18 @@ export default function PostComposer({
             />
 
             <div className="flex items-center gap-2 mt-2">
-              <Button type="button" variant="ghost" size="sm" className="p-0 m-0 rounded-full w-8 h-8" onClick={open}>
-                <ImageIcon className="h-5 w-5 text-base-content" />
+              <Button type="button" variant="ghost" size="sm" className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95" onClick={open}>
+                <ImageIcon className="h-5 w-5 text-muted-foreground transition-transform" />
               </Button>
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="p-0 m-0 rounded-full w-8 h-8"
+                    className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95"
                     onClick={() => setEmojiPickerOpen(!isEmojiPickerOpen)}
                   >
-                    <SmileIcon className="h-5 w-5 text-base-content" />
+                    <SmileIcon className="h-5 w-5 text-muted-foreground transition-transform" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

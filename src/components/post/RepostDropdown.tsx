@@ -95,14 +95,16 @@ export default function RepostDropdown({ post, variant = "post", reactions, onRe
                 className="transition-all duration-200"
               />
             </span>
-            <span
-              className={cn(
-                "text-xs font-bold transition-colors duration-200",
-                reactions.reacted ? "text-primary" : "text-muted-foreground",
-              )}
-            >
-              {reactions.count > 0 ? reactions.count : ""}
-            </span>
+            {reactions.count > 0 && (
+              <span
+                className={cn(
+                  "text-xs font-bold transition-colors duration-200",
+                  reactions.reacted ? "text-primary" : "text-muted-foreground",
+                )}
+              >
+                {reactions.count}
+              </span>
+            )}
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="center">

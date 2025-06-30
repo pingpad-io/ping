@@ -51,7 +51,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
       <div className="ml-auto">
         <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="link" className="flex gap-4 w-4 rounded-full hover-expand justify-center">
+            <Button variant="link" className="flex gap-4 w-4 rounded-full hover-expand justify-center [&>span]:hover:scale-110 [&>span]:active:scale-95">
               <span className="transition-transform">
                 <EllipsisIcon
                   size={18}

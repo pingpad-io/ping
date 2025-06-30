@@ -48,12 +48,14 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <span
-        className={`inline-flex items-center leading-none transition-colors duration-200 text-xs font-bold 
-          ${reaction.isActive ? "text-primary" : "text-muted-foreground"}`}
-      >
-        <span className="w-fit text-center">{reaction.count > 0 ? formattedAmount : ""}</span>
-      </span>
+      {reaction.count > 0 && (
+        <span
+          className={`inline-flex items-center leading-none transition-colors duration-200 text-xs font-bold 
+            ${reaction.isActive ? "text-primary" : "text-muted-foreground"}`}
+        >
+          <span className="w-fit text-center">{formattedAmount}</span>
+        </span>
+      )}
     </Button>
   );
 };

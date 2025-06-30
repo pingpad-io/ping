@@ -66,37 +66,43 @@ export function ReactionsList({
 
   return (
     <div className="flex flex-row items-center justify-between sm:justify-start gap-6 sm:gap-10 w-full -mb-2 mt-1">
-      <ReactionButton
-        variant={isComment ? "comment" : "post"}
-        reactionType="Comment"
-        reaction={reactions.Comment}
-        onClick={() => setCommentsOpen(!isCommentsOpen)}
-        disabled={!post.reactions?.canComment}
-      />
-      <RepostDropdown
-        post={post}
-        variant={isComment ? "comment" : "post"}
-        reactions={{
-          reacted: reactions.Repost.isActive,
-          count: reactions.Repost.count,
-          canRepost: post.reactions?.canRepost || false,
-          canQuote: post.reactions?.canQuote || false,
-        }}
-        onRepostChange={(isReposted, count) => {
-          setReactions((prev) => ({
-            ...prev,
-            Repost: { count, isActive: isReposted },
-          }));
-        }}
-      />
-      <span ref={likeButtonRef}>
+      <div className="hover-expand rounded-full">
         <ReactionButton
           variant={isComment ? "comment" : "post"}
-          reactionType="Like"
-          reaction={reactions.Like}
-          onClick={() => updateReaction("Like")}
+          reactionType="Comment"
+          reaction={reactions.Comment}
+          onClick={() => setCommentsOpen(!isCommentsOpen)}
+          disabled={!post.reactions?.canComment}
         />
-      </span>
+      </div>
+      <div className="hover-expand rounded-full">
+        <RepostDropdown
+          post={post}
+          variant={isComment ? "comment" : "post"}
+          reactions={{
+            reacted: reactions.Repost.isActive,
+            count: reactions.Repost.count,
+            canRepost: post.reactions?.canRepost || false,
+            canQuote: post.reactions?.canQuote || false,
+          }}
+          onRepostChange={(isReposted, count) => {
+            setReactions((prev) => ({
+              ...prev,
+              Repost: { count, isActive: isReposted },
+            }));
+          }}
+        />
+      </div>
+      <div className="hover-expand rounded-full">
+        <span ref={likeButtonRef}>
+          <ReactionButton
+            variant={isComment ? "comment" : "post"}
+            reactionType="Like"
+            reaction={reactions.Like}
+            onClick={() => updateReaction("Like")}
+          />
+        </span>
+      </div>
 
       {collapsed && (
         <div className="ml-auto">
