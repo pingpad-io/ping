@@ -392,7 +392,7 @@ export default function PostComposer({
               <UserAvatar user={currentUser} link={true} card={false} />
             </div>
           )}
-          <div className="grow">
+          <div className="grow flex-1">
             <FormField
               control={form.control}
               name="content"
