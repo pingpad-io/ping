@@ -17,7 +17,7 @@ export const PostReplyComposer = ({
 }) => {
   return (
     <div
-      className={`w-full flex flex-col items-end justify-center text-xs sm:text-sm ${level === 2 ? "w-[90%] ml-auto" : "w-[94%] ml-auto"}`}
+      className={`w-full flex flex-col items-end justify-center text-xs sm:text-sm`}
     >
       <AnimatePresence>
         {isOpen && (
@@ -29,7 +29,7 @@ export const PostReplyComposer = ({
               duration: 0.3,
               ease: "easeInOut",
             }}
-            className="w-[90%] glass rounded-xl p-2"
+            className={`w-full glass rounded-xl p-2`}
           >
             <PostComposer
               replyingTo={post}

@@ -1,100 +1,69 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Post } from "./Post";
 import { PostView } from "./PostView";
+import { PostReplyComposer } from "./PostReplyComposer";
+import { PostSuspense } from "./PostSuspense";
+import { useParentThread } from "~/hooks/useParentThread";
+import { useAuthorThread } from "~/hooks/useAuthorThread";
+import { useScrollManagement } from "~/hooks/useScrollManagement";
 
 export function PostThread({ post }: { post: Post }) {
-  const [thread, setThread] = useState<Post[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const previousHeightRef = useRef(0);
-  const isFirstLoadRef = useRef(true);
-  const mainPostRef = useRef<HTMLDivElement>(null);
+  const [comments, setComments] = useState<Post[]>([]);
+  const [allComments, setAllComments] = useState<Post[]>([]);
+  const [showReply, setShowReply] = useState(true);
+
+  const { parentThread, loading: parentThreadLoading } = useParentThread(post);
+  const { authorThread, loading: authorThreadLoading } = useAuthorThread(post);
+  const { containerRef, mainPostRef } = useScrollManagement({
+    parentThread,
+    loading: parentThreadLoading,
+  });
 
   useEffect(() => {
-    if (containerRef.current) {
-      previousHeightRef.current = containerRef.current.scrollHeight;
-    }
-  }, []);
+    setComments(
+      allComments.filter(
+        (comment) => !authorThread.some((authorPost) => authorPost.id === comment.id)
+      )
+    );
+  }, [allComments, authorThread]);
 
   useEffect(() => {
-    let cancelled = false;
-
-    async function fetchParent(id: string) {
-      try {
-        const res = await fetch(`/api/posts/${id}`);
-        if (!res.ok) throw new Error(res.statusText);
-        const { nativePost } = await res.json();
-        return nativePost as Post;
-      } catch (error) {
-        console.error("Failed to fetch parent post", error);
-        return null;
-      }
+    if (!parentThreadLoading && !authorThreadLoading && allComments.length === 0) {
+      setAllComments(post.comments || []);
     }
-
-    async function load(current: Post | undefined) {
-      if (!current) return;
-      const parentId = current.commentOn?.id ?? current.quoteOn?.id;
-      if (!parentId) return;
-
-      const parent = await fetchParent(parentId);
-      if (parent && !cancelled) {
-        // Capture scroll position before state update
-        const viewport = containerRef.current?.closest("[data-overlayscrollbars-viewport]") as HTMLElement | null;
-        const currentScrollTop = viewport?.scrollTop || 0;
-
-        setThread((prev) => {
-          requestAnimationFrame(() => {
-            const currentViewport = containerRef.current?.closest(
-              "[data-overlayscrollbars-viewport]",
-            ) as HTMLElement | null;
-            if (!currentViewport) {
-              console.log("No viewport found, skipping scroll adjustment");
-              return;
-            }
-
-            if (isFirstLoadRef.current && mainPostRef.current) {
-              isFirstLoadRef.current = false;
-              // Scroll to the main post at the bottom
-              currentViewport.scrollTop = mainPostRef.current.offsetTop;
-            } else if (containerRef.current) {
-              // Calculate how much height was added above the current scroll position
-              const newHeight = containerRef.current.scrollHeight;
-              const heightDifference = newHeight - previousHeightRef.current;
-
-              if (heightDifference > 0) {
-                // Adjust scroll position to maintain visual position
-                currentViewport.scrollTop = currentScrollTop + heightDifference;
-              }
-            }
-
-            if (containerRef.current) {
-              previousHeightRef.current = containerRef.current.scrollHeight;
-            }
-          });
-
-          return [parent, ...prev];
-        });
-        await load(parent);
-      }
-    }
-
-    load(post);
-    return () => {
-      cancelled = true;
-    };
-  }, [post.id]);
+  }, [parentThreadLoading, authorThreadLoading, post.comments, allComments.length]);
 
   return (
-    <div ref={containerRef} className="flex flex-col p-4">
-      {thread.map((p) => (
+    <div ref={containerRef} className="flex flex-col gap-1 p-4">
+      {parentThread.map((p) => (
         <div key={p.id} className="relative">
           <PostView settings={{ inThread: true }} item={p} />
         </div>
       ))}
+      
+      {parentThreadLoading && <PostSuspense />}
 
-      <div ref={mainPostRef} className="relative min-h-screen">
-        <PostView item={post} defaultExpanded={true} defaultCommentsOpen={true} defaultReplyOpen={true} />
+      <div className="flex flex-col gap-1 min-h-screen">
+        <div ref={mainPostRef} className="relative">
+          <PostView
+            item={post}
+            defaultExpanded={true}
+            defaultCommentsOpen={false}
+            defaultReplyOpen={false}
+          />
+        </div>
+
+        {authorThreadLoading && <PostSuspense />}
+
+        {authorThread.map((p) => (
+          <div key={p.id} className="relative">
+            <PostView settings={{ inThread: true }} item={p} />
+          </div>
+        ))}
+
+        <PostReplyComposer post={post} level={0} isOpen={showReply} setOpen={setShowReply} />
       </div>
     </div>
   );

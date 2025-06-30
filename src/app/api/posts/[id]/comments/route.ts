@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const id = params.id;
   const cursor = req.nextUrl.searchParams.get("cursor") ?? undefined;
+  const author = req.nextUrl.searchParams.get("author") ?? undefined;
 
   if (!id) {
     return NextResponse.json({ error: "Missing publication id" }, { status: 400 });
@@ -22,6 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       referencedPost: id,
       pageSize: PageSize.Ten,
       cursor,
+      ...(author && { authors: [author] }),
     });
 
     if (result.isErr()) {

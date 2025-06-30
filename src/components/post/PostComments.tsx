@@ -89,8 +89,8 @@ export const PostComments = ({
   if (error) throw new Error(error);
 
   return (
-    <div className="w-full flex flex-col items-end justify-center gap-2 text-xs sm:text-sm">
-      <div className={`gap-2 ${level === 2 ? "w-[90%]" : "w-[94%]"}`}>
+    <div className="w-full flex flex-col justify-center gap-2 text-xs sm:text-sm">
+      <div className={`gap-2`}>
         <AnimatePresence>
           {isOpen && (
             <motion.div
