@@ -14,7 +14,7 @@ export default async function layout({ children }: PropsWithChildren) {
     <div className="z-[30] p-4 py-0">
       <ServerSignedIn>
         {/* <Navigation /> */}
-        <div className="py-4">
+        <div className="pt-4 pb-2">
           <div className="glass rounded-xl p-4">
             <PostComposer user={user} />
           </div>

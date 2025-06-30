@@ -47,23 +47,27 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      /// FIXME: There's probably a better way to do this
-      const threshold = 10000;
+    const handleScroll = (event) => {
+      const viewport = event.target;
+      const threshold = 1000;
+      
       if (
-        window.innerHeight + document.documentElement.scrollTop + threshold >= document.documentElement.offsetHeight &&
+        viewport.scrollTop + viewport.clientHeight + threshold >= viewport.scrollHeight &&
         !loading
       ) {
         loadNextBatch();
       }
     };
 
-    // Only add scroll listener if not using manual pagination
     if (!manualNextPage) {
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
+      const viewport = document.querySelector("[data-overlayscrollbars-viewport]");
+      
+      if (viewport) {
+        viewport.addEventListener("scroll", handleScroll);
+        return () => viewport.removeEventListener("scroll", handleScroll);
+      }
     }
-  }, [loadNextBatch, manualNextPage]);
+  }, [loadNextBatch, manualNextPage, loading]);
 
   if (error) throw new Error(error);
   if (!data) return <FeedSuspense />;
