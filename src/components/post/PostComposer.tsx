@@ -3,10 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
-import { image, MediaImageMimeType, textOnly } from "@lens-protocol/metadata";
+import { image, MediaImageMimeType, textOnly, video, MediaVideoMimeType } from "@lens-protocol/metadata";
 import { useAccounts } from "@lens-protocol/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
-import { ImageIcon, SendHorizontalIcon, SmileIcon } from "lucide-react";
+import { ImageIcon, SendHorizontalIcon, SmileIcon, X, VideoIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -15,6 +15,25 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
 import * as z from "zod";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
@@ -30,6 +49,118 @@ import { UserAvatar } from "../user/UserAvatar";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
 import { lensItemToPost } from "./Post";
+
+interface SortableMediaItemProps {
+  file: File;
+  index: number;
+  id: string;
+  onRemove: () => void;
+}
+
+const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ 
+    id,
+    animateLayoutChanges: () => false, 
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const isVideo = file.type.startsWith("video/");
+  const url = URL.createObjectURL(file);
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`relative group rounded-lg overflow-hidden border ${
+        isDragging ? "opacity-50 z-50" : ""
+      }`}
+    >
+      <div className="aspect-square relative">
+        <div 
+          {...attributes}
+          {...listeners}
+          className="absolute inset-0 cursor-move z-10"
+        >
+          {isVideo ? (
+            <div className="w-full h-full bg-muted flex items-center justify-center">
+              <VideoIcon className="w-8 h-8 text-muted-foreground" />
+              <video src={url} className="absolute inset-0 w-full h-full object-cover opacity-50" />
+            </div>
+          ) : (
+            <img src={url} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
+          )}
+        </div>
+        
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          className="absolute top-1 right-1 p-1 bg-black/20 backdrop-blur-sm rounded-full text-white/80 hover:bg-black/40 hover:text-white transition-all opacity-0 group-hover:opacity-100 z-20"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const MediaPreview = ({ files, onRemove, onReorder }: { files: Array<{ file: File; id: string }>; onRemove: (id: string) => void; onReorder: (from: number, to: number) => void }) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  if (files.length === 0) return null;
+
+  const fileIds = files.map(f => f.id);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = fileIds.indexOf(active.id as string);
+      const newIndex = fileIds.indexOf(over.id as string);
+      onReorder(oldIndex, newIndex);
+    }
+  };
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext items={fileIds} strategy={rectSortingStrategy}>
+        <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+          {files.map((item, index) => (
+            <SortableMediaItem
+              key={item.id}
+              id={item.id}
+              file={item.file}
+              index={index}
+              onRemove={() => onRemove(item.id)}
+            />
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
+  );
+};
 
 const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
@@ -109,18 +240,29 @@ export default function PostComposer({
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [mediaFiles, setMediaFiles] = useState<Array<{ file: File; id: string }>>([]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (file) {
-      setImageFile(file);
+    const validFiles = acceptedFiles.filter(file => {
+      if (file.size > 8 * 1024 * 1024) {
+        toast.error(`${file.name} is too large. Maximum file size is 8MB.`);
+        return false;
+      }
+      return true;
+    });
+    
+    if (validFiles.length > 0) {
+      const newFiles = validFiles.map(file => ({
+        file,
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      }));
+      setMediaFiles(prev => [...prev, ...newFiles]);
     }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
-    accept: { "image/*": [] },
+    accept: { "image/*": [], "video/*": [] },
     noClick: true,
     noKeyboard: true,
   });
@@ -149,7 +291,7 @@ export default function PostComposer({
     },
   });
   const watchedContent = form.watch("content");
-  const isEmpty = !watchedContent.trim() && !imageFile;
+  const isEmpty = !watchedContent.trim() && mediaFiles.length === 0;
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setPosting(true);
@@ -162,17 +304,47 @@ export default function PostComposer({
     try {
       const content = data.content.length > 0 ? data.content : undefined;
 
-      if (imageFile) {
-        toast.loading("Uploading image...", { id: toastId });
-        const { uri } = await storageClient.uploadFile(imageFile);
-        metadata = image({
-          content,
-          tags: tags,
-          image: {
-            item: uri,
-            type: imageFile.type as MediaImageMimeType,
-          },
-        });
+      if (mediaFiles.length > 0) {
+        toast.loading("Uploading media files...", { id: toastId });
+        
+        // Upload all media files
+        const uploadedFiles = await Promise.all(
+          mediaFiles.map(async ({ file }) => {
+            const { uri } = await storageClient.uploadFile(file);
+            return { uri, type: file.type, file };
+          })
+        );
+
+        const primaryFile = uploadedFiles[0];
+        const attachments = uploadedFiles.length > 1 
+          ? uploadedFiles.slice(1).map(f => ({
+              item: f.uri,
+              type: f.type.startsWith("image/") ? f.type as MediaImageMimeType : f.type as MediaVideoMimeType,
+            }))
+          : undefined;
+
+        // Check if primary file is video or image
+        if (primaryFile.type.startsWith("video/")) {
+          metadata = video({
+            content,
+            tags: tags,
+            attachments,
+            video: {
+              item: primaryFile.uri,
+              type: primaryFile.type as MediaVideoMimeType,
+            },
+          });
+        } else {
+          metadata = image({
+            content,
+            tags: tags,
+            attachments,
+            image: {
+              item: primaryFile.uri,
+              type: primaryFile.type as MediaImageMimeType,
+            },
+          });
+        }
       } else {
         metadata = textOnly({
           content,
@@ -235,7 +407,7 @@ export default function PostComposer({
           toast.success("Quote posted successfully!", { id: toastId });
           form.setValue("content", "");
           resetHeight();
-          setImageFile(null);
+          setMediaFiles([]);
           onSuccess?.(null);
           onClose?.();
         } else {
@@ -261,7 +433,7 @@ export default function PostComposer({
           });
           form.setValue("content", "");
           resetHeight();
-          setImageFile(null);
+          setMediaFiles([]);
           onSuccess?.(newPost);
         } else {
           console.error("Failed to create post:", result.error);
@@ -357,7 +529,7 @@ export default function PostComposer({
   };
 
   const handleEmojiClick = useCallback(
-    (emoji) => {
+    (emoji: any) => {
       const { content } = form.getValues();
       const cursorPosition = textarea.current.selectionStart;
       const textBeforeCursor = content.slice(0, cursorPosition);
@@ -376,6 +548,14 @@ export default function PostComposer({
 
   const [isEmojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const { theme } = useTheme();
+
+  const handleRemoveMedia = useCallback((id: string) => {
+    setMediaFiles(prev => prev.filter(item => item.id !== id));
+  }, []);
+
+  const handleReorderMedia = useCallback((from: number, to: number) => {
+    setMediaFiles(prev => arrayMove(prev, from, to));
+  }, []);
 
   return (
     <div className="w-full" {...getRootProps()}>
@@ -449,11 +629,7 @@ export default function PostComposer({
               </DropdownMenu>
             </div>
 
-            {imageFile && (
-              <div className="mt-2">
-                <img src={URL.createObjectURL(imageFile)} alt="selected" className="max-h-40 rounded-md" />
-              </div>
-            )}
+            <MediaPreview files={mediaFiles} onRemove={handleRemoveMedia} onReorder={handleReorderMedia} />
             {quotedPost && (
               <div className="mt-2 p-3 border rounded-lg bg-muted/50">
                 <div className="flex items-center gap-2 mb-1">
