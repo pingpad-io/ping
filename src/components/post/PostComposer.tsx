@@ -43,6 +43,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Textarea } from "../ui/textarea";
+import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
@@ -235,7 +236,6 @@ export default function PostComposer({
 }) {
   const { user: contextUser } = useUser();
   const currentUser = user || contextUser;
-  const textarea = useRef<HTMLTextAreaElement>(null);
   const [isPosting, setPosting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
@@ -449,17 +449,11 @@ export default function PostComposer({
   }
 
   const resetHeight = () => {
-    if (textarea.current) {
-      textarea.current.style.height = "auto";
-      textarea.current.style.height = "38px";
-    }
+    // No longer needed with Milkdown
   };
 
   const updateHeight = () => {
-    if (textarea.current) {
-      textarea.current.style.height = "auto";
-      textarea.current.style.height = `${textarea.current.scrollHeight + 2}px`;
-    }
+    // No longer needed with Milkdown
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -482,66 +476,37 @@ export default function PostComposer({
   };
 
   const updatePopupPosition = () => {
-    if (textarea.current) {
-      const { selectionStart, selectionEnd } = textarea.current;
-      if (selectionStart === selectionEnd) {
-        const { top, left } = getCaretCoordinates(textarea.current, selectionStart);
-        const { offsetTop, offsetLeft } = textarea.current;
-        setPopupPosition({
-          top: offsetTop + top + 20,
-          left: offsetLeft + left,
-        });
-      }
-    }
+    // TODO: Implement caret position detection for Milkdown
+    setPopupPosition({ top: 100, left: 20 });
   };
 
   const handleSelectUser = useCallback(
     (selectedUser: User) => {
       const content = form.getValues("content");
-      const cursorPosition = textarea.current?.selectionStart || 0;
-      const textBeforeCursor = content.slice(0, cursorPosition);
-      const textAfterCursor = content.slice(cursorPosition);
+      // For now, just append the mention at the end
+      // TODO: Insert at cursor position in Milkdown
+      const words = content.split(/(\s+)/);
+      const lastWord = words[words.length - 1];
+      
+      if (lastWord.startsWith("@")) {
+        words[words.length - 1] = `@lens/${selectedUser.handle} `;
+      } else {
+        words.push(`@lens/${selectedUser.handle} `);
+      }
 
-      const words = textBeforeCursor.split(/(\s+)/);
-      words[words.length - 1] = `@lens/${selectedUser.handle} `;
-
-      const newContent = words.join("") + textAfterCursor;
+      const newContent = words.join("");
       form.setValue("content", newContent);
       setShowPopup(false);
-      textarea.current?.focus();
-
-      // Set cursor position after the inserted handle
-      const newCursorPosition = newContent.length - textAfterCursor.length;
-      setTimeout(() => {
-        textarea.current?.setSelectionRange(newCursorPosition, newCursorPosition);
-      }, 0);
     },
     [form],
   );
 
-  const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-      onSubmit(form.getValues());
-    }
-    if (event.key === "Tab" && showPopup) {
-      event.preventDefault();
-    }
-  };
 
   const handleEmojiClick = useCallback(
     (emoji: any) => {
-      const { content } = form.getValues();
-      const cursorPosition = textarea.current.selectionStart;
-      const textBeforeCursor = content.slice(0, cursorPosition);
-      const textAfterCursor = content.slice(cursorPosition);
-      const newContent = textBeforeCursor + emoji.emoji + textAfterCursor;
-
+      const content = form.getValues("content");
+      const newContent = content + emoji.emoji;
       form.setValue("content", newContent, { shouldValidate: true });
-
-      setTimeout(() => {
-        const newCursorPosition = cursorPosition + emoji.emoji.length;
-        textarea.current.setSelectionRange(newCursorPosition, newCursorPosition);
-      }, 0);
     },
     [form],
   );
@@ -579,18 +544,23 @@ export default function PostComposer({
               render={({ field }) => (
                 <FormItem className="relative">
                   <FormControl>
-                    <Textarea
-                      {...field}
-                      onChange={handleInputChange}
-                      onKeyDown={onKeyDown}
-                      placeholder={placeholderText}
-                      disabled={isPosting}
-                      autoComplete="off"
-                      className="min-h-[32px] resize-none px-3 py-1.5 glass glass-dim !bg-background/60 rounded-xl"
-                      ref={textarea}
-                      rows={1}
-                      {...getRootProps()}
-                    />
+                    <div {...getRootProps()}>
+                      <LexicalEditorWrapper
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          handleInputChange({ target: { value, selectionStart: 0 } } as any);
+                        }}
+                        onKeyDown={(e) => {
+                          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                            onSubmit(form.getValues());
+                          }
+                        }}
+                        placeholder={placeholderText}
+                        disabled={isPosting}
+                        className="glass glass-dim !bg-background/60 rounded-xl"
+                      />
+                    </div>
                   </FormControl>
                   {showPopup && (
                     <UserSearchPopup
@@ -651,45 +621,4 @@ export default function PostComposer({
       </Form>
     </div>
   );
-}
-
-function getCaretCoordinates(element: HTMLTextAreaElement, position: number) {
-  const div = document.createElement("div");
-  const styles = getComputedStyle(element);
-  const essentialProperties = [
-    "fontFamily",
-    "fontSize",
-    "fontWeight",
-    "wordSpacing",
-    "letterSpacing",
-    "paddingLeft",
-    "paddingTop",
-    "borderLeftWidth",
-    "borderTopWidth",
-    "boxSizing",
-    "lineHeight",
-  ];
-
-  div.style.position = "absolute";
-  div.style.visibility = "hidden";
-  div.style.whiteSpace = "pre-wrap";
-  div.style.width = `${element.offsetWidth}px`;
-
-  for (const prop of essentialProperties) {
-    div.style[prop] = styles[prop];
-  }
-
-  div.textContent = element.value.substring(0, position);
-  const span = document.createElement("span");
-  span.textContent = element.value.substring(position) || ".";
-  div.appendChild(span);
-
-  document.body.appendChild(div);
-  const coordinates = {
-    top: span.offsetTop + Number.parseInt(styles.borderTopWidth),
-    left: span.offsetLeft + Number.parseInt(styles.borderLeftWidth),
-  };
-  document.body.removeChild(div);
-
-  return coordinates;
 }
