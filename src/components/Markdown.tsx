@@ -7,6 +7,7 @@ import { parseContent } from "~/utils/parseContent";
 import { CommunityHandle } from "./communities/CommunityHandle";
 import { ImageViewer } from "./ImageViewer";
 import { UserLazyHandle } from "./user/UserLazyHandle";
+import "~/components/composer/lexical.css";
 
 const BASE_URL = getBaseUrl();
 const Markdown: React.FC<{ content: string; className?: string }> = ({ content, className = "" }) => {
@@ -26,38 +27,53 @@ const Markdown: React.FC<{ content: string; className?: string }> = ({ content, 
       if (href?.startsWith(BASE_URL)) {
         if (href.startsWith(`${BASE_URL}u/`)) {
           return (
-            <span className={colorClasses}>
+            <span className={`lexical-link ${colorClasses}`}>
               <UserLazyHandle handle={href.split("/u/")[1]} />
             </span>
           );
         }
         if (href.startsWith(`${BASE_URL}c/`)) {
           return (
-            <span className={colorClasses}>
+            <span className={`lexical-link ${colorClasses}`}>
               <CommunityHandle handle={href.split("/c/")[1]} />
             </span>
           );
         }
       }
       return (
-        <a {...props} className={colorClasses}>
+        <a {...props} className={`lexical-link ${colorClasses}`}>
           {children}
         </a>
       );
     };
   };
 
+  const components: Components = {
+    p: ({ children }) => <p className="lexical-paragraph">{children}</p>,
+    h1: ({ children }) => <h1 className="lexical-h1">{children}</h1>,
+    h2: ({ children }) => <h2 className="lexical-h2">{children}</h2>,
+    h3: ({ children }) => <h3 className="lexical-h3">{children}</h3>,
+    h4: ({ children }) => <h4 className="lexical-h4">{children}</h4>,
+    h5: ({ children }) => <h5 className="lexical-h5">{children}</h5>,
+    h6: ({ children }) => <h6 className="lexical-h6">{children}</h6>,
+    strong: ({ children }) => <strong className="lexical-text-bold">{children}</strong>,
+    em: ({ children }) => <em className="lexical-text-italic">{children}</em>,
+    del: ({ children }) => <del className="lexical-text-strikethrough">{children}</del>,
+    code: ({ children }) => <code className="lexical-text-code">{children}</code>,
+    pre: ({ children }) => <pre className="lexical-code">{children}</pre>,
+    blockquote: ({ children }) => <blockquote className="lexical-quote">{children}</blockquote>,
+    ul: ({ children }) => <ul className="lexical-list-ul">{children}</ul>,
+    ol: ({ children }) => <ol className="lexical-list-ol">{children}</ol>,
+    li: ({ children }) => <li className="lexical-listitem">{children}</li>,
+    a: createCustomLink(colorClasses),
+    img: CustomImage,
+  };
+
   return (
     <ReactMarkdown
-      className={`prose dark:prose-invert prose-p:my-0 prose-p:inline prose-img:my-2 prose-hr:my-3 prose-hr:w-[50%] prose-hr:mx-auto prose-img:inline
-        prose-ul:m-0 prose-h2:m-0 prose-h1:m-0 prose-li:m-0 prose-li:whitespace-normal prose-p:whitespace-normal
-        prose-ul:leading-4 prose-ol:leading-4 prose-ol:m-0 ${className}`}
+      className={`${className}`}
       remarkPlugins={[remarkGfm, remarkBreaks]}
-      components={{
-        h1: "h2",
-        a: createCustomLink(colorClasses),
-        img: CustomImage,
-      }}
+      components={components}
     >
       {processedText}
     </ReactMarkdown>
