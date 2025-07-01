@@ -25,33 +25,33 @@ export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: st
   return (
     <HoverCard defaultOpen={false} onOpenChange={(open: boolean) => open && loadCard()} closeDelay={100}>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent className="w-full max-w-sm min-w-[18rem] p-4 not-prose" side="top">
+      <HoverCardContent className="w-[20rem] p-4 not-prose shadow-lg" side="top">
         {(loading || !user) && <LoadingSpinner />}
         {error && <div>Error: {error}</div>}
         {user && (
           <div className="flex flex-col gap-2">
-            <div className="flex flex-row items-start justify-between gap-2 text-sm">
-              <div className="flex flex-row items-center gap-2 flex-1 min-w-0">
-                <div className="w-8 h-8 flex-shrink-0">
+            <div className="flex flex-row items-start gap-2 text-base">
+              <div className="flex flex-row items-center gap-4 flex-1 min-w-0">
+                <div className="w-16 h-16 flex-shrink-0">
                   <UserAvatar card={false} user={user} />
                 </div>
                 <div className="flex flex-col min-w-0 flex-1">
-                  <span className="font-bold truncate">{user.name}</span>
-                  <span className="font-light text-xs truncate">@{user.handle}</span>
+                  <span className="font-bold truncate text-lg">{user.name}</span>
+                  <span className="font-light text-sm truncate">@{user.handle}</span>
                   {isFollowingMe && (
-                    <Badge className="text-xs h-fit w-fit mt-1" variant="secondary">
+                    <Badge className="text-sm h-fit w-fit mt-1" variant="secondary">
                       Follows you
                     </Badge>
                   )}
                 </div>
               </div>
-              <div className="flex-shrink-0">
-                <FollowButton className="text-sm h-fit w-fit p-1 px-3" user={user} />
-              </div>
             </div>
-            <span className="mt-2 leading-4">
+            <span className="mt-2 leading-5">
               <TruncatedText className="text-sm" text={user.description} maxLength={200} isMarkdown={true} />
             </span>
+            <div className="mt-3">
+              <FollowButton className="w-full" user={user} />
+            </div>
           </div>
         )}
       </HoverCardContent>
