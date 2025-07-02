@@ -214,6 +214,7 @@ export default function PostComposer({
   postType = "post",
   onClose,
   onSuccess,
+  initialContent = "",
 }: {
   user?: User;
   replyingTo?: Post;
@@ -221,6 +222,7 @@ export default function PostComposer({
   postType?: "post" | "reply";
   onClose?: () => void;
   onSuccess?: (post?: Post | null) => void;
+  initialContent?: string;
 }) {
   const { user: contextUser } = useUser();
   const currentUser = user || contextUser;
@@ -282,7 +284,7 @@ export default function PostComposer({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      content: "",
+      content: initialContent,
     },
   });
   const watchedContent = form.watch("content");
