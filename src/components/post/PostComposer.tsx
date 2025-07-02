@@ -1,49 +1,46 @@
 "use client";
 
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  rectSortingStrategy,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
-import { image, MediaImageMimeType, textOnly, video, MediaVideoMimeType } from "@lens-protocol/metadata";
+import { image, MediaImageMimeType, MediaVideoMimeType, textOnly, video } from "@lens-protocol/metadata";
 import { useAccounts } from "@lens-protocol/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
-import { ImageIcon, SendHorizontalIcon, SmileIcon, X, VideoIcon } from "lucide-react";
+import { ImageIcon, SendHorizontalIcon, SmileIcon, VideoIcon, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
 import * as z from "zod";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
-import {
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
 import { getCommunityTags } from "../communities/Community";
+import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Textarea } from "../ui/textarea";
-import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import type { User } from "../user/User";
 import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
@@ -59,16 +56,9 @@ interface SortableMediaItemProps {
 }
 
 const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ 
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
-    animateLayoutChanges: () => false, 
+    animateLayoutChanges: () => false,
   });
 
   const style = {
@@ -83,16 +73,10 @@ const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group rounded-lg overflow-hidden border ${
-        isDragging ? "opacity-50 z-50" : ""
-      }`}
+      className={`relative group rounded-lg overflow-hidden border ${isDragging ? "opacity-50 z-50" : ""}`}
     >
       <div className="aspect-square relative">
-        <div 
-          {...attributes}
-          {...listeners}
-          className="absolute inset-0 cursor-move z-10"
-        >
+        <div {...attributes} {...listeners} className="absolute inset-0 cursor-move z-10">
           {isVideo ? (
             <div className="w-full h-full bg-muted flex items-center justify-center">
               <VideoIcon className="w-8 h-8 text-muted-foreground" />
@@ -102,7 +86,7 @@ const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps
             <img src={url} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
           )}
         </div>
-        
+
         <button
           type="button"
           onClick={(e) => {
@@ -118,17 +102,25 @@ const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps
   );
 };
 
-const MediaPreview = ({ files, onRemove, onReorder }: { files: Array<{ file: File; id: string }>; onRemove: (id: string) => void; onReorder: (from: number, to: number) => void }) => {
+const MediaPreview = ({
+  files,
+  onRemove,
+  onReorder,
+}: {
+  files: Array<{ file: File; id: string }>;
+  onRemove: (id: string) => void;
+  onReorder: (from: number, to: number) => void;
+}) => {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   if (files.length === 0) return null;
 
-  const fileIds = files.map(f => f.id);
+  const fileIds = files.map((f) => f.id);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -141,11 +133,7 @@ const MediaPreview = ({ files, onRemove, onReorder }: { files: Array<{ file: Fil
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={fileIds} strategy={rectSortingStrategy}>
         <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {files.map((item, index) => (
@@ -242,23 +230,30 @@ export default function PostComposer({
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [mediaFiles, setMediaFiles] = useState<Array<{ file: File; id: string }>>([]);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const validFiles = acceptedFiles.filter(file => {
+  const handleAddFiles = useCallback((acceptedFiles: File[]) => {
+    const validFiles = acceptedFiles.filter((file) => {
       if (file.size > 8 * 1024 * 1024) {
         toast.error(`${file.name} is too large. Maximum file size is 8MB.`);
         return false;
       }
       return true;
     });
-    
+
     if (validFiles.length > 0) {
-      const newFiles = validFiles.map(file => ({
+      const newFiles = validFiles.map((file) => ({
         file,
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       }));
-      setMediaFiles(prev => [...prev, ...newFiles]);
+      setMediaFiles((prev) => [...prev, ...newFiles]);
     }
   }, []);
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      handleAddFiles(acceptedFiles);
+    },
+    [handleAddFiles],
+  );
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
@@ -306,22 +301,23 @@ export default function PostComposer({
 
       if (mediaFiles.length > 0) {
         toast.loading("Uploading media files...", { id: toastId });
-        
+
         // Upload all media files
         const uploadedFiles = await Promise.all(
           mediaFiles.map(async ({ file }) => {
             const { uri } = await storageClient.uploadFile(file);
             return { uri, type: file.type, file };
-          })
+          }),
         );
 
         const primaryFile = uploadedFiles[0];
-        const attachments = uploadedFiles.length > 1 
-          ? uploadedFiles.slice(1).map(f => ({
-              item: f.uri,
-              type: f.type.startsWith("image/") ? f.type as MediaImageMimeType : f.type as MediaVideoMimeType,
-            }))
-          : undefined;
+        const attachments =
+          uploadedFiles.length > 1
+            ? uploadedFiles.slice(1).map((f) => ({
+                item: f.uri,
+                type: f.type.startsWith("image/") ? (f.type as MediaImageMimeType) : (f.type as MediaVideoMimeType),
+              }))
+            : undefined;
 
         // Check if primary file is video or image
         if (primaryFile.type.startsWith("video/")) {
@@ -487,7 +483,7 @@ export default function PostComposer({
       // TODO: Insert at cursor position in Milkdown
       const words = content.split(/(\s+)/);
       const lastWord = words[words.length - 1];
-      
+
       if (lastWord.startsWith("@")) {
         words[words.length - 1] = `@lens/${selectedUser.handle} `;
       } else {
@@ -500,7 +496,6 @@ export default function PostComposer({
     },
     [form],
   );
-
 
   const handleEmojiClick = useCallback(
     (emoji: any) => {
@@ -515,11 +510,11 @@ export default function PostComposer({
   const { theme } = useTheme();
 
   const handleRemoveMedia = useCallback((id: string) => {
-    setMediaFiles(prev => prev.filter(item => item.id !== id));
+    setMediaFiles((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
   const handleReorderMedia = useCallback((from: number, to: number) => {
-    setMediaFiles(prev => arrayMove(prev, from, to));
+    setMediaFiles((prev) => arrayMove(prev, from, to));
   }, []);
 
   return (
@@ -556,6 +551,7 @@ export default function PostComposer({
                             onSubmit(form.getValues());
                           }
                         }}
+                        onPasteFiles={handleAddFiles}
                         placeholder={placeholderText}
                         disabled={isPosting}
                         className="glass glass-dim !bg-background/60 rounded-xl"
@@ -575,7 +571,13 @@ export default function PostComposer({
             />
 
             <div className="flex items-center gap-2 mt-2">
-              <Button type="button" variant="ghost" size="sm" className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95" onClick={open}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95"
+                onClick={open}
+              >
                 <ImageIcon className="h-5 w-5 text-muted-foreground transition-transform" />
               </Button>
               <DropdownMenu modal={false}>

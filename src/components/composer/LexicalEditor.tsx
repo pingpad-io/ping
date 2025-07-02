@@ -1,32 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
-import {
-  COMMAND_PRIORITY_LOW,
-  KEY_DOWN_COMMAND,
-} from "lexical";
-import { 
-  ListNode,
-  ListItemNode
-} from "@lexical/list";
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { CodeNode } from "@lexical/code";
-import { LinkNode, AutoLinkNode } from "@lexical/link";
-import { 
-  $convertToMarkdownString,
-  $convertFromMarkdownString,
-  TRANSFORMERS
-} from "@lexical/markdown";
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { $convertFromMarkdownString, $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
-import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { COMMAND_PRIORITY_LOW, KEY_DOWN_COMMAND, PASTE_COMMAND } from "lexical";
+import { useCallback, useEffect, useRef } from "react";
 import "./lexical.css";
 import { EmojiTypeaheadPlugin } from "./EmojiTypeaheadPlugin";
 
@@ -36,6 +26,7 @@ interface LexicalEditorProps {
   placeholder?: string;
   disabled?: boolean;
   onKeyDown?: (event: KeyboardEvent) => void;
+  onPasteFiles?: (files: File[]) => void;
   className?: string;
 }
 
@@ -107,11 +98,7 @@ function onError(error: Error) {
 }
 
 const PlaceholderPlugin = ({ placeholder }: { placeholder: string }) => {
-  return (
-    <div className="lexical-placeholder">
-      {placeholder}
-    </div>
-  );
+  return <div className="lexical-placeholder">{placeholder}</div>;
 };
 
 const KeyboardShortcutPlugin = ({ onKeyDown }: { onKeyDown?: (event: KeyboardEvent) => void }) => {
@@ -130,9 +117,48 @@ const KeyboardShortcutPlugin = ({ onKeyDown }: { onKeyDown?: (event: KeyboardEve
         }
         return false;
       },
-      COMMAND_PRIORITY_LOW
+      COMMAND_PRIORITY_LOW,
     );
   }, [editor, onKeyDown]);
+
+  return null;
+};
+
+const PastePlugin = ({ onPasteFiles }: { onPasteFiles?: (files: File[]) => void }) => {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    return editor.registerCommand(
+      PASTE_COMMAND,
+      (event: ClipboardEvent) => {
+        const items = event.clipboardData?.items;
+        if (!items || !onPasteFiles) return false;
+
+        const files: File[] = [];
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+
+          // Check if the item is an image or video
+          if (item.type.startsWith("image/") || item.type.startsWith("video/")) {
+            const file = item.getAsFile();
+            if (file) {
+              files.push(file);
+            }
+          }
+        }
+
+        if (files.length > 0) {
+          event.preventDefault();
+          onPasteFiles(files);
+          return true;
+        }
+
+        return false;
+      },
+      COMMAND_PRIORITY_LOW,
+    );
+  }, [editor, onPasteFiles]);
 
   return null;
 };
@@ -169,13 +195,14 @@ function EditorContent({
   placeholder = "write a new post...",
   disabled = false,
   onKeyDown,
+  onPasteFiles,
   className = "",
 }: LexicalEditorProps) {
   return (
     <>
       <RichTextPlugin
         contentEditable={
-          <ContentEditable 
+          <ContentEditable
             className={`lexical-editor ${disabled ? "opacity-50 pointer-events-none" : ""} ${className}`}
           />
         }
@@ -188,6 +215,7 @@ function EditorContent({
       <LinkPlugin />
       <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       <KeyboardShortcutPlugin onKeyDown={onKeyDown} />
+      <PastePlugin onPasteFiles={onPasteFiles} />
       <EmojiTypeaheadPlugin />
     </>
   );
@@ -199,21 +227,14 @@ export const LexicalEditorWrapper = ({
   placeholder = "write a new post...",
   disabled = false,
   onKeyDown,
+  onPasteFiles,
   className = "",
 }: LexicalEditorProps) => {
   const initialConfig = {
     namespace: "PostComposer",
     theme,
     onError,
-    nodes: [
-      HeadingNode,
-      ListNode,
-      ListItemNode,
-      QuoteNode,
-      CodeNode,
-      LinkNode,
-      AutoLinkNode,
-    ],
+    nodes: [HeadingNode, ListNode, ListItemNode, QuoteNode, CodeNode, LinkNode, AutoLinkNode],
     editorState: () => {
       if (value) {
         $convertFromMarkdownString(value, TRANSFORMERS);
@@ -229,6 +250,7 @@ export const LexicalEditorWrapper = ({
         placeholder={placeholder}
         disabled={disabled}
         onKeyDown={onKeyDown}
+        onPasteFiles={onPasteFiles}
         className={className}
       />
     </LexicalComposer>
