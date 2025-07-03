@@ -15,6 +15,7 @@ import PostComposer from "../post/PostComposer";
 import { type User } from "./User";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
+import { ConnectWalletButton } from "../web3/WalletButtons";
 
 const MutedBadge = ({ onUnmute }: { onUnmute: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -78,6 +79,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
   const { user: authedUser } = useUser();
   const userActions = user ? useUserActions(user) : null;
   const [isMentionDialogOpen, setIsMentionDialogOpen] = useState(false);
+  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
 
   if (!user) return null;
 
@@ -137,13 +139,17 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setIsMentionDialogOpen(true)}
+            onClick={() => {
+              authedUser ? setIsMentionDialogOpen(true) : setIsWalletDialogOpen(true)
+            }}
             className="flex-1 bg-transparent"
           >
             Mention
           </Button>
         </div>
       )}
+
+      {!authedUser && <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />}
 
       <Dialog open={isMentionDialogOpen} onOpenChange={setIsMentionDialogOpen} modal={true}>
         <DialogContent className="max-w-full sm:max-w-[700px]">

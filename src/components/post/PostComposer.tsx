@@ -47,6 +47,7 @@ import { UserAvatar } from "../user/UserAvatar";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
 import { lensItemToPost } from "./Post";
+import { ConnectWalletButton } from "../web3/WalletButtons";
 
 interface SortableMediaItemProps {
   file: File;
@@ -227,6 +228,7 @@ export default function PostComposer({
   const { user: contextUser } = useUser();
   const currentUser = user || contextUser;
   const [isPosting, setPosting] = useState(false);
+  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
@@ -291,6 +293,11 @@ export default function PostComposer({
   const isEmpty = !watchedContent.trim() && mediaFiles.length === 0;
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!currentUser) {
+      setIsWalletDialogOpen(true);
+      return;
+    }
+
     setPosting(true);
     const toastId = Math.random().toString();
 
@@ -501,9 +508,13 @@ export default function PostComposer({
 
   const handleEmojiClick = useCallback(
     (emoji: any) => {
-      const content = form.getValues("content");
-      const newContent = content + emoji.emoji;
-      form.setValue("content", newContent, { shouldValidate: true });
+      if (currentUser) {
+        const content = form.getValues("content");
+        const newContent = content + emoji.emoji;
+        form.setValue("content", newContent, { shouldValidate: true });
+      } else {
+        setIsWalletDialogOpen(true);
+      }
     },
     [form],
   );
@@ -545,8 +556,12 @@ export default function PostComposer({
                       <LexicalEditorWrapper
                         value={field.value}
                         onChange={(value) => {
-                          field.onChange(value);
-                          handleInputChange({ target: { value, selectionStart: 0 } } as any);
+                          if (currentUser) {
+                            field.onChange(value);
+                            handleInputChange({ target: { value, selectionStart: 0 } } as any);
+                          } else {
+                            setIsWalletDialogOpen(true);
+                          }
                         }}
                         onKeyDown={(e) => {
                           if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
@@ -623,6 +638,7 @@ export default function PostComposer({
           </Button>
         </form>
       </Form>
+      {!currentUser && <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />}
     </div>
   );
 }
