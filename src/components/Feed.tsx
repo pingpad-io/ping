@@ -50,18 +50,15 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
     const handleScroll = (event) => {
       const viewport = event.target;
       const threshold = 1000;
-      
-      if (
-        viewport.scrollTop + viewport.clientHeight + threshold >= viewport.scrollHeight &&
-        !loading
-      ) {
+
+      if (viewport.scrollTop + viewport.clientHeight + threshold >= viewport.scrollHeight && !loading) {
         loadNextBatch();
       }
     };
 
     if (!manualNextPage) {
       const viewport = document.querySelector("[data-overlayscrollbars-viewport]");
-      
+
       if (viewport) {
         viewport.addEventListener("scroll", handleScroll);
         return () => viewport.removeEventListener("scroll", handleScroll);

@@ -11,10 +11,7 @@ export function useAuthorThread(post: Post) {
     const processedIds = new Set<string>();
     const allAuthorPosts: Post[] = [];
 
-    async function loadAuthorReplies(
-      currentPost: Post,
-      authorId: string
-    ): Promise<void> {
+    async function loadAuthorReplies(currentPost: Post, authorId: string): Promise<void> {
       if (!currentPost || cancelled || processedIds.has(currentPost.id)) {
         return;
       }
@@ -35,11 +32,11 @@ export function useAuthorThread(post: Post) {
 
     async function loadAllPosts() {
       await loadAuthorReplies(post, post.author.address);
-      
+
       if (!cancelled) {
         // Sort all collected posts by date and update state
-        const sortedPosts = allAuthorPosts.sort((a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        const sortedPosts = allAuthorPosts.sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         );
         setAuthorThread(sortedPosts);
         setLoading(false);

@@ -90,7 +90,7 @@ export const PostComments = ({
 
   return (
     <div className="w-full flex flex-col justify-center gap-2 text-xs sm:text-sm">
-      <div className={`gap-2`}>
+      <div className={"gap-2"}>
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -102,9 +102,7 @@ export const PostComments = ({
                 ease: "easeInOut",
               }}
             >
-              <ul className="flex flex-col gap-1">
-                {commentElements}
-              </ul>
+              <ul className="flex flex-col gap-1">{commentElements}</ul>
             </motion.div>
           )}
         </AnimatePresence>

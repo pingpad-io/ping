@@ -76,7 +76,10 @@ const ContextMenuContent = React.forwardRef<
     <AnimatePresence>
       <ContextMenuPrimitive.Content asChild ref={ref} {...props}>
         <GlassEffect
-          className={cn("z-50 min-w-[10rem] rounded-xl border text-popover-foreground shadow-md overflow-hidden", className)}
+          className={cn(
+            "z-50 min-w-[10rem] rounded-xl border text-popover-foreground shadow-md overflow-hidden",
+            className,
+          )}
           borderRadius={12}
           initial={{ scale: 0.95, y: -10, height: 0 }}
           animate={{ scale: 1, y: 0, height: "auto" }}
