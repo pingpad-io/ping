@@ -239,7 +239,7 @@ export default function PostComposer({
 
     setPosting(true);
     const toastId = Math.random().toString();
-    
+
     // Create optimistic post
     const optimisticPost: Post = {
       id: `optimistic-${Date.now()}`,
@@ -256,10 +256,10 @@ export default function PostComposer({
       },
       isOptimistic: true,
     } as any;
-    
+
     // Call onSuccess with optimistic post
     onSuccess?.(optimisticPost);
-    
+
     // Clear form immediately after showing optimistic post
     form.setValue("content", "");
     setMediaFiles([]);
@@ -327,12 +327,12 @@ export default function PostComposer({
     }
 
     try {
-      toast.loading("Uploading metadata...", { id: toastId });
+      toast.loading("Uploading...", { id: toastId });
 
       const metadataFile = new File([JSON.stringify(metadata)], "metadata.json", { type: "application/json" });
       const { uri: contentUri } = await storageClient.uploadFile(metadataFile);
 
-      toast.loading("Creating post on Lens...", { id: toastId });
+      toast.loading("Publishing...", { id: toastId });
       console.log("Uploaded metadata to grove storage:", contentUri);
 
       if (!client || !client.isSessionClient()) {
@@ -373,7 +373,7 @@ export default function PostComposer({
         });
 
         if (response.ok) {
-          toast.success("Quote posted successfully!", { id: toastId });
+          toast.success("Quoted successfully!", { id: toastId });
           onSuccess?.(null);
           onClose?.();
         } else {
@@ -388,9 +388,9 @@ export default function PostComposer({
           .andThen((txHash) => fetchPost(client, { txHash }));
 
         if (result.isOk()) {
-          console.log("Post created successfully:", result.value);
+          console.log("Published successfully:", result.value);
           const newPost = lensItemToPost(result.value);
-          toast.success("Post published successfully!", {
+          toast.success("Published successfully!", {
             id: toastId,
             action: {
               label: "Show me",
@@ -399,21 +399,17 @@ export default function PostComposer({
           });
           onSuccess?.(newPost);
         } else {
-          console.error("Failed to create post:", result.error);
+          console.error("Failed to publish:", result.error);
           toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
         }
       }
     } catch (error) {
-      console.error("Error creating post:", error);
-      toast.error(`Failed to create post: ${error.message}`, { id: toastId });
+      console.error("Error publishing:", error);
+      toast.error(`Failed to publish: ${error.message}`, { id: toastId });
     } finally {
       setPosting(false);
     }
   }
-
-
-
-
 
   const handleEmojiClick = useCallback(
     (emoji: any) => {
