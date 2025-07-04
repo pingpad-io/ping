@@ -7,6 +7,8 @@ import {
   ImageMetadataDetails,
   LinkMetadataDetails,
   LiveStreamMetadataDetails,
+  MediaImageMimeType,
+  MediaVideoMimeType,
   MintMetadataDetails,
   SpaceMetadataDetails,
   StoryMetadataDetails,
@@ -64,7 +66,13 @@ const ContentView = ({ content, mentions }: { content: string; mentions?: PostMe
   return <Markdown content={content} mentions={mentions} />;
 };
 
-export const TextOnlyView = ({ metadata, mentions }: { metadata: TextOnlyMetadataDetails; mentions?: PostMention[] }) => {
+export const TextOnlyView = ({
+  metadata,
+  mentions,
+}: {
+  metadata: TextOnlyMetadataDetails;
+  mentions?: PostMention[];
+}) => {
   return <ContentView content={metadata.content} />;
 };
 
@@ -76,13 +84,34 @@ export const ImageView = ({ metadata, mentions }: { metadata: ImageMetadataDetai
   const url = metadata?.image?.item;
   const alt = metadata?.image.altTag;
   const title = metadata?.title;
+  const attachments = metadata?.attachments;
+
+  const allMedia: MediaAttachment[] = [];
+  if (url) {
+    allMedia.push({ item: url, type: metadata.image.type });
+  }
+  if (attachments && Array.isArray(attachments)) {
+    attachments.forEach((att: any) => {
+      if (att.item && att.type) {
+        allMedia.push({ item: att.item, type: att.type });
+      }
+    });
+  }
 
   return (
     <div>
       <ContentView content={metadata.content} mentions={mentions} />
-      <div className="relative mt-2 w-full">
-        <ImageViewer src={url} alt={alt || title} className="object-cover border w-full rounded-xl h-auto" />
-      </div>
+      {allMedia.length > 1 ? (
+        <MediaGallery items={allMedia} />
+      ) : allMedia.length === 1 ? (
+        <div className="relative mt-2">
+          <ImageViewer
+            src={allMedia[0].item}
+            alt={alt || title}
+            className="object-contain border rounded-xl max-h-[400px] w-auto"
+          />
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -90,11 +119,30 @@ export const ImageView = ({ metadata, mentions }: { metadata: ImageMetadataDetai
 export const VideoView = ({ metadata, mentions }: { metadata: VideoMetadataDetails; mentions?: PostMention[] }) => {
   const url = metadata?.video?.item;
   const cover = metadata?.video?.cover || undefined;
+  const attachments = metadata?.attachments;
+
+  const allMedia: MediaAttachment[] = [];
+  if (url) {
+    allMedia.push({ item: url, type: metadata.video.type });
+  }
+  if (attachments && Array.isArray(attachments)) {
+    attachments.forEach((att: any) => {
+      if (att.item && att.type) {
+        allMedia.push({ item: att.item, type: att.type });
+      }
+    });
+  }
 
   return (
     <div>
       <ContentView content={metadata.content} mentions={mentions} />
-      <VideoPlayer url={url} preview={cover} />
+      {allMedia.length > 1 ? (
+        <MediaGallery items={allMedia} />
+      ) : allMedia.length === 1 ? (
+        <div className="mt-2" style={{ maxWidth: "min(100%, 711px)" }}>
+          <VideoPlayer url={allMedia[0].item} preview={cover} />
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -126,11 +174,23 @@ export const LinkView = ({ metadata, mentions }: { metadata: LinkMetadataDetails
   );
 };
 
-export const LiveStreamView = ({ metadata, mentions }: { metadata: LiveStreamMetadataDetails; mentions?: PostMention[] }) => {
+export const LiveStreamView = ({
+  metadata,
+  mentions,
+}: {
+  metadata: LiveStreamMetadataDetails;
+  mentions?: PostMention[];
+}) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const CheckingInView = ({ metadata, mentions }: { metadata: CheckingInMetadataDetails; mentions?: PostMention[] }) => {
+export const CheckingInView = ({
+  metadata,
+  mentions,
+}: {
+  metadata: CheckingInMetadataDetails;
+  mentions?: PostMention[];
+}) => {
   return <ContentView content={metadata.content} />;
 };
 
@@ -161,10 +221,51 @@ export const StoryView = ({ metadata, mentions }: { metadata: StoryMetadataDetai
   return <ContentView content={metadata.content} />;
 };
 
-export const TransactionView = ({ metadata, mentions }: { metadata: TransactionMetadataDetails; mentions?: PostMention[] }) => {
+export const TransactionView = ({
+  metadata,
+  mentions,
+}: {
+  metadata: TransactionMetadataDetails;
+  mentions?: PostMention[];
+}) => {
   return <ContentView content={metadata.content} />;
 };
 
 export const ThreeDView = ({ metadata, mentions }: { metadata: ThreeDMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
+};
+
+type MediaAttachment = {
+  item: string;
+  type: MediaImageMimeType | MediaVideoMimeType;
+};
+
+const isImageType = (type: string): boolean => {
+  const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP"];
+  return type.startsWith("image/") || imageTypes.includes(type);
+};
+
+
+const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
+  return (
+    <div className="mt-2 w-full overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ height: "300px" }}>
+      <div className="flex gap-2 h-full items-center" style={{ width: "max-content" }}>
+        {items.map((item, index) => (
+          <div key={`${item.item}-${index}`} className="flex-shrink-0 h-full flex items-center">
+            {item.type && isImageType(String(item.type)) ? (
+              <ImageViewer
+                src={item.item}
+                alt={`Gallery image ${index + 1}`}
+                className="h-full max-h-[300px] w-auto object-contain border rounded-xl cursor-pointer"
+              />
+            ) : (
+              <div className="h-full flex items-center" style={{ width: "533px" }}>
+                <VideoPlayer url={item.item} preview="" />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
