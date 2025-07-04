@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuthorThread } from "~/hooks/useAuthorThread";
+import { useParentThread } from "~/hooks/useParentThread";
+import { useScrollManagement } from "~/hooks/useScrollManagement";
 import type { Post } from "./Post";
-import { PostView } from "./PostView";
 import { PostReplyComposer } from "./PostReplyComposer";
 import { PostSuspense } from "./PostSuspense";
-import { useParentThread } from "~/hooks/useParentThread";
-import { useAuthorThread } from "~/hooks/useAuthorThread";
-import { useScrollManagement } from "~/hooks/useScrollManagement";
+import { PostView } from "./PostView";
 
 export function PostThread({ post }: { post: Post }) {
   const [comments, setComments] = useState<Post[]>([]);
@@ -22,11 +22,7 @@ export function PostThread({ post }: { post: Post }) {
   });
 
   useEffect(() => {
-    setComments(
-      allComments.filter(
-        (comment) => !authorThread.some((authorPost) => authorPost.id === comment.id)
-      )
-    );
+    setComments(allComments.filter((comment) => !authorThread.some((authorPost) => authorPost.id === comment.id)));
   }, [allComments, authorThread]);
 
   useEffect(() => {
@@ -42,17 +38,12 @@ export function PostThread({ post }: { post: Post }) {
           <PostView settings={{ inThread: true }} item={p} />
         </div>
       ))}
-      
+
       {parentThreadLoading && <PostSuspense />}
 
       <div className="flex flex-col gap-1 min-h-screen">
         <div ref={mainPostRef} className="relative">
-          <PostView
-            item={post}
-            defaultExpanded={true}
-            defaultCommentsOpen={false}
-            defaultReplyOpen={false}
-          />
+          <PostView item={post} defaultExpanded={true} defaultCommentsOpen={false} defaultReplyOpen={false} />
         </div>
 
         {authorThreadLoading && <PostSuspense />}

@@ -13,17 +13,15 @@ export function useScrollManagement({ parentThread, loading }: UseScrollManageme
 
   useEffect(() => {
     if (!hasInitializedRef.current && mainPostRef.current) {
-      const viewport = containerRef.current?.closest(
-        "[data-overlayscrollbars-viewport]"
-      ) as HTMLElement | null;
-      
+      const viewport = containerRef.current?.closest("[data-overlayscrollbars-viewport]") as HTMLElement | null;
+
       if (viewport) {
         requestAnimationFrame(() => {
           const desiredOffset = 16;
           const currentMainPostOffset = mainPostRef.current!.offsetTop;
-          
+
           mainPostInitialOffsetRef.current = currentMainPostOffset;
-          
+
           viewport.scrollTop = currentMainPostOffset - desiredOffset;
           hasInitializedRef.current = true;
         });
@@ -34,19 +32,17 @@ export function useScrollManagement({ parentThread, loading }: UseScrollManageme
   useEffect(() => {
     if (!hasInitializedRef.current || !mainPostRef.current) return;
 
-    const viewport = containerRef.current?.closest(
-      "[data-overlayscrollbars-viewport]"
-    ) as HTMLElement | null;
-    
+    const viewport = containerRef.current?.closest("[data-overlayscrollbars-viewport]") as HTMLElement | null;
+
     if (!viewport) return;
 
     const observer = new MutationObserver(() => {
       requestAnimationFrame(() => {
         if (!mainPostRef.current) return;
-        
+
         const currentMainPostOffset = mainPostRef.current.offsetTop;
         const offsetDifference = currentMainPostOffset - mainPostInitialOffsetRef.current;
-        
+
         if (offsetDifference !== 0) {
           viewport.scrollTop += offsetDifference;
           mainPostInitialOffsetRef.current = currentMainPostOffset;
@@ -59,7 +55,7 @@ export function useScrollManagement({ parentThread, loading }: UseScrollManageme
         childList: true,
         subtree: true,
         attributes: true,
-        characterData: true
+        characterData: true,
       });
     }
 

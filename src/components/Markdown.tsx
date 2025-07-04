@@ -70,11 +70,7 @@ const Markdown: React.FC<{ content: string; className?: string }> = ({ content, 
   };
 
   return (
-    <ReactMarkdown
-      className={`${className}`}
-      remarkPlugins={[remarkGfm, remarkBreaks]}
-      components={components}
-    >
+    <ReactMarkdown className={`${className}`} remarkPlugins={[remarkGfm, remarkBreaks]} components={components}>
       {processedText}
     </ReactMarkdown>
   );
