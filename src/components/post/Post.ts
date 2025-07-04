@@ -22,6 +22,10 @@ export type PostActions = {
   canCollect: boolean;
 };
 
+export type PostMention = 
+  | { __typename: "AccountMention"; account: string; namespace?: string; localName?: string }
+  | { __typename: "GroupMention"; group: string };
+
 export type Post = {
   __typename: "Post";
   id: string;
@@ -30,6 +34,7 @@ export type Post = {
   createdAt: Date;
   comments: Post[];
   metadata: any;
+  mentions?: PostMention[];
   reactions?: Partial<PostReactions>;
   updatedAt?: Date;
   commentOn?: Post;
@@ -74,6 +79,7 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
       commentOn: getCommentOnFromItem(item),
       quoteOn: getQuoteOnFromItem(item),
       metadata: item.metadata,
+      mentions: getMentionsFromItem(item),
       createdAt: new Date(timestamp),
       updatedAt: new Date(timestamp),
       platform: "lens",
@@ -167,6 +173,27 @@ function getReplyFromItem(origin: LensPost) {
   if (quoteOn) return quoteOn;
 
   return undefined;
+}
+
+function getMentionsFromItem(post: any): PostMention[] | undefined {
+  if (!post.mentions || !Array.isArray(post.mentions)) return undefined;
+  
+  return post.mentions.map((mention: any) => {
+    if (mention.__typename === "AccountMention") {
+      return {
+        __typename: "AccountMention",
+        account: mention.account,
+        namespace: mention.namespace,
+        localName: mention.localName,
+      };
+    } else if (mention.__typename === "GroupMention") {
+      return {
+        __typename: "GroupMention",
+        group: mention.group,
+      };
+    }
+    return null;
+  }).filter(Boolean);
 }
 
 export type { User };

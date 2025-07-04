@@ -306,6 +306,7 @@ export default function PostComposer({
     let metadata: any;
     try {
       const content = data.content.length > 0 ? data.content : undefined;
+      // const mentions = content ? extractMentions(content) : undefined;
 
       if (mediaFiles.length > 0) {
         toast.loading("Uploading media files...", { id: toastId });

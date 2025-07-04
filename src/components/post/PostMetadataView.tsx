@@ -21,63 +21,65 @@ import Markdown from "../Markdown";
 import { Badge } from "../ui/badge";
 import { VideoPlayer } from "../VideoPlayer";
 
-export const getPostMetadataView = (metadata: any) => {
+import type { PostMention } from "./Post";
+
+export const getPostMetadataView = (metadata: any, mentions?: PostMention[]) => {
   switch (metadata.__typename) {
     case "TextOnlyMetadata":
-      return <TextOnlyView metadata={metadata as TextOnlyMetadataDetails} />;
+      return <TextOnlyView metadata={metadata as TextOnlyMetadataDetails} mentions={mentions} />;
     case "ArticleMetadata":
-      return <ArticleView metadata={metadata as ArticleMetadataDetails} />;
+      return <ArticleView metadata={metadata as ArticleMetadataDetails} mentions={mentions} />;
     case "ImageMetadata":
-      return <ImageView metadata={metadata as ImageMetadataDetails} />;
+      return <ImageView metadata={metadata as ImageMetadataDetails} mentions={mentions} />;
     case "VideoMetadata":
-      return <VideoView metadata={metadata as VideoMetadataDetails} />;
+      return <VideoView metadata={metadata as VideoMetadataDetails} mentions={mentions} />;
     case "AudioMetadata":
-      return <AudioView metadata={metadata as AudioMetadataDetails} />;
+      return <AudioView metadata={metadata as AudioMetadataDetails} mentions={mentions} />;
     case "LinkMetadata":
-      return <LinkView metadata={metadata as LinkMetadataDetails} />;
+      return <LinkView metadata={metadata as LinkMetadataDetails} mentions={mentions} />;
     case "LiveStreamMetadata":
-      return <LiveStreamView metadata={metadata as LiveStreamMetadataDetails} />;
+      return <LiveStreamView metadata={metadata as LiveStreamMetadataDetails} mentions={mentions} />;
     case "CheckingInMetadata":
-      return <CheckingInView metadata={metadata as CheckingInMetadataDetails} />;
+      return <CheckingInView metadata={metadata as CheckingInMetadataDetails} mentions={mentions} />;
     case "EmbedMetadata":
-      return <EmbedView metadata={metadata as EmbedMetadataDetails} />;
+      return <EmbedView metadata={metadata as EmbedMetadataDetails} mentions={mentions} />;
     case "EventMetadata":
-      return <EventView metadata={metadata as EventMetadataDetails} />;
+      return <EventView metadata={metadata as EventMetadataDetails} mentions={mentions} />;
     case "MintMetadata":
-      return <MintView metadata={metadata as MintMetadataDetails} />;
+      return <MintView metadata={metadata as MintMetadataDetails} mentions={mentions} />;
     case "SpaceMetadata":
-      return <SpaceView metadata={metadata as SpaceMetadataDetails} />;
+      return <SpaceView metadata={metadata as SpaceMetadataDetails} mentions={mentions} />;
     case "StoryMetadata":
-      return <StoryView metadata={metadata as StoryMetadataDetails} />;
+      return <StoryView metadata={metadata as StoryMetadataDetails} mentions={mentions} />;
     case "TransactionMetadata":
-      return <TransactionView metadata={metadata as TransactionMetadataDetails} />;
+      return <TransactionView metadata={metadata as TransactionMetadataDetails} mentions={mentions} />;
     case "ThreeDMetadata":
-      return <ThreeDView metadata={metadata as ThreeDMetadataDetails} />;
+      return <ThreeDView metadata={metadata as ThreeDMetadataDetails} mentions={mentions} />;
     default:
       return null;
   }
 };
 
-const ContentView = ({ content }: { content: string }) => {
-  return <Markdown content={content} />;
+const ContentView = ({ content, mentions }: { content: string; mentions?: PostMention[] }) => {
+  return <Markdown content={content} mentions={mentions} />;
 };
 
-export const TextOnlyView = ({ metadata }: { metadata: TextOnlyMetadataDetails }) => {
+export const TextOnlyView = ({ metadata, mentions }: { metadata: TextOnlyMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const ArticleView = ({ metadata }: { metadata: ArticleMetadataDetails }) => {
+export const ArticleView = ({ metadata, mentions }: { metadata: ArticleMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const ImageView = ({ metadata }: { metadata: ImageMetadataDetails }) => {
+export const ImageView = ({ metadata, mentions }: { metadata: ImageMetadataDetails; mentions?: PostMention[] }) => {
   const url = metadata?.image?.item;
   const alt = metadata?.image.altTag;
   const title = metadata?.title;
 
   return (
     <div>
-      <ContentView content={metadata.content} />
+      <ContentView content={metadata.content} mentions={mentions} />
       <div className="relative mt-2 w-full">
         <ImageViewer src={url} alt={alt || title} className="object-cover border w-full rounded-xl h-auto" />
       </div>
@@ -85,19 +87,19 @@ export const ImageView = ({ metadata }: { metadata: ImageMetadataDetails }) => {
   );
 };
 
-export const VideoView = ({ metadata }: { metadata: VideoMetadataDetails }) => {
+export const VideoView = ({ metadata, mentions }: { metadata: VideoMetadataDetails; mentions?: PostMention[] }) => {
   const url = metadata?.video?.item;
   const cover = metadata?.video?.cover || undefined;
 
   return (
     <div>
-      <ContentView content={metadata.content} />
+      <ContentView content={metadata.content} mentions={mentions} />
       <VideoPlayer url={url} preview={cover} />
     </div>
   );
 };
 
-export const AudioView = ({ metadata }: { metadata: AudioMetadataDetails }) => {
+export const AudioView = ({ metadata, mentions }: { metadata: AudioMetadataDetails; mentions?: PostMention[] }) => {
   const url = metadata?.audio?.item;
   const cover = metadata?.audio.cover;
   const artist = metadata?.audio.artist;
@@ -105,16 +107,16 @@ export const AudioView = ({ metadata }: { metadata: AudioMetadataDetails }) => {
 
   return (
     <div>
-      <ContentView content={metadata.content} />
+      <ContentView content={metadata.content} mentions={mentions} />
       <AudioPlayer url={url} cover={cover} author={artist} title={title} />
     </div>
   );
 };
 
-export const LinkView = ({ metadata }: { metadata: LinkMetadataDetails }) => {
+export const LinkView = ({ metadata, mentions }: { metadata: LinkMetadataDetails; mentions?: PostMention[] }) => {
   return (
     <div>
-      <ContentView content={metadata.content} />
+      <ContentView content={metadata.content} mentions={mentions} />
       <Badge variant="outline" className="text-base rounded-lg p-1 px-2">
         <a className="hover:underline" href={metadata.sharingLink}>
           {metadata.sharingLink}
@@ -124,19 +126,19 @@ export const LinkView = ({ metadata }: { metadata: LinkMetadataDetails }) => {
   );
 };
 
-export const LiveStreamView = ({ metadata }: { metadata: LiveStreamMetadataDetails }) => {
+export const LiveStreamView = ({ metadata, mentions }: { metadata: LiveStreamMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const CheckingInView = ({ metadata }: { metadata: CheckingInMetadataDetails }) => {
+export const CheckingInView = ({ metadata, mentions }: { metadata: CheckingInMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const EmbedView = ({ metadata }: { metadata: EmbedMetadataDetails }) => {
+export const EmbedView = ({ metadata, mentions }: { metadata: EmbedMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const EventView = ({ metadata }: { metadata: EventMetadataDetails }) => {
+export const EventView = ({ metadata, mentions }: { metadata: EventMetadataDetails; mentions?: PostMention[] }) => {
   return (
     <div>
       <h1>Event</h1>
@@ -147,22 +149,22 @@ export const EventView = ({ metadata }: { metadata: EventMetadataDetails }) => {
   );
 };
 
-export const MintView = ({ metadata }: { metadata: MintMetadataDetails }) => {
+export const MintView = ({ metadata, mentions }: { metadata: MintMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const SpaceView = ({ metadata }: { metadata: SpaceMetadataDetails }) => {
+export const SpaceView = ({ metadata, mentions }: { metadata: SpaceMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const StoryView = ({ metadata }: { metadata: StoryMetadataDetails }) => {
+export const StoryView = ({ metadata, mentions }: { metadata: StoryMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const TransactionView = ({ metadata }: { metadata: TransactionMetadataDetails }) => {
+export const TransactionView = ({ metadata, mentions }: { metadata: TransactionMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };
 
-export const ThreeDView = ({ metadata }: { metadata: ThreeDMetadataDetails }) => {
+export const ThreeDView = ({ metadata, mentions }: { metadata: ThreeDMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} />;
 };

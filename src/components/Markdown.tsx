@@ -7,24 +7,60 @@ import { parseContent } from "~/utils/parseContent";
 import { CommunityHandle } from "./communities/CommunityHandle";
 import { ImageViewer } from "./ImageViewer";
 import { UserLazyHandle } from "./user/UserLazyHandle";
+import { AccountMention } from "./user/AccountMention";
+import type { PostMention } from "./post/Post";
 import "~/components/composer/lexical.css";
 
 const BASE_URL = getBaseUrl();
-const Markdown: React.FC<{ content: string; className?: string }> = ({ content, className = "" }) => {
-  const processedText = parseContent(content).replaceHandles().toString();
+const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?: string }> = ({ 
+  content, 
+  mentions,
+  className = "" 
+}) => {
+  let processedText = content;
+  
+  if (mentions && mentions.length > 0) {
+    mentions.forEach((mention, index) => {
+      if (mention.__typename === "AccountMention") {
+        const mentionPattern = mention.localName 
+          ? `@lens/${mention.localName}`
+          : `@${mention.account}`;
+        processedText = processedText.replace(
+          mentionPattern,
+          `[${mentionPattern}](${BASE_URL}mention/${index})`
+        );
+      }
+    });
+  } else {
+    processedText = parseContent(content).replaceHandles().toString();
+  }
 
-  // Extract color classes to pass to custom components
   const colorClasses =
     className
       .split(" ")
       .filter((cls) => cls.includes("text-"))
       .join(" ") || "";
 
-  // Create a custom link component with the color classes in closure
-  const createCustomLink = (colorClasses: string): Components["a"] => {
+  const createCustomLink = (colorClasses: string, mentions?: PostMention[]): Components["a"] => {
     return ({ node, ...props }) => {
       const { href, children } = props;
       if (href?.startsWith(BASE_URL)) {
+        if (href.startsWith(`${BASE_URL}mention/`) && mentions) {
+          const mentionIndex = parseInt(href.split("/mention/")[1]);
+          const mention = mentions[mentionIndex];
+          if (mention && mention.__typename === "AccountMention") {
+            return (
+              <span className={`lexical-link ${colorClasses}`}>
+                <AccountMention 
+                  account={mention.account}
+                  namespace={mention.namespace}
+                  localName={mention.localName}
+                  className={colorClasses}
+                />
+              </span>
+            );
+          }
+        }
         if (href.startsWith(`${BASE_URL}u/`)) {
           return (
             <span className={`lexical-link ${colorClasses}`}>
@@ -65,7 +101,7 @@ const Markdown: React.FC<{ content: string; className?: string }> = ({ content, 
     ul: ({ children }) => <ul className="lexical-list-ul">{children}</ul>,
     ol: ({ children }) => <ol className="lexical-list-ol">{children}</ol>,
     li: ({ children }) => <li className="lexical-listitem">{children}</li>,
-    a: createCustomLink(colorClasses),
+    a: createCustomLink(colorClasses, mentions),
     img: CustomImage,
   };
 

@@ -9,7 +9,7 @@ export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
-  const metadata = getPostMetadataView(post.metadata);
+  const metadata = getPostMetadataView(post.metadata, post.mentions);
 
   return (
     <div ref={ref} className="space-y-2">
@@ -40,7 +40,7 @@ export const PostContent = forwardRef<
               <span>@{post.quoteOn.author.handle}</span>
             </div>
           </div>
-          <p className="text-sm line-clamp-3 text-foreground/90">{getPostMetadataView(post.quoteOn.metadata)}</p>
+          <p className="text-sm line-clamp-3 text-foreground/90">{getPostMetadataView(post.quoteOn.metadata, post.quoteOn.mentions)}</p>
         </Card>
       )}
     </div>
