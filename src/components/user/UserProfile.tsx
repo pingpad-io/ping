@@ -2,30 +2,26 @@
 
 import type { AccountStats } from "@lens-protocol/client";
 import { EditIcon, ShieldOffIcon, VolumeXIcon } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "~/components/Link";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
+import { useAuth } from "~/hooks/useAuth";
 import { useUserActions } from "~/hooks/useUserActions";
 import { FollowButton } from "../FollowButton";
+import PostComposer from "../post/PostComposer";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
-import PostComposer from "../post/PostComposer";
 import { type User } from "./User";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
-import { ConnectWalletButton } from "../web3/WalletButtons";
 
 const MutedBadge = ({ onUnmute }: { onUnmute: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="flex items-center"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="flex items-center" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Button
         variant="ghost"
         size="sm"
@@ -47,11 +43,7 @@ const BlockedBadge = ({ onUnblock }: { onUnblock: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="flex items-center"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="flex items-center" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Button
         variant="ghost"
         size="sm"
@@ -77,9 +69,9 @@ const MentionPostComposer = ({ user, onClose }: { user: User; onClose: () => voi
 
 export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
   const { user: authedUser } = useUser();
+  const { requireAuth } = useAuth();
   const userActions = user ? useUserActions(user) : null;
   const [isMentionDialogOpen, setIsMentionDialogOpen] = useState(false);
-  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
 
   if (!user) return null;
 
@@ -104,7 +96,11 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
             <div className="flex flex-col justify-center gap-1">
               <div className="flex items-center gap-2">
                 <div className="text-xl sm:text-2xl font-bold w-fit truncate leading-none">{user.name}</div>
-                {isFollowingMe && <Badge variant="secondary" className="text-xs">Follows you</Badge>}
+                {isFollowingMe && (
+                  <Badge variant="secondary" className="text-xs">
+                    Follows you
+                  </Badge>
+                )}
                 {isMuted && !isUserProfile && <MutedBadge onUnmute={unmuteUser} />}
                 {isBlocked && !isUserProfile && <BlockedBadge onUnblock={unblockUser} />}
               </div>
@@ -140,7 +136,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
             size="sm"
             variant="outline"
             onClick={() => {
-              authedUser ? setIsMentionDialogOpen(true) : setIsWalletDialogOpen(true)
+              requireAuth(() => setIsMentionDialogOpen(true));
             }}
             className="flex-1 bg-transparent"
           >
@@ -148,8 +144,6 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
           </Button>
         </div>
       )}
-
-      {!authedUser && <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />}
 
       <Dialog open={isMentionDialogOpen} onOpenChange={setIsMentionDialogOpen} modal={true}>
         <DialogContent className="max-w-full sm:max-w-[700px]">

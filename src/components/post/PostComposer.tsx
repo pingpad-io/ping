@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
+import { useAuth } from "~/hooks/useAuth";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
 import { getCommunityTags } from "../communities/Community";
@@ -47,7 +48,6 @@ import { UserAvatar } from "../user/UserAvatar";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
 import { lensItemToPost } from "./Post";
-import { ConnectWalletButton } from "../web3/WalletButtons";
 
 interface SortableMediaItemProps {
   file: File;
@@ -226,9 +226,9 @@ export default function PostComposer({
   initialContent?: string;
 }) {
   const { user: contextUser } = useUser();
+  const { requireAuth } = useAuth();
   const currentUser = user || contextUser;
   const [isPosting, setPosting] = useState(false);
-  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
@@ -293,8 +293,7 @@ export default function PostComposer({
   const isEmpty = !watchedContent.trim() && mediaFiles.length === 0;
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (!currentUser) {
-      setIsWalletDialogOpen(true);
+    if (!requireAuth()) {
       return;
     }
 
@@ -508,13 +507,10 @@ export default function PostComposer({
 
   const handleEmojiClick = useCallback(
     (emoji: any) => {
-      if (currentUser) {
-        const content = form.getValues("content");
-        const newContent = content + emoji.emoji;
-        form.setValue("content", newContent, { shouldValidate: true });
-      } else {
-        setIsWalletDialogOpen(true);
-      }
+      if (!requireAuth()) return;
+      const content = form.getValues("content");
+      const newContent = content + emoji.emoji;
+      form.setValue("content", newContent, { shouldValidate: true });
     },
     [form],
   );
@@ -556,12 +552,9 @@ export default function PostComposer({
                       <LexicalEditorWrapper
                         value={field.value}
                         onChange={(value) => {
-                          if (currentUser) {
-                            field.onChange(value);
-                            handleInputChange({ target: { value, selectionStart: 0 } } as any);
-                          } else {
-                            setIsWalletDialogOpen(true);
-                          }
+                          if (!requireAuth()) return;
+                          field.onChange(value);
+                          handleInputChange({ target: { value, selectionStart: 0 } } as any);
                         }}
                         onKeyDown={(e) => {
                           if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
@@ -638,7 +631,6 @@ export default function PostComposer({
           </Button>
         </form>
       </Form>
-      {!currentUser && <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />}
     </div>
   );
 }

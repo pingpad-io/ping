@@ -22,6 +22,7 @@ export type MenuItem = {
   disabled?: boolean;
   variant?: "default" | "destructive";
   condition?: "always" | "isAuthor" | "notAuthor" | "hasReply";
+  requiresAuth?: boolean;
   getDynamicProps?: (context: MenuContext) => Partial<MenuItem>;
 };
 
@@ -51,6 +52,7 @@ export const menuItems: MenuItem[] = [
     icon: ReplyIcon,
     iconSize: 18,
     condition: "hasReply",
+    requiresAuth: true,
   },
   {
     id: "share",
@@ -72,6 +74,7 @@ export const menuItems: MenuItem[] = [
     icon: VolumeXIcon,
     iconSize: 18,
     condition: "notAuthor",
+    requiresAuth: true,
     getDynamicProps: (context) => ({
       label: context.isMuted ? "Unmute user" : "Mute user",
       icon: context.isMuted ? Volume2Icon : VolumeXIcon,
@@ -84,6 +87,7 @@ export const menuItems: MenuItem[] = [
     icon: ShieldIcon,
     iconSize: 18,
     condition: "notAuthor",
+    requiresAuth: true,
     getDynamicProps: (context) => ({
       label: context.isBlocked ? "Unblock user" : "Block user",
       icon: context.isBlocked ? ShieldOffIcon : ShieldIcon,
@@ -96,6 +100,7 @@ export const menuItems: MenuItem[] = [
     icon: BookmarkIcon,
     iconSize: 18,
     condition: "always",
+    requiresAuth: true,
     getDynamicProps: (context) => ({
       label: context.isSaved ? "Saved" : "Save",
       icon: BookmarkIcon,
@@ -117,5 +122,6 @@ export const menuItems: MenuItem[] = [
     iconSize: 18,
     condition: "isAuthor",
     variant: "destructive",
+    requiresAuth: true,
   },
 ];

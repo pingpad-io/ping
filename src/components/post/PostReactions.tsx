@@ -2,13 +2,13 @@
 
 import { ChevronDownIcon } from "lucide-react";
 import { useRef, useState } from "react";
+import { useAuth } from "~/hooks/useAuth";
 import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
-import { useUser } from "../user/UserContext";
 import { Button } from "../ui/button";
+import { useUser } from "../user/UserContext";
 import type { Post, PostReactionType } from "./Post";
 import RepostDropdown from "./RepostDropdown";
-import { ConnectWalletButton } from "../web3/WalletButtons";
 
 type ReactionState = {
   [key in Exclude<PostReactionType | "Like", "Bookmark">]: {
@@ -38,7 +38,7 @@ export function ReactionsList({
   });
 
   const { user: authedUser } = useUser();
-  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
+  const { requireAuth } = useAuth();
 
   const { triggerExplosion } = useExplosion();
   const likeButtonRef = useRef<HTMLSpanElement>(null);
@@ -76,8 +76,7 @@ export function ReactionsList({
           variant={isComment ? "comment" : "post"}
           reactionType="Comment"
           reaction={reactions.Comment}
-          onClick={() => setCommentsOpen(!isCommentsOpen)}
-          disabled={!post.reactions?.canComment}
+          onClick={() => requireAuth(() => setCommentsOpen(!isCommentsOpen))}
         />
       </div>
       <div className="hover-expand rounded-full">
@@ -105,17 +104,11 @@ export function ReactionsList({
             reactionType="Like"
             reaction={reactions.Like}
             onClick={() => {
-              if (authedUser) {
-                updateReaction("Like");
-              } else {
-                setIsWalletDialogOpen(true);
-              }
+              requireAuth(() => updateReaction("Like"));
             }}
           />
         </span>
       </div>
-
-      {!authedUser && <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />}
 
       {collapsed && (
         <div className="ml-auto">

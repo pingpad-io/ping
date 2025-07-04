@@ -15,6 +15,7 @@ import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { ExplosionProvider } from "./ExplosionPortal";
+import { ConnectWalletDialog } from "./web3/ConnectWalletDialog";
 import "overlayscrollbars/styles/overlayscrollbars.css";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
@@ -84,6 +85,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                   <OverlayScrollbarsComponent defer className="h-full">
                     {children}
                   </OverlayScrollbarsComponent>
+                  <ConnectWalletDialog />
                 </ExplosionProvider>
               </LensProvider>
             </ConnectKitProvider>

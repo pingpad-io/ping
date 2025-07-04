@@ -1,5 +1,4 @@
 import { MenuOption } from "@lexical/react/LexicalTypeaheadMenuPlugin";
-import type { EmojiData } from "./emojiList";
 
 export class EmojiOption extends MenuOption {
   emoji: string;
@@ -22,21 +21,12 @@ interface EmojiMenuItemProps {
   option: EmojiOption;
 }
 
-export function EmojiMenuItem({
-  index,
-  isSelected,
-  onClick,
-  onMouseEnter,
-  option,
-}: EmojiMenuItemProps) {
+export function EmojiMenuItem({ index, isSelected, onClick, onMouseEnter, option }: EmojiMenuItemProps) {
   const getBestName = () => {
-    const descriptiveNames = option.names.filter(name => name.length > 2);
+    const descriptiveNames = option.names.filter((name) => name.length > 2);
     const namesToUse = descriptiveNames.length > 0 ? descriptiveNames : option.names;
-    
-    return namesToUse.reduce((longest, name) => 
-      name.length > longest.length ? name : longest, 
-      namesToUse[0]
-    );
+
+    return namesToUse.reduce((longest, name) => (name.length > longest.length ? name : longest), namesToUse[0]);
   };
 
   return (
@@ -48,7 +38,6 @@ export function EmojiMenuItem({
         ${isSelected ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"}
       `}
       ref={option.setRefElement}
-      role="option"
       aria-selected={isSelected}
       id={`typeahead-item-${index}`}
       onMouseEnter={onMouseEnter}

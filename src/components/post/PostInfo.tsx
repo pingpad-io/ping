@@ -1,6 +1,7 @@
 import { EllipsisIcon } from "lucide-react";
 import { useState } from "react";
 import Link from "~/components/Link";
+import { useAuth } from "~/hooks/useAuth";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -10,6 +11,7 @@ import { usePostStateWithFallback } from "./PostStateContext";
 
 export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }) => {
   const [open, setOpen] = useState(false);
+  const { requireAuth } = useAuth();
   const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateWithFallback(post, onReply, () =>
     setOpen(false),
   );
@@ -51,7 +53,10 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
       <div className="ml-auto">
         <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="link" className="flex gap-4 w-4 rounded-full hover-expand justify-center [&>span]:hover:scale-110 [&>span]:active:scale-95">
+            <Button
+              variant="link"
+              className="flex gap-4 w-4 rounded-full hover-expand justify-center [&>span]:hover:scale-110 [&>span]:active:scale-95"
+            >
               <span className="transition-transform">
                 <EllipsisIcon
                   size={18}
@@ -88,7 +93,13 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
               return (
                 <DropdownMenuItem
                   key={item.id}
-                  onClick={itemProps.onClick}
+                  onClick={() => {
+                    if (item.requiresAuth) {
+                      requireAuth(itemProps.onClick);
+                    } else {
+                      itemProps.onClick?.();
+                    }
+                  }}
                   disabled={itemProps.disabled}
                   className="flex items-center gap-3"
                 >
