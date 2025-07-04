@@ -21,7 +21,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
 import { image, MediaImageMimeType, MediaVideoMimeType, textOnly, video } from "@lens-protocol/metadata";
-import { useAccounts } from "@lens-protocol/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { ImageIcon, SendHorizontalIcon, SmileIcon, VideoIcon, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -43,7 +42,6 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import type { User } from "../user/User";
-import { lensAcountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
@@ -152,61 +150,6 @@ const MediaPreview = ({
   );
 };
 
-const UserSearchPopup = ({ query, onSelectUser, onClose, position }) => {
-  const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query.slice(1) } } });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const users = profiles?.items?.slice(0, 10).map(lensAcountToUser) || [];
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab") {
-        e.preventDefault();
-        if (e.shiftKey) {
-          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : users.length - 1));
-        } else {
-          setSelectedIndex((prev) => (prev < users.length - 1 ? prev + 1 : 0));
-        }
-      } else if (e.key === "Enter" && users[selectedIndex]) {
-        e.preventDefault();
-        e.stopPropagation();
-        onSelectUser(users[selectedIndex]);
-        onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [users, selectedIndex, onSelectUser, onClose]);
-
-  return (
-    <Card
-      className="absolute z-30 w-56 mt-1 hover:bg-card shadow-lg max-h-96 overflow-y-auto flex flex-col gap-1"
-      style={{ top: `${position.top}px`, left: `${position.left}px` }}
-    >
-      {loading && <p className="p-2 text-center">Loading...</p>}
-      {error && <p className="p-2 text-center">Error: {error}</p>}
-      {!loading && !error && users.length === 0 && <p className="p-2 text-center">No users found</p>}
-      {users.map((user, index) => (
-        <Card
-          key={user.id}
-          onClick={() => {
-            onSelectUser(user);
-            onClose();
-          }}
-          className={`flex items-center p-2 h-min cursor-pointer ${index === selectedIndex ? "bg-accent" : ""}`}
-        >
-          <div className="w-8 h-8 mr-2">
-            <UserAvatar user={user} link={false} card={true} />
-          </div>
-          <div>
-            <p className="font-semibold">{user.name}</p>
-            <p className="text-sm">@{user.handle}</p>
-          </div>
-        </Card>
-      ))}
-    </Card>
-  );
-};
 
 export default function PostComposer({
   user,
@@ -229,9 +172,6 @@ export default function PostComposer({
   const { requireAuth } = useAuth();
   const currentUser = user || contextUser;
   const [isPosting, setPosting] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [mediaFiles, setMediaFiles] = useState<Array<{ file: File; id: string }>>([]);
 
   const handleAddFiles = useCallback((acceptedFiles: File[]) => {
@@ -454,57 +394,11 @@ export default function PostComposer({
   }
 
   const resetHeight = () => {
-    // No longer needed with Milkdown
+    // No longer needed with Lexical
   };
 
-  const updateHeight = () => {
-    // No longer needed with Milkdown
-  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    form.setValue("content", value);
-    updateHeight();
 
-    const cursorPosition = e.target.selectionStart;
-    const textBeforeCursor = value.slice(0, cursorPosition);
-    const words = textBeforeCursor.split(/\s/);
-    const lastWord = words[words.length - 1];
-
-    if (lastWord.startsWith("@") && lastWord.length > 1) {
-      setSearchQuery(lastWord);
-      setShowPopup(true);
-      updatePopupPosition();
-    } else {
-      setShowPopup(false);
-    }
-  };
-
-  const updatePopupPosition = () => {
-    // TODO: Implement caret position detection for Milkdown
-    setPopupPosition({ top: 100, left: 20 });
-  };
-
-  const handleSelectUser = useCallback(
-    (selectedUser: User) => {
-      const content = form.getValues("content");
-      // For now, just append the mention at the end
-      // TODO: Insert at cursor position in Milkdown
-      const words = content.split(/(\s+)/);
-      const lastWord = words[words.length - 1];
-
-      if (lastWord.startsWith("@")) {
-        words[words.length - 1] = `@lens/${selectedUser.handle} `;
-      } else {
-        words.push(`@lens/${selectedUser.handle} `);
-      }
-
-      const newContent = words.join("");
-      form.setValue("content", newContent);
-      setShowPopup(false);
-    },
-    [form],
-  );
 
   const handleEmojiClick = useCallback(
     (emoji: any) => {
@@ -555,7 +449,6 @@ export default function PostComposer({
                         onChange={(value) => {
                           if (!requireAuth()) return;
                           field.onChange(value);
-                          handleInputChange({ target: { value, selectionStart: 0 } } as any);
                         }}
                         onKeyDown={(e) => {
                           if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
@@ -569,14 +462,6 @@ export default function PostComposer({
                       />
                     </div>
                   </FormControl>
-                  {showPopup && (
-                    <UserSearchPopup
-                      query={searchQuery}
-                      onSelectUser={handleSelectUser}
-                      onClose={() => setShowPopup(false)}
-                      position={popupPosition}
-                    />
-                  )}
                 </FormItem>
               )}
             />

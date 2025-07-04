@@ -19,6 +19,7 @@ import { COMMAND_PRIORITY_LOW, KEY_DOWN_COMMAND, PASTE_COMMAND } from "lexical";
 import { useCallback, useEffect, useRef } from "react";
 import "./lexical.css";
 import { EmojiTypeaheadPlugin } from "./EmojiTypeaheadPlugin";
+import { MentionsTypeaheadPlugin } from "./MentionsTypeaheadPlugin";
 
 interface LexicalEditorProps {
   value: string;
@@ -217,6 +218,7 @@ function EditorContent({
       <KeyboardShortcutPlugin onKeyDown={onKeyDown} />
       <PastePlugin onPasteFiles={onPasteFiles} />
       <EmojiTypeaheadPlugin />
+      <MentionsTypeaheadPlugin />
     </>
   );
 }
