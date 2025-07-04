@@ -16,11 +16,10 @@ import { UserMenuButtons } from "./UserMenu";
 interface MenuClientProps {
   isAuthenticated: boolean;
   handle?: string | null;
-  profileId?: string | null;
   user: any;
 }
 
-export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientProps) {
+export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
   const { openWalletDialog } = useAuth();
   const router = useRouter();
@@ -142,7 +141,15 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
       {isAuthenticated && (
         <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen} modal={true}>
           <DialogContent className="max-w-full sm:max-w-[700px]">
-            <PostComposer user={user} />
+            <PostComposer
+              user={user}
+              onSuccess={(newPost) => {
+                if (newPost && !(newPost as any).isOptimistic) {
+                  setIsPostDialogOpen(false);
+                  router.push(`/p/${newPost.id}`);
+                }
+              }}
+            />
           </DialogContent>
         </Dialog>
       )}

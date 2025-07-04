@@ -27,7 +27,7 @@ export const PostReplyComposer = ({
               duration: 0.3,
               ease: "easeInOut",
             }}
-            className={"w-full glass rounded-xl p-2"}
+            className={"w-full p-4 glass rounded-xl"}
           >
             <PostComposer
               replyingTo={post}

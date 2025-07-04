@@ -12,6 +12,7 @@ import { PostComments } from "./PostComments";
 import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
 import { PostInfo } from "./PostInfo";
+import { PostOptimisticView } from "./PostOptimisticView";
 import { ReactionsList } from "./PostReactions";
 import { PostReplyComposer } from "./PostReplyComposer";
 import { ReplyInfo } from "./PostReplyInfo";
@@ -140,6 +141,11 @@ export const PostView = ({
     }
   };
 
+  // If it's an optimistic post, show skeleton
+  if ((item as any).isOptimistic) {
+    return <PostOptimisticView author={item.author} isComment={settings.isComment} />;
+  }
+
   return (
     <>
       {isDissolving && <DissolveFilter filterId={dissolveFilterId} />}
@@ -194,6 +200,18 @@ export const PostView = ({
             isOpen={isReplyWizardOpen}
             post={item}
             setOpen={setReplyWizardOpen}
+            onCommentAdded={(comment) => {
+              if (comment) {
+                if ((comment as any).isOptimistic) {
+                  setComments((prev) => [comment, ...prev]);
+                  setCommentsOpen(true);
+                } else {
+                  setComments((prev) =>
+                    prev.map(c => c.id.startsWith('optimistic') && comment.metadata?.content === c.metadata?.content ? comment : c)
+                  );
+                }
+              }
+            }}
           />
         )}
         {isCommentsOpen && (

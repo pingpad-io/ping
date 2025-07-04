@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
-import PostComposer from "~/components/post/PostComposer";
+import { FeedPostComposer } from "~/components/FeedPostComposer";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 export const maxDuration = 60;
@@ -14,9 +14,7 @@ export default async function layout({ children }: PropsWithChildren) {
     <div className="z-[30] p-4 py-0">
       <ServerSignedIn>
         <div className="pt-4 pb-2">
-          <div className="glass rounded-xl p-4">
-            <PostComposer user={user} />
-          </div>
+          <FeedPostComposer user={user} />
         </div>
       </ServerSignedIn>
       {children}

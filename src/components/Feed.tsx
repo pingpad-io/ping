@@ -5,11 +5,17 @@ import { FeedSuspense } from "./FeedSuspense";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { Button } from "./ui/button";
 
-export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
-  const [data, setData] = useState(null);
-  const [cursor, setCursor] = useState(undefined);
+interface FeedProps<T = any> {
+  ItemView: React.ComponentType<{ item: T }>;
+  endpoint: string;
+  manualNextPage?: boolean;
+}
+
+export const Feed = <T extends { id: string } = any>({ ItemView, endpoint, manualNextPage = false }: FeedProps<T>) => {
+  const [data, setData] = useState<T[] | null>(null);
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const loadNextBatch = useCallback(async () => {
     if (loading || (cursor === null && data !== null)) return;
@@ -28,7 +34,7 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
       const { data: newData, nextCursor } = await res.json();
 
       if (data) {
-        setData((prevData) => [...prevData, ...newData]);
+        setData([...data, ...newData]);
       } else {
         setData(newData);
       }
@@ -38,7 +44,7 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
     } finally {
       setLoading(false);
     }
-  }, [cursor, loading, data]);
+  }, [cursor, loading, data, endpoint]);
 
   useEffect(() => {
     if (!data) {
@@ -47,8 +53,8 @@ export const Feed = ({ ItemView, endpoint, manualNextPage = false }) => {
   }, []);
 
   useEffect(() => {
-    const handleScroll = (event) => {
-      const viewport = event.target;
+    const handleScroll = (event: Event) => {
+      const viewport = event.target as HTMLElement;
       const threshold = 1000;
 
       if (viewport.scrollTop + viewport.clientHeight + threshold >= viewport.scrollHeight && !loading) {

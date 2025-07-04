@@ -239,6 +239,30 @@ export default function PostComposer({
 
     setPosting(true);
     const toastId = Math.random().toString();
+    
+    // Create optimistic post
+    const optimisticPost: Post = {
+      id: `optimistic-${Date.now()}`,
+      author: currentUser!,
+      metadata: {
+        content: data.content, // Keep content for matching later
+      },
+      createdAt: new Date().toISOString(),
+      reactions: {
+        Like: 0,
+        Repost: 0,
+        Comment: 0,
+        Quote: 0,
+      },
+      isOptimistic: true,
+    } as any;
+    
+    // Call onSuccess with optimistic post
+    onSuccess?.(optimisticPost);
+    
+    // Clear form immediately after showing optimistic post
+    form.setValue("content", "");
+    setMediaFiles([]);
 
     const tags = getCommunityTags(community);
     const client = await getLensClient();
@@ -263,9 +287,9 @@ export default function PostComposer({
         const attachments =
           uploadedFiles.length > 1
             ? uploadedFiles.slice(1).map((f) => ({
-                item: f.uri,
-                type: f.type.startsWith("image/") ? (f.type as MediaImageMimeType) : (f.type as MediaVideoMimeType),
-              }))
+              item: f.uri,
+              type: f.type.startsWith("image/") ? (f.type as MediaImageMimeType) : (f.type as MediaVideoMimeType),
+            }))
             : undefined;
 
         // Check if primary file is video or image
@@ -322,24 +346,24 @@ export default function PostComposer({
 
       const postData = replyingTo
         ? {
-            feed,
-            contentUri,
-            commentOn: {
-              post: replyingTo.id,
-            },
-          }
+          feed,
+          contentUri,
+          commentOn: {
+            post: replyingTo.id,
+          },
+        }
         : quotedPost
           ? {
-              feed,
-              contentUri,
-              quoteOf: {
-                post: quotedPost.id,
-              },
-            }
+            feed,
+            contentUri,
+            quoteOf: {
+              post: quotedPost.id,
+            },
+          }
           : {
-              feed,
-              contentUri,
-            };
+            feed,
+            contentUri,
+          };
 
       if (quotedPost) {
         const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
@@ -350,9 +374,6 @@ export default function PostComposer({
 
         if (response.ok) {
           toast.success("Quote posted successfully!", { id: toastId });
-          form.setValue("content", "");
-          resetHeight();
-          setMediaFiles([]);
           onSuccess?.(null);
           onClose?.();
         } else {
@@ -376,9 +397,6 @@ export default function PostComposer({
               onClick: () => newPost && router.push(`/p/${newPost.id}`),
             },
           });
-          form.setValue("content", "");
-          resetHeight();
-          setMediaFiles([]);
           onSuccess?.(newPost);
         } else {
           console.error("Failed to create post:", result.error);
@@ -393,9 +411,6 @@ export default function PostComposer({
     }
   }
 
-  const resetHeight = () => {
-    // No longer needed with Lexical
-  };
 
 
 

@@ -10,7 +10,6 @@ import { PostSuspense } from "./PostSuspense";
 import { PostView } from "./PostView";
 
 export function PostThread({ post }: { post: Post }) {
-  const [comments, setComments] = useState<Post[]>([]);
   const [allComments, setAllComments] = useState<Post[]>([]);
   const [showReply, setShowReply] = useState(true);
 
@@ -21,9 +20,6 @@ export function PostThread({ post }: { post: Post }) {
     loading: parentThreadLoading,
   });
 
-  useEffect(() => {
-    setComments(allComments.filter((comment) => !authorThread.some((authorPost) => authorPost.id === comment.id)));
-  }, [allComments, authorThread]);
 
   useEffect(() => {
     if (!parentThreadLoading && !authorThreadLoading && allComments.length === 0) {
@@ -54,7 +50,23 @@ export function PostThread({ post }: { post: Post }) {
           </div>
         ))}
 
-        <PostReplyComposer post={post} level={0} isOpen={showReply} setOpen={setShowReply} />
+        <PostReplyComposer
+          post={post}
+          level={0}
+          isOpen={showReply}
+          setOpen={setShowReply}
+          onCommentAdded={(comment) => {
+            if (comment) {
+              if ((comment as any).isOptimistic) {
+                setAllComments((prev) => [comment, ...prev]);
+              } else {
+                setAllComments((prev) =>
+                  prev.map(c => c.id.startsWith('optimistic') && comment.metadata?.content === c.metadata?.content ? comment : c)
+                );
+              }
+            }
+          }}
+        />
       </div>
     </div>
   );
