@@ -2,11 +2,21 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Feed } from "~/components/Feed";
 import { PostView } from "~/components/post/PostView";
+import type { User } from "~/components/user/User";
+import { getUserByEns } from "~/utils/efp/getUserByEns";
+import { isEnsHandle } from "~/utils/efp/mappers";
 import { getUserByUsername } from "~/utils/getUserByHandle";
 
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {
   const handle = params.user;
-  const user = await getUserByUsername(handle);
+
+  let user: User | null = null;
+  if (isEnsHandle(handle)) {
+    const result = await getUserByEns(handle);
+    user = result.user;
+  } else {
+    user = await getUserByUsername(handle);
+  }
 
   if (!user) {
     return {
@@ -40,7 +50,14 @@ export async function generateMetadata({ params }: { params: { user: string } })
 
 const user = async ({ params }: { params: { user: string } }) => {
   const handle = params.user;
-  const user = await getUserByUsername(handle);
+
+  let user: User | null = null;
+  if (isEnsHandle(handle)) {
+    const result = await getUserByEns(handle);
+    user = result.user;
+  } else {
+    user = await getUserByUsername(handle);
+  }
 
   if (!user) return notFound();
 

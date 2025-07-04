@@ -2,12 +2,18 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { EfpFollowButton } from "./EfpFollowButton";
 import type { User } from "./post/Post";
 import { Button } from "./ui/button";
 
 export const FollowButton = ({ user, className }: { user: User; className?: string }) => {
   const [following, setFollowing] = useState(user.actions.followed);
   const followsMe = user.actions.following;
+  const isEfpUser = user.namespace === "eth";
+
+  if (isEfpUser) {
+    return <EfpFollowButton user={user} className={className} isFollowing={following} />;
+  }
 
   const toggleFollow = async () => {
     const followingNow = !following;

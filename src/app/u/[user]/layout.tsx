@@ -1,9 +1,13 @@
+import type { AccountStats } from "@lens-protocol/client";
 import { fetchAccountStats } from "@lens-protocol/client/actions";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Skeleton } from "~/components/ui/skeleton";
+import type { User } from "~/components/user/User";
 import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
+import { getUserByEns } from "~/utils/efp/getUserByEns";
+import { isEnsHandle } from "~/utils/efp/mappers";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { getUserByUsername } from "~/utils/getUserByHandle";
 
@@ -12,11 +16,23 @@ export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
 async function UserProfileSection({ handle }: { handle: string }) {
-  const user = await getUserByUsername(handle);
-  if (!user) return notFound();
+  let user: User | null = null;
+  let stats: AccountStats | null = null;
 
-  const { client } = await getServerAuth();
-  const stats = await fetchAccountStats(client, { account: user.address }).unwrapOr(null);
+  if (isEnsHandle(handle)) {
+    const { client, user: authedUser } = await getServerAuth();
+    const result = await getUserByEns(handle, authedUser?.address);
+    user = result.user;
+    stats = result.stats;
+  } else {
+    user = await getUserByUsername(handle);
+    if (user) {
+      const { client } = await getServerAuth();
+      stats = await fetchAccountStats(client, { account: user.address }).unwrapOr(null);
+    }
+  }
+
+  if (!user) return notFound();
 
   return (
     <>

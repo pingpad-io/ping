@@ -16,6 +16,7 @@ interface UserFollowingProps {
 
 export const UserFollowing = ({ user, followingCount, followersCount }: UserFollowingProps) => {
   const [activeTab, setActiveTab] = useState("followers");
+  const namespaceParam = user.namespace === "eth" ? "?namespace=eth" : "";
 
   return (
     <Dialog>
@@ -31,14 +32,14 @@ export const UserFollowing = ({ user, followingCount, followersCount }: UserFoll
           <TabsContent value="followers" className="mt-4">
             <ScrollArea className="h-[500px]">
               <div className="pr-4">
-                <Feed ItemView={UserView} endpoint={`/api/user/${user.id}/followers`} />
+                <Feed ItemView={UserView} endpoint={`/api/user/${user.id}/followers${namespaceParam}`} />
               </div>
             </ScrollArea>
           </TabsContent>
           <TabsContent value="following" className="mt-4">
             <ScrollArea className="h-[500px]">
               <div className="pr-4">
-                <Feed ItemView={UserView} endpoint={`/api/user/${user.id}/following`} />
+                <Feed ItemView={UserView} endpoint={`/api/user/${user.id}/following${namespaceParam}`} />
               </div>
             </ScrollArea>
           </TabsContent>

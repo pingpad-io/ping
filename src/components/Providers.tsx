@@ -11,6 +11,7 @@ import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { createConfig, http, WagmiProvider } from "wagmi";
+import { base, mainnet as ethMainnet, optimism, baseSepolia, optimismSepolia, sepolia } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
@@ -20,11 +21,21 @@ import "overlayscrollbars/styles/overlayscrollbars.css";
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
 
+const isTestnet = env.NEXT_PUBLIC_NODE_ENV === "test" || env.NEXT_PUBLIC_NODE_ENV === "development";
+
 const wagmiConfig = createConfig({
-  chains: [chains.mainnet],
+  chains: isTestnet 
+    ? [chains.testnet, baseSepolia, sepolia, optimismSepolia] 
+    : [chains.mainnet, base, ethMainnet, optimism],
   transports: {
     [chains.mainnet.id]: http(),
     [chains.testnet.id]: http(),
+    [base.id]: http(),
+    [ethMainnet.id]: http(),
+    [optimism.id]: http(),
+    [baseSepolia.id]: http(),
+    [sepolia.id]: http(),
+    [optimismSepolia.id]: http(),
   },
   ssr: true,
   connectors: [

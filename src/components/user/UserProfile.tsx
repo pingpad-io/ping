@@ -2,16 +2,16 @@
 
 import type { AccountStats } from "@lens-protocol/client";
 import { EditIcon, ShieldOffIcon, VolumeXIcon } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "~/components/Link";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
 import { useUserActions } from "~/hooks/useUserActions";
 import { FollowButton } from "../FollowButton";
+import PostComposer from "../post/PostComposer";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
-import PostComposer from "../post/PostComposer";
 import { type User } from "./User";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
@@ -20,11 +20,7 @@ const MutedBadge = ({ onUnmute }: { onUnmute: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="flex items-center"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="flex items-center" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Button
         variant="ghost"
         size="sm"
@@ -46,11 +42,7 @@ const BlockedBadge = ({ onUnblock }: { onUnblock: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="flex items-center"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="flex items-center" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Button
         variant="ghost"
         size="sm"
@@ -71,7 +63,9 @@ const BlockedBadge = ({ onUnblock }: { onUnblock: () => void }) => {
 const MentionPostComposer = ({ user, onClose }: { user: User; onClose: () => void }) => {
   const { user: currentUser } = useUser();
 
-  return <PostComposer user={currentUser} initialContent={`@lens/${user.handle} `} onSuccess={() => onClose()} />;
+  const mentionPrefix = user.namespace === "eth" ? user.handle : `@lens/${user.handle}`;
+
+  return <PostComposer user={currentUser} initialContent={`${mentionPrefix} `} onSuccess={() => onClose()} />;
 };
 
 export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
@@ -84,11 +78,12 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
   const { unmuteUser, unblockUser } = userActions!;
 
   const isUserProfile = user.id === authedUser?.id;
-  const isFollowingMe = user.actions.following;
+  const isFollowingMe = user.actions?.following;
   const isMuted = user.actions?.muted;
   const isBlocked = user.actions?.blocked;
   const followingCount = stats?.graphFollowStats.following ?? 0;
   const followersCount = stats?.graphFollowStats.followers ?? 0;
+  const isEfpUser = user.namespace === "eth";
 
   return (
     <div className="p-6 z-20 flex w-full flex-col gap-4 glass drop-shadow-md mt-4 rounded-xl overflow-hidden">
@@ -102,11 +97,17 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
             <div className="flex flex-col justify-center gap-1">
               <div className="flex items-center gap-2">
                 <div className="text-xl sm:text-2xl font-bold w-fit truncate leading-none">{user.name}</div>
-                {isFollowingMe && <Badge variant="secondary" className="text-xs">Follows you</Badge>}
-                {isMuted && !isUserProfile && <MutedBadge onUnmute={unmuteUser} />}
-                {isBlocked && !isUserProfile && <BlockedBadge onUnblock={unblockUser} />}
+                {isFollowingMe && !isEfpUser && (
+                  <Badge variant="secondary" className="text-xs">
+                    Follows you
+                  </Badge>
+                )}
+                {isMuted && !isUserProfile && !isEfpUser && <MutedBadge onUnmute={unmuteUser} />}
+                {isBlocked && !isUserProfile && !isEfpUser && <BlockedBadge onUnblock={unblockUser} />}
               </div>
-              <div className="text-sm text-base-content font-light leading-none">@{user.handle}</div>
+              <div className="text-sm text-base-content font-light leading-none">
+                {isEfpUser ? user.handle : `@${user.handle}`}
+              </div>
             </div>
 
             <div className="flex flex-row items-center gap-2">
@@ -134,14 +135,16 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
       {!isUserProfile && (
         <div className="flex gap-2">
           <FollowButton user={user} className="flex-1" />
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setIsMentionDialogOpen(true)}
-            className="flex-1 bg-transparent"
-          >
-            Mention
-          </Button>
+          {!isEfpUser && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setIsMentionDialogOpen(true)}
+              className="flex-1 bg-transparent"
+            >
+              Mention
+            </Button>
+          )}
         </div>
       )}
 
