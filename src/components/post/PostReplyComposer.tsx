@@ -16,9 +16,7 @@ export const PostReplyComposer = ({
   onCommentAdded?: (comment?: Post | null) => void;
 }) => {
   return (
-    <div
-      className={`w-full flex flex-col items-end justify-center text-xs sm:text-sm`}
-    >
+    <div className={"w-full flex flex-col items-end justify-center text-xs sm:text-sm"}>
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -29,7 +27,7 @@ export const PostReplyComposer = ({
               duration: 0.3,
               ease: "easeInOut",
             }}
-            className={`w-full glass rounded-xl p-2`}
+            className={"w-full glass rounded-xl p-2"}
           >
             <PostComposer
               replyingTo={post}

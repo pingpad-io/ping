@@ -1,9 +1,6 @@
 export const CommentSkeleton = ({ isLastComment = false }: { isLastComment?: boolean }) => {
   return (
-    <div
-      className="rounded-lg text-card-foreground border-0 ease-in-out shadow-none glass z-20 cursor-pointer hover:bg-muted/10"
-    >
-
+    <div className="rounded-lg text-card-foreground border-0 ease-in-out shadow-none glass z-20 cursor-pointer hover:bg-muted/10">
       <div className="flex flex-row p-4 gap-2">
         <span className="min-h-full flex flex-col justify-start items-center relative">
           <div className="shrink-0 grow-0 rounded-full w-6 h-6 bg-background/20 animate-pulse" />

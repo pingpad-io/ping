@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
+import { useAuth } from "~/hooks/useAuth";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
 import { getCommunityTags } from "../communities/Community";
@@ -225,6 +226,7 @@ export default function PostComposer({
   initialContent?: string;
 }) {
   const { user: contextUser } = useUser();
+  const { requireAuth } = useAuth();
   const currentUser = user || contextUser;
   const [isPosting, setPosting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -291,6 +293,10 @@ export default function PostComposer({
   const isEmpty = !watchedContent.trim() && mediaFiles.length === 0;
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!requireAuth()) {
+      return;
+    }
+
     setPosting(true);
     const toastId = Math.random().toString();
 
@@ -501,6 +507,7 @@ export default function PostComposer({
 
   const handleEmojiClick = useCallback(
     (emoji: any) => {
+      if (!requireAuth()) return;
       const content = form.getValues("content");
       const newContent = content + emoji.emoji;
       form.setValue("content", newContent, { shouldValidate: true });
@@ -545,6 +552,7 @@ export default function PostComposer({
                       <LexicalEditorWrapper
                         value={field.value}
                         onChange={(value) => {
+                          if (!requireAuth()) return;
                           field.onChange(value);
                           handleInputChange({ target: { value, selectionStart: 0 } } as any);
                         }}

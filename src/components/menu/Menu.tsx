@@ -5,12 +5,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PingLogo from "~/components/icons/PingLogo";
 import { Dock } from "~/components/ui/dock";
+import { useAuth } from "~/hooks/useAuth";
 import { cn } from "~/utils";
 import { useNotifications } from "../notifications/NotificationsContext";
 import PostComposer from "../post/PostComposer";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { UserAvatar } from "../user/UserAvatar";
-import { ConnectWalletButton } from "../web3/WalletButtons";
 import { UserMenuButtons } from "./UserMenu";
 
 interface MenuClientProps {
@@ -22,7 +22,7 @@ interface MenuClientProps {
 
 export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientProps) {
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
-  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
+  const { openWalletDialog } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const { newCount } = useNotifications();
@@ -117,7 +117,7 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
         {
           icon: LogInIcon,
           label: "Connect Wallet",
-          onClick: () => setIsWalletDialogOpen(true),
+          onClick: () => openWalletDialog(),
         },
         ...(isLandingPage
           ? [
@@ -146,8 +146,6 @@ export function Menu({ isAuthenticated, handle, profileId, user }: MenuClientPro
           </DialogContent>
         </Dialog>
       )}
-
-      {!isAuthenticated && <ConnectWalletButton open={isWalletDialogOpen} setOpen={setIsWalletDialogOpen} />}
     </>
   );
 }

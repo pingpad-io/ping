@@ -2,9 +2,11 @@
 
 import { ChevronDownIcon } from "lucide-react";
 import { useRef, useState } from "react";
+import { useAuth } from "~/hooks/useAuth";
 import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
 import { Button } from "../ui/button";
+import { useUser } from "../user/UserContext";
 import type { Post, PostReactionType } from "./Post";
 import RepostDropdown from "./RepostDropdown";
 
@@ -34,6 +36,9 @@ export function ReactionsList({
     Collect: { count: post.reactions.Collect, isActive: post.reactions.isCollected },
     Like: { count: post.reactions.upvotes || 0, isActive: post.reactions.isUpvoted || false },
   });
+
+  const { user: authedUser } = useUser();
+  const { requireAuth } = useAuth();
 
   const { triggerExplosion } = useExplosion();
   const likeButtonRef = useRef<HTMLSpanElement>(null);
@@ -71,8 +76,7 @@ export function ReactionsList({
           variant={isComment ? "comment" : "post"}
           reactionType="Comment"
           reaction={reactions.Comment}
-          onClick={() => setCommentsOpen(!isCommentsOpen)}
-          disabled={!post.reactions?.canComment}
+          onClick={() => requireAuth(() => setCommentsOpen(!isCommentsOpen))}
         />
       </div>
       <div className="hover-expand rounded-full">
@@ -99,7 +103,9 @@ export function ReactionsList({
             variant={isComment ? "comment" : "post"}
             reactionType="Like"
             reaction={reactions.Like}
-            onClick={() => updateReaction("Like")}
+            onClick={() => {
+              requireAuth(() => updateReaction("Like"));
+            }}
           />
         </span>
       </div>

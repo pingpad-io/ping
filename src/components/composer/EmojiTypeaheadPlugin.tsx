@@ -1,19 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useState, useEffect } from "react";
-import {
-  $getSelection,
-  $isRangeSelection,
-  TextNode,
-} from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import {
-  LexicalTypeaheadMenuPlugin,
-  MenuOption,
-} from "@lexical/react/LexicalTypeaheadMenuPlugin";
-import { emojiList } from "./emojiList";
-import { EmojiOption, EmojiMenuItem } from "./EmojiOption";
+import { LexicalTypeaheadMenuPlugin, MenuOption } from "@lexical/react/LexicalTypeaheadMenuPlugin";
+import { $getSelection, $isRangeSelection, TextNode } from "lexical";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
+import { EmojiMenuItem, EmojiOption } from "./EmojiOption";
+import { emojiList } from "./emojiList";
 
 const MAX_EMOJI_SUGGESTIONS = 10;
 
@@ -21,9 +14,7 @@ function useEmojiLookup() {
   const [queryString, setQueryString] = useState<string | null>(null);
 
   const emojiOptions = useMemo(() => {
-    return emojiList.map(
-      ({ emoji, names, keywords }) => new EmojiOption(emoji, names, keywords)
-    );
+    return emojiList.map(({ emoji, names, keywords }) => new EmojiOption(emoji, names, keywords));
   }, []);
 
   const options = useMemo(() => {
@@ -44,11 +35,7 @@ function useEmojiLookup() {
   }, [emojiOptions, queryString]);
 
   const onSelectOption = useCallback(
-    (
-      selectedOption: MenuOption,
-      nodeToRemove: TextNode | null,
-      closeMenu: () => void,
-    ) => {
+    (selectedOption: MenuOption, nodeToRemove: TextNode | null, closeMenu: () => void) => {
       const editor = (window as any).lexicalEditor;
       if (!editor || !nodeToRemove) return;
 
@@ -87,23 +74,20 @@ export function EmojiTypeaheadPlugin() {
     };
   }, [editor]);
 
-  const checkForTriggerMatch = useCallback(
-    (text: string) => {
-      const match = text.match(/:([a-zA-Z0-9_+\-]*)$/);
-      if (match) {
-        const query = match[1];
-        if (query.length >= 1) {
-          return {
-            leadOffset: match.index || 0,
-            matchingString: query,
-            replaceableString: match[0],
-          };
-        }
+  const checkForTriggerMatch = useCallback((text: string) => {
+    const match = text.match(/:([a-zA-Z0-9_+-]*)$/);
+    if (match) {
+      const query = match[1];
+      if (query.length >= 1) {
+        return {
+          leadOffset: match.index || 0,
+          matchingString: query,
+          replaceableString: match[0],
+        };
       }
-      return null;
-    },
-    []
-  );
+    }
+    return null;
+  }, []);
 
   return (
     <LexicalTypeaheadMenuPlugin<EmojiOption>
@@ -111,16 +95,13 @@ export function EmojiTypeaheadPlugin() {
       onSelectOption={onSelectOption}
       triggerFn={checkForTriggerMatch}
       options={options}
-      menuRenderFn={(
-        anchorElementRef,
-        { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }
-      ) => {
+      menuRenderFn={(anchorElementRef, { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }) => {
         if (!anchorElementRef.current || options.length === 0) {
           return null;
         }
 
         const editorElement = editor.getRootElement();
-        const editorContainer = editorElement?.closest('.lexical-editor');
+        const editorContainer = editorElement?.closest(".lexical-editor");
         const containerRect = editorContainer?.getBoundingClientRect();
         const anchorRect = anchorElementRef.current.getBoundingClientRect();
 
@@ -129,17 +110,14 @@ export function EmojiTypeaheadPlugin() {
         const topPosition = editorRect ? editorRect.bottom : anchorRect.bottom - 12;
 
         const style: React.CSSProperties = {
-          position: 'fixed',
+          position: "fixed",
           top: topPosition,
           left: containerRect?.left || anchorRect.left,
-          width: containerRect?.width || 'auto',
+          width: containerRect?.width || "auto",
         };
 
         return ReactDOM.createPortal(
-          <div
-            className="rounded-lg shadow-lg z-[100] bg-card/40 backdrop-blur-md border border-border"
-            style={style}
-          >
+          <div className="rounded-lg shadow-lg z-[100] bg-card/40 backdrop-blur-md border border-border" style={style}>
             <ul className="list-none m-0 p-0.5 flex flex-col gap-0.5">
               {options.map((option, index) => (
                 <EmojiMenuItem
@@ -158,7 +136,7 @@ export function EmojiTypeaheadPlugin() {
               ))}
             </ul>
           </div>,
-          document.body
+          document.body,
         );
       }}
     />

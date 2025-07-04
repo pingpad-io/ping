@@ -2,16 +2,17 @@
 
 import type { AccountStats } from "@lens-protocol/client";
 import { EditIcon, ShieldOffIcon, VolumeXIcon } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "~/components/Link";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
+import { useAuth } from "~/hooks/useAuth";
 import { useUserActions } from "~/hooks/useUserActions";
 import { FollowButton } from "../FollowButton";
+import PostComposer from "../post/PostComposer";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
-import PostComposer from "../post/PostComposer";
 import { type User } from "./User";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
@@ -20,11 +21,7 @@ const MutedBadge = ({ onUnmute }: { onUnmute: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="flex items-center"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="flex items-center" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Button
         variant="ghost"
         size="sm"
@@ -46,11 +43,7 @@ const BlockedBadge = ({ onUnblock }: { onUnblock: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="flex items-center"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="flex items-center" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Button
         variant="ghost"
         size="sm"
@@ -76,6 +69,7 @@ const MentionPostComposer = ({ user, onClose }: { user: User; onClose: () => voi
 
 export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
   const { user: authedUser } = useUser();
+  const { requireAuth } = useAuth();
   const userActions = user ? useUserActions(user) : null;
   const [isMentionDialogOpen, setIsMentionDialogOpen] = useState(false);
 
@@ -102,7 +96,11 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
             <div className="flex flex-col justify-center gap-1">
               <div className="flex items-center gap-2">
                 <div className="text-xl sm:text-2xl font-bold w-fit truncate leading-none">{user.name}</div>
-                {isFollowingMe && <Badge variant="secondary" className="text-xs">Follows you</Badge>}
+                {isFollowingMe && (
+                  <Badge variant="secondary" className="text-xs">
+                    Follows you
+                  </Badge>
+                )}
                 {isMuted && !isUserProfile && <MutedBadge onUnmute={unmuteUser} />}
                 {isBlocked && !isUserProfile && <BlockedBadge onUnblock={unblockUser} />}
               </div>
@@ -137,7 +135,9 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setIsMentionDialogOpen(true)}
+            onClick={() => {
+              requireAuth(() => setIsMentionDialogOpen(true));
+            }}
             className="flex-1 bg-transparent"
           >
             Mention
