@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import { BackgroundGradient } from "~/components/BackgroundGradient";
+import { DeletedPostsProvider } from "~/components/DeletedPostsContext";
 import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
 import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
 import { PageTransition } from "~/components/PageTransition";
@@ -38,16 +39,18 @@ export default async function RootLayout({ children }) {
         <Providers>
           <UserProvider user={user}>
             <FilteredUsersProvider>
-              <NotificationsProvider>
-                <BackgroundGradient />
-                <AuthWatcher />
-                <Toaster position="top-center" offset={16} />
-                <Menu isAuthenticated={!!profileId} user={user} handle={handle} profileId={profileId} />
+              <DeletedPostsProvider>
+                <NotificationsProvider>
+                  <BackgroundGradient />
+                  <AuthWatcher />
+                  <Toaster position="top-center" offset={16} />
+                  <Menu isAuthenticated={!!profileId} user={user} handle={handle} profileId={profileId} />
 
-                <PageTransition>
-                  <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>
-                </PageTransition>
-              </NotificationsProvider>
+                  <PageTransition>
+                    <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>
+                  </PageTransition>
+                </NotificationsProvider>
+              </DeletedPostsProvider>
             </FilteredUsersProvider>
           </UserProvider>
         </Providers>

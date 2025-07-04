@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useDeletedPosts } from "../DeletedPostsContext";
 import { DissolveFilter } from "../DissolveFilter";
 import { useFilteredUsers } from "../FilteredUsersContext";
 import { Card, CardContent } from "../ui/card";
@@ -49,6 +50,7 @@ export const PostView = ({
   const [shouldHide, setShouldHide] = useState(false);
   const postContentRef = useRef<HTMLDivElement>(null);
   const { mutedUsers, blockedUsers } = useFilteredUsers();
+  const { deletedPosts } = useDeletedPosts();
 
   const dissolveFilterId = useMemo(() => `dissolve-${item.id}-${Date.now()}`, [item.id]);
   const isMuted = item.author.actions?.muted;
@@ -56,6 +58,7 @@ export const PostView = ({
   const isOnUserProfile = pathname?.startsWith(`/u/${item.author.handle}`);
   const isJustMuted = mutedUsers.has(item.author.id);
   const isJustBlocked = blockedUsers.has(item.author.id);
+  const isJustDeleted = deletedPosts.has(item.id);
 
   useEffect(() => {
     if ((isJustMuted || isJustBlocked) && !isOnUserProfile) {
@@ -66,6 +69,16 @@ export const PostView = ({
       return () => clearTimeout(timer);
     }
   }, [isJustMuted, isJustBlocked, isOnUserProfile]);
+
+  useEffect(() => {
+    if (isJustDeleted) {
+      setIsDissolving(true);
+      const timer = setTimeout(() => {
+        setShouldHide(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isJustDeleted]);
 
   if (((isMuted || isBlocked) && !isOnUserProfile) || shouldHide) {
     return null;

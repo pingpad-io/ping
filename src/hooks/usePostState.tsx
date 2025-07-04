@@ -2,6 +2,7 @@ import { BookmarkIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useDeletedPosts } from "~/components/DeletedPostsContext";
 import { useUserActions } from "~/hooks/useUserActions";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import type { Post } from "../components/post/Post";
@@ -12,6 +13,7 @@ export const usePostState = (post: Post, onReply?: () => void, onMenuAction?: ()
   const router = useRouter();
   const author = post.author;
   const { user } = useUser();
+  const { addDeletedPost, removeDeletedPost } = useDeletedPosts();
   const {
     muteUser: muteUserAction,
     unmuteUser: unmuteUserAction,
@@ -32,6 +34,8 @@ export const usePostState = (post: Post, onReply?: () => void, onMenuAction?: ()
   };
 
   const deletePost = async () => {
+    addDeletedPost(post.id);
+
     const result = await fetch(`/api/posts?id=${post.id}`, {
       method: "DELETE",
     });
@@ -40,6 +44,8 @@ export const usePostState = (post: Post, onReply?: () => void, onMenuAction?: ()
     if (result.ok) {
       toast.success("Post deleted successfully!");
     } else {
+      // Revert on error
+      removeDeletedPost(post.id);
       toast.error(`${data.error}`);
     }
     onMenuAction?.();
