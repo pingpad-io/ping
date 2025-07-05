@@ -18,7 +18,6 @@ const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?
   className = ""
 }) => {
   let processedText = content;
-  console.log(mentions)
   if (mentions && mentions.length > 0) {
     mentions.forEach((mention, index) => {
       if (mention.__typename === "AccountMention") {
