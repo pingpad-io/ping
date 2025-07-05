@@ -25,6 +25,46 @@ import { VideoPlayer } from "../VideoPlayer";
 
 import type { PostMention } from "./Post";
 
+export const getPostTextContent = (metadata: any, mentions?: PostMention[]): React.ReactNode => {
+  const content = metadata?.content || "";
+
+  switch (metadata.__typename) {
+    case "TextOnlyMetadata":
+    case "ArticleMetadata":
+    case "ImageMetadata":
+    case "VideoMetadata":
+    case "AudioMetadata":
+    case "LiveStreamMetadata":
+    case "CheckingInMetadata":
+    case "EmbedMetadata":
+    case "MintMetadata":
+    case "SpaceMetadata":
+    case "StoryMetadata":
+    case "TransactionMetadata":
+    case "ThreeDMetadata":
+      return <ContentView content={content} mentions={mentions} />;
+    case "LinkMetadata":
+      return <LinkView metadata={metadata as LinkMetadataDetails} mentions={mentions} />;
+    case "EventMetadata":
+      return <EventView metadata={metadata as EventMetadataDetails} mentions={mentions} />;
+    default:
+      return null;
+  }
+};
+
+export const getPostMediaContent = (metadata: any): React.ReactNode => {
+  switch (metadata.__typename) {
+    case "ImageMetadata":
+      return getImageMediaContent(metadata as ImageMetadataDetails);
+    case "VideoMetadata":
+      return getVideoMediaContent(metadata as VideoMetadataDetails);
+    case "AudioMetadata":
+      return getAudioMediaContent(metadata as AudioMetadataDetails);
+    default:
+      return null;
+  }
+};
+
 export const getPostMetadataView = (metadata: any, mentions?: PostMention[]) => {
   switch (metadata.__typename) {
     case "TextOnlyMetadata":
@@ -80,7 +120,7 @@ export const ArticleView = ({ metadata, mentions }: { metadata: ArticleMetadataD
   return <ContentView content={metadata.content} />;
 };
 
-export const ImageView = ({ metadata, mentions }: { metadata: ImageMetadataDetails; mentions?: PostMention[] }) => {
+const getImageMediaContent = (metadata: ImageMetadataDetails): React.ReactNode => {
   const url = metadata?.image?.item;
   const alt = metadata?.image.altTag;
   const title = metadata?.title;
@@ -98,25 +138,29 @@ export const ImageView = ({ metadata, mentions }: { metadata: ImageMetadataDetai
     });
   }
 
+  return allMedia.length > 1 ? (
+    <MediaGallery items={allMedia} />
+  ) : allMedia.length === 1 ? (
+    <div className="relative mt-2">
+      <ImageViewer
+        src={allMedia[0].item}
+        alt={alt || title}
+        className="object-contain border rounded-xl max-h-[400px] w-auto"
+      />
+    </div>
+  ) : null;
+};
+
+export const ImageView = ({ metadata, mentions }: { metadata: ImageMetadataDetails; mentions?: PostMention[] }) => {
   return (
     <div>
       <ContentView content={metadata.content} mentions={mentions} />
-      {allMedia.length > 1 ? (
-        <MediaGallery items={allMedia} />
-      ) : allMedia.length === 1 ? (
-        <div className="relative mt-2">
-          <ImageViewer
-            src={allMedia[0].item}
-            alt={alt || title}
-            className="object-contain border rounded-xl max-h-[400px] w-auto"
-          />
-        </div>
-      ) : null}
+      {getImageMediaContent(metadata)}
     </div>
   );
 };
 
-export const VideoView = ({ metadata, mentions }: { metadata: VideoMetadataDetails; mentions?: PostMention[] }) => {
+const getVideoMediaContent = (metadata: VideoMetadataDetails): React.ReactNode => {
   const url = metadata?.video?.item;
   const cover = metadata?.video?.cover || undefined;
   const attachments = metadata?.attachments;
@@ -133,30 +177,38 @@ export const VideoView = ({ metadata, mentions }: { metadata: VideoMetadataDetai
     });
   }
 
+  return allMedia.length > 1 ? (
+    <MediaGallery items={allMedia} />
+  ) : allMedia.length === 1 ? (
+    <div className="mt-2" style={{ maxWidth: "min(100%, 711px)" }}>
+      <VideoPlayer url={allMedia[0].item} preview={cover} />
+    </div>
+  ) : null;
+};
+
+export const VideoView = ({ metadata, mentions }: { metadata: VideoMetadataDetails; mentions?: PostMention[] }) => {
   return (
     <div>
       <ContentView content={metadata.content} mentions={mentions} />
-      {allMedia.length > 1 ? (
-        <MediaGallery items={allMedia} />
-      ) : allMedia.length === 1 ? (
-        <div className="mt-2" style={{ maxWidth: "min(100%, 711px)" }}>
-          <VideoPlayer url={allMedia[0].item} preview={cover} />
-        </div>
-      ) : null}
+      {getVideoMediaContent(metadata)}
     </div>
   );
 };
 
-export const AudioView = ({ metadata, mentions }: { metadata: AudioMetadataDetails; mentions?: PostMention[] }) => {
+const getAudioMediaContent = (metadata: AudioMetadataDetails): React.ReactNode => {
   const url = metadata?.audio?.item;
   const cover = metadata?.audio.cover;
   const artist = metadata?.audio.artist;
   const title = metadata?.title;
 
+  return <AudioPlayer url={url} cover={cover} author={artist} title={title} />;
+};
+
+export const AudioView = ({ metadata, mentions }: { metadata: AudioMetadataDetails; mentions?: PostMention[] }) => {
   return (
     <div>
       <ContentView content={metadata.content} mentions={mentions} />
-      <AudioPlayer url={url} cover={cover} author={artist} title={title} />
+      {getAudioMediaContent(metadata)}
     </div>
   );
 };
@@ -244,7 +296,6 @@ const isImageType = (type: string): boolean => {
   const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP"];
   return type.startsWith("image/") || imageTypes.includes(type);
 };
-
 
 const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
   return (

@@ -3,13 +3,14 @@ import { forwardRef } from "react";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
-import { getPostMetadataView } from "./PostMetadataView";
+import { getPostMediaContent, getPostTextContent } from "./PostMetadataView";
 
 export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
-  const metadata = getPostMetadataView(post.metadata, post.mentions);
+  const textContent = getPostTextContent(post.metadata, post.mentions);
+  const mediaContent = getPostMediaContent(post.metadata);
 
   return (
     <div ref={ref} className="space-y-2">
@@ -26,8 +27,10 @@ export const PostContent = forwardRef<
         }}
         className="overflow-hidden relative"
       >
-        <div className="whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight">{metadata}</div>
+        <div className="whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight">{textContent}</div>
       </motion.div>
+
+      {mediaContent}
 
       {post.quoteOn && (
         <Card className="p-3 mt-2 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer">
@@ -40,7 +43,9 @@ export const PostContent = forwardRef<
               <span>@{post.quoteOn.author.handle}</span>
             </div>
           </div>
-          <p className="text-sm line-clamp-3 text-foreground/90">{getPostMetadataView(post.quoteOn.metadata, post.quoteOn.mentions)}</p>
+          <p className="text-sm line-clamp-3 text-foreground/90">
+            {getPostTextContent(post.quoteOn.metadata, post.quoteOn.mentions)}
+          </p>
         </Card>
       )}
     </div>
