@@ -470,7 +470,7 @@ export default function PostComposer({
                         onPasteFiles={handleAddFiles}
                         placeholder={placeholderText}
                         disabled={isPosting}
-                        className="glass glass-dim !bg-background/60 rounded-xl"
+                        className="rounded-xl"
                       />
                     </div>
                   </FormControl>
