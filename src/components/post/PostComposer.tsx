@@ -66,7 +66,16 @@ const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps
   };
 
   const isVideo = file.type.startsWith("video/");
-  const url = URL.createObjectURL(file);
+  const [url, setUrl] = useState<string>("");
+
+  useEffect(() => {
+    const objectUrl = URL.createObjectURL(file);
+    setUrl(objectUrl);
+    
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [file]);
 
   return (
     <div
@@ -79,7 +88,7 @@ const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps
           {isVideo ? (
             <div className="w-full h-full bg-muted flex items-center justify-center">
               <VideoIcon className="w-8 h-8 text-muted-foreground" />
-              <video src={url} className="absolute inset-0 w-full h-full object-cover opacity-50" />
+              <video src={url} className="absolute inset-0 w-full h-full object-fit opacity-50" />
             </div>
           ) : (
             <img src={url} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
