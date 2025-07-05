@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/src/utils";
+import { GlassEffect } from "./glass-effect";
 
 interface DockProps {
   className?: string;
@@ -202,22 +203,30 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(({ items, className }, 
                 }}
                 onMouseEnter={handleExtraMouseEnter}
                 onMouseLeave={handleExtraMouseLeave}
-                className={cn("shadow-sm rounded-xl", "bg-secondary/40 backdrop-blur-sm")}
               >
-                <motion.div
-                  key={hoveredIndex}
-                  initial={{ y: getContentAnimationY(), opacity: 0.7 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                <GlassEffect
+                  className="rounded-xl border text-popover-foreground shadow-md overflow-hidden"
+                  initial={{ scale: 0.95 }}
+                  animate={{ scale: 1 }}
+                  transition={{
+                    scale: { type: "spring", damping: 25, stiffness: 400 },
+                  }}
                 >
-                  {hoveredItem.extra ? (
-                    <div className="w-auto shadow-sm rounded-lg">{hoveredItem.extra}</div>
-                  ) : (
-                    <div className="px-3 py-2 text-base shadow-sm rounded-lg select-none font-medium text-muted-foreground whitespace-nowrap">
-                      {hoveredItem.label}
-                    </div>
-                  )}
-                </motion.div>
+                  <motion.div
+                    key={hoveredIndex}
+                    initial={{ y: getContentAnimationY(), opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.1 }}
+                  >
+                    {hoveredItem.extra ? (
+                      hoveredItem.extra
+                    ) : (
+                      <div className="px-3 py-2 text-base select-none font-medium text-muted-foreground whitespace-nowrap">
+                        {hoveredItem.label}
+                      </div>
+                    )}
+                  </motion.div>
+                </GlassEffect>
               </motion.div>
             </div>
           )}

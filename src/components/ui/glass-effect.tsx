@@ -16,7 +16,7 @@ export const GlassEffect = React.forwardRef<HTMLDivElement, GlassEffectProps>(
     return (
       <motion.div ref={ref} className={`relative overflow-hidden ${className}`} {...motionProps}>
         <div
-          className="absolute inset-0 h-[150%] w-[150%] -inset-[25%] backdrop-blur-[16px] bg-background/40"
+          className="absolute inset-0 h-[150%] w-[150%] -inset-[25%] backdrop-blur-[16px] bg-secondary/40"
           style={{
             maskImage: `url(#${maskId})`,
             WebkitMaskImage: `url(#${maskId})`,
