@@ -270,6 +270,7 @@ export default function PostComposer({
     let metadata: any;
     try {
       const content = data.content.length > 0 ? data.content : undefined;
+      // TODO: Mentions are parsed from content by Lens Protocol backend
       // const mentions = content ? extractMentions(content) : undefined;
 
       if (mediaFiles.length > 0) {

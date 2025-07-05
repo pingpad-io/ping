@@ -23,7 +23,17 @@ export type PostActions = {
 };
 
 export type PostMention = 
-  | { __typename: "AccountMention"; account: string; namespace?: string; localName?: string }
+  | { 
+      __typename: "AccountMention"; 
+      account: string; 
+      namespace?: string; 
+      localName?: string;
+      replace?: {
+        __typename: "MentionReplace";
+        from: string;
+        to: string;
+      };
+    }
   | { __typename: "GroupMention"; group: string };
 
 export type Post = {
@@ -185,6 +195,7 @@ function getMentionsFromItem(post: any): PostMention[] | undefined {
         account: mention.account,
         namespace: mention.namespace,
         localName: mention.localName,
+        replace: mention.replace,
       };
     } else if (mention.__typename === "GroupMention") {
       return {

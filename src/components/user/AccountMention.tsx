@@ -1,3 +1,4 @@
+import { LENS_NAMESPACE_ADDRESS } from "~/utils/constants";
 import { UserLazyHandle } from "./UserLazyHandle";
 
 interface AccountMentionProps {
@@ -13,7 +14,7 @@ export const AccountMention: React.FC<AccountMentionProps> = ({
   localName,
   className = ""
 }) => {
-  if (namespace === "lens" && localName) {
+  if (namespace === LENS_NAMESPACE_ADDRESS && localName) {
     return <UserLazyHandle handle={localName} className={className} />;
   }
   

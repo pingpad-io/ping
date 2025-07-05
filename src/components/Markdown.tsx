@@ -12,19 +12,19 @@ import type { PostMention } from "./post/Post";
 import "~/components/composer/lexical.css";
 
 const BASE_URL = getBaseUrl();
-const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?: string }> = ({ 
-  content, 
+const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?: string }> = ({
+  content,
   mentions,
-  className = "" 
+  className = ""
 }) => {
   let processedText = content;
-  
+  console.log(mentions)
   if (mentions && mentions.length > 0) {
     mentions.forEach((mention, index) => {
       if (mention.__typename === "AccountMention") {
-        const mentionPattern = mention.localName 
-          ? `@lens/${mention.localName}`
-          : `@${mention.account}`;
+        const mentionPattern = mention.replace?.from || 
+          (mention.localName ? `@lens/${mention.localName}` : `@${mention.account}`);
+        
         processedText = processedText.replace(
           mentionPattern,
           `[${mentionPattern}](${BASE_URL}mention/${index})`
@@ -49,12 +49,23 @@ const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?
           const mentionIndex = parseInt(href.split("/mention/")[1]);
           const mention = mentions[mentionIndex];
           if (mention && mention.__typename === "AccountMention") {
+            let handle = mention.localName;
+            if (!handle && mention.replace?.from) {
+              const handleMatch = mention.replace.from.match(/@lens\/(\w+)/);
+              handle = handleMatch ? handleMatch[1] : undefined;
+            }
+            if (!handle) {
+              const handleText = String(children);
+              const handleMatch = handleText.match(/@lens\/(\w+)/);
+              handle = handleMatch ? handleMatch[1] : mention.account;
+            }
+            
             return (
               <span className={`lexical-link ${colorClasses}`}>
-                <AccountMention 
+                <AccountMention
                   account={mention.account}
                   namespace={mention.namespace}
-                  localName={mention.localName}
+                  localName={handle}
                   className={colorClasses}
                 />
               </span>

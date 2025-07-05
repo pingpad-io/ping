@@ -113,11 +113,11 @@ export const TextOnlyView = ({
   metadata: TextOnlyMetadataDetails;
   mentions?: PostMention[];
 }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 export const ArticleView = ({ metadata, mentions }: { metadata: ArticleMetadataDetails; mentions?: PostMention[] }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 const getImageMediaContent = (metadata: ImageMetadataDetails): React.ReactNode => {
@@ -233,7 +233,7 @@ export const LiveStreamView = ({
   metadata: LiveStreamMetadataDetails;
   mentions?: PostMention[];
 }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 export const CheckingInView = ({
@@ -243,11 +243,11 @@ export const CheckingInView = ({
   metadata: CheckingInMetadataDetails;
   mentions?: PostMention[];
 }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 export const EmbedView = ({ metadata, mentions }: { metadata: EmbedMetadataDetails; mentions?: PostMention[] }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 export const EventView = ({ metadata, mentions }: { metadata: EventMetadataDetails; mentions?: PostMention[] }) => {
@@ -262,15 +262,15 @@ export const EventView = ({ metadata, mentions }: { metadata: EventMetadataDetai
 };
 
 export const MintView = ({ metadata, mentions }: { metadata: MintMetadataDetails; mentions?: PostMention[] }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 export const SpaceView = ({ metadata, mentions }: { metadata: SpaceMetadataDetails; mentions?: PostMention[] }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 export const StoryView = ({ metadata, mentions }: { metadata: StoryMetadataDetails; mentions?: PostMention[] }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 export const TransactionView = ({
@@ -280,11 +280,11 @@ export const TransactionView = ({
   metadata: TransactionMetadataDetails;
   mentions?: PostMention[];
 }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 export const ThreeDView = ({ metadata, mentions }: { metadata: ThreeDMetadataDetails; mentions?: PostMention[] }) => {
-  return <ContentView content={metadata.content} />;
+  return <ContentView content={metadata.content} mentions={mentions} />;
 };
 
 type MediaAttachment = {

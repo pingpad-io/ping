@@ -9,13 +9,16 @@ class ContentParser {
 
   replaceHandles(): ContentParser {
     if (!this.content) return this;
-    const userHandleRegex = /(?<!\/)@[\w^/]+(?!\/)/g;
+    const lensHandleRegex = /@lens\/(\w+)/g;
+    const userHandleRegex = /(?<!\/)@[\w]+(?!\/)/g;
     const communityHandleRegex = /(?<!\S)\/\w+(?!\S)/g;
     const BASE_URL = getBaseUrl();
     this.content = this.content
+      .replace(lensHandleRegex, (match, handle) => {
+        return `[${match}](${BASE_URL}u/${handle})`;
+      })
       .replace(userHandleRegex, (match) => {
-        const parts = match.slice(1).split("/");
-        const handle = parts.length > 1 ? parts[1] : parts[0];
+        const handle = match.slice(1);
         return `[${match}](${BASE_URL}u/${handle})`;
       })
       .replace(communityHandleRegex, (match) => `[${match}](${BASE_URL}c${match})`);
