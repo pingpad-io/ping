@@ -25,7 +25,7 @@ export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: st
   return (
     <HoverCard defaultOpen={false} onOpenChange={(open: boolean) => open && loadCard()} closeDelay={100}>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent className="w-[20rem] p-4 not-prose shadow-lg" side="top">
+      <HoverCardContent className="w-[20rem] not-prose" side="top">
         {(loading || !user) && <LoadingSpinner />}
         {error && <div>Error: {error}</div>}
         {user && (
