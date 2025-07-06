@@ -11,7 +11,8 @@ import { lensAcountToUser, type User } from "./User";
 import { UserAvatar } from "./UserAvatar";
 
 export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: string }) => {
-  const { data, error, loading } = useAccount({ username: { localName: handle } });
+  const lowercasedHandle = handle?.toLowerCase();
+  const { data, error, loading } = useAccount({ username: { localName: lowercasedHandle } });
   const [user, setUser] = useState<User | null>(null);
 
   const loadCard = () => {

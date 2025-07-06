@@ -91,11 +91,11 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
           <AvatarViewer user={user} />
         </div>
 
-        <div className="flex flex-col gap-4 flex-grow">
-          <div className="flex flex-row items-center justify-between h-6 sm:h-12">
+        <div className="flex flex-col gap-2 flex-grow">
+          <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col justify-center gap-1">
               <div className="flex items-center gap-2">
-                <div className="text-xl sm:text-2xl font-bold w-fit truncate leading-none">{user.name}</div>
+                <div className="text-xl sm:text-2xl font-bold w-fit truncate leading-none">{user.handle}</div>
                 {isFollowingMe && (
                   <Badge variant="secondary" className="text-xs">
                     Follows you
@@ -104,7 +104,6 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
                 {isMuted && !isUserProfile && <MutedBadge onUnmute={unmuteUser} />}
                 {isBlocked && !isUserProfile && <BlockedBadge onUnblock={unblockUser} />}
               </div>
-              <div className="text-sm text-base-content font-light leading-none">@{user.handle}</div>
             </div>
 
             <div className="flex flex-row items-center gap-2">
