@@ -13,6 +13,11 @@ export type UserActions = {
   muted: boolean;
 };
 
+export type UserMetadataAttribute = {
+  key: string;
+  value: string;
+};
+
 export type User = {
   id: string;
   name?: string;
@@ -24,6 +29,9 @@ export type User = {
   createdAt?: Date;
   description?: string;
   profilePictureUrl?: string;
+  metadata?: {
+    attributes?: UserMetadataAttribute[];
+  };
 };
 
 export function lensAcountToUser(account: Account): User {
@@ -38,6 +46,11 @@ export function lensAcountToUser(account: Account): User {
     muted: account?.operations?.isMutedByMe,
   };
 
+  const attributes = account?.metadata?.attributes?.map((attr) => ({
+    key: attr.key,
+    value: attr.value,
+  }));
+
   return {
     id: account.address,
     profilePictureUrl: imageUrl,
@@ -48,6 +61,9 @@ export function lensAcountToUser(account: Account): User {
     name: account?.metadata?.name,
     handle: account.username?.localName,
     namespace: account.username?.namespace?.address,
+    metadata: {
+      attributes,
+    },
   };
 }
 

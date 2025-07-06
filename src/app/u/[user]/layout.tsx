@@ -30,28 +30,34 @@ function UserProfileSkeleton() {
   return (
     <>
       {/* UserProfile skeleton - matching the actual component structure */}
-      <div className="p-4 z-20 flex w-full flex-row gap-4 glass drop-shadow-md mt-4 rounded-xl">
-        <div className="flex flex-col gap-2">
-          <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24">
+      <div className="p-6 z-20 flex w-full flex-col gap-4 glass drop-shadow-md mt-4 rounded-xl overflow-hidden">
+        <div className="flex flex-row gap-4">
+          <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 self-start">
             <Skeleton className="w-full h-full rounded-full" />
           </div>
-        </div>
-        <div className="flex flex-col grow place-content-around gap-2">
-          <div className="flex flex-row gap-2 items-center justify-between h-10">
-            <span className="flex flex-row gap-2 items-center">
-              <Skeleton className="h-6 w-32" />
-              <Skeleton className="h-4 w-24" />
-            </span>
-            <Skeleton className="h-10 w-24" />
+          
+          <div className="flex flex-col gap-2 flex-grow">
+            <div className="flex flex-col justify-center gap-1">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-7 sm:h-8 w-32" />
+                <Skeleton className="h-5 w-20" />
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <div className="text-sm">
+                <Skeleton className="h-4 w-full max-w-md" />
+                <Skeleton className="h-4 w-3/4 mt-1" />
+              </div>
+              <div className="flex justify-start">
+                <Skeleton className="h-4 w-32" />
+              </div>
+            </div>
           </div>
-          <Skeleton className="h-4 w-full max-w-md" />
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-4 w-24" />
-          <div className="flex flex-row gap-1">
-            <Skeleton className="h-4 w-20" />
-            <Skeleton className="h-4 w-20" />
-          </div>
         </div>
+        
+        {/* Edit Profile or Follow/Mention buttons */}
+        <Skeleton className="h-9 w-full" />
       </div>
       {/* UserNavigation skeleton */}
       <nav className="sticky top-3 w-fit max-w-2xl mx-auto glass border border-muted rounded-xl z-[40] flex flex-row justify-start items-start gap-2 p-1">
