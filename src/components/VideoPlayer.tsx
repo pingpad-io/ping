@@ -53,8 +53,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
   const [shown, setShown] = useState(false);
   const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(currentIndex || 0);
-  
-  const videoId = useRef(`video-${Math.random().toString(36).substr(2, 9)}`).current;
+  const videoId = useRef(`video-${Math.random().toString(36).substring(2, 11)}`).current;
   const { registerPlayer, pauseAllOtherVideos } = useVideoState(videoId);
 
   const isImageType = (type: string): boolean => {
@@ -97,6 +96,14 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
 
   const getCurrentItem = () => {
     return galleryItems?.[activeIndex] || { item: url, type: "video" };
+  };
+
+  const isIOSVideo = (videoUrl: string): boolean => {
+    return videoUrl.toLowerCase().includes('.mov') || 
+           videoUrl.toLowerCase().includes('.m4v') ||
+           videoUrl.includes('ios') ||
+           videoUrl.includes('iphone') ||
+           videoUrl.includes('ipad');
   };
 
   useEffect(() => {
@@ -219,18 +226,25 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
                   className="h-full w-full object-contain"
                 />
               ) : (
-                <ReactPlayer
-                  ref={playerRef}
-                  playing={playing}
-                  onProgress={handleProgress}
-                  progressInterval={50}
-                  controls={false}
-                  muted={muted}
-                  height={isFullscreen ? "100%" : preview !== "" ? "100%" : "300px"}
-                  width="100%"
-                  url={currentItem.item}
-                  loop
-                />
+                <div 
+                  className="h-full w-full flex items-center justify-center"
+                  style={{ 
+                    transform: isFullscreen && isIOSVideo(currentItem.item) ? 'rotate(180deg)' : 'none',
+                  }}
+                >
+                  <ReactPlayer
+                    ref={playerRef}
+                    playing={playing}
+                    onProgress={handleProgress}
+                    progressInterval={50}
+                    controls={false}
+                    muted={muted}
+                    height={isFullscreen ? "100%" : preview !== "" ? "100%" : "300px"}
+                    width="100%"
+                    url={currentItem.item}
+                    loop
+                  />
+                </div>
               );
             })()}
           </div>
