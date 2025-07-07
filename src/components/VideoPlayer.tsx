@@ -62,43 +62,36 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
     return type.startsWith("image/") || imageTypes.includes(type);
   };
 
+  const navigateToItem = (newIndex: number) => {
+    if (!galleryItems || galleryItems.length <= 1) return;
+    
+    const nextItem = galleryItems[newIndex];
+    setActiveIndex(newIndex);
+    
+    if (nextItem.type && !isImageType(String(nextItem.type))) {
+      // It's a video, start playing immediately
+      setShown(true);
+      setPlaying(true);
+      setMuted(false);
+      pauseAllOtherVideos();
+    } else {
+      // It's an image, just show it
+      setShown(true);
+      setPlaying(false);
+    }
+  };
+
   const goToPrevious = () => {
     if (galleryItems && galleryItems.length > 1) {
       const newIndex = (activeIndex - 1 + galleryItems.length) % galleryItems.length;
-      const nextItem = galleryItems[newIndex];
-      setActiveIndex(newIndex);
-      
-      if (nextItem.type && !isImageType(String(nextItem.type))) {
-        // It's a video, start playing immediately
-        setShown(true);
-        setPlaying(true);
-        setMuted(false);
-        pauseAllOtherVideos();
-      } else {
-        // It's an image, just show it
-        setShown(true);
-        setPlaying(false);
-      }
+      navigateToItem(newIndex);
     }
   };
 
   const goToNext = () => {
     if (galleryItems && galleryItems.length > 1) {
       const newIndex = (activeIndex + 1) % galleryItems.length;
-      const nextItem = galleryItems[newIndex];
-      setActiveIndex(newIndex);
-      
-      if (nextItem.type && !isImageType(String(nextItem.type))) {
-        // It's a video, start playing immediately
-        setShown(true);
-        setPlaying(true);
-        setMuted(false);
-        pauseAllOtherVideos();
-      } else {
-        // It's an image, just show it
-        setShown(true);
-        setPlaying(false);
-      }
+      navigateToItem(newIndex);
     }
   };
 
@@ -356,20 +349,8 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    const selectedItem = galleryItems[index];
-                    setActiveIndex(index);
                     setPlaying(false);
-                    if (selectedItem.type && !isImageType(String(selectedItem.type))) {
-                      // It's a video, start playing immediately
-                      setShown(true);
-                      setPlaying(true);
-                      setMuted(false);
-                      pauseAllOtherVideos();
-                    } else {
-                      // It's an image, just show it
-                      setShown(true);
-                      setPlaying(false);
-                    }
+                    navigateToItem(index);
                   }}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === activeIndex ? "bg-white" : "bg-white/50"
