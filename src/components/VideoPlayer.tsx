@@ -1,10 +1,45 @@
 "use client";
 
-import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon } from "lucide-react";
+import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon, VideoIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
 import { Progress } from "./ui/video-progress";
+
+// when a video has no preview, we generate a thumbnail from the video
+const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; aspectRatio: number }> => {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement('video');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    video.crossOrigin = 'anonymous';
+    video.muted = true;
+    
+    video.onloadedmetadata = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      video.currentTime = 0; // Seek to 1 second
+    };
+    
+    video.onseeked = () => {
+      if (ctx) {
+        ctx.drawImage(video, 0, 0);
+        const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
+        const aspectRatio = video.videoHeight / video.videoWidth;
+        resolve({ thumbnail, aspectRatio });
+      } else {
+        reject(new Error('Canvas context not available'));
+      }
+    };
+    
+    video.onerror = (error) => {
+      reject(new Error(`Video loading failed: ${error}`));
+    };
+    
+    video.src = videoUrl;
+  });
+};
 
 export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) => {
   const playerWithControlsRef = useRef(null);
@@ -15,6 +50,7 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
   const [muted, setMuted] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(screenfull.isFullscreen);
   const [shown, setShown] = useState(false);
+  const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(null);
 
   useEffect(() => {
     if (screenfull.isEnabled) {
@@ -58,25 +94,28 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
     setProgress(value);
   };
 
-  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
-
   useEffect(() => {
     if (preview) {
       const img = new Image();
       img.src = preview;
-      img.onload = () => setAspectRatio(img.height / img.width);
-    } else {
-      // Default aspect ratio for videos without preview (16:9)
-      setAspectRatio(9 / 16);
-    }
+    } 
   }, [preview]);
+
+  useEffect(() => {
+    if (!preview && url && !generatedThumbnail) {
+      generateVideoThumbnail(url)
+        .then(({ thumbnail }) => {
+          setGeneratedThumbnail(thumbnail);
+        })
+    }
+  }, [url, preview, generatedThumbnail]);
 
   return (
     <div
       ref={playerWithControlsRef}
-      className={`relative w-full flex justify-center items-center rounded-lg  overflow-hidden border ${
-        isFullscreen ? "fullscreen" : "mt-2"
-      }`}
+      className={`relative flex justify-center items-center rounded-lg overflow-hidden border ${
+        isFullscreen && "w-full"
+      } ${preview !== "" ? "w-full h-500px" : "h-[300px]"}`} 
       onClick={() => {
         if (isFullscreen) handleFullscreen();
       }}
@@ -100,34 +139,34 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
             handlePlayPause();
           }
         }}
-        className="relative w-full"
-        style={{ paddingTop: aspectRatio ? `${aspectRatio * 100}%` : undefined }}
+        className={`relative h-full flex flex-col ${preview !== "" ? "w-full" : ""}`} // preview (string) is empty when the video is part of a media gallery
       >
-        {shown ? (
-          <ReactPlayer
-            ref={playerRef}
-            playing={playing}
-            style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: "0.5rem",
-              overflow: "hidden",
-            }}
-            onProgress={handleProgress}
-            progressInterval={50}
-            controls={false} // disable default controls to use custom controls
-            muted={muted}
-            height="100%"
-            width="100%"
-            url={url}
-            loop
-          />
-        ) : (
-          <div>
+        <div className="relative flex-1">
+          <div className={`${isFullscreen ? "fixed" : "absolute"} inset-0`}>
+            {shown && (
+              <ReactPlayer
+              ref={playerRef}
+              playing={playing}
+              onProgress={handleProgress}
+              progressInterval={50}
+              controls={false} // disable default controls to use custom controls
+              muted={muted}
+              height={isFullscreen ? "100%" : preview !== "" ? "100%" : "300px"}
+              width="100%"
+              url={url}
+              loop
+              />
+            )}
+          </div>
+          <div className={`${shown ? "opacity-0" : "opacity-100"} transition-opacity flex items-center justify-center relative h-full w-full`}>
             {preview ? (
-              <img src={preview} alt="" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+              <img src={preview} alt="" className="h-full w-full object-cover rounded-xl mx-auto" />
+            ) : generatedThumbnail ? (
+              <img src={generatedThumbnail} alt="" className="h-[300px] rounded-xl" />
             ) : (
-              <div className="absolute inset-0 bg-muted rounded-xl" />
+              <div className="absolute inset-0 bg-muted rounded-xl flex items-center justify-center">
+                <VideoIcon className="w-16 h-16 text-muted-foreground" />
+              </div>
             )}
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
               <button
@@ -139,12 +178,12 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
                   setShown(true);
                   handlePlayPause();
                 }}
-              >
+                >
                 <PlayIcon className="w-8 h-8 text-primary fill-primary ml-1" />
               </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {shown && (

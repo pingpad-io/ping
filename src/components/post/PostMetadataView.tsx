@@ -302,7 +302,7 @@ const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
     <div className="mt-2 w-full overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ height: "300px" }}>
       <div className="flex gap-2 h-full items-center" style={{ width: "max-content" }}>
         {items.map((item, index) => (
-          <div key={`${item.item}-${index}`} className="flex-shrink-0 h-full flex items-center">
+          <div key={`${item.item}-${index}`} className="h-full flex items-center">
             {item.type && isImageType(String(item.type)) ? (
               <ImageViewer
                 src={item.item}
@@ -310,7 +310,7 @@ const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
                 className="h-full max-h-[300px] w-auto object-contain border rounded-xl cursor-pointer"
               />
             ) : (
-              <div className="h-full flex items-center" style={{ width: "533px" }}>
+              <div className="h-full flex items-center" style={{ height: "300px" }}>
                 <VideoPlayer url={item.item} preview="" />
               </div>
             )}
