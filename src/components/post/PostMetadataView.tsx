@@ -180,7 +180,7 @@ const getVideoMediaContent = (metadata: VideoMetadataDetails): React.ReactNode =
   return allMedia.length > 1 ? (
     <MediaGallery items={allMedia} />
   ) : allMedia.length === 1 ? (
-    <div className="mt-2" style={{ maxWidth: "min(100%, 711px)" }}>
+    <div className="mt-2" style={{ maxHeight: "min(100%, 400px)" }}>
       <VideoPlayer url={allMedia[0].item} preview={cover} />
     </div>
   ) : null;

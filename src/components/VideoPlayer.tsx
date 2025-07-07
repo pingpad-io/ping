@@ -178,7 +178,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
       ref={playerWithControlsRef}
       className={`relative flex justify-center items-center rounded-lg overflow-hidden border ${
         isFullscreen && "w-full"
-      } ${preview !== "" ? "w-full h-500px" : "h-[300px]"}`} 
+      } ${preview !== "" ? "max-h-[400px]" :  "h-[300px]"}`} 
       onClick={() => {
         if (isFullscreen) handleFullscreen();
       }}
@@ -213,7 +213,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
             handlePlayPause();
           }
         }}
-        className={`relative h-full flex flex-col ${preview !== "" ? "w-full" : ""}`} // preview (string) is empty when the video is part of a media gallery
+        className="relative h-full flex flex-col"
       >
         <div className="relative flex-1">
           <div className={`${isFullscreen ? "fixed" : "absolute"} inset-0`}>
@@ -326,7 +326,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
                 return (
                   <>
                     {videoPreview ? (
-                      <img src={videoPreview} alt="" className="h-full w-full object-cover rounded-xl mx-auto" />
+                      <img src={videoPreview} alt="Video preview" className="max-h-[500px] object-contain rounded-xl mx-auto" />
                     ) : generatedThumbnail && activeIndex === (currentIndex || 0) ? (
                       <img src={generatedThumbnail} alt="" className="h-[300px] rounded-xl" />
                     ) : (
