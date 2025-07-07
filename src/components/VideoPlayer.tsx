@@ -4,6 +4,7 @@ import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon, VideoIcon } from "luci
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
+import { useVideoState } from "../hooks/useVideoState";
 import { Progress } from "./ui/video-progress";
 
 // when a video has no preview, we generate a thumbnail from the video
@@ -51,6 +52,9 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
   const [isFullscreen, setIsFullscreen] = useState(screenfull.isFullscreen);
   const [shown, setShown] = useState(false);
   const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(null);
+  
+  const videoId = useRef(`video-${Math.random().toString(36).substr(2, 9)}`).current;
+  const { registerPlayer, pauseAllOtherVideos } = useVideoState(videoId);
 
   useEffect(() => {
     if (screenfull.isEnabled) {
@@ -70,7 +74,16 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
     }
   }, []);
 
+  useEffect(() => {
+    registerPlayer(() => {
+      setPlaying(false);
+    });
+  }, [registerPlayer]);
+
   const handlePlayPause = () => {
+    if (!playing) {
+      pauseAllOtherVideos();
+    }
     setPlaying(!playing);
     setMuted(false);
   };
@@ -85,7 +98,7 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
     });
   };
 
-  const handleProgress = (state) => {
+  const handleProgress = (state: { played: number }) => {
     setProgress(state.played * 100);
   };
 
