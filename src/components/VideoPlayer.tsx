@@ -42,7 +42,7 @@ const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; 
   });
 };
 
-export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) => {
+export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url: string; preview: string; galleryItems?: any[]; currentIndex?: number }) => {
   const playerWithControlsRef = useRef(null);
   const playerRef = useRef(null);
   const progressRef = useRef(null);
@@ -52,9 +52,59 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
   const [isFullscreen, setIsFullscreen] = useState(screenfull.isFullscreen);
   const [shown, setShown] = useState(false);
   const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState(currentIndex || 0);
   
   const videoId = useRef(`video-${Math.random().toString(36).substr(2, 9)}`).current;
   const { registerPlayer, pauseAllOtherVideos } = useVideoState(videoId);
+
+  const isImageType = (type: string): boolean => {
+    const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP"];
+    return type.startsWith("image/") || imageTypes.includes(type);
+  };
+
+  const goToPrevious = () => {
+    if (galleryItems && galleryItems.length > 1) {
+      const newIndex = (activeIndex - 1 + galleryItems.length) % galleryItems.length;
+      const nextItem = galleryItems[newIndex];
+      setActiveIndex(newIndex);
+      
+      if (nextItem.type && !isImageType(String(nextItem.type))) {
+        // It's a video, start playing immediately
+        setShown(true);
+        setPlaying(true);
+        setMuted(false);
+        pauseAllOtherVideos();
+      } else {
+        // It's an image, just show it
+        setShown(true);
+        setPlaying(false);
+      }
+    }
+  };
+
+  const goToNext = () => {
+    if (galleryItems && galleryItems.length > 1) {
+      const newIndex = (activeIndex + 1) % galleryItems.length;
+      const nextItem = galleryItems[newIndex];
+      setActiveIndex(newIndex);
+      
+      if (nextItem.type && !isImageType(String(nextItem.type))) {
+        // It's a video, start playing immediately
+        setShown(true);
+        setPlaying(true);
+        setMuted(false);
+        pauseAllOtherVideos();
+      } else {
+        // It's an image, just show it
+        setShown(true);
+        setPlaying(false);
+      }
+    }
+  };
+
+  const getCurrentItem = () => {
+    return galleryItems?.[activeIndex] || { item: url, type: "video" };
+  };
 
   useEffect(() => {
     if (screenfull.isEnabled) {
@@ -139,6 +189,14 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
         if (e.key === "Escape" && isFullscreen) {
           handleFullscreen();
         }
+        if (e.key === "ArrowLeft" && galleryItems && galleryItems.length > 1 && isFullscreen) {
+          e.preventDefault();
+          goToPrevious();
+        }
+        if (e.key === "ArrowRight" && galleryItems && galleryItems.length > 1 && isFullscreen) {
+          e.preventDefault();
+          goToNext();
+        }
       }}
     >
       <div
@@ -159,20 +217,29 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
       >
         <div className="relative flex-1">
           <div className={`${isFullscreen ? "fixed" : "absolute"} inset-0`}>
-            {shown && (
-              <ReactPlayer
-              ref={playerRef}
-              playing={playing}
-              onProgress={handleProgress}
-              progressInterval={50}
-              controls={false} // disable default controls to use custom controls
-              muted={muted}
-              height={isFullscreen ? "100%" : preview !== "" ? "100%" : "300px"}
-              width="100%"
-              url={url}
-              loop
-              />
-            )}
+            {shown && (() => {
+              const currentItem = getCurrentItem();
+              return currentItem.type && isImageType(String(currentItem.type)) ? (
+                <img
+                  src={currentItem.item}
+                  alt="Gallery item"
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <ReactPlayer
+                  ref={playerRef}
+                  playing={playing}
+                  onProgress={handleProgress}
+                  progressInterval={50}
+                  controls={false}
+                  muted={muted}
+                  height={isFullscreen ? "100%" : preview !== "" ? "100%" : "300px"}
+                  width="100%"
+                  url={currentItem.item}
+                  loop
+                />
+              );
+            })()}
           </div>
           
           {/* Close X handle for fullscreen mode */}
@@ -189,32 +256,129 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
               <XIcon className="w-6 h-6 text-white" />
             </button>
           )}
-          
-          <div className={`${shown ? "opacity-0" : "opacity-100"} transition-opacity flex items-center justify-center relative h-full w-full`}>
-            {preview ? (
-              <img src={preview} alt="" className="h-full w-full object-cover rounded-xl mx-auto" />
-            ) : generatedThumbnail ? (
-              <img src={generatedThumbnail} alt="" className="h-[300px] rounded-xl" />
-            ) : (
-              <div className="absolute inset-0 bg-muted rounded-xl flex items-center justify-center">
-                <VideoIcon className="w-16 h-16 text-muted-foreground" />
-              </div>
-            )}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
+
+          {/* Gallery navigation arrows for fullscreen mode */}
+          {isFullscreen && galleryItems && galleryItems.length > 1 && (
+            <>
               <button
                 type="button"
-                className="flex items-center justify-center w-16 h-16 rounded-full transition-all duration-200 hover:scale-110"
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  setShown(true);
-                  handlePlayPause();
+                  goToPrevious();
                 }}
-                >
-                <PlayIcon className="w-8 h-8 text-primary fill-primary ml-1" />
+                className="fixed left-4 top-1/2 transform -translate-y-1/2 z-50 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+              >
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
               </button>
-            </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  goToNext();
+                }}
+                className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+              >
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+          
+          <div className={`${shown ? "opacity-0" : "opacity-100"} transition-opacity flex items-center justify-center relative h-full w-full`}>
+            {(() => {
+              const currentItem = getCurrentItem();
+              if (currentItem.type && isImageType(String(currentItem.type))) {
+                return (
+                  <>
+                    <img src={currentItem.item} alt="" className="h-full w-full object-cover rounded-xl mx-auto" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
+                      <button
+                        type="button"
+                        className="flex items-center justify-center w-16 h-16 rounded-full transition-all duration-200 hover:scale-110"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setShown(true);
+                        }}
+                      >
+                        <svg className="w-8 h-8 text-primary fill-primary" viewBox="0 0 24 24">
+                          <path d="M8.5 8.5v7l7-3.5z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </>
+                );
+              } else {
+                // For videos, show the original preview or generate thumbnail
+                const videoPreview = activeIndex === (currentIndex || 0) ? preview : "";
+                return (
+                  <>
+                    {videoPreview ? (
+                      <img src={videoPreview} alt="" className="h-full w-full object-cover rounded-xl mx-auto" />
+                    ) : generatedThumbnail && activeIndex === (currentIndex || 0) ? (
+                      <img src={generatedThumbnail} alt="" className="h-[300px] rounded-xl" />
+                    ) : (
+                      <div className="absolute inset-0 bg-muted rounded-xl flex items-center justify-center">
+                        <VideoIcon className="w-16 h-16 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
+                      <button
+                        type="button"
+                        className="flex items-center justify-center w-16 h-16 rounded-full transition-all duration-200 hover:scale-110"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setShown(true);
+                          handlePlayPause();
+                        }}
+                      >
+                        <PlayIcon className="w-8 h-8 text-primary fill-primary ml-1" />
+                      </button>
+                    </div>
+                  </>
+                );
+              }
+            })()}
           </div>
+          
+          {/* Gallery indicators for fullscreen mode */}
+          {galleryItems && galleryItems.length > 1 && isFullscreen && (
+            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex gap-2">
+              {galleryItems.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    const selectedItem = galleryItems[index];
+                    setActiveIndex(index);
+                    setPlaying(false);
+                    if (selectedItem.type && !isImageType(String(selectedItem.type))) {
+                      // It's a video, start playing immediately
+                      setShown(true);
+                      setPlaying(true);
+                      setMuted(false);
+                      pauseAllOtherVideos();
+                    } else {
+                      // It's an image, just show it
+                      setShown(true);
+                      setPlaying(false);
+                    }
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === activeIndex ? "bg-white" : "bg-white/50"
+                  }`}
+                  aria-label={`Go to item ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
