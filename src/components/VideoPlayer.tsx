@@ -1,6 +1,6 @@
 "use client";
 
-import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon, VideoIcon } from "lucide-react";
+import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon, VideoIcon, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
@@ -136,6 +136,9 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
         if (e.key === "f") {
           handleFullscreen();
         }
+        if (e.key === "Escape" && isFullscreen) {
+          handleFullscreen();
+        }
       }}
     >
       <div
@@ -171,6 +174,22 @@ export const VideoPlayer = ({ url, preview }: { url: string; preview: string }) 
               />
             )}
           </div>
+          
+          {/* Close X handle for fullscreen mode */}
+          {isFullscreen && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                handleFullscreen();
+              }}
+              className="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 active:opacity-60"
+            >
+              <XIcon className="w-6 h-6 text-white" />
+            </button>
+          )}
+          
           <div className={`${shown ? "opacity-0" : "opacity-100"} transition-opacity flex items-center justify-center relative h-full w-full`}>
             {preview ? (
               <img src={preview} alt="" className="h-full w-full object-cover rounded-xl mx-auto" />
