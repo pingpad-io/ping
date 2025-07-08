@@ -33,14 +33,19 @@ export const PostContent = forwardRef<
       {mediaContent}
 
       {post.quoteOn && (
-        <Card className="p-3 mt-2 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer">
+        <Card 
+          className="p-3 mt-2 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            window.location.href = `/p/${post.quoteOn.id}`;
+          }}
+        >
           <div className="flex items-center gap-2 mb-2">
             <div className="w-5 h-5">
               <UserAvatar user={post.quoteOn.author} link={true} card={false} />
             </div>
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <span className="font-medium">{post.quoteOn.author.name}</span>
-              <span>@{post.quoteOn.author.handle}</span>
+            <div className="text-sm text-muted-foreground">
+              <span>{post.quoteOn.author.handle}</span>
             </div>
           </div>
           <p className="text-sm line-clamp-3 text-foreground/90">
