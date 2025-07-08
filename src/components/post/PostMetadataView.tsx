@@ -26,7 +26,7 @@ import { LinkPreview } from "../embeds/LinkPreview";
 
 import type { PostMention } from "./Post";
 
-export const getPostTextContent = (metadata: any, mentions?: PostMention[]): React.ReactNode => {
+export const getPostTextContent = (metadata: any, mentions?: PostMention[], showLinkPreviews?: boolean): React.ReactNode => {
   const content = metadata?.content || "";
 
   switch (metadata.__typename) {
@@ -43,7 +43,7 @@ export const getPostTextContent = (metadata: any, mentions?: PostMention[]): Rea
     case "StoryMetadata":
     case "TransactionMetadata":
     case "ThreeDMetadata":
-      return <ContentView content={content} mentions={mentions} />;
+      return <ContentView content={content} mentions={mentions} showLinkPreviews={showLinkPreviews} />;
     case "LinkMetadata":
       return <LinkView metadata={metadata as LinkMetadataDetails} mentions={mentions} />;
     case "EventMetadata":
@@ -103,8 +103,8 @@ export const getPostMetadataView = (metadata: any, mentions?: PostMention[]) => 
   }
 };
 
-const ContentView = ({ content, mentions }: { content: string; mentions?: PostMention[] }) => {
-  return <Markdown content={content} mentions={mentions} />;
+const ContentView = ({ content, mentions, showLinkPreviews = false }: { content: string; mentions?: PostMention[]; showLinkPreviews?: boolean }) => {
+  return <Markdown content={content} mentions={mentions} showLinkPreviews={showLinkPreviews} />;
 };
 
 export const TextOnlyView = ({

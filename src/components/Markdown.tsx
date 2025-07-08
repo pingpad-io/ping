@@ -14,10 +14,11 @@ import { useMemo } from "react";
 import "~/components/composer/lexical.css";
 
 const BASE_URL = getBaseUrl();
-const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?: string }> = ({
+const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?: string; showLinkPreviews?: boolean }> = ({
   content,
   mentions,
-  className = ""
+  className = "",
+  showLinkPreviews = false
 }) => {
   let processedText = content;
   if (mentions && mentions.length > 0) {
@@ -160,7 +161,7 @@ const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?
       <ReactMarkdown className={`${className}`} remarkPlugins={[remarkGfm, remarkBreaks]} components={components}>
         {processedText}
       </ReactMarkdown>
-      {extractedUrls.length > 0 && (
+      {showLinkPreviews && extractedUrls.length > 0 && (
         <div className="mt-4 space-y-3">
           {extractedUrls.map((url, index) => (
             <LinkPreview key={`${url}-${index}`} url={url} />

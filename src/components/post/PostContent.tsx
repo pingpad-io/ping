@@ -9,7 +9,7 @@ export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
-  const textContent = getPostTextContent(post.metadata, post.mentions);
+  const textContent = getPostTextContent(post.metadata, post.mentions, true);
   const mediaContent = getPostMediaContent(post.metadata);
 
   return (
@@ -49,7 +49,7 @@ export const PostContent = forwardRef<
             </div>
           </div>
           <p className="text-sm line-clamp-3 text-foreground/90">
-            {getPostTextContent(post.quoteOn.metadata, post.quoteOn.mentions)}
+            {getPostTextContent(post.quoteOn.metadata, post.quoteOn.mentions, false)}
           </p>
         </Card>
       )}

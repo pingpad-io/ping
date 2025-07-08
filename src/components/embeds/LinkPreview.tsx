@@ -100,7 +100,13 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
   }
 
   const displayUrl = preview.url || url;
-  const domain = new URL(displayUrl).hostname.replace("www.", "");
+  let domain = "";
+  try {
+    const urlObj = new URL(displayUrl);
+    domain = urlObj.hostname.replace("www.", "");
+  } catch {
+    return null;
+  }
   const hasContent = preview.title || preview.description || preview.image;
   const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
 
