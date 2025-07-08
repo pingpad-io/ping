@@ -13,16 +13,16 @@ const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; 
     const video = document.createElement('video');
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
+
     video.crossOrigin = 'anonymous';
     video.muted = true;
-    
+
     video.onloadedmetadata = () => {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       video.currentTime = 0; // Seek to 1 second
     };
-    
+
     video.onseeked = () => {
       if (ctx) {
         ctx.drawImage(video, 0, 0);
@@ -33,11 +33,11 @@ const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; 
         reject(new Error('Canvas context not available'));
       }
     };
-    
+
     video.onerror = (error) => {
       reject(new Error(`Video loading failed: ${error}`));
     };
-    
+
     video.src = videoUrl;
   });
 };
@@ -63,10 +63,10 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
 
   const navigateToItem = (newIndex: number) => {
     if (!galleryItems || galleryItems.length <= 1) return;
-    
+
     const nextItem = galleryItems[newIndex];
     setActiveIndex(newIndex);
-    
+
     if (nextItem.type && !isImageType(String(nextItem.type))) {
       // It's a video, start playing immediately
       setShown(true);
@@ -99,11 +99,13 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
   };
 
   const isIOSVideo = (videoUrl: string): boolean => {
-    return videoUrl.toLowerCase().includes('.mov') || 
-           videoUrl.toLowerCase().includes('.m4v') ||
-           videoUrl.includes('ios') ||
-           videoUrl.includes('iphone') ||
-           videoUrl.includes('ipad');
+    return false;
+
+    // return videoUrl.toLowerCase().includes('.mov') ||
+    //   videoUrl.toLowerCase().includes('.m4v') ||
+    //   videoUrl.includes('ios') ||
+    //   videoUrl.includes('iphone') ||
+    //   videoUrl.includes('ipad');
   };
 
   useEffect(() => {
@@ -161,7 +163,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
     if (preview) {
       const img = new Image();
       img.src = preview;
-    } 
+    }
   }, [preview]);
 
   useEffect(() => {
@@ -176,9 +178,10 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
   return (
     <div
       ref={playerWithControlsRef}
-      className={`relative flex justify-center items-center rounded-lg overflow-hidden border ${
-        isFullscreen && "w-full"
-      } ${preview !== "" ? "max-h-[400px]" :  "h-[300px]"}`} 
+      className={`relative flex justify-center items-center rounded-lg overflow-hidden border 
+        ${preview !== "" ? "max-h-[400px] w-fit" : "h-[300px]"}
+        ${isFullscreen && "w-full"} 
+      `}
       onClick={() => {
         if (isFullscreen) handleFullscreen();
       }}
@@ -226,9 +229,9 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
                   className="h-full w-full object-contain"
                 />
               ) : (
-                <div 
+                <div
                   className="h-full w-full flex items-center justify-center"
-                  style={{ 
+                  style={{
                     transform: isFullscreen && isIOSVideo(currentItem.item) ? 'rotate(180deg)' : 'none',
                   }}
                 >
@@ -248,7 +251,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
               );
             })()}
           </div>
-          
+
           {/* Close X handle for fullscreen mode */}
           {isFullscreen && (
             <button
@@ -295,7 +298,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
               </button>
             </>
           )}
-          
+
           <div className={`${shown ? "opacity-0" : "opacity-100"} transition-opacity flex items-center justify-center relative h-full w-full`}>
             {(() => {
               const currentItem = getCurrentItem();
@@ -353,7 +356,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
               }
             })()}
           </div>
-          
+
           {/* Gallery indicators for fullscreen mode */}
           {galleryItems && galleryItems.length > 1 && isFullscreen && (
             <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex gap-2">
@@ -366,9 +369,8 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
                     setPlaying(false);
                     navigateToItem(index);
                   }}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === activeIndex ? "bg-white" : "bg-white/50"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all ${index === activeIndex ? "bg-white" : "bg-white/50"
+                    }`}
                   aria-label={`Go to item ${index + 1}`}
                 />
               ))}
