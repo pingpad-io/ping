@@ -293,7 +293,7 @@ type MediaAttachment = {
 };
 
 const isImageType = (type: string): boolean => {
-  const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP"];
+  const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP", "image"];
   return type.startsWith("image/") || imageTypes.includes(type);
 };
 

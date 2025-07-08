@@ -24,7 +24,7 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
 
   const isImageType = (type: string): boolean => {
     const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP"];
-    return type.startsWith("image/") || imageTypes.includes(type);
+    return type.startsWith("image") || imageTypes.includes(type);
   };
 
   const goToPrevious = () => {
@@ -48,7 +48,7 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!open) return;
-      
+
       if (event.key === "Escape") {
         close();
       } else if (event.key === "ArrowLeft" && galleryItems && galleryItems.length > 1) {
@@ -111,9 +111,7 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
         ctx?.drawImage(img, 0, 0);
 
         const pngBlob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((blob) => {
-            resolve(blob!);
-          }, "image/png");
+          canvas.toBlob((blob) => { resolve(blob!); }, "image/png");
         });
 
         await navigator.clipboard.write([
@@ -195,7 +193,8 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
           <div className="flex items-center justify-center h-full w-full">
             {(() => {
               const currentItem = getCurrentItem();
-              return currentItem.type && isImageType(String(currentItem.type)) ? (
+
+              return isImageType(String(currentItem.type)) ? (
                 <motion.img
                   src={currentItem.item}
                   alt={alt}
@@ -231,9 +230,7 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
                     setActiveIndex(index);
                     setScale(1);
                   }}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === activeIndex ? "bg-white" : "bg-white/50"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all ${index === activeIndex ? "bg-white" : "bg-white/50"}`}
                   aria-label={`Go to image ${index + 1}`}
                 />
               ))}
