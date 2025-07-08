@@ -22,6 +22,7 @@ import { ImageViewer } from "../ImageViewer";
 import Markdown from "../Markdown";
 import { Badge } from "../ui/badge";
 import { VideoPlayer } from "../VideoPlayer";
+import { LinkPreview } from "../embeds/LinkPreview";
 
 import type { PostMention } from "./Post";
 
@@ -214,14 +215,18 @@ export const AudioView = ({ metadata, mentions }: { metadata: AudioMetadataDetai
 };
 
 export const LinkView = ({ metadata, mentions }: { metadata: LinkMetadataDetails; mentions?: PostMention[] }) => {
+  // Check if the content already contains the sharing link
+  const contentContainsLink = metadata.content.includes(metadata.sharingLink);
+  
   return (
     <div>
       <ContentView content={metadata.content} mentions={mentions} />
-      <Badge variant="outline" className="text-base rounded-lg p-1 px-2">
-        <a className="hover:underline" href={metadata.sharingLink}>
-          {metadata.sharingLink}
-        </a>
-      </Badge>
+      {/* Only show additional preview if the link is not already in the content */}
+      {!contentContainsLink && (
+        <div className="mt-4">
+          <LinkPreview url={metadata.sharingLink} />
+        </div>
+      )}
     </div>
   );
 };
@@ -247,10 +252,19 @@ export const CheckingInView = ({
 };
 
 export const EmbedView = ({ metadata, mentions }: { metadata: EmbedMetadataDetails; mentions?: PostMention[] }) => {
-  return <ContentView content={metadata.content} mentions={mentions} />;
+  return (
+    <div>
+      <ContentView content={metadata.content} mentions={mentions} />
+      {metadata.embed && (
+        <div className="mt-4">
+          <LinkPreview url={metadata.embed} />
+        </div>
+      )}
+    </div>
+  );
 };
 
-export const EventView = ({ metadata, mentions }: { metadata: EventMetadataDetails; mentions?: PostMention[] }) => {
+export const EventView = ({ metadata }: { metadata: EventMetadataDetails; mentions?: PostMention[] }) => {
   return (
     <div>
       <h1>Event</h1>

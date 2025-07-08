@@ -9,6 +9,8 @@ import { ImageViewer } from "./ImageViewer";
 import { UserLazyHandle } from "./user/UserLazyHandle";
 import { AccountMention } from "./user/AccountMention";
 import type { PostMention } from "./post/Post";
+import { LinkPreview } from "./embeds/LinkPreview";
+import { useMemo } from "react";
 import "~/components/composer/lexical.css";
 
 const BASE_URL = getBaseUrl();
@@ -115,10 +117,57 @@ const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?
     img: CustomImage,
   };
 
+  const extractedUrls = useMemo(() => {
+    const uniqueUrls = new Map<string, string>();
+    
+    const urlRegex = /https?:\/\/[^\s<>"\]]+/gi;
+    const allMatches = processedText.match(urlRegex) || [];
+    
+    const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const markdownUrls = new Set<string>();
+    let match: RegExpExecArray | null;
+    
+    while ((match = markdownLinkRegex.exec(processedText)) !== null) {
+      const linkUrl = match[2].trim();
+      markdownUrls.add(linkUrl);
+    }
+    
+    for (const rawUrl of allMatches) {
+      const cleanUrl = rawUrl.replace(/[.,;:!?]+$/, '').trim();
+      
+      if (cleanUrl.startsWith(BASE_URL) || markdownUrls.has(cleanUrl)) {
+        continue;
+      }
+      
+      try {
+        const urlObj = new URL(cleanUrl);
+        const normalizedUrl = urlObj.href;
+        
+        if (!uniqueUrls.has(normalizedUrl)) {
+          uniqueUrls.set(normalizedUrl, cleanUrl);
+        }
+      } catch {
+        // If URL parsing fails, skip it
+      }
+    }
+    
+    const result = Array.from(uniqueUrls.values());
+    return result;
+  }, [processedText]);
+
   return (
-    <ReactMarkdown className={`${className}`} remarkPlugins={[remarkGfm, remarkBreaks]} components={components}>
-      {processedText}
-    </ReactMarkdown>
+    <>
+      <ReactMarkdown className={`${className}`} remarkPlugins={[remarkGfm, remarkBreaks]} components={components}>
+        {processedText}
+      </ReactMarkdown>
+      {extractedUrls.length > 0 && (
+        <div className="mt-4 space-y-3">
+          {extractedUrls.map((url, index) => (
+            <LinkPreview key={`${url}-${index}`} url={url} />
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
