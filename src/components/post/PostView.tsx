@@ -106,7 +106,6 @@ export const PostView = ({
       '[role="link"]',
       '[role="menuitem"]',
       "[data-radix-collection-item]",
-      "img",
       "video",
       "audio",
       "picture",
@@ -115,6 +114,7 @@ export const PostView = ({
       "iframe",
       "embed",
       "object",
+      "img",
     ];
 
     const isInteractive = interactiveSelectors.some((selector) => target.matches(selector) || target.closest(selector));

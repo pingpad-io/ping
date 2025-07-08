@@ -11,7 +11,11 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
   const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(1);
 
-  const close = () => {
+  const close = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
     setOpen(false);
     setScale(1);
   };
@@ -108,7 +112,11 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
-          onClick={close}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setTimeout(() => close(), 0);
+          }}
         >
           <div className="absolute z-[60] right-4 top-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
             <Button variant="secondary" size="icon" onClick={zoomIn} aria-label="Zoom in">
@@ -123,7 +131,7 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
             <Button variant="secondary" size="icon" onClick={handleDownload} aria-label="Download">
               <DownloadIcon size={20} />
             </Button>
-            <Button variant="secondary" size="icon" onClick={close} aria-label="Close">
+            <Button variant="secondary" size="icon" onClick={(e) => close(e as any)} aria-label="Close">
               <XIcon size={20} />
             </Button>
           </div>
@@ -148,7 +156,15 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
 
   return (
     <>
-      <img src={src} alt={alt} className={className} onClick={() => setOpen(true)} />
+      <img 
+        src={src} 
+        alt={alt} 
+        className={className} 
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen(true);
+        }} 
+      />
       {typeof document !== "undefined" && createPortal(modalContent, document.body)}
     </>
   );
