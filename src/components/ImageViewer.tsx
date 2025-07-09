@@ -7,9 +7,10 @@ import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 
-export function ImageViewer({ src, alt, className }: { src: string; alt?: string; className?: string }) {
+export function ImageViewer({ src, alt, className, galleryItems, currentIndex }: { src: string; alt?: string; className?: string; galleryItems?: any[]; currentIndex?: number }) {
   const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(currentIndex || 0);
 
   const close = (e?: React.MouseEvent) => {
     if (e) {
@@ -18,16 +19,48 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
     }
     setOpen(false);
     setScale(1);
+    setActiveIndex(currentIndex || 0);
   };
 
   const zoomIn = () => setScale((s) => s + 0.25);
   const zoomOut = () => setScale((s) => Math.max(0.25, s - 0.25));
   const toggleZoom = () => setScale((s) => (s === 1 ? 2 : 1));
 
+  const isImageType = (type: string): boolean => {
+    const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP"];
+    return type.startsWith("image") || imageTypes.includes(type);
+  };
+
+  const goToPrevious = () => {
+    if (galleryItems && galleryItems.length > 1) {
+      setActiveIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
+      setScale(1);
+    }
+  };
+
+  const goToNext = () => {
+    if (galleryItems && galleryItems.length > 1) {
+      setActiveIndex((prev) => (prev + 1) % galleryItems.length);
+      setScale(1);
+    }
+  };
+
+  const getCurrentItem = () => {
+    return galleryItems?.[activeIndex] || { item: src, type: "image" };
+  };
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && open) {
+      if (!open) return;
+
+      if (event.key === "Escape") {
         close();
+      } else if (event.key === "ArrowLeft" && galleryItems && galleryItems.length > 1) {
+        event.preventDefault();
+        goToPrevious();
+      } else if (event.key === "ArrowRight" && galleryItems && galleryItems.length > 1) {
+        event.preventDefault();
+        goToNext();
       }
     };
 
@@ -38,11 +71,12 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open]);
+  }, [open, galleryItems, activeIndex]);
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(src);
+      const currentItem = getCurrentItem();
+      const response = await fetch(currentItem.item);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -61,7 +95,8 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
 
   const handleCopy = async () => {
     try {
-      const response = await fetch(src);
+      const currentItem = getCurrentItem();
+      const response = await fetch(currentItem.item);
       const blob = await response.blob();
 
       if (navigator.clipboard && window.ClipboardItem) {
@@ -80,9 +115,7 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
         ctx?.drawImage(img, 0, 0);
 
         const pngBlob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((blob) => {
-            resolve(blob!);
-          }, "image/png");
+          canvas.toBlob((blob) => { resolve(blob!); }, "image/png");
         });
 
         await navigator.clipboard.write([
@@ -136,19 +169,81 @@ export function ImageViewer({ src, alt, className }: { src: string; alt?: string
             </Button>
           </div>
 
+          {galleryItems && galleryItems.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPrevious();
+                }}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 z-[60] w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                aria-label="Previous image"
+              >
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToNext();
+                }}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 z-[60] w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                aria-label="Next image"
+              >
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+
           <div className="flex items-center justify-center h-full w-full">
-            <motion.img
-              src={src}
-              alt={alt}
-              animate={{ scale }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleZoom();
-              }}
-              className={`max-h-full max-w-full object-contain ${scale === 1 ? "cursor-zoom-in" : "cursor-zoom-out"}`}
-            />
+            {(() => {
+              const currentItem = getCurrentItem();
+
+              return isImageType(String(currentItem.type)) ? (
+                <motion.img
+                  src={currentItem.item}
+                  alt={alt}
+                  animate={{ scale }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleZoom();
+                  }}
+                  className={`max-h-full max-w-full object-contain ${scale === 1 ? "cursor-zoom-in" : "cursor-zoom-out"}`}
+                />
+              ) : (
+                <div className="max-h-full max-w-full" onClick={(e) => e.stopPropagation()}>
+                  <video
+                    src={currentItem.item}
+                    controls
+                    autoPlay
+                    className="max-h-full max-w-full object-contain"
+                    style={{ transform: `scale(${scale})` }}
+                  />
+                </div>
+              );
+            })()}
           </div>
+
+          {galleryItems && galleryItems.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-[60] flex gap-2">
+              {galleryItems.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveIndex(index);
+                    setScale(1);
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all ${index === activeIndex ? "bg-white" : "bg-white/50"}`}
+                  aria-label={`Go to image ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

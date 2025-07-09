@@ -181,7 +181,7 @@ const getVideoMediaContent = (metadata: VideoMetadataDetails): React.ReactNode =
   return allMedia.length > 1 ? (
     <MediaGallery items={allMedia} />
   ) : allMedia.length === 1 ? (
-    <div className="mt-2" style={{ maxWidth: "min(100%, 711px)" }}>
+    <div className="mt-2" style={{ maxHeight: "min(100%, 400px)" }}>
       <VideoPlayer url={allMedia[0].item} preview={cover} />
     </div>
   ) : null;
@@ -307,7 +307,7 @@ type MediaAttachment = {
 };
 
 const isImageType = (type: string): boolean => {
-  const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP"];
+  const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP", "image"];
   return type.startsWith("image/") || imageTypes.includes(type);
 };
 
@@ -316,16 +316,18 @@ const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
     <div className="mt-2 w-full overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ height: "300px" }}>
       <div className="flex gap-2 h-full items-center" style={{ width: "max-content" }}>
         {items.map((item, index) => (
-          <div key={`${item.item}-${index}`} className="flex-shrink-0 h-full flex items-center">
+          <div key={`${item.item}-${index}`} className="h-full flex items-center">
             {item.type && isImageType(String(item.type)) ? (
               <ImageViewer
                 src={item.item}
                 alt={`Gallery image ${index + 1}`}
                 className="h-full max-h-[300px] w-auto object-contain border rounded-xl cursor-pointer"
+                galleryItems={items}
+                currentIndex={index}
               />
             ) : (
-              <div className="h-full flex items-center" style={{ width: "533px" }}>
-                <VideoPlayer url={item.item} preview="" />
+              <div className="h-full flex items-center" style={{ height: "300px" }}>
+                <VideoPlayer url={item.item} preview="" galleryItems={items} currentIndex={index} />
               </div>
             )}
           </div>
