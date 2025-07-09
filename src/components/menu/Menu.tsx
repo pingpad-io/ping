@@ -115,8 +115,9 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
         },
         {
           icon: LogInIcon,
-          label: "Connect Wallet",
+          label: "Log in",
           onClick: () => openWalletDialog(),
+          isActive: pathname === "/login" || pathname === "/register",
         },
         ...(isLandingPage
           ? [

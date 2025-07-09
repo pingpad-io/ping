@@ -1,6 +1,5 @@
 "use client";
 
-import { useLogout } from "@lens-protocol/react";
 import { UserMinusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type PropsWithChildren } from "react";
@@ -11,7 +10,6 @@ import { FamilyIcon, GlobeIcon, WalletConnectIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { ConnectedWalletLabel } from "./ConnnectedWalletLabel";
-import { LensProfileSelect } from "./LensProfileSelect";
 
 interface ConnectWalletButtonProps {
   open: boolean;
@@ -19,6 +17,8 @@ interface ConnectWalletButtonProps {
 }
 
 export function ConnectWalletButton({ open, setOpen }: ConnectWalletButtonProps) {
+  const { isConnected: walletConnected } = useAccount();
+  const router = useRouter();
   const { connectors, connect } = useConnect({
     mutation: {
       onError: (error) => {
@@ -26,9 +26,12 @@ export function ConnectWalletButton({ open, setOpen }: ConnectWalletButtonProps)
 
         setOpen(false);
       },
+      onSuccess: () => {
+        setOpen(false);
+        router.push("/login");
+      },
     },
   });
-  const { isConnected: walletConnected } = useAccount();
 
   const connectorList = connectors.map((connector) => {
     if (connector.id !== "injected" && connector.id !== "walletConnect" && connector.id !== "familyAccountsProvider")
@@ -71,17 +74,22 @@ export function ConnectWalletButton({ open, setOpen }: ConnectWalletButtonProps)
     );
   });
 
+  if (walletConnected) {
+    router.push("/login");
+    return null;
+  }
+
   return (
     <Dialog onOpenChange={(open) => setOpen(open)} open={open}>
-      <DialogContent className="max-w-sm flex flex-col justify-center">
+      <DialogContent className="max-w-xl flex flex-col justify-center !bg-background">
         <DialogHeader>
-          <DialogTitle>{!walletConnected ? "Select a wallet to connect" : "Select a Profile"}</DialogTitle>
+          <DialogTitle>Select a wallet to connect</DialogTitle>
           <DialogDescription>
             <ConnectedWalletLabel />
           </DialogDescription>
         </DialogHeader>
 
-        {!walletConnected ? connectorList : <LensProfileSelect setDialogOpen={setOpen} />}
+        {connectorList}
       </DialogContent>
     </Dialog>
   );
@@ -103,7 +111,6 @@ export function DisconnectWalletButton(props: PropsWithChildren) {
 }
 
 export function LogoutButton() {
-  const { execute: disconnect } = useLogout();
   const { isConnected } = useAccount();
   const { disconnect: disconnectWallet } = useDisconnect();
   const router = useRouter();
