@@ -33,9 +33,14 @@ export const getBuilderClient = async (address: string, signMessage: (message: s
 export const getOnboardingClient = async (address: string, signMessage: (message: string) => Promise<string>) => {
   if (!address) return null;
 
+  const { env } = await import("~/env.mjs");
+  const appAddress = env.NEXT_PUBLIC_NODE_ENV === "development" 
+    ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET 
+    : env.NEXT_PUBLIC_APP_ADDRESS;
+
   const authenticated = await publicClient.login({
     onboardingUser: {
-      app: "0x30d66188F860374cF8AC8A4354E7f537532ed13b",
+      app: appAddress || "0x30d66188F860374cF8AC8A4354E7f537532ed13b",
       wallet: address,
     },
     signMessage,

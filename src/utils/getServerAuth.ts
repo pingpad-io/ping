@@ -59,7 +59,7 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
     throw new Error("Invalid ID token");
   }
 
-  const address = decodedIdToken.act.sub;
+  const address = decodedIdToken.act?.sub || decodedIdToken.sub;
   const authenticatedUser = await sessionClient.getAuthenticatedUser();
 
   if (authenticatedUser.isErr() || !authenticatedUser.value) {

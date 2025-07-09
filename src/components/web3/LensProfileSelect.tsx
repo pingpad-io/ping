@@ -4,6 +4,7 @@ import type { Account } from "@lens-protocol/client";
 import { fetchAccountsAvailable } from "@lens-protocol/client/actions";
 import { setCookie } from "cookies-next";
 import { PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAccount as useWagmiAccount, useWalletClient } from "wagmi";
@@ -24,6 +25,7 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isLoginPending, setIsLoginPending] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -179,12 +181,18 @@ export function LensProfileSelect({ setDialogOpen }: { setDialogOpen: (open: boo
               </div>
             );
           })}
-          <Link href={"https://onboarding.lens.xyz/"} target="_blank">
-            <Button className="flex flex-row w-full items-center gap-2" size="default" variant="outline">
-              <PlusIcon size={22} />
-              New Profile
-            </Button>
-          </Link>
+          <Button 
+            className="flex flex-row w-full items-center gap-2" 
+            size="default" 
+            variant="outline"
+            onClick={() => {
+              setDialogOpen(false);
+              router.push('/onboarding');
+            }}
+          >
+            <PlusIcon size={22} />
+            New Profile
+          </Button>
         </div>
       </ScrollArea>
 
