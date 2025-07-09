@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       image = metadata?.image?.item;
       break;
     case "VideoMetadata":
-      image = metadata?.video?.cover || metadata?.video?.item;
+      image = metadata?.video?.cover;
       break;
     case "AudioMetadata":
       image = metadata?.audio?.cover;
@@ -42,6 +42,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       image = undefined;
   }
 
+  const profilePictureUrl = post.author.profilePictureUrl;
+
+  const ogImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}og/post?handle=${handle}&content=${encodeURIComponent(
+    content,
+  )}${image ? `&image=${encodeURIComponent(image)}` : ""}${profilePictureUrl ? `&profilePictureUrl=${encodeURIComponent(profilePictureUrl)}` : ""}`;
+
   return {
     title,
     description: `${content.slice(0, 300)}${ending}`,
@@ -49,15 +55,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       type: "article",
       title,
       description: `${content.slice(0, 300)}${ending}`,
-      images: image
-        ? [
-            {
-              url: image,
-              width: 1200,
-              height: 630,
-            },
-          ]
-        : [],
+      images: [
+        {
+          url: ogImageURL,
+          width: 1200,
+          height: 630,
+        },
+      ],
     },
   };
 }

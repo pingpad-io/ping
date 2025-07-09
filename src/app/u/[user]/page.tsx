@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: { user: string } })
   const title = `${displayName} (@${handle})`;
   const description = user.description || `@${handle} on Pingpad`;
 
-  const ogImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}/og/user?handle=${handle}&name=${encodeURIComponent(
+  const ogImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}og/user?handle=${handle}&name=${encodeURIComponent(
     displayName,
   )}&profilePictureUrl=${user.profilePictureUrl}`;
 
