@@ -7,8 +7,6 @@ import {
   ImageMetadataDetails,
   LinkMetadataDetails,
   LiveStreamMetadataDetails,
-  MediaImageMimeType,
-  MediaVideoMimeType,
   MintMetadataDetails,
   SpaceMetadataDetails,
   StoryMetadataDetails,
@@ -25,6 +23,13 @@ import { VideoPlayer } from "../VideoPlayer";
 import { LinkPreview } from "../embeds/LinkPreview";
 
 import type { PostMention } from "./Post";
+import { 
+  normalizeImageMimeType, 
+  normalizeVideoMimeType,
+  isImageMimeType,
+  castToMediaImageType,
+  castToMediaVideoType
+} from "~/utils/mimeTypes";
 
 export const getPostTextContent = (metadata: any, mentions?: PostMention[], showLinkPreviews?: boolean): React.ReactNode => {
   const content = metadata?.content || "";
@@ -129,12 +134,12 @@ const getImageMediaContent = (metadata: ImageMetadataDetails): React.ReactNode =
 
   const allMedia: MediaAttachment[] = [];
   if (url) {
-    allMedia.push({ item: url, type: metadata.image.type });
+    allMedia.push({ item: url, type: castToMediaImageType(metadata.image.type) });
   }
   if (attachments && Array.isArray(attachments)) {
     attachments.forEach((att: any) => {
       if (att.item && att.type) {
-        allMedia.push({ item: att.item, type: att.type });
+        allMedia.push({ item: att.item, type: castToMediaImageType(att.type) });
       }
     });
   }
@@ -168,12 +173,16 @@ const getVideoMediaContent = (metadata: VideoMetadataDetails): React.ReactNode =
 
   const allMedia: MediaAttachment[] = [];
   if (url) {
-    allMedia.push({ item: url, type: metadata.video.type });
+    allMedia.push({ item: url, type: castToMediaVideoType(metadata.video.type) });
   }
   if (attachments && Array.isArray(attachments)) {
     attachments.forEach((att: any) => {
       if (att.item && att.type) {
-        allMedia.push({ item: att.item, type: att.type });
+        // Normalize the type - it could be either image or video
+        const normalizedType = isImageMimeType(att.type) 
+          ? castToMediaImageType(att.type) 
+          : castToMediaVideoType(att.type);
+        allMedia.push({ item: att.item, type: normalizedType });
       }
     });
   }
@@ -303,13 +312,9 @@ export const ThreeDView = ({ metadata, mentions }: { metadata: ThreeDMetadataDet
 
 type MediaAttachment = {
   item: string;
-  type: MediaImageMimeType | MediaVideoMimeType;
+  type: string;
 };
 
-const isImageType = (type: string): boolean => {
-  const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP", "image"];
-  return type.startsWith("image/") || imageTypes.includes(type);
-};
 
 const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
   return (
@@ -317,7 +322,7 @@ const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
       <div className="flex gap-2 h-full items-center" style={{ width: "max-content" }}>
         {items.map((item, index) => (
           <div key={`${item.item}-${index}`} className="h-full flex items-center">
-            {item.type && isImageType(String(item.type)) ? (
+            {item.type && isImageMimeType(String(item.type)) ? (
               <ImageViewer
                 src={item.item}
                 alt={`Gallery image ${index + 1}`}
