@@ -4,11 +4,15 @@ import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { getPostMediaContent, getPostTextContent } from "./PostMetadataView";
+import { useRouter } from "next/navigation";
 
 export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
+
+  const router = useRouter();
+
   const textContent = getPostTextContent(post.metadata, post.mentions, true);
   const mediaContent = getPostMediaContent(post.metadata, post.id);
 
@@ -37,7 +41,7 @@ export const PostContent = forwardRef<
           className="p-3 mt-2 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
-            window.location.href = `/p/${post.quoteOn.id}`;
+            router.push(`/p/${post.quoteOn.id}`);
           }}
         >
           <div className="flex items-center gap-2 mb-2">
