@@ -58,7 +58,7 @@ export const getPostMediaContent = (metadata: any, postId?: string): React.React
     case "ImageMetadata":
       return getImageMediaContent(metadata as ImageMetadataDetails);
     case "VideoMetadata":
-      return getVideoMediaContent(metadata as VideoMetadataDetails);
+      return getVideoMediaContent(metadata as VideoMetadataDetails, postId);
     case "AudioMetadata":
       return getAudioMediaContent(metadata as AudioMetadataDetails, postId);
     default:
@@ -161,7 +161,7 @@ export const ImageView = ({ metadata, mentions }: { metadata: ImageMetadataDetai
   );
 };
 
-const getVideoMediaContent = (metadata: VideoMetadataDetails): React.ReactNode => {
+const getVideoMediaContent = (metadata: VideoMetadataDetails, postId?: string): React.ReactNode => {
   const url = metadata?.video?.item;
   const cover = metadata?.video?.cover || undefined;
   const attachments = metadata?.attachments;
@@ -179,10 +179,10 @@ const getVideoMediaContent = (metadata: VideoMetadataDetails): React.ReactNode =
   }
 
   return allMedia.length > 1 ? (
-    <MediaGallery items={allMedia} />
+    <MediaGallery items={allMedia} postId={postId} />
   ) : allMedia.length === 1 ? (
     <div className="mt-2" style={{ maxHeight: "min(100%, 400px)" }}>
-      <VideoPlayer url={allMedia[0].item} preview={cover} />
+      <VideoPlayer url={allMedia[0].item} preview={cover} postId={postId} />
     </div>
   ) : null;
 };
@@ -311,7 +311,7 @@ const isImageType = (type: string): boolean => {
   return type.startsWith("image/") || imageTypes.includes(type);
 };
 
-const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
+const MediaGallery = ({ items, postId }: { items: MediaAttachment[]; postId?: string }) => {
   return (
     <div className="mt-2 w-full overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ height: "300px" }}>
       <div className="flex gap-2 h-full items-center" style={{ width: "max-content" }}>
@@ -327,7 +327,7 @@ const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
               />
             ) : (
               <div className="h-full flex items-center" style={{ height: "300px" }}>
-                <VideoPlayer url={item.item} preview="" galleryItems={items} currentIndex={index} />
+                <VideoPlayer url={item.item} preview="" galleryItems={items} currentIndex={index} postId={postId} />
               </div>
             )}
           </div>

@@ -5,6 +5,7 @@ import { BackgroundGradient } from "~/components/BackgroundGradient";
 import { DeletedPostsProvider } from "~/components/DeletedPostsContext";
 import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
 import { MiniMediaPlayer } from "~/components/MiniMediaPlayer";
+import { MiniVideoPlayer } from "~/components/MiniVideoPlayer";
 import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
 import { PageTransition } from "~/components/PageTransition";
 import { Providers } from "~/components/Providers";
@@ -52,6 +53,7 @@ export default async function RootLayout({ children }) {
                   </PageTransition>
 
                   <MiniMediaPlayer />
+                  <MiniVideoPlayer />
                 </NotificationsProvider>
               </DeletedPostsProvider>
             </FilteredUsersProvider>

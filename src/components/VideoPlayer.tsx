@@ -4,8 +4,21 @@ import { MaximizeIcon, MinimizeIcon, PauseIcon, PlayIcon, VideoIcon, XIcon } fro
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useVideoState } from "../hooks/useVideoState";
 import { Progress } from "./ui/video-progress";
+import {
+  currentVideoAtom,
+  videoPlayingAtom,
+  videoCurrentTimeAtom,
+  videoDurationAtom,
+  playVideoAtom,
+  pauseVideoAtom,
+  hideMiniVideoPlayerAtom,
+  showMiniVideoPlayerAtom,
+  globalReactPlayerAtom,
+  type VideoMetadata,
+} from "../atoms/video";
 
 // when a video has no preview, we generate a thumbnail from the video
 const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; aspectRatio: number }> => {
@@ -20,7 +33,7 @@ const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; 
     video.onloadedmetadata = () => {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      video.currentTime = 0; // Seek to 1 second
+      video.currentTime = 0;
     };
 
     video.onseeked = () => {
@@ -42,19 +55,36 @@ const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; 
   });
 };
 
-export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url: string; preview: string; galleryItems?: any[]; currentIndex?: number }) => {
+export const VideoPlayer = ({ url, preview, galleryItems, currentIndex, postId }: { url: string; preview: string; galleryItems?: any[]; currentIndex?: number; postId?: string }) => {
   const playerWithControlsRef = useRef(null);
   const playerRef = useRef(null);
   const progressRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
+  const videoPlayerRef = useRef<HTMLDivElement>(null);
+
+  const [localPlaying, setLocalPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [muted, setMuted] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(screenfull.isFullscreen);
   const [shown, setShown] = useState(false);
   const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(currentIndex || 0);
+  const [isVisible, setIsVisible] = useState(true);
+
+  const currentVideo = useAtomValue(currentVideoAtom);
+  const globalPlaying = useAtomValue(videoPlayingAtom);
+  const playVideo = useSetAtom(playVideoAtom);
+  const pauseVideo = useSetAtom(pauseVideoAtom);
+  const hideMiniVideoPlayer = useSetAtom(hideMiniVideoPlayerAtom);
+  const showMiniVideoPlayer = useSetAtom(showMiniVideoPlayerAtom);
+  const setGlobalReactPlayer = useSetAtom(globalReactPlayerAtom);
+  const setCurrentTime = useSetAtom(videoCurrentTimeAtom);
+  const setDuration = useSetAtom(videoDurationAtom);
+
   const videoId = useRef(`video-${Math.random().toString(36).substring(2, 11)}`).current;
   const { registerPlayer, pauseAllOtherVideos } = useVideoState(videoId);
+
+  const isCurrentVideo = currentVideo?.url === url;
+  const playing = isCurrentVideo ? globalPlaying : localPlaying;
 
   const isImageType = (type: string): boolean => {
     const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP"];
@@ -68,15 +98,13 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
     setActiveIndex(newIndex);
 
     if (nextItem.type && !isImageType(String(nextItem.type))) {
-      // It's a video, start playing immediately
       setShown(true);
-      setPlaying(true);
+      setLocalPlaying(true);
       setMuted(false);
       pauseAllOtherVideos();
     } else {
-      // It's an image, just show it
       setShown(true);
-      setPlaying(false);
+      setLocalPlaying(false);
     }
   };
 
@@ -109,6 +137,45 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
   };
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      }
+    );
+
+    if (videoPlayerRef.current) {
+      observer.observe(videoPlayerRef.current);
+    }
+
+    return () => {
+      if (videoPlayerRef.current) {
+        observer.unobserve(videoPlayerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isCurrentVideo && playerRef.current) {
+      setGlobalReactPlayer(playerRef.current);
+    }
+  }, [isCurrentVideo, setGlobalReactPlayer]);
+
+  useEffect(() => {
+    if (isCurrentVideo) {
+      if (isVisible) {
+        hideMiniVideoPlayer();
+      } else if (currentVideo) {
+        showMiniVideoPlayer();
+      }
+    }
+  }, [isCurrentVideo, isVisible, currentVideo, hideMiniVideoPlayer, showMiniVideoPlayer]);
+
+  useEffect(() => {
     if (screenfull.isEnabled) {
       const onFullscreenChange = () => {
         if (playerWithControlsRef.current && screenfull.element === playerWithControlsRef.current) {
@@ -128,15 +195,42 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
 
   useEffect(() => {
     registerPlayer(() => {
-      setPlaying(false);
+      setLocalPlaying(false);
+      if (isCurrentVideo) {
+        pauseVideo();
+      }
     });
-  }, [registerPlayer]);
+  }, [registerPlayer, isCurrentVideo, pauseVideo]);
 
   const handlePlayPause = () => {
     if (!playing) {
       pauseAllOtherVideos();
     }
-    setPlaying(!playing);
+    
+    console.log('Video Player - handlePlayPause:', { 
+      url, 
+      isCurrentVideo, 
+      playing, 
+      currentVideoUrl: currentVideo?.url,
+      postId 
+    });
+    
+    // Always use global state to set the current video
+    const videoData: VideoMetadata = {
+      url,
+      preview,
+      postId: postId || '',
+      galleryItems,
+      currentIndex: activeIndex,
+    };
+    
+    if (playing) {
+      pauseVideo();
+    } else {
+      playVideo(videoData);
+    }
+    
+    setLocalPlaying(!playing);
     setMuted(false);
   };
 
@@ -150,8 +244,17 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
     });
   };
 
-  const handleProgress = (state: { played: number }) => {
+  const handleProgress = (state: { played: number; playedSeconds: number; loadedSeconds: number }) => {
     setProgress(state.played * 100);
+    
+    // Update global state if this is the current video
+    if (isCurrentVideo && playerRef.current) {
+      setCurrentTime(state.playedSeconds);
+      const duration = playerRef.current.getDuration && playerRef.current.getDuration();
+      if (duration) {
+        setDuration(duration);
+      }
+    }
   };
 
   const handleSeekChange = (value: number) => {
@@ -177,7 +280,10 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
 
   return (
     <div
-      ref={playerWithControlsRef}
+      ref={(el) => {
+        playerWithControlsRef.current = el;
+        videoPlayerRef.current = el;
+      }}
       className={`relative flex justify-center items-center rounded-lg overflow-hidden border 
         ${preview !== "" ? "max-h-[400px] w-fit" : "h-[300px]"}
         ${isFullscreen && "w-full"} 
@@ -366,7 +472,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    setPlaying(false);
+                    setLocalPlaying(false);
                     navigateToItem(index);
                   }}
                   className={`w-2 h-2 rounded-full transition-all ${index === activeIndex ? "bg-white" : "bg-white/50"
@@ -398,7 +504,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
             ref={progressRef}
             onChange={handleSeekChange}
             playing={playing}
-            setPlaying={setPlaying}
+            setPlaying={setLocalPlaying}
             className="mx-2 h-2"
             value={progress}
           />

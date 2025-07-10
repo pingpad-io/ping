@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
+import { useSetAtom } from "jotai";
+import { pauseVideoAtom } from "../atoms/video";
 
 const activeVideoPlayers = new Set<string>();
 const pauseCallbacks = new Map<string, () => void>();
 
 export const useVideoState = (videoId: string) => {
   const pauseCallbackRef = useRef<() => void>();
+  const pauseGlobalVideo = useSetAtom(pauseVideoAtom);
 
   const registerPlayer = (pauseCallback: () => void) => {
     pauseCallbackRef.current = pauseCallback;
@@ -17,6 +20,7 @@ export const useVideoState = (videoId: string) => {
   };
 
   const pauseAllOtherVideos = () => {
+    pauseGlobalVideo();
     for (const [playerId, callback] of pauseCallbacks) {
       if (playerId !== videoId) {
         callback();
