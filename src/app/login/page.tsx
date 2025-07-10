@@ -29,6 +29,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isLoginPending, setIsLoginPending] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
 
   const { connectors, connect } = useConnect({
     mutation: {
@@ -72,6 +73,7 @@ export default function LoginPage() {
     if (!walletAddress || !walletClient) return;
 
     setIsLoginPending(true);
+    setSelectedAccount(account.address);
     try {
       const client = getPublicClient();
 
@@ -129,6 +131,7 @@ export default function LoginPage() {
       toast.error(err instanceof Error ? err.message : "Failed to log in. Please try again.");
     } finally {
       setIsLoginPending(false);
+      setSelectedAccount(null);
     }
   };
 
@@ -233,6 +236,7 @@ export default function LoginPage() {
                             value={account.address}
                             type="submit"
                             onClick={() => onSubmit(account)}
+                            disabled={isLoginPending && selectedAccount === account.address}
                           >
                             <div className="w-9 h-9">
                               <UserAvatar link={false} user={lensAcountToUser(account)} />
@@ -240,6 +244,7 @@ export default function LoginPage() {
                             <div className="flex flex-col items-start">
                               <span>{username}</span>
                             </div>
+                            {isLoginPending && selectedAccount === account.address && <LoadingSpinner className="ml-auto" />}
                           </Button>
                         </div>
                       );
@@ -263,7 +268,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {isLoginPending && <Label className="text-center p-4">Sign a message in your wallet</Label>}
           </>
         )}
       </Card>
