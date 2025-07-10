@@ -11,6 +11,8 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
   const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(1);
   const [activeIndex, setActiveIndex] = useState(currentIndex || 0);
+  const [direction, setDirection] = useState(0);
+  const [isInitialOpen, setIsInitialOpen] = useState(true);
 
   const close = (e?: React.MouseEvent) => {
     if (e) {
@@ -20,6 +22,7 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
     setOpen(false);
     setScale(1);
     setActiveIndex(currentIndex || 0);
+    setIsInitialOpen(true);
   };
 
   const zoomIn = () => setScale((s) => s + 0.25);
@@ -33,6 +36,8 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
 
   const goToPrevious = () => {
     if (galleryItems && galleryItems.length > 1) {
+      setIsInitialOpen(false);
+      setDirection(-1);
       setActiveIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
       setScale(1);
     }
@@ -40,6 +45,8 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
 
   const goToNext = () => {
     if (galleryItems && galleryItems.length > 1) {
+      setIsInitialOpen(false);
+      setDirection(1);
       setActiveIndex((prev) => (prev + 1) % galleryItems.length);
       setScale(1);
     }
@@ -47,6 +54,23 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
 
   const getCurrentItem = () => {
     return galleryItems?.[activeIndex] || { item: src, type: "image" };
+  };
+
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? '33%' : '-33%',
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? '33%' : '-33%',
+      opacity: 0
+    })
   };
 
   useEffect(() => {
@@ -198,34 +222,50 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
             </>
           )}
 
-          <div className="flex items-center justify-center h-full w-full">
-            {(() => {
-              const currentItem = getCurrentItem();
+          <div className="flex items-center justify-center h-full w-full overflow-hidden">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                layout
+                key={activeIndex}
+                custom={direction}
+                variants={slideVariants}
+                initial={isInitialOpen ? "center" : "enter"}
+                animate="center"
+                exit="exit"
+                transition={{
+                  duration: 0.15,
+                }}
+                className="flex items-center justify-center h-full w-full"
+              >
+                {(() => {
+                  const currentItem = getCurrentItem();
 
-              return isImageType(String(currentItem.type)) ? (
-                <motion.img
-                  src={currentItem.item}
-                  alt={alt}
-                  animate={{ scale }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleZoom();
-                  }}
-                  className={`max-h-full max-w-full object-contain ${scale === 1 ? "cursor-zoom-in" : "cursor-zoom-out"}`}
-                />
-              ) : (
-                <div className="max-h-full max-w-full" onClick={(e) => e.stopPropagation()}>
-                  <video
-                    src={currentItem.item}
-                    controls
-                    autoPlay
-                    className="max-h-full max-w-full object-contain"
-                    style={{ transform: `scale(${scale})` }}
-                  />
-                </div>
-              );
-            })()}
+                  return isImageType(String(currentItem.type)) ? (
+                    <motion.img
+                      src={currentItem.item}
+                      alt={alt}
+                      animate={{ scale }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleZoom();
+                      }}
+                      className={`max-h-full max-w-full object-contain ${scale === 1 ? "cursor-zoom-in" : "cursor-zoom-out"}`}
+                    />
+                  ) : (
+                    <div className="max-h-full max-w-full" onClick={(e) => e.stopPropagation()}>
+                      <video
+                        src={currentItem.item}
+                        controls
+                        autoPlay
+                        className="max-h-full max-w-full object-contain"
+                        style={{ transform: `scale(${scale})` }}
+                      />
+                    </div>
+                  );
+                })()}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {galleryItems && galleryItems.length > 1 && (
@@ -235,6 +275,8 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
                   key={index}
                   onClick={(e) => {
                     e.stopPropagation();
+                    setIsInitialOpen(false);
+                    setDirection(index > activeIndex ? 1 : -1);
                     setActiveIndex(index);
                     setScale(1);
                   }}
