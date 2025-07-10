@@ -151,15 +151,12 @@ export const MiniMediaPlayer = () => {
     stopAudio();
   };
 
-  if (!isVisible || !currentAudio) {
-    return <audio ref={audioRef} />;
-  }
-
   return (
     <>
       <audio ref={audioRef} />
       <AnimatePresence>
-        <motion.div
+        {(isVisible && currentAudio) && (
+          <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
@@ -229,6 +226,7 @@ export const MiniMediaPlayer = () => {
            
           </div>
         </motion.div>
+        )}
       </AnimatePresence>
     </>
   );
