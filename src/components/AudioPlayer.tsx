@@ -124,7 +124,7 @@ export const AudioPlayer = ({
   const currentProgressPercentage = isDragging ? dragValue : progressPercentage;
 
   return (
-    <div className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
+    <div ref={audioPlayerRef} className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
       <div className="h-24 aspect-square overflow-hidden flex-shrink-0">
         <img 
           src={cover} 
