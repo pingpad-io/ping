@@ -21,7 +21,7 @@ interface MenuClientProps {
 
 export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
-  const { openWalletDialog } = useAuth();
+  const { redirectToLogin } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const { newCount } = useNotifications();
@@ -116,7 +116,7 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
         {
           icon: LogInIcon,
           label: "Log in",
-          onClick: () => openWalletDialog(),
+          onClick: () => redirectToLogin(),
           isActive: pathname === "/login" || pathname === "/register",
         },
         ...(isLandingPage

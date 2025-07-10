@@ -12,11 +12,19 @@ export const cookieStorage: IStorageProvider = {
     return value ?? null;
   },
   setItem(key: string, value: string) {
-    setCookie(key, value, { maxAge: MAX_AGE });
+    setCookie(key, value, { 
+      maxAge: MAX_AGE,
+      secure: true,
+      sameSite: "lax",
+      path: "/"
+    });
   },
 
   removeItem(key: string) {
-    deleteCookie(key, { maxAge: 0 });
+    deleteCookie(key, { 
+      maxAge: 0,
+      path: "/"
+    });
   },
 };
 
@@ -27,11 +35,19 @@ export const clientCookieStorage: IStorageProvider = {
     return value ?? null;
   },
   setItem(key: string, value: string) {
-    setCookie(key, value, { maxAge: MAX_AGE });
+    setCookie(key, value, { 
+      maxAge: MAX_AGE,
+      secure: true,
+      sameSite: "lax",
+      path: "/"
+    });
   },
 
   removeItem(key: string) {
-    deleteCookie(key, { maxAge: 0 });
+    deleteCookie(key, { 
+      maxAge: 0,
+      path: "/"
+    });
   },
 };
 

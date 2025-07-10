@@ -75,7 +75,6 @@ export function ConnectWalletButton({ open, setOpen }: ConnectWalletButtonProps)
   });
 
   if (walletConnected) {
-    router.push("/login");
     return null;
   }
 

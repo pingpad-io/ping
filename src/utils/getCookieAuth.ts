@@ -1,11 +1,17 @@
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
+interface LensCredentials {
+  accessToken?: string;
+  idToken?: string;
+  refreshToken?: string;
+}
+
 export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null } => {
   const storage = cookies();
-  const refreshToken = storage.get("refreshToken")?.value;
-
-  if (!refreshToken) {
+  const lensCredentials = storage.get("lens.mainnet.credentials")?.value;
+  
+  if (!lensCredentials) {
     return {
       isValid: false,
       refreshToken: null,
@@ -13,6 +19,16 @@ export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null
   }
 
   try {
+    const credentials: LensCredentials = JSON.parse(lensCredentials);
+    const refreshToken = credentials.refreshToken;
+    
+    if (!refreshToken) {
+      return {
+        isValid: false,
+        refreshToken: null,
+      };
+    }
+
     const decodedToken = jwtDecode(refreshToken);
     const currentTimestamp = Math.floor(Date.now() / 1000);
 
@@ -29,10 +45,10 @@ export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null
       refreshToken,
     };
   } catch (error) {
-    console.log("Error using jwt token:", error);
+    console.log("Error validating credentials:", error);
     return {
       isValid: false,
-      refreshToken,
+      refreshToken: null,
     };
   }
 };

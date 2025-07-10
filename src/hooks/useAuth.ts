@@ -16,8 +16,7 @@ export const useAuth = () => {
   const requireAuth = useCallback(
     (callback?: () => void) => {
       if (!user) {
-        const currentPath = window.location.pathname;
-        router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+        router.push('/login');
         return false;
       }
       callback?.();
@@ -27,15 +26,14 @@ export const useAuth = () => {
   );
 
   const redirectToLogin = useCallback(() => {
-    const currentPath = window.location.pathname;
-    router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+    router.push('/login');
   }, [router]);
 
   return {
     user,
     isAuthenticated: !!user,
     isWalletDialogOpen,
-    openWalletDialog: redirectToLogin, // Keep same interface but redirect instead
+    redirectToLogin,
     closeWalletDialog,
     requireAuth,
   };

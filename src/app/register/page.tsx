@@ -32,7 +32,7 @@ export default function RegisterPage() {
   const [currentStep, setCurrentStep] = useState<"signin" | "username" | "profile">("signin");
   const [username, setUsername] = useState("");
   const [isCreating, setIsCreating] = useState(false);
-  const [onboardingClient, setOnboardingClient] = useState<SessionClient | null>(null);
+  const [client, setOnboardingClient] = useState<SessionClient | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
   const [isWalletReady, setIsWalletReady] = useState(false);
@@ -61,7 +61,7 @@ export default function RegisterPage() {
   }, [isConnected, walletAddress, signMessageAsync]);
 
   const initializeOnboardingSession = async () => {
-    if (onboardingClient || !walletAddress || !isWalletReady) {
+    if (client || !walletAddress || !isWalletReady) {
       if (!walletAddress && isWalletReady) {
         setInitError("No wallet connected");
       }
@@ -123,7 +123,7 @@ export default function RegisterPage() {
 
   const checkUsernameAvailability = useCallback(
     async (handle: string) => {
-      if (!handle || handle.length < 3 || !onboardingClient) {
+      if (!handle || handle.length < 3 || !client) {
         setIsAvailable(null);
         setError(null);
         return;
@@ -133,7 +133,7 @@ export default function RegisterPage() {
       setError(null);
 
       try {
-        const result = await canCreateUsername(onboardingClient, {
+        const result = await canCreateUsername(client, {
           localName: handle,
         });
 
@@ -167,7 +167,7 @@ export default function RegisterPage() {
         setIsChecking(false);
       }
     },
-    [onboardingClient],
+    [client],
   );
 
   useEffect(() => {
@@ -205,7 +205,7 @@ export default function RegisterPage() {
   };
 
   const handleCreateProfile = async () => {
-    if (!walletAddress || !onboardingClient) {
+    if (!walletAddress || !client) {
       toast.error("Please connect your wallet");
       return;
     }
@@ -227,27 +227,24 @@ export default function RegisterPage() {
 
       const { uri: metadataUri } = await storageClient.uploadAsJson(metadata);
 
-      const result = await createAccountWithUsername(onboardingClient, {
+      const result = await createAccountWithUsername(client, {
         username: {
           localName: username.toLowerCase(),
         },
         metadataUri: metadataUri,
       })
         .andThen(handleOperationWith(walletClient as any))
-        .andThen(onboardingClient.waitForTransaction)
+        .andThen(client.waitForTransaction)
         .andThen((txHash) => {
           console.log("Transaction hash:", txHash);
-          return fetchAccount(onboardingClient!, { txHash });
+          return fetchAccount(client, { txHash });
         })
         .andThen((account) => {
           if (!account) throw new Error("Account not found");
           console.log("Account created:", account);
-          if (onboardingClient?.isSessionClient()) {
-            return onboardingClient.switchAccount({
-              account: account.address,
-            });
-          }
-          throw new Error("Client is not a session client");
+          return client.switchAccount({
+            account: account.address,
+          });
         });
 
       if (result.isErr()) {
@@ -256,28 +253,7 @@ export default function RegisterPage() {
 
       toast.success("Profile created successfully!");
 
-      const credentials = onboardingClient.getCredentials();
-
-      if (credentials.isErr()) {
-        throw new Error("Failed to get credentials");
-      }
-
-      const refreshToken = credentials.value?.refreshToken;
-      if (!refreshToken) {
-        throw new Error("Failed to get refresh token");
-      }
-
-      const authResponse = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refreshToken }),
-      });
-
-      if (!authResponse.ok) {
-        throw new Error("Failed to set up authentication");
-      }
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       router.push(`/u/${username}`);
       window.location.reload();
@@ -297,7 +273,7 @@ export default function RegisterPage() {
       setOnboardingClient(null);
       setInitError(null);
     } else {
-      router.push("/");
+      router.push('/login');
     }
   };
 

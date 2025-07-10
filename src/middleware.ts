@@ -27,13 +27,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
-  // routes that are always accessible
-  const publicRoutes = ["/", "/home", "/u", "/p"];
+  // Routes that are always accessible
+  const publicRoutes = ["/", "/home", "/u", "/p", "/login", "/register"];
 
   if (!isAuthTokenValid) {
-    // If not authenticated and trying to access a protected route, redirect to /home
     if (!publicRoutes.some((route) => pathname.startsWith(route))) {
-      return NextResponse.redirect(new URL("/home", request.url));
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 

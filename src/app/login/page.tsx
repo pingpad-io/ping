@@ -2,9 +2,8 @@
 
 import type { Account } from "@lens-protocol/client";
 import { fetchAccountsAvailable } from "@lens-protocol/client/actions";
-import { setCookie } from "cookies-next";
 import { ChevronLeftIcon, PlusIcon } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAccount, useConnect, useDisconnect, useWalletClient } from "wagmi";
@@ -24,8 +23,6 @@ import { getPublicClient } from "~/utils/lens/getLensClient";
 export default function LoginPage() {
   const { isConnected, address: walletAddress } = useAccount();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/";
   const { disconnect } = useDisconnect();
   const { data: walletClient } = useWalletClient();
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -118,32 +115,15 @@ export default function LoginPage() {
         throw new Error(`Failed to get authenticated client: ${authenticated.error.message}`);
       }
 
-      const credentials = await authenticated.value.getCredentials();
-
-      if (credentials.isErr()) {
-        console.error("Failed to get credentials", credentials.error);
-        throw new Error("Unable to retrieve authentication credentials");
-      }
-
-      const refreshToken = credentials.value?.refreshToken;
-
-      if (!refreshToken) {
-        console.error("Failed to get refresh token - missing from credentials");
-        throw new Error("Authentication token unavailable");
-      }
-
-      setCookie("refreshToken", refreshToken, {
-        secure: true,
-        sameSite: "lax",
-      });
 
       toast.success("Welcome to Ping!", { description: "login successful!" });
 
-      if (redirectTo) {
-        router.push(redirectTo);
-      } else {
-        window.location.reload();
-      }
+      const username = account.username?.localName || account.address;
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      window.location.reload();
+      router.push(`/u/${username}`);
     } catch (err) {
       console.error("Error logging in:", err);
       toast.error(err instanceof Error ? err.message : "Failed to log in. Please try again.");
