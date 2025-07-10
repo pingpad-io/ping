@@ -70,7 +70,7 @@ const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps
   useEffect(() => {
     const objectUrl = URL.createObjectURL(file);
     setUrl(objectUrl);
-    
+
     return () => {
       URL.revokeObjectURL(objectUrl);
     };
@@ -487,7 +487,7 @@ export default function PostComposer({
               </div>
             )}
             <div className="grow flex-1">
-              <div className="flex items-center justify-between h-5 gap-1 mb-2 pl-2 text-xs sm:text-sm">
+              <div className="flex items-center justify-between h-5 gap-1 mb-0 pl-2 text-xs sm:text-sm">
                 <span className="font-bold">{currentUser?.handle || ""}</span>
                 {editingPost && (
                   <div className="ml-auto">
@@ -514,94 +514,94 @@ export default function PostComposer({
                 control={form.control}
                 name="content"
                 render={({ field }) => (
-                <FormItem className="relative">
-                  <FormControl>
-                    <div {...getRootProps()}>
-                      <LexicalEditorWrapper
-                        value={field.value}
-                        onChange={(value) => {
-                          if (!requireAuth()) return;
-                          field.onChange(value);
-                        }}
-                        onKeyDown={(e) => {
-                          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                            onSubmit(form.getValues());
-                          }
-                        }}
-                        onPasteFiles={handleAddFiles}
-                        placeholder={placeholderText}
-                        disabled={isPosting}
-                        className="rounded-xl"
-                      />
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                  <FormItem className="relative">
+                    <FormControl>
+                      <div {...getRootProps()}>
+                        <LexicalEditorWrapper
+                          value={field.value}
+                          onChange={(value) => {
+                            if (!requireAuth()) return;
+                            field.onChange(value);
+                          }}
+                          onKeyDown={(e) => {
+                            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                              onSubmit(form.getValues());
+                            }
+                          }}
+                          onPasteFiles={handleAddFiles}
+                          placeholder={placeholderText}
+                          disabled={isPosting}
+                          className="rounded-xl"
+                        />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex items-center gap-2 mt-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95"
-                onClick={open}
-              >
-                <ImageIcon className="h-5 w-5 text-muted-foreground transition-transform" />
-              </Button>
-              <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95"
-                    onClick={() => setEmojiPickerOpen(!isEmojiPickerOpen)}
-                  >
-                    <SmileIcon className="h-5 w-5 text-muted-foreground transition-transform" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <EmojiPicker
-                    theme={theme as Theme}
-                    className="bg-card text-card-foreground"
-                    onEmojiClick={handleEmojiClick}
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            <MediaPreview files={mediaFiles} onRemove={handleRemoveMedia} onReorder={handleReorderMedia} />
-            {quotedPost && (
-              <div className="mt-2 p-3 border rounded-lg bg-muted/50">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-4 h-4">
-                    <UserAvatar user={quotedPost.author} link={false} card={false} />
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    {quotedPost.author.name} @{quotedPost.author.handle}
-                  </span>
-                </div>
-                <p className="text-sm line-clamp-3">{quotedPost.metadata?.content || ""}</p>
-              </div>
-            )}
-            {editingPost && (
-              <div className="mt-4">
-                <Button 
-                  disabled={isPosting || isEmpty} 
-                  type="submit"
-                  className="w-full"
+              <div className="flex items-center gap-2 mt-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95"
+                  onClick={open}
                 >
-                  {isPosting ? (
-                    <span className="flex items-center gap-2">
-                      <LoadingSpinner />
-                      <span>Updating...</span>
-                    </span>
-                  ) : (
-                    "Save"
-                  )}
+                  <ImageIcon className="h-5 w-5 text-muted-foreground transition-transform" />
                 </Button>
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95"
+                      onClick={() => setEmojiPickerOpen(!isEmojiPickerOpen)}
+                    >
+                      <SmileIcon className="h-5 w-5 text-muted-foreground transition-transform" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <EmojiPicker
+                      theme={theme as Theme}
+                      className="bg-card text-card-foreground"
+                      onEmojiClick={handleEmojiClick}
+                    />
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-            )}
+
+              <MediaPreview files={mediaFiles} onRemove={handleRemoveMedia} onReorder={handleReorderMedia} />
+              {quotedPost && (
+                <div className="mt-2 p-3 border rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-4 h-4">
+                      <UserAvatar user={quotedPost.author} link={false} card={false} />
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      {quotedPost.author.name} @{quotedPost.author.handle}
+                    </span>
+                  </div>
+                  <p className="text-sm line-clamp-3">{quotedPost.metadata?.content || ""}</p>
+                </div>
+              )}
+              {editingPost && (
+                <div className="mt-4">
+                  <Button
+                    disabled={isPosting || isEmpty}
+                    type="submit"
+                    className="w-full"
+                  >
+                    {isPosting ? (
+                      <span className="flex items-center gap-2">
+                        <LoadingSpinner />
+                        <span>Updating...</span>
+                      </span>
+                    ) : (
+                      "Save"
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
             {!editingPost && (
               <Button disabled={isPosting || isEmpty} size="icon" type="submit" className="h-8 w-8 self-start">
