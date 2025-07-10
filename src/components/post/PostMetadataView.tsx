@@ -53,14 +53,14 @@ export const getPostTextContent = (metadata: any, mentions?: PostMention[], show
   }
 };
 
-export const getPostMediaContent = (metadata: any): React.ReactNode => {
+export const getPostMediaContent = (metadata: any, postId?: string): React.ReactNode => {
   switch (metadata.__typename) {
     case "ImageMetadata":
       return getImageMediaContent(metadata as ImageMetadataDetails);
     case "VideoMetadata":
       return getVideoMediaContent(metadata as VideoMetadataDetails);
     case "AudioMetadata":
-      return getAudioMediaContent(metadata as AudioMetadataDetails);
+      return getAudioMediaContent(metadata as AudioMetadataDetails, postId);
     default:
       return null;
   }
@@ -196,13 +196,13 @@ export const VideoView = ({ metadata, mentions }: { metadata: VideoMetadataDetai
   );
 };
 
-const getAudioMediaContent = (metadata: AudioMetadataDetails): React.ReactNode => {
+const getAudioMediaContent = (metadata: AudioMetadataDetails, postId?: string): React.ReactNode => {
   const url = metadata?.audio?.item;
   const cover = metadata?.audio.cover;
   const artist = metadata?.audio.artist;
   const title = metadata?.title;
 
-  return <AudioPlayer url={url} cover={cover} author={artist} title={title} />;
+  return <AudioPlayer url={url} cover={cover} author={artist} title={title} postId={postId} />;
 };
 
 export const AudioView = ({ metadata, mentions }: { metadata: AudioMetadataDetails; mentions?: PostMention[] }) => {

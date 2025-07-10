@@ -4,6 +4,7 @@ import Script from "next/script";
 import { BackgroundGradient } from "~/components/BackgroundGradient";
 import { DeletedPostsProvider } from "~/components/DeletedPostsContext";
 import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
+import { MiniMediaPlayer } from "~/components/MiniMediaPlayer";
 import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
 import { PageTransition } from "~/components/PageTransition";
 import { Providers } from "~/components/Providers";
@@ -49,6 +50,8 @@ export default async function RootLayout({ children }) {
                   <PageTransition>
                     <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>
                   </PageTransition>
+
+                  <MiniMediaPlayer />
                 </NotificationsProvider>
               </DeletedPostsProvider>
             </FilteredUsersProvider>

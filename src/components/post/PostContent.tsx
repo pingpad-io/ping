@@ -10,7 +10,7 @@ export const PostContent = forwardRef<
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
   const textContent = getPostTextContent(post.metadata, post.mentions, true);
-  const mediaContent = getPostMediaContent(post.metadata);
+  const mediaContent = getPostMediaContent(post.metadata, post.id);
 
   return (
     <div ref={ref} className="space-y-2">
