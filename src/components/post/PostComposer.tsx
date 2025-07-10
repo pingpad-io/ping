@@ -18,11 +18,11 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { fetchPost, post } from "@lens-protocol/client/actions";
+import { editPost, fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
 import { image, MediaImageMimeType, MediaVideoMimeType, textOnly, video } from "@lens-protocol/metadata";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
-import { ImageIcon, SendHorizontalIcon, SmileIcon, VideoIcon, X } from "lucide-react";
+import { ImageIcon, SendHorizontalIcon, SmileIcon, VideoIcon, X, XIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useState } from "react";
@@ -39,7 +39,6 @@ import { getCommunityTags } from "../communities/Community";
 import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
@@ -164,18 +163,20 @@ export default function PostComposer({
   user,
   replyingTo,
   quotedPost,
-  postType = "post",
   onClose,
   onSuccess,
   initialContent = "",
+  editingPost,
+  onCancel,
 }: {
   user?: User;
   replyingTo?: Post;
   quotedPost?: Post;
-  postType?: "post" | "reply";
   onClose?: () => void;
   onSuccess?: (post?: Post | null) => void;
   initialContent?: string;
+  editingPost?: Post;
+  onCancel?: () => void;
 }) {
   const { user: contextUser } = useUser();
   const { requireAuth } = useAuth();
@@ -215,11 +216,13 @@ export default function PostComposer({
     noKeyboard: true,
   });
 
-  const placeholderText = replyingTo
-    ? "write your reply..."
-    : quotedPost
-      ? "add your thoughts..."
-      : "write a new post...";
+  const placeholderText = editingPost
+    ? "edit your post..."
+    : replyingTo
+      ? "write your reply..."
+      : quotedPost
+        ? "add your thoughts..."
+        : "write a new post...";
   const pathname = usePathname().split("/");
   const community = pathname[1] === "c" ? pathname[2] : "";
   const router = useRouter();
@@ -235,7 +238,7 @@ export default function PostComposer({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      content: initialContent,
+      content: editingPost?.metadata?.content || initialContent,
     },
   });
   const watchedContent = form.watch("content");
@@ -249,29 +252,32 @@ export default function PostComposer({
     setPosting(true);
     const toastId = Math.random().toString();
 
-    // Create optimistic post
-    const optimisticPost: Post = {
-      id: `optimistic-${Date.now()}`,
-      author: currentUser!,
-      metadata: {
-        content: data.content, // Keep content for matching later
-      },
-      createdAt: new Date().toISOString(),
-      reactions: {
-        Like: 0,
-        Repost: 0,
-        Comment: 0,
-        Quote: 0,
-      },
-      isOptimistic: true,
-    } as any;
+    // Only show optimistic post for new posts, not edits
+    if (!editingPost) {
+      // Create optimistic post
+      const optimisticPost: Post = {
+        id: `optimistic-${Date.now()}`,
+        author: currentUser!,
+        metadata: {
+          content: data.content, // Keep content for matching later
+        },
+        createdAt: new Date().toISOString(),
+        reactions: {
+          Like: 0,
+          Repost: 0,
+          Comment: 0,
+          Quote: 0,
+        },
+        isOptimistic: true,
+      } as any;
 
-    // Call onSuccess with optimistic post
-    onSuccess?.(optimisticPost);
+      // Call onSuccess with optimistic post
+      onSuccess?.(optimisticPost);
 
-    // Clear form immediately after showing optimistic post
-    form.setValue("content", "");
-    setMediaFiles([]);
+      // Clear form immediately after showing optimistic post
+      form.setValue("content", "");
+      setMediaFiles([]);
+    }
 
     const tags = getCommunityTags(community);
     const client = await getLensClient();
@@ -342,7 +348,9 @@ export default function PostComposer({
       const metadataFile = new File([JSON.stringify(metadata)], "metadata.json", { type: "application/json" });
       const { uri: contentUri } = await storageClient.uploadFile(metadataFile);
 
-      toast.loading("Publishing...", { id: toastId });
+      if (!editingPost) {
+        toast.loading("Publishing...", { id: toastId });
+      }
       console.log("Uploaded metadata to grove storage:", contentUri);
 
       if (!client || !client.isSessionClient()) {
@@ -354,63 +362,83 @@ export default function PostComposer({
       // const feed = env.NEXT_PUBLIC_FEED_ADDRESS ? env.NEXT_PUBLIC_FEED_ADDRESS : undefined;
       const feed = undefined;
 
-      const postData = replyingTo
-        ? {
-          feed,
+      if (editingPost) {
+        const result = await editPost(client, {
           contentUri,
-          commentOn: {
-            post: replyingTo.id,
-          },
-        }
-        : quotedPost
-          ? {
-            feed,
-            contentUri,
-            quoteOf: {
-              post: quotedPost.id,
-            },
-          }
-          : {
-            feed,
-            contentUri,
-          };
-
-      if (quotedPost) {
-        const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: data.content }),
-        });
-
-        if (response.ok) {
-          toast.success("Quoted successfully!", { id: toastId });
-          onSuccess?.(null);
-          onClose?.();
-        } else {
-          const error = await response.json();
-          console.error("Failed to create quote:", error);
-          toast.error(`Failed to quote: ${error.error || "Unknown error"}`, { id: toastId });
-        }
-      } else {
-        const result = await post(client, postData)
+          post: editingPost.id,
+        })
           .andThen(handleOperationWith(walletClient))
           .andThen(client.waitForTransaction)
           .andThen((txHash) => fetchPost(client, { txHash }));
 
         if (result.isOk()) {
-          console.log("Published successfully:", result.value);
-          const newPost = lensItemToPost(result.value);
-          toast.success("Published successfully!", {
-            id: toastId,
-            action: {
-              label: "Show me",
-              onClick: () => newPost && router.push(`/p/${newPost.id}`),
-            },
-          });
-          onSuccess?.(newPost);
+          console.log("Edited successfully:", result.value);
+          toast.success("Post edited successfully!", { id: toastId });
+          onSuccess?.(lensItemToPost(result.value));
         } else {
-          console.error("Failed to publish:", result.error);
-          toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
+          console.error("Failed to edit:", result.error);
+          toast.error(`Failed to edit: ${String(result.error)}`, { id: toastId });
+        }
+      } else {
+        // Handle creating new post
+        const postData = replyingTo
+          ? {
+            feed,
+            contentUri,
+            commentOn: {
+              post: replyingTo.id,
+            },
+          }
+          : quotedPost
+            ? {
+              feed,
+              contentUri,
+              quoteOf: {
+                post: quotedPost.id,
+              },
+            }
+            : {
+              feed,
+              contentUri,
+            };
+
+        if (quotedPost) {
+          const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: data.content }),
+          });
+
+          if (response.ok) {
+            toast.success("Quoted successfully!", { id: toastId });
+            onSuccess?.(null);
+            onClose?.();
+          } else {
+            const error = await response.json();
+            console.error("Failed to create quote:", error);
+            toast.error(`Failed to quote: ${error.error || "Unknown error"}`, { id: toastId });
+          }
+        } else {
+          const result = await post(client, postData)
+            .andThen(handleOperationWith(walletClient))
+            .andThen(client.waitForTransaction)
+            .andThen((txHash) => fetchPost(client, { txHash }));
+
+          if (result.isOk()) {
+            console.log("Published successfully:", result.value);
+            const newPost = lensItemToPost(result.value);
+            toast.success("Published successfully!", {
+              id: toastId,
+              action: {
+                label: "Show me",
+                onClick: () => newPost && router.push(`/p/${newPost.id}`),
+              },
+            });
+            onSuccess?.(newPost);
+          } else {
+            console.error("Failed to publish:", result.error);
+            toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
+          }
         }
       }
     } catch (error) {
@@ -451,17 +479,41 @@ export default function PostComposer({
         </div>
       )}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row gap-2 w-full items-center">
-          {currentUser && (
-            <div className={`${replyingTo ? "w-8 h-8" : "w-10 h-10"} self-start`}>
-              <UserAvatar user={currentUser} link={true} card={false} />
-            </div>
-          )}
-          <div className="grow flex-1">
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
+          <div className="flex flex-row gap-2 w-full">
+            {currentUser && (
+              <div className={`${replyingTo ? "w-8 h-8" : "w-10 h-10"} self-start`}>
+                <UserAvatar user={currentUser} link={true} card={false} />
+              </div>
+            )}
+            <div className="grow flex-1">
+              <div className="flex items-center justify-between h-5 gap-1 mb-2 pl-2 text-xs sm:text-sm">
+                <span className="font-bold">{currentUser?.handle || ""}</span>
+                {editingPost && (
+                  <div className="ml-auto">
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={onCancel}
+                      disabled={isPosting}
+                      className="flex gap-4 w-4 rounded-full hover-expand justify-center [&>span]:hover:scale-110 [&>span]:active:scale-95"
+                    >
+                      <span className="transition-transform">
+                        <XIcon
+                          size={18}
+                          strokeWidth={2.2}
+                          stroke="hsl(var(--muted-foreground))"
+                          className="transition-all duration-200"
+                        />
+                      </span>
+                    </Button>
+                  </div>
+                )}
+              </div>
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
                 <FormItem className="relative">
                   <FormControl>
                     <div {...getRootProps()}>
@@ -532,10 +584,31 @@ export default function PostComposer({
                 <p className="text-sm line-clamp-3">{quotedPost.metadata?.content || ""}</p>
               </div>
             )}
+            {editingPost && (
+              <div className="mt-4">
+                <Button 
+                  disabled={isPosting || isEmpty} 
+                  type="submit"
+                  className="w-full"
+                >
+                  {isPosting ? (
+                    <span className="flex items-center gap-2">
+                      <LoadingSpinner />
+                      <span>Updating...</span>
+                    </span>
+                  ) : (
+                    "Save"
+                  )}
+                </Button>
+              </div>
+            )}
+            </div>
+            {!editingPost && (
+              <Button disabled={isPosting || isEmpty} size="icon" type="submit" className="h-8 w-8 self-start">
+                {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon className="h-4 w-4" />}
+              </Button>
+            )}
           </div>
-          <Button disabled={isPosting || isEmpty} size="icon" type="submit" className="h-8 w-8 self-start">
-            {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon className="h-4 w-4" />}
-          </Button>
         </form>
       </Form>
     </div>

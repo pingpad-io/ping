@@ -113,7 +113,10 @@ export const menuItems: MenuItem[] = [
     icon: EditIcon,
     iconSize: 18,
     condition: "isAuthor",
-    disabled: true,
+    requiresAuth: true,
+    getDynamicProps: (context) => ({
+      disabled: !context.post.reactions?.canEdit,
+    }),
   },
   {
     id: "delete-post",

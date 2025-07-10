@@ -14,6 +14,7 @@ export type PostReactions = Record<PostReactionType, number> & {
   canCollect: boolean;
   canQuote: boolean;
   canDecrypt: boolean;
+  canEdit: boolean;
 };
 export type PostPlatform = "lens" | "bsky";
 export type PostActions = {
@@ -123,6 +124,7 @@ function getReactions(post: LensPost): Partial<PostReactions> {
     canRepost: post.operations?.canRepost.__typename === "PostOperationValidationPassed" || false,
     canQuote: post.operations?.canQuote.__typename === "PostOperationValidationPassed" || false,
     canDecrypt: false,
+    canEdit: post.operations?.canEdit.__typename === "PostOperationValidationPassed" || false,
     totalReactions:
       post.stats?.upvotes + post.stats?.bookmarks + post.stats?.collects + post.stats?.comments + post.stats?.reposts ||
       0,

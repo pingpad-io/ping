@@ -8,6 +8,7 @@ import { useFilteredUsers } from "../FilteredUsersContext";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
+import PostComposer from "./PostComposer";
 import { PostComments } from "./PostComments";
 import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
@@ -49,6 +50,7 @@ export const PostView = ({
   const [comments, setComments] = useState(item.comments);
   const [isDissolving, setIsDissolving] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const postContentRef = useRef<HTMLDivElement>(null);
   const { mutedUsers, blockedUsers } = useFilteredUsers();
   const { deletedPosts } = useDeletedPosts();
@@ -146,6 +148,25 @@ export const PostView = ({
     return <PostOptimisticView author={item.author} isComment={settings.isComment} />;
   }
 
+  // If in edit mode, show just the composer
+  if (isEditing) {
+    return (
+      <Card className="w-full">
+        <CardContent className="p-4">
+          <PostComposer
+            user={item.author}
+            editingPost={item}
+            onCancel={() => setIsEditing(false)}
+            onSuccess={() => {
+              setIsEditing(false);
+              router.refresh();
+            }}
+          />
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <>
       {isDissolving && <DissolveFilter filterId={dissolveFilterId} />}
@@ -159,7 +180,7 @@ export const PostView = ({
           marginBottom: isDissolving ? "0" : undefined,
         }}
       >
-        <PostStateProvider post={item} onReply={handleReply}>
+        <PostStateProvider post={item} onReply={handleReply} onEditToggle={setIsEditing}>
           <PostContextMenu post={item} onReply={handleReply}>
             <Card
               className="duration-300 transition-all z-20 cursor-pointer hover:bg-muted/10"

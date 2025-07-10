@@ -13,12 +13,14 @@ export const PostStateProvider = ({
   post,
   onReply,
   onMenuAction,
+  onEditToggle,
 }: PropsWithChildren<{
   post: Post;
   onReply?: () => void;
   onMenuAction?: () => void;
+  onEditToggle?: (isEditing: boolean) => void;
 }>) => {
-  const postState = usePostState(post, onReply, onMenuAction);
+  const postState = usePostState(post, onReply, onMenuAction, onEditToggle);
 
   return <PostStateContext.Provider value={postState}>{children}</PostStateContext.Provider>;
 };
@@ -32,9 +34,9 @@ export const usePostStateContext = () => {
 };
 
 // Hook that tries to use context first, falls back to creating new state
-export const usePostStateWithFallback = (post: Post, onReply?: () => void, onMenuAction?: () => void) => {
+export const usePostStateWithFallback = (post: Post, onReply?: () => void, onMenuAction?: () => void, onEditToggle?: (isEditing: boolean) => void) => {
   const context = useContext(PostStateContext);
-  const fallbackState = usePostState(post, onReply, onMenuAction);
+  const fallbackState = usePostState(post, onReply, onMenuAction, onEditToggle);
 
   // Use context if available, otherwise use fallback
   return context || fallbackState;

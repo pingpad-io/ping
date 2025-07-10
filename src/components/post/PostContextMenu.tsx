@@ -5,10 +5,10 @@ import Link from "~/components/Link";
 import { ContextMenu as Context, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import type { Post } from "./Post";
 import { menuItems } from "./PostMenuConfig";
-import { usePostStateWithFallback } from "./PostStateContext";
+import { usePostStateContext } from "./PostStateContext";
 
 export const PostContextMenu = (props: PropsWithChildren & { post: Post; onReply?: () => void }) => {
-  const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateWithFallback(props.post, props.onReply);
+  const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateContext();
 
   return (
     <Context>

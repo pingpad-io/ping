@@ -7,14 +7,12 @@ import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import type { Post } from "./Post";
 import { menuItems } from "./PostMenuConfig";
-import { usePostStateWithFallback } from "./PostStateContext";
+import { usePostStateContext } from "./PostStateContext";
 
 export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }) => {
   const [open, setOpen] = useState(false);
   const { requireAuth } = useAuth();
-  const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateWithFallback(post, onReply, () =>
-    setOpen(false),
-  );
+  const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateContext();
   const author = post.author;
   const handle = author.handle;
   const tags = post?.metadata?.tags || [];
@@ -95,9 +93,13 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
                   key={item.id}
                   onClick={() => {
                     if (item.requiresAuth) {
-                      requireAuth(itemProps.onClick);
+                      requireAuth(() => {
+                        itemProps.onClick?.();
+                        setOpen(false);
+                      });
                     } else {
                       itemProps.onClick?.();
+                      setOpen(false);
                     }
                   }}
                   disabled={itemProps.disabled}
