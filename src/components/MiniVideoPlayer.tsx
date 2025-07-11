@@ -4,27 +4,90 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import {
   currentVideoAtom,
   miniVideoPlayerVisibleAtom,
   stopVideoAtom,
+  videoCurrentTimeAtom,
+  videoPlayingAtom,
 } from "../atoms/video";
 
 export const MiniVideoPlayer = () => {
   const router = useRouter();
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const currentVideo = useAtomValue(currentVideoAtom);
   const isVisible = useAtomValue(miniVideoPlayerVisibleAtom);
+  const currentTime = useAtomValue(videoCurrentTimeAtom);
+  const isPlaying = useAtomValue(videoPlayingAtom);
 
   const stopVideo = useSetAtom(stopVideoAtom);
 
-  console.log('Mini Video Player State:', { 
-    currentVideo: currentVideo?.url, 
-    isVisible, 
-    postId: currentVideo?.postId 
-  });
+  useEffect(() => {
+    if (videoRef.current && currentVideo && isVisible) {
+      const videoElement = videoRef.current;
+      
+      const handleLoadedMetadata = () => {
+        if (currentTime > 0) {
+          videoElement.currentTime = currentTime;
+        }
+        
+        if (isPlaying) {
+          videoElement.play().catch(() => {
+          });
+        }
+      };
+      
+      videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
+      
+      if (videoElement.readyState >= 1) {
+        handleLoadedMetadata();
+      }
+      
+      return () => {
+        videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      };
+    }
+  }, [currentVideo, isVisible]);
 
+  useEffect(() => {
+    if (videoRef.current && isPlaying && currentTime >= 0) {
+      const videoElement = videoRef.current;
+      
+      const syncTime = () => {
+        const timeDiff = Math.abs(videoElement.currentTime - currentTime);
+        
+        if (timeDiff > 0.2) {
+          videoElement.currentTime = currentTime;
+        }
+      };
+      
+      const interval = setInterval(syncTime, 100);
+      
+      return () => clearInterval(interval);
+    }
+  }, [currentTime, isPlaying]);
 
+  useEffect(() => {
+    if (videoRef.current) {
+      const videoElement = videoRef.current;
+      
+      if (isPlaying) {
+        const playPromise = videoElement.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            videoElement.muted = true;
+            videoElement.play().catch(() => {
+              // Ignore if still fails
+            });
+          });
+        }
+      } else {
+        videoElement.pause();
+      }
+    }
+  }, [isPlaying]);
 
   const handleGoToPost = () => {
     if (currentVideo?.postId) {
@@ -60,10 +123,10 @@ export const MiniVideoPlayer = () => {
                 onClick={handleGoToPost}
               >
                 <video
+                  ref={videoRef}
                   src={currentVideo.url}
                   poster={currentVideo.preview}
                   className="w-full h-full object-cover"
-                  autoPlay
                   muted
                   loop
                   playsInline
