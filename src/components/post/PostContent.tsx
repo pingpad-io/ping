@@ -51,6 +51,13 @@ export const PostContent = forwardRef<
           <p className="text-sm line-clamp-3 text-foreground/90">
             {getPostTextContent(post.quoteOn.metadata, post.quoteOn.mentions, false)}
           </p>
+          {getPostMediaContent(post.quoteOn.metadata) && (
+            <div className="mt-2 max-w-full">
+              <div className="[&_img]:max-h-48 [&_img]:object-cover [&_video]:max-h-48 [&_.image-grid]:gap-1 [&_.image-grid_img]:max-h-32 [&>div]:!h-fit [&_.h-full]:!h-fit">
+                {getPostMediaContent(post.quoteOn.metadata)}
+              </div>
+            </div>
+          )}
         </Card>
       )}
     </div>
