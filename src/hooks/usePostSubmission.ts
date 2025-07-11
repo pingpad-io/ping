@@ -57,8 +57,8 @@ export function usePostSubmission() {
     setPosting(true);
     const toastId = Math.random().toString();
 
-    // Only show optimistic post for new posts, not edits
-    if (!editingPost && currentUser) {
+    // Only show optimistic post for new posts (not edits or quotes)
+    if (!editingPost && !quotedPost && currentUser) {
       // Create optimistic post
       const optimisticPost: Post = {
         id: `optimistic-${Date.now()}`,
@@ -214,9 +214,38 @@ export function usePostSubmission() {
           });
 
           if (response.ok) {
-            toast.success("Quoted successfully!", { id: toastId });
-            onSuccess?.(null);
-            onClose?.();
+            const data = await response.json();
+            if (data.result) {
+              const txResult = await handleOperationWith(walletClient)(data.result);
+              
+              if (txResult.isOk()) {
+                await client.waitForTransaction(txResult.value);
+                const postResult = await fetchPost(client, { txHash: txResult.value });
+                
+                if (postResult.isOk()) {
+                  const newPost = lensItemToPost(postResult.value);
+                  toast.success("Quoted successfully!", {
+                    id: toastId,
+                    action: {
+                      label: "Show me",
+                      onClick: () => newPost && router.push(`/p/${newPost.id}`),
+                    },
+                  });
+                  onSuccess?.(newPost);
+                  onClose?.();
+                } else {
+                  console.error("Failed to fetch quote post:", postResult.error);
+                  toast.error("Quote created but failed to fetch post", { id: toastId });
+                  onClose?.();
+                }
+              } else {
+                console.error("Failed to handle quote transaction:", txResult.error);
+                toast.error(`Failed to quote: ${String(txResult.error)}`, { id: toastId });
+              }
+            } else {
+              toast.success("Quoted successfully!", { id: toastId });
+              onClose?.();
+            }
           } else {
             const error = await response.json();
             console.error("Failed to create quote:", error);

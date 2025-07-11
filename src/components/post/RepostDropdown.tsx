@@ -137,7 +137,7 @@ export default function RepostDropdown({ post, variant = "post", reactions, onRe
             onClose={() => setShowQuoteDialog(false)}
             onSuccess={(newPost) => {
               setShowQuoteDialog(false);
-              if (newPost) {
+              if (newPost && newPost.id && !newPost.id.startsWith('optimistic-')) {
                 router.push(`/p/${newPost.id}`);
               }
             }}
