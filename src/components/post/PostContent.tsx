@@ -34,13 +34,13 @@ export const PostContent = forwardRef<
 
       {post.quoteOn && (
         <Card 
-          className="p-3 mt-2 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+          className="p-3 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             window.location.href = `/p/${post.quoteOn.id}`;
           }}
         >
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2">
             <div className="w-5 h-5">
               <UserAvatar user={post.quoteOn.author} link={true} card={false} />
             </div>

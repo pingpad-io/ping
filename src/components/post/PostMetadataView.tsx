@@ -318,7 +318,7 @@ type MediaAttachment = {
 
 const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
   return (
-    <div className="mt-2 w-full overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ height: "300px" }}>
+    <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ height: "300px" }}>
       <div className="flex gap-2 h-full items-center" style={{ width: "max-content" }}>
         {items.map((item, index) => (
           <div key={`${item.item}-${index}`} className="h-full flex items-center">

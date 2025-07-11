@@ -20,8 +20,6 @@ export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null
     };
   }
 
-  console.log("lensCredentials", lensCredentials);
-
   try {
     const credentials: LensCredentials = JSON.parse(lensCredentials);
     const refreshToken = credentials.data.refreshToken;
