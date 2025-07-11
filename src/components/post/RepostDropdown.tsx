@@ -131,7 +131,10 @@ export default function RepostDropdown({ post, variant = "post", reactions, onRe
       </DropdownMenu>
 
       <Dialog open={showQuoteDialog} onOpenChange={setShowQuoteDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent 
+          className="max-w-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
           <PostComposer
             quotedPost={post}
             onClose={() => setShowQuoteDialog(false)}

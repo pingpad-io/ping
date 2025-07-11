@@ -275,7 +275,7 @@ export default function PostComposer({
   const handleReorderMedia = reorderMedia;
 
   return (
-    <div className="w-full" {...getRootProps()}>
+    <div className="w-full" {...getRootProps()} onClick={(e) => e.stopPropagation()}>
       <input {...getInputProps()} />
       {isDragActive && (
         <div className="absolute inset-0 bg-black/20 z-50 flex items-center justify-center rounded-lg border-2 border-dashed border-primary">
