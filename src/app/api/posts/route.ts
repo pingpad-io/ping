@@ -1,5 +1,5 @@
 import { PageSize, PostType } from "@lens-protocol/client";
-import { deletePost, fetchPosts, post } from "@lens-protocol/client/actions";
+import { deletePost, fetchGroup, fetchPosts, post } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -12,6 +12,8 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor") || undefined;
   const type = searchParams.get("type") || "post";
   const address = searchParams.get("address") || undefined;
+  const group = searchParams.get("group") || undefined;
+  const feed = searchParams.get("feed") || undefined;
 
   try {
     const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
@@ -38,9 +40,22 @@ export async function GET(req: NextRequest) {
         postTypes = [PostType.Root];
     }
 
+
     const filter: any = { postTypes };
     if (address) {
       filter.authors = [address];
+    } else if (feed) {
+      filter.feeds = [{ feed }];
+    } else if (group) {
+      const groupResult = await fetchGroup(client, { group });
+      if (groupResult.isErr()) {
+        return NextResponse.json({ error: `Failed to fetch group: ${groupResult.error.message}` }, { status: 500 });
+      }
+      const feedAddress = groupResult.value.feed?.address;
+      if (!feedAddress) {
+        return NextResponse.json({ error: "Group has no associated feed" }, { status: 500 });
+      }
+      filter.feeds = [{ feed: feedAddress }];
     } else {
       filter.feeds = [{ globalFeed: true }];
     }
@@ -65,9 +80,9 @@ export async function GET(req: NextRequest) {
       });
 
     return NextResponse.json({ data: posts, nextCursor: data.value.pageInfo.next }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to fetch feed: ", error);
-    return NextResponse.json({ error: `Failed to fetch feed: ${error.message}` }, { status: 500 });
+    return NextResponse.json({ error: `Failed to fetch feed: ${error?.message || 'Unknown error'}` }, { status: 500 });
   }
 }
 

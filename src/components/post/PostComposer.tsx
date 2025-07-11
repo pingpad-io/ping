@@ -163,6 +163,7 @@ export default function PostComposer({
   initialContent = "",
   editingPost,
   onCancel,
+  feed,
 }: {
   user?: User;
   replyingTo?: Post;
@@ -172,6 +173,7 @@ export default function PostComposer({
   initialContent?: string;
   editingPost?: Post;
   onCancel?: () => void;
+  feed?: string;
 }) {
   const { user: contextUser } = useUser();
   const { requireAuth } = useAuth();
@@ -189,6 +191,9 @@ export default function PostComposer({
   } = useMediaProcessing();
 
   const { isPosting, submitPost } = usePostSubmission();
+  
+  const pathname = usePathname().split("/");
+  const community = pathname[1] === "c" ? pathname[2] : "";
 
   // Initialize media from existing post
   useEffect(() => {
@@ -197,6 +202,7 @@ export default function PostComposer({
       setMediaFiles(existingMedia);
     }
   }, [editingPost, loadExistingMedia, setMediaFiles]);
+
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -219,8 +225,6 @@ export default function PostComposer({
       : quotedPost
         ? "add your thoughts..."
         : "write a new post...";
-  const pathname = usePathname().split("/");
-  const community = pathname[1] === "c" ? pathname[2] : "";
 
   const FormSchema = z.object({
     content: z.string().max(MAX_CONTENT_LENGTH, {
@@ -251,6 +255,7 @@ export default function PostComposer({
       quotedPost,
       currentUser,
       community,
+      feed,
       onSuccess,
       onClose,
       clearForm: () => {

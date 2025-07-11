@@ -31,6 +31,7 @@ interface SubmissionOptions {
   quotedPost?: Post;
   currentUser?: User;
   community?: string;
+  feed?: string;
   onSuccess?: (post?: Post | null) => void;
   onClose?: () => void;
   clearForm: () => void;
@@ -50,6 +51,7 @@ export function usePostSubmission() {
     quotedPost,
     currentUser,
     community = "",
+    feed,
     onSuccess,
     onClose,
     clearForm
@@ -57,14 +59,12 @@ export function usePostSubmission() {
     setPosting(true);
     const toastId = Math.random().toString();
 
-    // Only show optimistic post for new posts (not edits or quotes)
     if (!editingPost && !quotedPost && currentUser) {
-      // Create optimistic post
       const optimisticPost: Post = {
         id: `optimistic-${Date.now()}`,
         author: currentUser,
         metadata: {
-          content: content, // Keep content for matching later
+          content: content,
         },
         createdAt: new Date().toISOString(),
         reactions: {
@@ -76,10 +76,8 @@ export function usePostSubmission() {
         isOptimistic: true,
       } as any;
 
-      // Call onSuccess with optimistic post
       onSuccess?.(optimisticPost);
 
-      // Clear form immediately after showing optimistic post
       clearForm();
     }
 
@@ -116,8 +114,6 @@ export function usePostSubmission() {
             });
           }
         } else if (attachments && attachments.length > 0) {
-          // If there's no primary media but there are attachments, 
-          // we need to promote the first attachment to primary
           const firstAttachment = attachments[0];
           const remainingAttachments = attachments.slice(1);
           metadata = image({
@@ -164,7 +160,6 @@ export function usePostSubmission() {
         return;
       }
 
-      const feed = undefined;
 
       if (editingPost) {
         const result = await editPost(client, {
