@@ -3,7 +3,7 @@ import { post as createPost, fetchPost } from "@lens-protocol/client/actions";
 import { textOnly } from "@lens-protocol/metadata";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
-import { storageClient } from "~/utils/lens/storage";
+import { uploadMetadata } from "~/utils/uploadMetadata";
 
 export const dynamic = "force-dynamic";
 
@@ -34,8 +34,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     }
 
     const metadata = textOnly({ content });
-    const metadataFile = new File([JSON.stringify(metadata)], "metadata.json", { type: "application/json" });
-    const { uri: metadataUri } = await storageClient.uploadFile(metadataFile);
+    const metadataUri = await uploadMetadata(metadata);
 
     const result = await createPost(sessionClient, {
       contentUri: metadataUri,

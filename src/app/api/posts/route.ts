@@ -3,7 +3,7 @@ import { deletePost, fetchPosts, post } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
-import { storageClient } from "~/utils/lens/storage";
+import { uploadMetadata } from "~/utils/uploadMetadata";
 
 export const dynamic = "force-dynamic";
 
@@ -123,7 +123,8 @@ export async function POST(req: NextRequest) {
       throw new Error("Not authenticated with a session client");
     }
 
-    const contentUri = await uploadMetadata(data, handle);
+    const contentUri = await uploadMetadata(data);
+    console.log(`Uploaded metadata for ${handle} to ${contentUri}`);
     const postResult = await createPost(client, contentUri, replyingTo);
 
     if (postResult && typeof postResult.unwrapOr === "function") {
@@ -161,25 +162,8 @@ async function parseRequestBody(req: NextRequest) {
   return data;
 }
 
-async function uploadMetadata(data: any, handle: string) {
-  try {
-    const metadataFile = new File([JSON.stringify(data)], "metadata.json", { type: "application/json" });
 
-    const { uri } = await storageClient.uploadFile(metadataFile);
-
-    if (!uri) {
-      throw new Error("Failed to upload metadata");
-    }
-
-    console.log(`Uploaded metadata for ${handle} to ${uri}`);
-    return uri;
-  } catch (error) {
-    console.error("Error uploading metadata:", error);
-    throw new Error(`Failed to upload metadata: ${error.message}`);
-  }
-}
-
-async function createPost(client, contentUri, replyingTo) {
+async function createPost(client: any, contentUri: string, replyingTo: string | undefined) {
   if (replyingTo) {
     return await post(client, {
       contentUri,
