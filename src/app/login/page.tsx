@@ -124,8 +124,8 @@ export default function LoginPage() {
 
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      window.location.reload();
       router.push(`/u/${username}`);
+      router.refresh();
     } catch (err) {
       console.error("Error logging in:", err);
       toast.error(err instanceof Error ? err.message : "Failed to log in. Please try again.");
