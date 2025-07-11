@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   currentVideoAtom,
   miniVideoPlayerVisibleAtom,
@@ -16,6 +16,8 @@ import {
 export const MiniVideoPlayer = () => {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [aspectRatio, setAspectRatio] = useState<number>(16/9); // Default to 16:9
+  const [videoDimensions, setVideoDimensions] = useState({ width: 320, height: 180 });
 
   const currentVideo = useAtomValue(currentVideoAtom);
   const isVisible = useAtomValue(miniVideoPlayerVisibleAtom);
@@ -29,6 +31,39 @@ export const MiniVideoPlayer = () => {
       const videoElement = videoRef.current;
       
       const handleLoadedMetadata = () => {
+        // Calculate aspect ratio and dimensions
+        const videoWidth = videoElement.videoWidth;
+        const videoHeight = videoElement.videoHeight;
+        
+        if (videoWidth && videoHeight) {
+          const ratio = videoWidth / videoHeight;
+          setAspectRatio(ratio);
+          
+          // Calculate dimensions based on aspect ratio
+          // For portrait videos (ratio < 1), use fixed height
+          // For landscape videos (ratio >= 1), use fixed width
+          const maxWidth = 320;
+          const maxHeight = 240;
+          
+          let width: number, height: number;
+          
+          if (ratio < 1) {
+            // Portrait video
+            height = maxHeight;
+            width = height * ratio;
+          } else {
+            // Landscape video
+            width = maxWidth;
+            height = width / ratio;
+          }
+          
+          // Ensure minimum dimensions
+          width = Math.max(width, 160);
+          height = Math.max(height, 90);
+          
+          setVideoDimensions({ width, height });
+        }
+        
         if (currentTime > 0) {
           videoElement.currentTime = currentTime;
         }
@@ -107,7 +142,8 @@ export const MiniVideoPlayer = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed bottom-4 left-4 w-80 z-30 bg-gradient-to-r from-white/10 dark:from-zinc-800/50 overflow-hidden to-zinc-200/20 dark:to-zinc-900/50 backdrop-blur-md rounded-lg shadow-2xl border border-zinc-200 dark:border-zinc-700"
+            className="fixed bottom-4 left-4 z-30 bg-gradient-to-r from-white/10 dark:from-zinc-800/50 overflow-hidden to-zinc-200/20 dark:to-zinc-900/50 backdrop-blur-md rounded-lg shadow-2xl border border-zinc-200 dark:border-zinc-700"
+            style={{ width: `${videoDimensions.width}px` }}
           >
 
             <button
@@ -119,14 +155,15 @@ export const MiniVideoPlayer = () => {
 
             <div className="p-0">
               <div 
-                className="w-full h-32 rounded-sm overflow-hidden flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity bg-black"
+                className="w-full rounded-sm overflow-hidden flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity bg-black"
+                style={{ height: `${videoDimensions.height}px` }}
                 onClick={handleGoToPost}
               >
                 <video
                   ref={videoRef}
                   src={currentVideo.url}
                   poster={currentVideo.preview}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   muted
                   loop
                   playsInline
@@ -134,16 +171,16 @@ export const MiniVideoPlayer = () => {
                 />
               </div>
 
-              <div 
-                className="cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={handleGoToPost}
-              >
-                {currentVideo.title && (
+              {currentVideo.title && (
+                <div 
+                  className="cursor-pointer hover:opacity-80 transition-opacity p-2"
+                  onClick={handleGoToPost}
+                >
                   <div className="dark:text-white text-black font-semibold text-sm truncate">
                     {currentVideo.title}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
