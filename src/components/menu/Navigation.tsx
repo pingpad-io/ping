@@ -6,6 +6,7 @@ import {
   Bitcoin,
   CameraIcon,
   CircleSlashIcon,
+  CompassIcon,
   CrownIcon,
   FrameIcon,
   GlobeIcon,
@@ -41,6 +42,10 @@ export const Navigation = () => {
           <NavigationCarouselItem href={"/home"}>
             <HomeIcon size={18} />
             home
+          </NavigationCarouselItem>
+          <NavigationCarouselItem href={"/explore"}>
+            <CompassIcon size={18} />
+            explore
           </NavigationCarouselItem>
           <NavigationCarouselItem href={"/best"}>
             <CrownIcon size={18} />

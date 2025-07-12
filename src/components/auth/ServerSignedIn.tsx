@@ -4,7 +4,6 @@ import { getCookieAuth } from "~/utils/getCookieAuth";
 export async function ServerSignedIn(props: PropsWithChildren) {
   const { isValid: isAuthenticated } = getCookieAuth();
 
-  console.log("ServerSignedIn", { isAuthenticated });
   if (!isAuthenticated) {
     return null;
   }

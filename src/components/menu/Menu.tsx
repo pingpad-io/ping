@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Github, Heart, LogInIcon, PlusIcon } from "lucide-react";
+import { Bookmark, CompassIcon, Github, Heart, HomeIcon, LogInIcon, PlusIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PingLogo from "~/components/icons/PingLogo";
@@ -29,6 +29,7 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
 
   useEffect(() => {
     router.prefetch("/home");
+    router.prefetch("/explore");
     router.prefetch("/bookmarks");
     if (handle) {
       router.prefetch(`/u/${handle}`);
@@ -38,10 +39,30 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
   const dockItems = isAuthenticated
     ? [
         {
-          icon: PingLogo,
+          icon: pathname === "/home" ? HomeIcon : pathname === "/explore" ? CompassIcon : PingLogo,
           label: "Home",
           onClick: () => router.push("/home"),
-          isActive: pathname === "/home",
+          isActive: pathname === "/home" || pathname === "/explore",
+          extra: (
+            <div className="flex flex-col w-48 p-1">
+              <button
+                type="button"
+                className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
+                onClick={() => router.push("/home")}
+              >
+                <HomeIcon size={16} />
+                <span className="ml-3">Home</span>
+              </button>
+              <button
+                type="button"
+                className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
+                onClick={() => router.push("/explore")}
+              >
+                <CompassIcon size={16} />
+                <span className="ml-3">Explore</span>
+              </button>
+            </div>
+          ),
         },
         {
           customIcon: (
@@ -108,10 +129,30 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
       ]
     : [
         {
-          icon: PingLogo,
+          icon: pathname === "/home" ? HomeIcon : pathname === "/explore" ? CompassIcon : PingLogo,
           label: "Home",
           onClick: () => router.push("/home"),
-          isActive: pathname === "/home",
+          isActive: pathname === "/home" || pathname === "/explore",
+          extra: (
+            <div className="flex flex-col w-48 p-1">
+              <button
+                type="button"
+                className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
+                onClick={() => router.push("/home")}
+              >
+                <HomeIcon size={16} />
+                <span className="ml-3">Home</span>
+              </button>
+              <button
+                type="button"
+                className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
+                onClick={() => router.push("/explore")}
+              >
+                <CompassIcon size={16} />
+                <span className="ml-3">Explore</span>
+              </button>
+            </div>
+          ),
         },
         {
           icon: LogInIcon,
