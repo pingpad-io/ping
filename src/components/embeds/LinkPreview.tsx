@@ -48,7 +48,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
     queryFn: () => fetchLinkPreview(url),
     enabled: !embedInfo.type,
     staleTime: 7 * 24 * 60 * 60 * 1000, // 7 days
-    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 days (formerly cacheTime)
+    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 days 
     retry: 1,
   });
 

@@ -1,25 +1,51 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "~/hooks/useAuth";
 import { useUserMutations } from "~/hooks/useUserMutations";
 import type { User } from "./post/Post";
 import { Button } from "./ui/button";
+import { Dialog, DialogContent } from "./ui/dialog";
+import { UserAvatar } from "./user/UserAvatar";
 
 export const FollowButton = ({ user, className }: { user: User; className?: string }) => {
-  const following = user.actions.followed;
+  const [isFollowing, setIsFollowing] = useState(user.actions.followed);
+  const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
   const followsMe = user.actions.following;
   const { requireAuth } = useAuth();
   const { follow } = useUserMutations(user.id);
 
-  const toggleFollow = async () => {
+  const handleFollow = async () => {
+    const previousState = isFollowing;
+    setIsFollowing(!isFollowing);
+
     try {
       await follow();
-      toast.success(`${!following ? "Followed" : "Unfollowed"} Successfully!`, { 
-        description: "Finalized on-chain" 
-      });
     } catch (error) {
-      toast.error(`${!following ? "Follow" : "Unfollow"} action failed`);
+      setIsFollowing(previousState);
+      toast.error("Follow action failed");
+    }
+  };
+
+  const handleUnfollow = async () => {
+    setShowUnfollowDialog(false);
+    const previousState = isFollowing;
+    setIsFollowing(!isFollowing);
+
+    try {
+      await follow();
+    } catch (error) {
+      setIsFollowing(previousState);
+      toast.error("Unfollow action failed");
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (isFollowing) {
+      setShowUnfollowDialog(true);
+    } else {
+      requireAuth(handleFollow);
     }
   };
 
@@ -27,14 +53,39 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
     <>
       <Button
         size="sm"
-        variant={following ? "outline" : "default"}
-        onClick={() => {
-          requireAuth(toggleFollow);
-        }}
+        variant={isFollowing ? "outline" : "default"}
+        onClick={handleButtonClick}
         className={`font-semibold text-sm ${className}`}
       >
-        {following ? "Following" : followsMe ? "Follow back" : "Follow"}
+        {isFollowing ? "Following" : followsMe ? "Follow back" : "Follow"}
       </Button>
+
+      <Dialog open={showUnfollowDialog} onOpenChange={setShowUnfollowDialog}>
+        <DialogContent className="p-0 gap-0 max-w-xs rounded-2xl">
+          <div className="flex flex-col items-center p-6">
+            <div className="w-16 h-16 mb-4">
+              <UserAvatar user={user} link={false} card={false} />
+            </div>
+            <h2 className="text-lg font-semibold">Unfollow {user.handle}?</h2>
+          </div>
+          <div className="flex w-full h-16">
+            <Button
+              variant="ghost"
+              onClick={() => setShowUnfollowDialog(false)}
+              className="w-1/2 rounded-none rounded-bl-lg border-t border-r hover:bg-muted/50"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={handleUnfollow}
+              className="w-1/2 rounded-none rounded-br-lg border-t text-destructive hover:bg-destructive/10 hover:text-destructive"
+            >
+              Unfollow
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

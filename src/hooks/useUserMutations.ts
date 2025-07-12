@@ -14,21 +14,16 @@ export function useUserMutations(userId: string) {
       return updater(oldData);
     });
 
-    queryClient.setQueriesData<{ pages: { data: User[] }[] }>(
-      { queryKey: ["users"], exact: false },
-      (oldData) => {
-        if (!oldData?.pages) return oldData;
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page) => ({
-            ...page,
-            data: page.data.map((user) =>
-              user.id === userId ? updater(user) : user
-            ),
-          })),
-        };
-      }
-    );
+    queryClient.setQueriesData<{ pages: { data: User[] }[] }>({ queryKey: ["users"], exact: false }, (oldData) => {
+      if (!oldData?.pages) return oldData;
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page) => ({
+          ...page,
+          data: page.data.map((user) => (user.id === userId ? updater(user) : user)),
+        })),
+      };
+    });
   };
 
   const followMutation = useMutation<boolean, Error, void, UserMutationContext>({
@@ -42,15 +37,15 @@ export function useUserMutations(userId: string) {
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["user", userId] });
-      
+
       const previousUser = queryClient.getQueryData<User>(["user", userId]);
-      
+
       // Optimistic update
       updateUserInCache((old) => ({
         ...old,
         actions: {
           ...old.actions,
-          following: !old.actions?.following,
+          followed: !old.actions?.followed,
         },
       }));
 
@@ -80,9 +75,9 @@ export function useUserMutations(userId: string) {
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["user", userId] });
-      
+
       const previousUser = queryClient.getQueryData<User>(["user", userId]);
-      
+
       // Optimistic update
       updateUserInCache((old) => ({
         ...old,
@@ -115,9 +110,9 @@ export function useUserMutations(userId: string) {
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["user", userId] });
-      
+
       const previousUser = queryClient.getQueryData<User>(["user", userId]);
-      
+
       // Optimistic update
       updateUserInCache((old) => ({
         ...old,
@@ -150,9 +145,9 @@ export function useUserMutations(userId: string) {
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["user", userId] });
-      
+
       const previousUser = queryClient.getQueryData<User>(["user", userId]);
-      
+
       // Optimistic update
       updateUserInCache((old) => ({
         ...old,
@@ -185,9 +180,9 @@ export function useUserMutations(userId: string) {
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["user", userId] });
-      
+
       const previousUser = queryClient.getQueryData<User>(["user", userId]);
-      
+
       // Optimistic update
       updateUserInCache((old) => ({
         ...old,

@@ -11,13 +11,13 @@ export async function generateMetadata({ params }: { params: { user: string } })
   if (!user) {
     return {
       title: handle,
-      description: `@${handle} on Pingpad`,
+      description: `${handle} on Pingpad`,
     };
   }
 
   const displayName = user.name || handle;
-  const title = `${displayName} (@${handle})`;
-  const description = user.description || `@${handle} on Pingpad`;
+  const title = `${handle}`;
+  const description = user.description || `${handle} on Pingpad`;
 
   const ogImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}og/user?handle=${handle}&name=${encodeURIComponent(
     displayName,
