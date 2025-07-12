@@ -49,6 +49,6 @@ export const usePostStateWithFallback = (
   const fallbackState = usePostState(post, onReply, onMenuAction, onEditToggle);
 
   const state = context || fallbackState;
-  
+
   return state;
 };

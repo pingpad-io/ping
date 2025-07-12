@@ -6,9 +6,9 @@ export function useCachedPost(post: Post): Post {
     queryKey: ["post", post.id],
     queryFn: () => post,
     initialData: post,
-    staleTime: Infinity, // Don't refetch automatically
+    staleTime: Number.POSITIVE_INFINITY, // Don't refetch automatically
     enabled: false, // Don't fetch, just subscribe to cache
   });
-  
+
   return data || post;
 }

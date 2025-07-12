@@ -43,12 +43,16 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
 
   const embedInfo = detectEmbedType(url);
 
-  const { data: preview, isLoading, isError } = useQuery({
+  const {
+    data: preview,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["linkPreview", url],
     queryFn: () => fetchLinkPreview(url),
     enabled: !embedInfo.type,
     staleTime: 7 * 24 * 60 * 60 * 1000, // 7 days
-    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 days 
+    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 days
     retry: 1,
   });
 

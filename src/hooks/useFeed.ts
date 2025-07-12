@@ -7,20 +7,18 @@ interface FeedResponse {
 }
 
 export function useFeed(endpoint: string, params?: Record<string, string>) {
-  const queryString = params
-    ? `?${new URLSearchParams(params).toString()}`
-    : "";
+  const queryString = params ? `?${new URLSearchParams(params).toString()}` : "";
 
   return useInfiniteQuery({
     queryKey: ["posts", endpoint, params],
     queryFn: async ({ pageParam }) => {
       const cursor = pageParam ? `&cursor=${pageParam}` : "";
       const response = await fetch(`${endpoint}${queryString}${cursor}`);
-      
+
       if (!response.ok) {
         throw new Error("Failed to fetch feed");
       }
-      
+
       const data: FeedResponse = await response.json();
       return data;
     },

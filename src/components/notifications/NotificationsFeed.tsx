@@ -14,7 +14,7 @@ export function NotificationsFeed() {
     const timer = setTimeout(() => {
       markAllAsRead();
     }, 1000);
-    
+
     return () => clearTimeout(timer);
   }, [refresh, markAllAsRead]);
 

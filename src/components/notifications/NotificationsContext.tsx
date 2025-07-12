@@ -62,7 +62,12 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
 
   // Use TanStack Query for fetching and caching notifications
-  const { data: notifications = [], isLoading, error, refetch } = useQuery({
+  const {
+    data: notifications = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
     enabled: !!user,
@@ -74,7 +79,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
   // Sort notifications by date
   const sortedNotifications = [...notifications].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
   const computeNewCount = (items: Notification[]) => {

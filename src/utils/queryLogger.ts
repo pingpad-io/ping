@@ -1,4 +1,4 @@
-import { QueryCache, MutationCache } from "@tanstack/react-query";
+import { MutationCache, QueryCache } from "@tanstack/react-query";
 
 export const queryCache = new QueryCache({
   onError: (error, query) => {
@@ -13,10 +13,10 @@ export const queryCache = new QueryCache({
 });
 
 export const mutationCache = new MutationCache({
-  onError: (error, variables, context, mutation) => {
+  onError: (error, _variables, _context, mutation) => {
     console.error(`Mutation Error [${mutation.options.mutationKey}]:`, error);
   },
-  onSuccess: (data, variables, context, mutation) => {
+  onSuccess: (data, _variables, _context, mutation) => {
     console.log(`Mutation Success [${mutation.options.mutationKey}]:`, data);
   },
 });

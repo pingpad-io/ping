@@ -15,8 +15,7 @@ export const RepostInfo = ({ post }: { post: Post }) => {
     >
       <Repeat2Icon size={14} className="shrink-0 text-muted-foreground" />
       <span className="pb-0.5">
-        {username} reposted{" "}
-        {post.repostedAt && <TimeElapsedSince date={post.repostedAt} />} {" ago"}
+        {username} reposted {post.repostedAt && <TimeElapsedSince date={post.repostedAt} />} {" ago"}
       </span>
     </Link>
   );

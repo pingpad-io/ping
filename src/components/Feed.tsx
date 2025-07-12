@@ -18,29 +18,22 @@ interface FeedResponse<T> {
   nextCursor?: string;
 }
 
-export const Feed = <T extends { id: string } = any>({ 
-  ItemView, 
-  endpoint, 
+export const Feed = <T extends { id: string } = any>({
+  ItemView,
+  endpoint,
   manualNextPage = false,
-  queryKey
+  queryKey,
 }: FeedProps<T>) => {
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading
-  } = useInfiniteQuery<FeedResponse<T>>({
+  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<FeedResponse<T>>({
     queryKey: queryKey || ["feed", endpoint],
     queryFn: async ({ pageParam }) => {
       const hasParams = endpoint.includes("?");
       const paramsMarker = hasParams ? "&" : "?";
       const url = `${endpoint}${paramsMarker}${pageParam ? `cursor=${pageParam}` : ""}`;
-      
+
       const res = await fetch(url, { method: "GET" });
       if (!res.ok) throw new Error(res.statusText);
-      
+
       return res.json();
     },
     initialPageParam: undefined as string | undefined,
@@ -78,7 +71,7 @@ export const Feed = <T extends { id: string } = any>({
   if (error) throw error;
   if (isLoading) return <FeedSuspense />;
 
-  const items = data?.pages.flatMap(page => page.data) || [];
+  const items = data?.pages.flatMap((page) => page.data) || [];
   const list = items.filter(Boolean).map((item) => <ItemView key={item.id} item={item} />);
 
   return (

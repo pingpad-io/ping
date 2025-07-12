@@ -7,16 +7,16 @@ async function fetchPost(id: string): Promise<Post | null> {
     const res = await fetch(`/api/posts/${id}`);
     if (!res.ok) throw new Error(res.statusText);
     const data = await res.json();
-    
+
     // Handle both possible response formats
     const post = data.nativePost || data.data || data;
-    
+
     // Validate the post has required fields
-    if (!post || typeof post !== 'object' || !post.id) {
+    if (!post || typeof post !== "object" || !post.id) {
       console.error("Invalid post data received:", post);
       return null;
     }
-    
+
     return post as Post;
   } catch (error) {
     console.error("Failed to fetch post", error);
@@ -31,7 +31,7 @@ export function useParentThread(post: Post) {
   useEffect(() => {
     const ids: string[] = [];
     let current: Post | undefined = post;
-    
+
     // Collect all parent IDs up the chain
     while (current) {
       const parentId = current.commentOn?.id ?? current.quoteOn?.id;
@@ -43,7 +43,7 @@ export function useParentThread(post: Post) {
       }
       current = undefined;
     }
-    
+
     setParentIds(ids);
   }, [post]);
 
@@ -71,7 +71,7 @@ export function useParentThread(post: Post) {
   const loading = queries.some((q) => q.isLoading);
   const parentThread = queries
     .map((q) => q.data)
-    .filter((p): p is Post => p !== null && p !== undefined && typeof p === 'object' && 'id' in p)
+    .filter((p): p is Post => p !== null && p !== undefined && typeof p === "object" && "id" in p)
     .reverse(); // Reverse to show oldest parent first
 
   return { parentThread, loading };
