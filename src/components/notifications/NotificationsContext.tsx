@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { useUser } from "../user/UserContext";
@@ -12,6 +13,8 @@ interface NotificationsContextValue {
   setNotifications: (items: Notification[]) => void;
   markAllAsRead: () => void;
   refresh: () => Promise<void>;
+  isLoading: boolean;
+  error: Error | null;
 }
 
 const NotificationsContext = createContext<NotificationsContextValue | undefined>(undefined);
@@ -30,18 +33,49 @@ function parseNotification(raw: any): Notification {
   } as Notification;
 }
 
+const fetchNotifications = async (): Promise<Notification[]> => {
+  const res = await fetch("/api/notifications");
+  if (res.status === 401) {
+    console.log("Not authenticated - skipping notification refresh");
+    return [];
+  }
+  if (!res.ok) {
+    throw new Error(`Failed to fetch notifications: ${res.statusText}`);
+  }
+  const data = await res.json();
+  if (Array.isArray(data.data)) {
+    return data.data.map(parseNotification);
+  }
+  return [];
+};
+
 export function NotificationsProvider({ children }: { children: ReactNode }) {
-  const [notifications, setNotificationsState] = useState<Notification[]>([]);
   const [lastSeen, setLastSeen] = useState<number>(() => {
     if (typeof window === "undefined") return Date.now();
     const stored = window.localStorage.getItem("lastSeenNotifications");
     return stored ? Number.parseInt(stored, 10) : Date.now();
   });
-  const [newCount, setNewCount] = useState<number>(0);
   const [baseTitle, setBaseTitle] = useState<string>("");
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useUser();
+  const queryClient = useQueryClient();
+
+  // Use TanStack Query for fetching and caching notifications
+  const { data: notifications = [], isLoading, error, refetch } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: fetchNotifications,
+    enabled: !!user,
+    staleTime: 30 * 1000, // Consider data fresh for 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    refetchInterval: 30 * 1000, // Poll every 30 seconds
+    refetchIntervalInBackground: true, // Continue polling in background
+  });
+
+  // Sort notifications by date
+  const sortedNotifications = [...notifications].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 
   const computeNewCount = (items: Notification[]) => {
     const newNotifications = items.filter((n) => {
@@ -71,48 +105,17 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     return newNotifications.length;
   };
 
-  const setNotifications = (items: Notification[]) => {
-    const parsed = items.map((n) => (typeof n.createdAt === "string" ? parseNotification(n) : n));
-    parsed.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const newCount = computeNewCount(sortedNotifications);
 
-    setNotificationsState(parsed);
-    setNewCount(computeNewCount(parsed));
+  const setNotifications = (items: Notification[]) => {
+    // Update the query cache directly
+    queryClient.setQueryData(["notifications"], items);
   };
 
   const refresh = async () => {
-    if (!user) {
-      console.log("Skipping notification refresh - user not logged in");
-      return;
-    }
-
-    try {
-      console.log("Refreshing notifications...");
-      const res = await fetch("/api/notifications");
-      if (res.status === 401) {
-        console.log("Not authenticated - skipping notification refresh");
-        return;
-      }
-      if (!res.ok) {
-        console.error("Failed to refresh notifications:", res.statusText);
-        return;
-      }
-      const data = await res.json();
-      if (Array.isArray(data.data)) {
-        console.log(`Refreshed notifications: ${data.data.length} items`);
-        setNotifications(data.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch notifications", err);
-    }
+    console.log("Manually refreshing notifications...");
+    await refetch();
   };
-
-  useEffect(() => {
-    if (user) {
-      refresh();
-      const interval = setInterval(refresh, 30_000); // 30 seconds
-      return () => clearInterval(interval);
-    }
-  }, [lastSeen, user]);
 
   useEffect(() => {
     setBaseTitle(document.title);
@@ -129,7 +132,6 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
   const markAllAsRead = () => {
     const now = Date.now();
-    setNewCount(0);
     setLastSeen(now);
     if (typeof window !== "undefined") {
       window.localStorage.setItem("lastSeenNotifications", now.toString());
@@ -138,7 +140,16 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
   return (
     <NotificationsContext.Provider
-      value={{ notifications, lastSeen, newCount, setNotifications, markAllAsRead, refresh }}
+      value={{
+        notifications: sortedNotifications,
+        lastSeen,
+        newCount,
+        setNotifications,
+        markAllAsRead,
+        refresh,
+        isLoading,
+        error,
+      }}
     >
       {children}
     </NotificationsContext.Provider>

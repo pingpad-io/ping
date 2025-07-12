@@ -1,24 +1,18 @@
 "use client";
 
 import { ChevronDownIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useAuth } from "~/hooks/useAuth";
+import { useCachedPost } from "~/hooks/useCachedPost";
+import { usePostMutations } from "~/hooks/usePostMutations";
 import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
 import { Button } from "../ui/button";
-import { useUser } from "../user/UserContext";
-import type { Post, PostReactionType } from "./Post";
+import type { Post } from "./Post";
 import RepostDropdown from "./RepostDropdown";
 
-type ReactionState = {
-  [key in Exclude<PostReactionType | "Like", "Bookmark">]: {
-    count: number;
-    isActive: boolean;
-  };
-};
-
 export function ReactionsList({
-  post,
+  post: postProp,
   collapsed,
   isComment,
   isCommentsOpen,
@@ -30,43 +24,19 @@ export function ReactionsList({
   isCommentsOpen: boolean;
   setCommentsOpen: (open: boolean) => void;
 }) {
-  const [reactions, setReactions] = useState<ReactionState>({
-    Repost: { count: post.reactions.Repost, isActive: post.reactions.isReposted },
-    Comment: { count: post.reactions.Comment, isActive: false },
-    Collect: { count: post.reactions.Collect, isActive: post.reactions.isCollected },
-    Like: { count: post.reactions.upvotes || 0, isActive: post.reactions.isUpvoted || false },
-  });
-
-  const { user: authedUser } = useUser();
   const { requireAuth } = useAuth();
-
+  const post = useCachedPost(postProp);
+  const { upvote } = usePostMutations(post.id, post);
   const { triggerExplosion } = useExplosion();
   const likeButtonRef = useRef<HTMLSpanElement>(null);
 
-  const updateReaction = async (reactionType: Exclude<PostReactionType | "Like", "Bookmark">) => {
-    setReactions((prev) => ({
-      ...prev,
-      [reactionType]: {
-        count: prev[reactionType].count + (prev[reactionType].isActive ? -1 : 1),
-        isActive: !prev[reactionType].isActive,
-      },
-    }));
-
-    if (reactionType === "Like") {
-      const wasActive = reactions.Like.isActive;
-      if (!wasActive && likeButtonRef.current) {
+  const handleLikeClick = () => {
+    requireAuth(() => {
+      if (!post.reactions.isUpvoted && likeButtonRef.current) {
         triggerExplosion("like", likeButtonRef.current);
       }
-    }
-
-    const route = reactionType === "Like" ? "upvote" : reactionType.toLowerCase();
-    const response = await fetch(`/api/posts/${post.id}/${route}`, {
-      method: "POST",
+      upvote();
     });
-    const result = (await response.json()).result;
-    if (result === undefined) {
-      console.error(`Failed to toggle ${reactionType}`);
-    }
   };
 
   return (
@@ -75,7 +45,10 @@ export function ReactionsList({
         <ReactionButton
           variant={isComment ? "comment" : "post"}
           reactionType="Comment"
-          reaction={reactions.Comment}
+          reaction={{
+            count: post.reactions.Comment,
+            isActive: false,
+          }}
           onClick={() => requireAuth(() => setCommentsOpen(!isCommentsOpen))}
         />
       </div>
@@ -84,16 +57,10 @@ export function ReactionsList({
           post={post}
           variant={isComment ? "comment" : "post"}
           reactions={{
-            reacted: reactions.Repost.isActive,
-            count: reactions.Repost.count,
+            reacted: post.reactions.isReposted,
+            count: post.reactions.Repost,
             canRepost: post.reactions?.canRepost || false,
             canQuote: post.reactions?.canQuote || false,
-          }}
-          onRepostChange={(isReposted, count) => {
-            setReactions((prev) => ({
-              ...prev,
-              Repost: { count, isActive: isReposted },
-            }));
           }}
         />
       </div>
@@ -102,10 +69,11 @@ export function ReactionsList({
           <ReactionButton
             variant={isComment ? "comment" : "post"}
             reactionType="Like"
-            reaction={reactions.Like}
-            onClick={() => {
-              requireAuth(() => updateReaction("Like"));
+            reaction={{
+              count: post.reactions.upvotes || 0,
+              isActive: post.reactions.isUpvoted || false,
             }}
+            onClick={handleLikeClick}
           />
         </span>
       </div>

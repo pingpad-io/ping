@@ -52,7 +52,7 @@ export function PostThread({ post }: { post: Post }) {
 
   return (
     <div ref={containerRef} className="flex flex-col gap-1 p-4">
-      {parentThread.map((p) => (
+      {parentThread.filter(Boolean).map((p) => (
         <div key={p.id} className="relative">
           <PostView settings={{ inThread: true }} item={p} />
         </div>
@@ -64,7 +64,7 @@ export function PostThread({ post }: { post: Post }) {
           <PostView item={post} defaultExpanded={true} defaultCommentsOpen={false} defaultReplyOpen={false} />
         </div>
 
-        {authorThread.map((p) => (
+        {authorThread.filter(Boolean).map((p) => (
           <div key={p.id} className="relative">
             <PostView settings={{ inThread: true }} item={p} />
           </div>

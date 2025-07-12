@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Feed } from "~/components/Feed";
-import { NotificationView } from "~/components/notifications/NotificationView";
+import { NotificationsFeed } from "~/components/notifications/NotificationsFeed";
 
 export const metadata: Metadata = {
   title: "Activity",
@@ -18,10 +17,8 @@ export const metadata: Metadata = {
   },
 };
 
-const endpoint = "/api/notifications";
-
 const notifications = async () => {
-  return <Feed ItemView={NotificationView} endpoint={endpoint} />;
+  return <NotificationsFeed />;
 };
 
 export default notifications;

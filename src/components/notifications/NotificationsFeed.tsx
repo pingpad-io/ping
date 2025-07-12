@@ -1,0 +1,22 @@
+"use client";
+
+import { useEffect } from "react";
+import { Feed } from "../Feed";
+import { useNotifications } from "./NotificationsContext";
+import { NotificationView } from "./NotificationView";
+
+export function NotificationsFeed() {
+  const { refresh, markAllAsRead } = useNotifications();
+
+  useEffect(() => {
+    refresh();
+
+    const timer = setTimeout(() => {
+      markAllAsRead();
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [refresh, markAllAsRead]);
+
+  return <Feed ItemView={NotificationView} endpoint="/api/notifications" />;
+}

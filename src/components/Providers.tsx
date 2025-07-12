@@ -3,6 +3,7 @@
 import { chains } from "@lens-chain/sdk/viem";
 import { LensProvider, mainnet, PublicClient } from "@lens-protocol/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ConnectKitProvider } from "connectkit";
 import { familyAccountsConnector } from "family";
 import { Provider as JotaiProvider } from "jotai";
@@ -63,6 +64,9 @@ const queryClient = new QueryClient({
       staleTime: 60 * 1000, // 1 minute default
     },
   },
+  // Uncomment to enable console logging
+  // queryCache: queryCache,
+  // mutationCache: mutationCache,
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -92,6 +96,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                     {children}
                   </OverlayScrollbarsComponent>
                   <ConnectWalletDialog />
+                  <ReactQueryDevtools initialIsOpen={false} />
                 </ExplosionProvider>
               </LensProvider>
             </ConnectKitProvider>
