@@ -228,7 +228,7 @@ export const VideoPlayer = ({
         className="relative h-full flex flex-col"
       >
         <div className="relative flex-1">
-          <div className={`${isFullscreen ? "fixed inset-0 z-40 bg-black" : "absolute inset-0"}`}>
+          <div className={`${isFullscreen ? "fixed inset-0" : "absolute inset-0"}`}>
             {shown &&
               (() => {
                 const currentItem = getCurrentItem();
@@ -381,9 +381,8 @@ export const VideoPlayer = ({
                     setPlaying(false);
                     navigateToItem(index);
                   }}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === activeIndex ? "bg-white" : "bg-white/50"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all ${index === activeIndex ? "bg-white" : "bg-white/50"
+                    }`}
                   aria-label={`Go to item ${index + 1}`}
                 />
               ))}
