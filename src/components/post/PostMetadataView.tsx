@@ -15,23 +15,20 @@ import {
   TransactionMetadataDetails,
   VideoMetadataDetails,
 } from "@lens-protocol/metadata";
+import { castToMediaImageType, castToMediaVideoType, isImageMimeType } from "~/utils/mimeTypes";
 import { AudioPlayer } from "../AudioPlayer";
+import { LinkPreview } from "../embeds/LinkPreview";
 import { ImageViewer } from "../ImageViewer";
-import Markdown from "../Markdown";
+import Markdown, { extractUrlsFromText } from "../Markdown";
 import { Badge } from "../ui/badge";
 import { VideoPlayer } from "../VideoPlayer";
-import { LinkPreview } from "../embeds/LinkPreview";
-
 import type { PostMention } from "./Post";
-import { 
-  normalizeImageMimeType, 
-  normalizeVideoMimeType,
-  isImageMimeType,
-  castToMediaImageType,
-  castToMediaVideoType
-} from "~/utils/mimeTypes";
 
-export const getPostTextContent = (metadata: any, mentions?: PostMention[], showLinkPreviews?: boolean): React.ReactNode => {
+export const getPostTextContent = (
+  metadata: any,
+  mentions?: PostMention[],
+  showLinkPreviews = false,
+): React.ReactNode => {
   const content = metadata?.content || "";
 
   switch (metadata.__typename) {
@@ -71,6 +68,23 @@ export const getPostMediaContent = (metadata: any): React.ReactNode => {
   }
 };
 
+export const getPostLinkPreviews = (metadata: any): string[] => {
+  const content = metadata?.content || "";
+
+  // For LinkMetadata, we handle the preview separately in the view
+  if (metadata.__typename === "LinkMetadata") {
+    return [];
+  }
+
+  // For EmbedMetadata, we also handle it separately
+  if (metadata.__typename === "EmbedMetadata") {
+    return [];
+  }
+
+  // Extract URLs from the content
+  return extractUrlsFromText(content);
+};
+
 export const getPostMetadataView = (metadata: any, mentions?: PostMention[]) => {
   switch (metadata.__typename) {
     case "TextOnlyMetadata":
@@ -108,7 +122,15 @@ export const getPostMetadataView = (metadata: any, mentions?: PostMention[]) => 
   }
 };
 
-const ContentView = ({ content, mentions, showLinkPreviews = false }: { content: string; mentions?: PostMention[]; showLinkPreviews?: boolean }) => {
+const ContentView = ({
+  content,
+  mentions,
+  showLinkPreviews = false,
+}: {
+  content: string;
+  mentions?: PostMention[];
+  showLinkPreviews?: boolean;
+}) => {
   return <Markdown content={content} mentions={mentions} showLinkPreviews={showLinkPreviews} />;
 };
 
@@ -179,8 +201,8 @@ const getVideoMediaContent = (metadata: VideoMetadataDetails): React.ReactNode =
     attachments.forEach((att: any) => {
       if (att.item && att.type) {
         // Normalize the type - it could be either image or video
-        const normalizedType = isImageMimeType(att.type) 
-          ? castToMediaImageType(att.type) 
+        const normalizedType = isImageMimeType(att.type)
+          ? castToMediaImageType(att.type)
           : castToMediaVideoType(att.type);
         allMedia.push({ item: att.item, type: normalizedType });
       }
@@ -226,7 +248,7 @@ export const AudioView = ({ metadata, mentions }: { metadata: AudioMetadataDetai
 export const LinkView = ({ metadata, mentions }: { metadata: LinkMetadataDetails; mentions?: PostMention[] }) => {
   // Check if the content already contains the sharing link
   const contentContainsLink = metadata.content.includes(metadata.sharingLink);
-  
+
   return (
     <div>
       <ContentView content={metadata.content} mentions={mentions} />
@@ -314,7 +336,6 @@ type MediaAttachment = {
   item: string;
   type: string;
 };
-
 
 const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
   return (

@@ -9,12 +9,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  rectSortingStrategy,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-} from "@dnd-kit/sortable";
+import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SendHorizontalIcon, VideoIcon, X } from "lucide-react";
@@ -25,6 +20,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { useAuth } from "~/hooks/useAuth";
+import { type MediaItem, useMediaProcessing } from "~/hooks/useMediaProcessing";
+import { MAX_CONTENT_LENGTH, usePostSubmission } from "~/hooks/usePostSubmission";
 import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
@@ -32,10 +29,8 @@ import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { useUser } from "../user/UserContext";
 import type { Post } from "./Post";
-import { useMediaProcessing, type MediaItem } from "~/hooks/useMediaProcessing";
-import { usePostSubmission, MAX_CONTENT_LENGTH } from "~/hooks/usePostSubmission";
-import { PostComposerHeader } from "./PostComposerHeader";
 import { PostComposerActions } from "./PostComposerActions";
+import { PostComposerHeader } from "./PostComposerHeader";
 import { QuotedPostPreview } from "./QuotedPostPreview";
 
 interface SortableMediaItemProps {
@@ -55,21 +50,18 @@ const SortableMediaItem = ({ item, index, onRemove }: SortableMediaItemProps) =>
     transition,
   };
 
-  const isVideo = item.type === 'file' 
-    ? item.file.type.startsWith("video/")
-    : item.mimeType.startsWith("video/");
+  const isVideo = item.type === "file" ? item.file.type.startsWith("video/") : item.mimeType.startsWith("video/");
   const [url, setUrl] = useState<string>("");
 
   useEffect(() => {
-    if (item.type === 'file') {
+    if (item.type === "file") {
       const objectUrl = URL.createObjectURL(item.file);
       setUrl(objectUrl);
       return () => {
         URL.revokeObjectURL(objectUrl);
       };
-    } else {
-      setUrl(item.url);
     }
+    setUrl(item.url);
   }, [item]);
 
   return (
@@ -140,19 +132,13 @@ const MediaPreview = ({
       <SortableContext items={fileIds} strategy={rectSortingStrategy}>
         <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {files.map((item, index) => (
-            <SortableMediaItem
-              key={item.id}
-              item={item}
-              index={index}
-              onRemove={() => onRemove(item.id)}
-            />
+            <SortableMediaItem key={item.id} item={item} index={index} onRemove={() => onRemove(item.id)} />
           ))}
         </div>
       </SortableContext>
     </DndContext>
   );
 };
-
 
 export default function PostComposer({
   user,
@@ -178,7 +164,7 @@ export default function PostComposer({
   const { user: contextUser } = useUser();
   const { requireAuth } = useAuth();
   const currentUser = user || contextUser;
-  
+
   const {
     mediaFiles,
     setMediaFiles,
@@ -187,11 +173,11 @@ export default function PostComposer({
     removeMedia,
     reorderMedia,
     processMediaForSubmission,
-    clearMedia
+    clearMedia,
   } = useMediaProcessing();
 
   const { isPosting, submitPost } = usePostSubmission();
-  
+
   const pathname = usePathname().split("/");
   const community = pathname[1] === "c" ? pathname[2] : "";
 
@@ -202,7 +188,6 @@ export default function PostComposer({
       setMediaFiles(existingMedia);
     }
   }, [editingPost, loadExistingMedia, setMediaFiles]);
-
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -261,7 +246,7 @@ export default function PostComposer({
       clearForm: () => {
         form.setValue("content", "");
         clearMedia();
-      }
+      },
     });
   }
 
@@ -274,7 +259,6 @@ export default function PostComposer({
     },
     [form],
   );
-
 
   const handleRemoveMedia = removeMedia;
   const handleReorderMedia = reorderMedia;
@@ -332,20 +316,13 @@ export default function PostComposer({
                 )}
               />
 
-              <PostComposerActions
-                onImageClick={open}
-                onEmojiClick={handleEmojiClick}
-              />
+              <PostComposerActions onImageClick={open} onEmojiClick={handleEmojiClick} />
 
               <MediaPreview files={mediaFiles} onRemove={handleRemoveMedia} onReorder={handleReorderMedia} />
               {quotedPost && <QuotedPostPreview quotedPost={quotedPost} />}
               {editingPost && (
                 <div className="mt-4">
-                  <Button
-                    disabled={isPosting || isEmpty}
-                    type="submit"
-                    className="w-full"
-                  >
+                  <Button disabled={isPosting || isEmpty} type="submit" className="w-full">
                     {isPosting ? (
                       <span className="flex items-center gap-2">
                         <LoadingSpinner />

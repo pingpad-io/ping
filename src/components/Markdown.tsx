@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown/lib/ast-to-react";
 import remarkBreaks from "remark-breaks";
@@ -5,32 +6,66 @@ import remarkGfm from "remark-gfm";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { parseContent } from "~/utils/parseContent";
 import { CommunityHandle } from "./communities/CommunityHandle";
-import { ImageViewer } from "./ImageViewer";
-import { UserLazyHandle } from "./user/UserLazyHandle";
-import { AccountMention } from "./user/AccountMention";
-import type { PostMention } from "./post/Post";
 import { LinkPreview } from "./embeds/LinkPreview";
-import { useMemo } from "react";
+import { ImageViewer } from "./ImageViewer";
+import type { PostMention } from "./post/Post";
+import { AccountMention } from "./user/AccountMention";
+import { UserLazyHandle } from "./user/UserLazyHandle";
 import "~/components/composer/lexical.css";
 
 const BASE_URL = getBaseUrl();
-const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?: string; showLinkPreviews?: boolean }> = ({
-  content,
-  mentions,
-  className = "",
-  showLinkPreviews = false
-}) => {
+
+export const extractUrlsFromText = (text: string): string[] => {
+  const uniqueUrls = new Map<string, string>();
+
+  const urlRegex = /https?:\/\/[^\s<>"\]]+/gi;
+  const allMatches = text.match(urlRegex) || [];
+
+  const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const markdownUrls = new Set<string>();
+  let match: RegExpExecArray | null;
+
+  while ((match = markdownLinkRegex.exec(text)) !== null) {
+    const linkUrl = match[2].trim();
+    markdownUrls.add(linkUrl);
+  }
+
+  for (const rawUrl of allMatches) {
+    const cleanUrl = rawUrl.replace(/[.,;:!?]+$/, "").trim();
+
+    if (cleanUrl.startsWith(BASE_URL) || markdownUrls.has(cleanUrl)) {
+      continue;
+    }
+
+    try {
+      const urlObj = new URL(cleanUrl);
+      const normalizedUrl = urlObj.href;
+
+      if (!uniqueUrls.has(normalizedUrl)) {
+        uniqueUrls.set(normalizedUrl, cleanUrl);
+      }
+    } catch {
+      // If URL parsing fails, skip it
+    }
+  }
+
+  const result = Array.from(uniqueUrls.values());
+  return result;
+};
+const Markdown: React.FC<{
+  content: string;
+  mentions?: PostMention[];
+  className?: string;
+  showLinkPreviews?: boolean;
+}> = ({ content, mentions, className = "", showLinkPreviews = false }) => {
   let processedText = content;
   if (mentions && mentions.length > 0) {
     mentions.forEach((mention, index) => {
       if (mention.__typename === "AccountMention") {
-        const mentionPattern = mention.replace?.from || 
-          (mention.localName ? `@lens/${mention.localName}` : `@${mention.account}`);
-        
-        processedText = processedText.replace(
-          mentionPattern,
-          `[${mentionPattern}](${BASE_URL}mention/${index})`
-        );
+        const mentionPattern =
+          mention.replace?.from || (mention.localName ? `@lens/${mention.localName}` : `@${mention.account}`);
+
+        processedText = processedText.replace(mentionPattern, `[${mentionPattern}](${BASE_URL}mention/${index})`);
       }
     });
   } else {
@@ -48,7 +83,7 @@ const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?
       const { href, children } = props;
       if (href?.startsWith(BASE_URL)) {
         if (href.startsWith(`${BASE_URL}mention/`) && mentions) {
-          const mentionIndex = parseInt(href.split("/mention/")[1]);
+          const mentionIndex = Number.parseInt(href.split("/mention/")[1]);
           const mention = mentions[mentionIndex];
           if (mention && mention.__typename === "AccountMention") {
             let handle = mention.localName;
@@ -61,7 +96,7 @@ const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?
               const handleMatch = handleText.match(/@lens\/(\w+)/);
               handle = handleMatch ? handleMatch[1] : mention.account;
             }
-            
+
             return (
               <span className={`lexical-link ${colorClasses}`}>
                 <AccountMention
@@ -119,41 +154,7 @@ const Markdown: React.FC<{ content: string; mentions?: PostMention[]; className?
   };
 
   const extractedUrls = useMemo(() => {
-    const uniqueUrls = new Map<string, string>();
-    
-    const urlRegex = /https?:\/\/[^\s<>"\]]+/gi;
-    const allMatches = processedText.match(urlRegex) || [];
-    
-    const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    const markdownUrls = new Set<string>();
-    let match: RegExpExecArray | null;
-    
-    while ((match = markdownLinkRegex.exec(processedText)) !== null) {
-      const linkUrl = match[2].trim();
-      markdownUrls.add(linkUrl);
-    }
-    
-    for (const rawUrl of allMatches) {
-      const cleanUrl = rawUrl.replace(/[.,;:!?]+$/, '').trim();
-      
-      if (cleanUrl.startsWith(BASE_URL) || markdownUrls.has(cleanUrl)) {
-        continue;
-      }
-      
-      try {
-        const urlObj = new URL(cleanUrl);
-        const normalizedUrl = urlObj.href;
-        
-        if (!uniqueUrls.has(normalizedUrl)) {
-          uniqueUrls.set(normalizedUrl, cleanUrl);
-        }
-      } catch {
-        // If URL parsing fails, skip it
-      }
-    }
-    
-    const result = Array.from(uniqueUrls.values());
-    return result;
+    return extractUrlsFromText(processedText);
   }, [processedText]);
 
   return (

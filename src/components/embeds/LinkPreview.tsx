@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { Embed, detectEmbedType } from "./Embed";
+import { useEffect, useState } from "react";
+import { Card } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
+import { detectEmbedType, Embed } from "./Embed";
 
 interface LinkPreviewData {
   title?: string;
@@ -158,13 +158,9 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
             />
           </div>
           <div className="p-4">
-            {preview.title && (
-              <h3 className="font-semibold line-clamp-2 mb-1">{preview.title}</h3>
-            )}
+            {preview.title && <h3 className="font-semibold line-clamp-2 mb-1">{preview.title}</h3>}
             {preview.description && (
-              <p className="text-sm text-muted-foreground line-clamp-3 mb-2">
-                {preview.description}
-              </p>
+              <p className="text-sm text-muted-foreground line-clamp-3 mb-2">{preview.description}</p>
             )}
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <ExternalLink className="h-3 w-3" />
@@ -213,9 +209,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
               <span className="font-medium text-sm">{domain}</span>
             )}
             {preview.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                {preview.description}
-              </p>
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">{preview.description}</p>
             )}
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               {!preview.image && (

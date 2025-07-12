@@ -34,7 +34,12 @@ export const usePostStateContext = () => {
 };
 
 // Hook that tries to use context first, falls back to creating new state
-export const usePostStateWithFallback = (post: Post, onReply?: () => void, onMenuAction?: () => void, onEditToggle?: (isEditing: boolean) => void) => {
+export const usePostStateWithFallback = (
+  post: Post,
+  onReply?: () => void,
+  onMenuAction?: () => void,
+  onEditToggle?: (isEditing: boolean) => void,
+) => {
   const context = useContext(PostStateContext);
   const fallbackState = usePostState(post, onReply, onMenuAction, onEditToggle);
 

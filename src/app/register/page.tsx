@@ -9,13 +9,13 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAccount, useSignMessage, useWalletClient } from "wagmi";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
-import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { env } from "~/env.mjs";
 import { useDebounce } from "~/hooks/useDebounce";
 import { getPublicClient } from "~/utils/lens/getLensClient";
@@ -79,9 +79,7 @@ export default function RegisterPage() {
     try {
       const client = getPublicClient();
       const appAddress =
-        env.NEXT_PUBLIC_NODE_ENV === "development"
-          ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET
-          : env.NEXT_PUBLIC_APP_ADDRESS;
+        env.NEXT_PUBLIC_NODE_ENV === "development" ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET : env.NEXT_PUBLIC_APP_ADDRESS;
 
       setIsWaitingForSignature(true);
 
@@ -253,7 +251,7 @@ export default function RegisterPage() {
 
       toast.success("Profile created successfully!");
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       router.push(`/u/${username}`);
       router.refresh();
@@ -273,7 +271,7 @@ export default function RegisterPage() {
       setOnboardingClient(null);
       setInitError(null);
     } else {
-      router.push('/login');
+      router.push("/login");
     }
   };
 
@@ -286,24 +284,30 @@ export default function RegisterPage() {
               <ChevronLeftIcon className="h-4 w-4" />
             </Button>
             <h2 className="text-lg font-semibold">
-              {currentStep === "signin" ? "Let's create a new profile" :
-                currentStep === "username" ? "Choose your username" : "Set up your profile"}
+              {currentStep === "signin"
+                ? "Let's create a new profile"
+                : currentStep === "username"
+                  ? "Choose your username"
+                  : "Set up your profile"}
             </h2>
             <div className="w-10" />
           </div>
 
           <div className="flex gap-2 px-4 py-2">
             <div
-              className={`h-1 flex-1 rounded-full transition-colors ${currentStep === "signin" ? "bg-primary" : "bg-primary"
-                }`}
+              className={`h-1 flex-1 rounded-full transition-colors ${
+                currentStep === "signin" ? "bg-primary" : "bg-primary"
+              }`}
             />
             <div
-              className={`h-1 flex-1 rounded-full transition-colors ${currentStep === "username" ? "bg-primary" : currentStep === "profile" ? "bg-primary" : "bg-muted"
-                }`}
+              className={`h-1 flex-1 rounded-full transition-colors ${
+                currentStep === "username" ? "bg-primary" : currentStep === "profile" ? "bg-primary" : "bg-muted"
+              }`}
             />
             <div
-              className={`h-1 flex-1 rounded-full transition-colors ${currentStep === "profile" ? "bg-primary" : "bg-muted"
-                }`}
+              className={`h-1 flex-1 rounded-full transition-colors ${
+                currentStep === "profile" ? "bg-primary" : "bg-muted"
+              }`}
             />
           </div>
 
@@ -328,18 +332,22 @@ export default function RegisterPage() {
                     <p className="mt-8 text-muted-foreground text-center">Sign in with your wallet to begin</p>
 
                     {initError && (
-                      <div className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 p-3 rounded-md text-center">{initError}</div>
+                      <div className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 p-3 rounded-md text-center">
+                        {initError}
+                      </div>
                     )}
 
-                    <Button onClick={initializeOnboardingSession} className="w-full" size="lg" disabled={!walletAddress}>
+                    <Button
+                      onClick={initializeOnboardingSession}
+                      className="w-full"
+                      size="lg"
+                      disabled={!walletAddress}
+                    >
                       Sign in
                     </Button>
 
-
                     {!walletAddress && (
-                      <div className="text-sm text-muted-foreground text-center">
-                        Please connect your wallet first
-                      </div>
+                      <div className="text-sm text-muted-foreground text-center">Please connect your wallet first</div>
                     )}
                   </>
                 )}
@@ -367,8 +375,8 @@ export default function RegisterPage() {
                   </div>
                   {error && <p className="text-sm text-red-500">{error}</p>}
                   <p className="text-sm text-muted-foreground">
-                    Your username must be at least 3 characters long and can only contain lowercase letters, numbers, and
-                    underscores.
+                    Your username must be at least 3 characters long and can only contain lowercase letters, numbers,
+                    and underscores.
                   </p>
                 </div>
 

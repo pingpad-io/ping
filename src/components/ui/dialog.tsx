@@ -105,4 +105,13 @@ const DialogFullscreen = React.forwardRef<
 ));
 DialogFullscreen.displayName = "DialogFullscreen";
 
-export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogFullscreen };
+export {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+  DialogFullscreen,
+};

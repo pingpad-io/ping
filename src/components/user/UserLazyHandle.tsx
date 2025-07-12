@@ -6,10 +6,10 @@ import { UserCard } from "./UserCard";
 export const UserLazyHandle = ({ handle, className }: { handle: string; className?: string }) => {
   return (
     <UserCard handle={handle}>
-      <Link 
-        onClick={(e) => e.stopPropagation()} 
-        href={`/u/${handle}`} 
-        prefetch 
+      <Link
+        onClick={(e) => e.stopPropagation()}
+        href={`/u/${handle}`}
+        prefetch
         style={{ color: "currentColor" }}
         className={className}
       >

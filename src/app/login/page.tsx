@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { useAccount, useConnect, useDisconnect, useWalletClient } from "wagmi";
 import { FamilyIcon, GlobeIcon, WalletConnectIcon } from "~/components/Icons";
 import { LoadingSpinner } from "~/components/LoadingSpinner";
-import Link from "~/components/Link";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
@@ -117,12 +116,11 @@ export default function LoginPage() {
         throw new Error(`Failed to get authenticated client: ${authenticated.error.message}`);
       }
 
-
       toast.success("Welcome to Ping!", { description: "login successful!" });
 
       const username = account.username?.localName || account.address;
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       router.push(`/u/${username}`);
       router.refresh();
@@ -186,9 +184,7 @@ export default function LoginPage() {
               <p className="text-muted-foreground">Select a wallet to connect</p>
             </div>
             <ConnectedWalletLabel />
-            <div className="space-y-3">
-              {connectorList}
-            </div>
+            <div className="space-y-3">{connectorList}</div>
           </div>
         </div>
       </div>
@@ -199,12 +195,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center">
       <Card className="max-w-md w-full rounded-2xl">
         <div className="flex items-center p-4 border-b gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => disconnect()}
-            className="shrink-0"
-          >
+          <Button variant="ghost" size="icon" onClick={() => disconnect()} className="shrink-0">
             <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <h1 className="text-lg font-semibold flex-1">Select Your Profile</h1>
@@ -218,57 +209,58 @@ export default function LoginPage() {
             <Label className="text-center text-red-500">{error.message}</Label>
           </div>
         ) : (
-          <>
-            <div className="flex flex-col">
-              <ScrollArea className="h-[400px] w-full rounded-md p-4">
-                <div className="flex flex-col gap-2">
-                  {accounts.length === 0 ? (
-                    <Label className="text-center text-muted-foreground">No Profiles found.</Label>
-                  ) : (
-                    accounts.map((account, idx) => {
-                      const username = account.username?.localName ? `${account.username.localName}` : `#${account.address}`;
-                      return (
-                        <div id={`${idx}`} key={`${account.address}`}>
-                          <Button
-                            className="flex flex-row items-center justify-start w-full gap-3"
-                            size="default"
-                            variant="outline"
-                            value={account.address}
-                            type="submit"
-                            onClick={() => onSubmit(account)}
-                            disabled={isLoginPending && selectedAccount === account.address}
-                          >
-                            <div className="w-9 h-9">
-                              <UserAvatar link={false} user={lensAcountToUser(account)} />
-                            </div>
-                            <div className="flex flex-col items-start">
-                              <span>{username}</span>
-                            </div>
-                            {isLoginPending && selectedAccount === account.address && <LoadingSpinner className="ml-auto" />}
-                          </Button>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </ScrollArea>
-
-              <div className="p-4 pt-0">
-                <Button
-                  className="flex flex-row w-full items-center gap-2"
-                  size="default"
-                  variant="secondary"
-                  onClick={() => {
-                    router.push('/register');
-                  }}
-                >
-                  <PlusIcon size={22} />
-                  New Profile
-                </Button>
+          <div className="flex flex-col">
+            <ScrollArea className="h-[400px] w-full rounded-md p-4">
+              <div className="flex flex-col gap-2">
+                {accounts.length === 0 ? (
+                  <Label className="text-center text-muted-foreground">No Profiles found.</Label>
+                ) : (
+                  accounts.map((account, idx) => {
+                    const username = account.username?.localName
+                      ? `${account.username.localName}`
+                      : `#${account.address}`;
+                    return (
+                      <div id={`${idx}`} key={`${account.address}`}>
+                        <Button
+                          className="flex flex-row items-center justify-start w-full gap-3"
+                          size="default"
+                          variant="outline"
+                          value={account.address}
+                          type="submit"
+                          onClick={() => onSubmit(account)}
+                          disabled={isLoginPending && selectedAccount === account.address}
+                        >
+                          <div className="w-9 h-9">
+                            <UserAvatar link={false} user={lensAcountToUser(account)} />
+                          </div>
+                          <div className="flex flex-col items-start">
+                            <span>{username}</span>
+                          </div>
+                          {isLoginPending && selectedAccount === account.address && (
+                            <LoadingSpinner className="ml-auto" />
+                          )}
+                        </Button>
+                      </div>
+                    );
+                  })
+                )}
               </div>
-            </div>
+            </ScrollArea>
 
-          </>
+            <div className="p-4 pt-0">
+              <Button
+                className="flex flex-row w-full items-center gap-2"
+                size="default"
+                variant="secondary"
+                onClick={() => {
+                  router.push("/register");
+                }}
+              >
+                <PlusIcon size={22} />
+                New Profile
+              </Button>
+            </div>
+          </div>
         )}
       </Card>
     </div>

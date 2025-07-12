@@ -19,10 +19,7 @@ const HoverCardContent = React.forwardRef<
     <AnimatePresence>
       <HoverCardPrimitive.Content asChild ref={ref} align={align} sideOffset={sideOffset} {...props}>
         <GlassEffect
-          className={cn(
-            "z-[70] w-64 rounded-2xl border text-popover-foreground shadow-md overflow-hidden",
-            className,
-          )}
+          className={cn("z-[70] w-64 rounded-2xl border text-popover-foreground shadow-md overflow-hidden", className)}
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           exit={{ scale: 0.95 }}

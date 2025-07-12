@@ -40,7 +40,6 @@ export async function GET(req: NextRequest) {
         postTypes = [PostType.Root];
     }
 
-
     const filter: any = { postTypes };
     if (address) {
       filter.authors = [address];
@@ -82,7 +81,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data: posts, nextCursor: data.value.pageInfo.next }, { status: 200 });
   } catch (error: any) {
     console.error("Failed to fetch feed: ", error);
-    return NextResponse.json({ error: `Failed to fetch feed: ${error?.message || 'Unknown error'}` }, { status: 500 });
+    return NextResponse.json({ error: `Failed to fetch feed: ${error?.message || "Unknown error"}` }, { status: 500 });
   }
 }
 
@@ -176,7 +175,6 @@ async function parseRequestBody(req: NextRequest) {
   }
   return data;
 }
-
 
 async function createPost(client: any, contentUri: string, replyingTo: string | undefined) {
   if (replyingTo) {

@@ -8,7 +8,7 @@ export const useAuth = () => {
   const userContext = useContext(UserContext);
   const user = userContext?.user || null;
   const router = useRouter();
-  
+
   const [isWalletDialogOpen] = useAtom(isWalletDialogOpenAtom);
   const openWalletDialog = useSetAtom(openWalletDialogAtom);
   const closeWalletDialog = useSetAtom(closeWalletDialogAtom);
@@ -16,7 +16,7 @@ export const useAuth = () => {
   const requireAuth = useCallback(
     (callback?: () => void) => {
       if (!user) {
-        router.push('/login');
+        router.push("/login");
         return false;
       }
       callback?.();
@@ -26,7 +26,7 @@ export const useAuth = () => {
   );
 
   const redirectToLogin = useCallback(() => {
-    router.push('/login');
+    router.push("/login");
   }, [router]);
 
   return {

@@ -9,7 +9,12 @@ import type { Post } from "../components/post/Post";
 import type { MenuContext, MenuItem } from "../components/post/PostMenuConfig";
 import { useUser } from "../components/user/UserContext";
 
-export const usePostState = (post: Post, onReply?: () => void, onMenuAction?: () => void, onEditToggle?: (isEditing: boolean) => void) => {
+export const usePostState = (
+  post: Post,
+  onReply?: () => void,
+  onMenuAction?: () => void,
+  onEditToggle?: (isEditing: boolean) => void,
+) => {
   const router = useRouter();
   const author = post.author;
   const { user } = useUser();

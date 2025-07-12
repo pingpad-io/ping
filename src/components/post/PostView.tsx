@@ -8,8 +8,8 @@ import { useFilteredUsers } from "../FilteredUsersContext";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
-import PostComposer from "./PostComposer";
 import { PostComments } from "./PostComments";
+import PostComposer from "./PostComposer";
 import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
 import { PostInfo } from "./PostInfo";
@@ -228,7 +228,9 @@ export const PostView = ({
                   setCommentsOpen(true);
                 } else {
                   setComments((prev) =>
-                    prev.map(c => c.id.startsWith('optimistic') && comment.metadata?.content === c.metadata?.content ? comment : c)
+                    prev.map((c) =>
+                      c.id.startsWith("optimistic") && comment.metadata?.content === c.metadata?.content ? comment : c,
+                    ),
                   );
                 }
               }

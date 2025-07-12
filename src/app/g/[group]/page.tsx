@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import { Feed } from "~/components/Feed";
-import { PostView } from "~/components/post/PostView";
-import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
-import PostComposer from "~/components/post/PostComposer";
-import { getServerAuth } from "~/utils/getServerAuth";
 import { fetchGroup } from "@lens-protocol/client/actions";
+import type { Metadata } from "next";
+import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
+import { Feed } from "~/components/Feed";
+import PostComposer from "~/components/post/PostComposer";
+import { PostView } from "~/components/post/PostView";
+import { getServerAuth } from "~/utils/getServerAuth";
 import { getLensClient } from "~/utils/lens/getLensClient";
 
 export const metadata: Metadata = {
@@ -35,11 +35,9 @@ const GroupPage = async ({ params }: GroupPageProps) => {
   const groupResult = await (await fetchGroup(client, { group: params.group }))._unsafeUnwrap(null);
   const feedAddress = groupResult?.feed?.address;
   const canPost = groupResult?.feed.operations.canPost.__typename === "FeedOperationValidationPassed";
-  
-  const endpoint = feedAddress 
-    ? `/api/posts?feed=${feedAddress}` 
-    : `/api/posts?group=${params.group}`;
-  
+
+  const endpoint = feedAddress ? `/api/posts?feed=${feedAddress}` : `/api/posts?group=${params.group}`;
+
   return (
     <div className="z-[30] p-4 py-0">
       <ServerSignedIn>

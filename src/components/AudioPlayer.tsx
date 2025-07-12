@@ -30,47 +30,47 @@ export const AudioPlayer = ({
     const updateDuration = () => setDuration(audio.duration);
     const handleEnded = () => setPlaying(false);
 
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', updateDuration);
-    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', updateDuration);
-      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("ended", handleEnded);
     };
   }, []);
 
   useEffect(() => {
-    if ('mediaSession' in navigator) {
+    if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: title,
         artist: author,
         artwork: [
           {
             src: cover,
-            sizes: '512x512',
-            type: 'image/png'
+            sizes: "512x512",
+            type: "image/png",
           },
           {
             src: cover,
-            sizes: '256x256',
-            type: 'image/png'
+            sizes: "256x256",
+            type: "image/png",
           },
           {
             src: cover,
-            sizes: '128x128',
-            type: 'image/png'
+            sizes: "128x128",
+            type: "image/png",
           },
           {
             src: cover,
-            sizes: '96x96',
-            type: 'image/png'
-          }
-        ]
+            sizes: "96x96",
+            type: "image/png",
+          },
+        ],
       });
 
-      navigator.mediaSession.setActionHandler('play', () => {
+      navigator.mediaSession.setActionHandler("play", () => {
         const audio = audioRef.current;
         if (audio) {
           audio.play();
@@ -78,7 +78,7 @@ export const AudioPlayer = ({
         }
       });
 
-      navigator.mediaSession.setActionHandler('pause', () => {
+      navigator.mediaSession.setActionHandler("pause", () => {
         const audio = audioRef.current;
         if (audio) {
           audio.pause();
@@ -86,7 +86,7 @@ export const AudioPlayer = ({
         }
       });
 
-      navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+      navigator.mediaSession.setActionHandler("seekbackward", (details) => {
         const audio = audioRef.current;
         if (audio) {
           const skipTime = details.seekOffset || 10;
@@ -94,7 +94,7 @@ export const AudioPlayer = ({
         }
       });
 
-      navigator.mediaSession.setActionHandler('seekforward', (details) => {
+      navigator.mediaSession.setActionHandler("seekforward", (details) => {
         const audio = audioRef.current;
         if (audio) {
           const skipTime = details.seekOffset || 10;
@@ -102,7 +102,7 @@ export const AudioPlayer = ({
         }
       });
 
-      navigator.mediaSession.setActionHandler('seekto', (details) => {
+      navigator.mediaSession.setActionHandler("seekto", (details) => {
         const audio = audioRef.current;
         if (audio && details.seekTime !== undefined) {
           audio.currentTime = details.seekTime;
@@ -112,13 +112,13 @@ export const AudioPlayer = ({
   }, [title, author, cover]);
 
   useEffect(() => {
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = playing ? "playing" : "paused";
     }
   }, [playing]);
 
   useEffect(() => {
-    if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+    if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession) {
       navigator.mediaSession.setPositionState({
         duration: duration,
         playbackRate: 1,
@@ -140,14 +140,14 @@ export const AudioPlayer = ({
   };
 
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
+    const value = Number.parseFloat(e.target.value);
     setDragValue(value);
     setIsDragging(true);
   };
 
   const handleProgressMouseUp = () => {
     if (!isDragging) return;
-    
+
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -160,7 +160,7 @@ export const AudioPlayer = ({
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const toggleTimeDisplay = () => {
@@ -171,50 +171,44 @@ export const AudioPlayer = ({
     if (showTimeRemaining) {
       const remaining = duration - currentTime;
       return `-${formatTime(remaining)}`;
-    } else {
-      return formatTime(currentTime);
     }
+    return formatTime(currentTime);
   };
 
-  const progressPercentage = isDragging ? dragValue : (duration ? (currentTime / duration) * 100 : 0);
+  const progressPercentage = isDragging ? dragValue : duration ? (currentTime / duration) * 100 : 0;
 
   return (
     <div className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
       <audio ref={audioRef} src={url} loop />
-      
+
       <div className="h-24 aspect-square overflow-hidden flex-shrink-0">
-        <img 
-          src={cover} 
-          alt={title}
-          className="w-full h-full object-cover"
-        />
+        <img src={cover} alt={title} className="w-full h-full object-cover" />
       </div>
 
       <div className="flex-1 min-w-0 pr-4 space-y-1">
         <div className="flex items-center gap-2">
           <div>
-
-          <button
-            onClick={handlePlayPause}
-            className="w-12 h-12 rounded-full select-none flex items-center justify-center bg-white/5 hover:bg-white/10 active:scale-95 hover:scale-105 transition-all duration-150 flex-shrink-0"
+            <button
+              onClick={handlePlayPause}
+              className="w-12 h-12 rounded-full select-none flex items-center justify-center bg-white/5 hover:bg-white/10 active:scale-95 hover:scale-105 transition-all duration-150 flex-shrink-0"
             >
-            {playing ? (
-              <PauseIcon size={24} className="text-white" />
-            ) : (
-              <PlayIcon size={24} className="text-white ml-1" />
-            )}
-          </button>
+              {playing ? (
+                <PauseIcon size={24} className="text-white" />
+              ) : (
+                <PlayIcon size={24} className="text-white ml-1" />
+              )}
+            </button>
+          </div>
+
+          <div className="text-white mb-1">
+            <div className="font-semibold text-lg truncate">{title}</div>
+            <div className="text-gray-400 text-sm truncate">{author}</div>
+          </div>
         </div>
 
-        <div className="text-white mb-1">
-          <div className="font-semibold text-lg truncate">{title}</div>
-          <div className="text-gray-400 text-sm truncate">{author}</div>
-        </div>
-        </div>
-        
         <div className="flex items-center gap-3">
           <div className="flex-1 relative h-2 bg-gray-600 rounded-full overflow-hidden">
-            <div 
+            <div
               className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-150"
               style={{ width: `${progressPercentage}%` }}
             />
@@ -230,7 +224,7 @@ export const AudioPlayer = ({
             />
           </div>
 
-          <button 
+          <button
             onClick={toggleTimeDisplay}
             className="text-white text-sm font-mono hover:text-gray-300 transition-colors cursor-pointer select-none min-w-12 text-right"
           >
@@ -238,7 +232,6 @@ export const AudioPlayer = ({
           </button>
         </div>
       </div>
-
     </div>
   );
 };

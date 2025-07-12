@@ -23,11 +23,11 @@ export type PostActions = {
   canCollect: boolean;
 };
 
-export type PostMention = 
-  | { 
-      __typename: "AccountMention"; 
-      account: string; 
-      namespace?: string; 
+export type PostMention =
+  | {
+      __typename: "AccountMention";
+      account: string;
+      namespace?: string;
       localName?: string;
       replace?: {
         __typename: "MentionReplace";
@@ -189,24 +189,27 @@ function getReplyFromItem(origin: LensPost) {
 
 function getMentionsFromItem(post: any): PostMention[] | undefined {
   if (!post.mentions || !Array.isArray(post.mentions)) return undefined;
-  
-  return post.mentions.map((mention: any) => {
-    if (mention.__typename === "AccountMention") {
-      return {
-        __typename: "AccountMention",
-        account: mention.account,
-        namespace: mention.namespace,
-        localName: mention.localName,
-        replace: mention.replace,
-      };
-    } else if (mention.__typename === "GroupMention") {
-      return {
-        __typename: "GroupMention",
-        group: mention.group,
-      };
-    }
-    return null;
-  }).filter(Boolean);
+
+  return post.mentions
+    .map((mention: any) => {
+      if (mention.__typename === "AccountMention") {
+        return {
+          __typename: "AccountMention",
+          account: mention.account,
+          namespace: mention.namespace,
+          localName: mention.localName,
+          replace: mention.replace,
+        };
+      }
+      if (mention.__typename === "GroupMention") {
+        return {
+          __typename: "GroupMention",
+          group: mention.group,
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
 }
 
 export type { User };

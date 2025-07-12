@@ -35,7 +35,7 @@ function UserProfileSkeleton() {
           <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 self-start">
             <Skeleton className="w-full h-full rounded-full" />
           </div>
-          
+
           <div className="flex flex-col gap-2 flex-grow">
             <div className="flex flex-col justify-center gap-1">
               <div className="flex items-center gap-2">
@@ -43,7 +43,7 @@ function UserProfileSkeleton() {
                 <Skeleton className="h-5 w-20" />
               </div>
             </div>
-            
+
             <div className="flex flex-col gap-2">
               <div className="text-sm">
                 <Skeleton className="h-4 w-full max-w-md" />
@@ -55,7 +55,7 @@ function UserProfileSkeleton() {
             </div>
           </div>
         </div>
-        
+
         {/* Edit Profile or Follow/Mention buttons */}
         <Skeleton className="h-9 w-full" />
       </div>

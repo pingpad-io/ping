@@ -1,16 +1,18 @@
 import { motion } from "framer-motion";
 import { forwardRef } from "react";
+import { LinkPreview } from "../embeds/LinkPreview";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
-import { getPostMediaContent, getPostTextContent } from "./PostMetadataView";
+import { getPostLinkPreviews, getPostMediaContent, getPostTextContent } from "./PostMetadataView";
 
 export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
-  const textContent = getPostTextContent(post.metadata, post.mentions, true);
+  const textContent = getPostTextContent(post.metadata, post.mentions, false);
   const mediaContent = getPostMediaContent(post.metadata);
+  const linkPreviews = getPostLinkPreviews(post.metadata);
 
   return (
     <div ref={ref} className="space-y-2">
@@ -32,8 +34,16 @@ export const PostContent = forwardRef<
 
       {mediaContent}
 
+      {linkPreviews.length > 0 && (
+        <div className="space-y-3">
+          {linkPreviews.map((url, index) => (
+            <LinkPreview key={`${url}-${index}`} url={url} />
+          ))}
+        </div>
+      )}
+
       {post.quoteOn && (
-        <Card 
+        <Card
           className="p-3 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();

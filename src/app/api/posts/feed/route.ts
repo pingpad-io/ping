@@ -19,7 +19,12 @@ export async function GET(req: NextRequest) {
       data = await fetchTimeline(sessionClient, {
         account: profileId,
         filter: {
-          eventType: [TimelineEventItemType.Post, TimelineEventItemType.Quote, TimelineEventItemType.Comment, TimelineEventItemType.Repost],
+          eventType: [
+            TimelineEventItemType.Post,
+            TimelineEventItemType.Quote,
+            TimelineEventItemType.Comment,
+            TimelineEventItemType.Repost,
+          ],
         },
         cursor,
       });

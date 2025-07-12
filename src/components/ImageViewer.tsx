@@ -7,7 +7,19 @@ import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 
-export function ImageViewer({ src, alt, className, galleryItems, currentIndex }: { src: string; alt?: string; className?: string; galleryItems?: any[]; currentIndex?: number }) {
+export function ImageViewer({
+  src,
+  alt,
+  className,
+  galleryItems,
+  currentIndex,
+}: {
+  src: string;
+  alt?: string;
+  className?: string;
+  galleryItems?: any[];
+  currentIndex?: number;
+}) {
   const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(1);
   const [activeIndex, setActiveIndex] = useState(currentIndex || 0);
@@ -58,19 +70,19 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
 
   const slideVariants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? '33%' : '-33%',
-      opacity: 0
+      x: direction > 0 ? "33%" : "-33%",
+      opacity: 0,
     }),
     center: {
       zIndex: 1,
       x: 0,
-      opacity: 1
+      opacity: 1,
     },
     exit: (direction: number) => ({
       zIndex: 0,
-      x: direction < 0 ? '33%' : '-33%',
-      opacity: 0
-    })
+      x: direction < 0 ? "33%" : "-33%",
+      opacity: 0,
+    }),
   };
 
   useEffect(() => {
@@ -139,7 +151,9 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
         ctx?.drawImage(img, 0, 0);
 
         const pngBlob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((blob) => { resolve(blob!); }, "image/png");
+          canvas.toBlob((blob) => {
+            resolve(blob!);
+          }, "image/png");
         });
 
         await navigator.clipboard.write([
@@ -293,14 +307,14 @@ export function ImageViewer({ src, alt, className, galleryItems, currentIndex }:
 
   return (
     <>
-      <img 
-        src={src} 
-        alt={alt} 
-        className={className} 
+      <img
+        src={src}
+        alt={alt}
+        className={className}
         onClick={(e) => {
           e.stopPropagation();
           setOpen(true);
-        }} 
+        }}
       />
       {typeof document !== "undefined" && createPortal(modalContent, document.body)}
     </>

@@ -10,11 +10,11 @@ import { Progress } from "./ui/video-progress";
 // when a video has no preview, we generate a thumbnail from the video
 const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; aspectRatio: number }> => {
   return new Promise((resolve, reject) => {
-    const video = document.createElement('video');
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const video = document.createElement("video");
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
-    video.crossOrigin = 'anonymous';
+    video.crossOrigin = "anonymous";
     video.muted = true;
 
     video.onloadedmetadata = () => {
@@ -26,11 +26,11 @@ const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; 
     video.onseeked = () => {
       if (ctx) {
         ctx.drawImage(video, 0, 0);
-        const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
+        const thumbnail = canvas.toDataURL("image/jpeg", 0.8);
         const aspectRatio = video.videoHeight / video.videoWidth;
         resolve({ thumbnail, aspectRatio });
       } else {
-        reject(new Error('Canvas context not available'));
+        reject(new Error("Canvas context not available"));
       }
     };
 
@@ -42,7 +42,17 @@ const generateVideoThumbnail = (videoUrl: string): Promise<{ thumbnail: string; 
   });
 };
 
-export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url: string; preview: string; galleryItems?: any[]; currentIndex?: number }) => {
+export const VideoPlayer = ({
+  url,
+  preview,
+  galleryItems,
+  currentIndex,
+}: {
+  url: string;
+  preview: string;
+  galleryItems?: any[];
+  currentIndex?: number;
+}) => {
   const playerWithControlsRef = useRef(null);
   const playerRef = useRef(null);
   const progressRef = useRef(null);
@@ -98,7 +108,7 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
     return galleryItems?.[activeIndex] || { item: url, type: "video" };
   };
 
-  const isIOSVideo = (videoUrl: string): boolean => {
+  const isIOSVideo = (_videoUrl: string): boolean => {
     return false;
 
     // return videoUrl.toLowerCase().includes('.mov') ||
@@ -168,10 +178,9 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
 
   useEffect(() => {
     if (!preview && url && !generatedThumbnail) {
-      generateVideoThumbnail(url)
-        .then(({ thumbnail }) => {
-          setGeneratedThumbnail(thumbnail);
-        })
+      generateVideoThumbnail(url).then(({ thumbnail }) => {
+        setGeneratedThumbnail(thumbnail);
+      });
     }
   }, [url, preview, generatedThumbnail]);
 
@@ -220,36 +229,33 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
       >
         <div className="relative flex-1">
           <div className={`${isFullscreen ? "fixed" : "absolute"} inset-0`}>
-            {shown && (() => {
-              const currentItem = getCurrentItem();
-              return currentItem.type && isImageType(String(currentItem.type)) ? (
-                <img
-                  src={currentItem.item}
-                  alt="Gallery item"
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <div
-                  className="h-full w-full flex items-center justify-center"
-                  style={{
-                    transform: isFullscreen && isIOSVideo(currentItem.item) ? 'rotate(180deg)' : 'none',
-                  }}
-                >
-                  <ReactPlayer
-                    ref={playerRef}
-                    playing={playing}
-                    onProgress={handleProgress}
-                    progressInterval={50}
-                    controls={false}
-                    muted={muted}
-                    height={isFullscreen ? "100%" : preview !== "" ? "100%" : "300px"}
-                    width="100%"
-                    url={currentItem.item}
-                    loop
-                  />
-                </div>
-              );
-            })()}
+            {shown &&
+              (() => {
+                const currentItem = getCurrentItem();
+                return currentItem.type && isImageType(String(currentItem.type)) ? (
+                  <img src={currentItem.item} alt="Gallery item" className="h-full w-full object-contain" />
+                ) : (
+                  <div
+                    className="h-full w-full flex items-center justify-center"
+                    style={{
+                      transform: isFullscreen && isIOSVideo(currentItem.item) ? "rotate(180deg)" : "none",
+                    }}
+                  >
+                    <ReactPlayer
+                      ref={playerRef}
+                      playing={playing}
+                      onProgress={handleProgress}
+                      progressInterval={50}
+                      controls={false}
+                      muted={muted}
+                      height={isFullscreen ? "100%" : preview !== "" ? "100%" : "300px"}
+                      width="100%"
+                      url={currentItem.item}
+                      loop
+                    />
+                  </div>
+                );
+              })()}
           </div>
 
           {/* Close X handle for fullscreen mode */}
@@ -299,7 +305,9 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
             </>
           )}
 
-          <div className={`${shown ? "opacity-0" : "opacity-100"} transition-opacity flex items-center justify-center relative h-full w-full`}>
+          <div
+            className={`${shown ? "opacity-0" : "opacity-100"} transition-opacity flex items-center justify-center relative h-full w-full`}
+          >
             {(() => {
               const currentItem = getCurrentItem();
               if (currentItem.type && isImageType(String(currentItem.type))) {
@@ -323,37 +331,40 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
                     </div>
                   </>
                 );
-              } else {
-                // For videos, show the original preview or generate thumbnail
-                const videoPreview = activeIndex === (currentIndex || 0) ? preview : "";
-                return (
-                  <>
-                    {videoPreview ? (
-                      <img src={videoPreview} alt="Video preview" className="max-h-[500px] object-contain rounded-xl mx-auto" />
-                    ) : generatedThumbnail && activeIndex === (currentIndex || 0) ? (
-                      <img src={generatedThumbnail} alt="" className="h-[300px] rounded-xl" />
-                    ) : (
-                      <div className="absolute inset-0 bg-muted rounded-xl flex items-center justify-center">
-                        <VideoIcon className="w-16 h-16 text-muted-foreground" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
-                      <button
-                        type="button"
-                        className="flex items-center justify-center w-16 h-16 rounded-full transition-all duration-200 hover:scale-110"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          setShown(true);
-                          handlePlayPause();
-                        }}
-                      >
-                        <PlayIcon className="w-8 h-8 text-primary fill-primary ml-1" />
-                      </button>
-                    </div>
-                  </>
-                );
               }
+              // For videos, show the original preview or generate thumbnail
+              const videoPreview = activeIndex === (currentIndex || 0) ? preview : "";
+              return (
+                <>
+                  {videoPreview ? (
+                    <img
+                      src={videoPreview}
+                      alt="Video preview"
+                      className="max-h-[500px] object-contain rounded-xl mx-auto"
+                    />
+                  ) : generatedThumbnail && activeIndex === (currentIndex || 0) ? (
+                    <img src={generatedThumbnail} alt="" className="h-[300px] rounded-xl" />
+                  ) : (
+                    <div className="absolute inset-0 bg-muted rounded-xl flex items-center justify-center">
+                      <VideoIcon className="w-16 h-16 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
+                    <button
+                      type="button"
+                      className="flex items-center justify-center w-16 h-16 rounded-full transition-all duration-200 hover:scale-110"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setShown(true);
+                        handlePlayPause();
+                      }}
+                    >
+                      <PlayIcon className="w-8 h-8 text-primary fill-primary ml-1" />
+                    </button>
+                  </div>
+                </>
+              );
             })()}
           </div>
 
@@ -369,8 +380,9 @@ export const VideoPlayer = ({ url, preview, galleryItems, currentIndex }: { url:
                     setPlaying(false);
                     navigateToItem(index);
                   }}
-                  className={`w-2 h-2 rounded-full transition-all ${index === activeIndex ? "bg-white" : "bg-white/50"
-                    }`}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === activeIndex ? "bg-white" : "bg-white/50"
+                  }`}
                   aria-label={`Go to item ${index + 1}`}
                 />
               ))}

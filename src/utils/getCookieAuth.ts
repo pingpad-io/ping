@@ -12,7 +12,7 @@ interface LensCredentials {
 export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null } => {
   const storage = cookies();
   const lensCredentials = storage.get("lens.mainnet.credentials")?.value;
-  
+
   if (!lensCredentials) {
     return {
       isValid: false,

@@ -1,7 +1,6 @@
 import { XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import type { User } from "../user/User";
-import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 
 interface PostComposerHeaderProps {
@@ -17,15 +16,13 @@ export function PostComposerHeader({
   editingPost,
   replyingTo,
   onCancel,
-  isPosting
+  isPosting,
 }: PostComposerHeaderProps) {
   return (
     <div className="flex items-center justify-between h-5 gap-1 mb-0 pl-2 text-xs sm:text-sm">
       <div className="flex items-center gap-2">
         <span className="font-bold">{currentUser?.handle || ""}</span>
-        {editingPost && (
-          <span className="text-muted-foreground">editing</span>
-        )}
+        {editingPost && <span className="text-muted-foreground">editing</span>}
       </div>
       {editingPost && (
         <div className="ml-auto">

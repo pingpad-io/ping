@@ -2,16 +2,10 @@ import { Card, CardContent } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
-import { ReactionsList } from "./PostReactions";
 import type { Post } from "./Post";
+import { ReactionsList } from "./PostReactions";
 
-export const PostOptimisticView = ({ 
-  author, 
-  isComment = false 
-}: { 
-  author: User;
-  isComment?: boolean;
-}) => {
+export const PostOptimisticView = ({ author, isComment = false }: { author: User; isComment?: boolean }) => {
   // Mock post object with zero reactions
   const mockPost = {
     id: "optimistic",
@@ -35,7 +29,7 @@ export const PostOptimisticView = ({
     platform: "lens" as const,
     comments: [],
   } as Post;
-  
+
   return (
     <Card className="duration-300 transition-all z-20 opacity-60">
       <CardContent className={`flex flex-row p-4 ${isComment ? "gap-2" : "gap-4"}`}>
@@ -50,7 +44,7 @@ export const PostOptimisticView = ({
             <span className="text-muted-foreground">just now</span>
           </div>
           <Skeleton className="h-4 w-full mt-2" />
-          
+
           <ReactionsList
             post={mockPost}
             collapsed={false}

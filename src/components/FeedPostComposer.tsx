@@ -14,7 +14,10 @@ export const FeedPostComposer = ({ user }: { user?: User }) => {
       if ((newPost as any).isOptimistic) {
         setNewPosts((prev) => [...prev, newPost]);
       } else {
-        setNewPosts((prev) => prev.map(post => post.id.startsWith('optimistic') && newPost.metadata?.content === post.metadata?.content ? newPost : post)
+        setNewPosts((prev) =>
+          prev.map((post) =>
+            post.id.startsWith("optimistic") && newPost.metadata?.content === post.metadata?.content ? newPost : post,
+          ),
         );
       }
     }
@@ -37,4 +40,3 @@ export const FeedPostComposer = ({ user }: { user?: User }) => {
     </div>
   );
 };
-

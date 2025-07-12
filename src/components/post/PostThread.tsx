@@ -81,7 +81,9 @@ export function PostThread({ post }: { post: Post }) {
                 setAllComments((prev) => [comment, ...prev]);
               } else {
                 setAllComments((prev) =>
-                  prev.map(c => c.id.startsWith('optimistic') && comment.metadata?.content === c.metadata?.content ? comment : c)
+                  prev.map((c) =>
+                    c.id.startsWith("optimistic") && comment.metadata?.content === c.metadata?.content ? comment : c,
+                  ),
                 );
               }
             }

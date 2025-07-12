@@ -1,7 +1,7 @@
 import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { ImageIcon, SmileIcon } from "lucide-react";
-import { useState } from "react";
 import { useTheme } from "next-themes";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
@@ -10,10 +10,7 @@ interface PostComposerActionsProps {
   onEmojiClick: (emoji: any) => void;
 }
 
-export function PostComposerActions({
-  onImageClick,
-  onEmojiClick
-}: PostComposerActionsProps) {
+export function PostComposerActions({ onImageClick, onEmojiClick }: PostComposerActionsProps) {
   const [isEmojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const { theme } = useTheme();
 
@@ -40,11 +37,7 @@ export function PostComposerActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <EmojiPicker
-            theme={theme as Theme}
-            className="bg-card text-card-foreground"
-            onEmojiClick={onEmojiClick}
-          />
+          <EmojiPicker theme={theme as Theme} className="bg-card text-card-foreground" onEmojiClick={onEmojiClick} />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

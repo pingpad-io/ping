@@ -24,11 +24,8 @@ export async function POST(request: NextRequest) {
 
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
-    
-    if (
-      hostname.includes("youtube.com") ||
-      hostname.includes("youtu.be")
-    ) {
+
+    if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) {
       return NextResponse.json({ url, skipPreview: true });
     }
 
@@ -67,20 +64,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(ogData);
     } catch (fetchError) {
       clearTimeout(timeout);
-      
+
       if (fetchError instanceof Error && fetchError.name === "AbortError") {
         return NextResponse.json({ url });
       }
-      
+
       return NextResponse.json({ url });
     }
   } catch (error) {
     console.error("Link preview error:", error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
     }
-    
+
     return NextResponse.json({ url: request.url });
   }
 }
@@ -101,17 +98,18 @@ function decodeHTMLEntities(text: string): string {
   for (const [entity, char] of Object.entries(entities)) {
     decoded = decoded.replace(new RegExp(entity, "g"), char);
   }
-  
-  decoded = decoded.replace(/&#(\d+);/g, (_match, code) => String.fromCharCode(parseInt(code)));
-  decoded = decoded.replace(/&#x([a-fA-F0-9]+);/g, (_match, code) => String.fromCharCode(parseInt(code, 16)));
-  
+
+  decoded = decoded.replace(/&#(\d+);/g, (_match, code) => String.fromCharCode(Number.parseInt(code)));
+  decoded = decoded.replace(/&#x([a-fA-F0-9]+);/g, (_match, code) => String.fromCharCode(Number.parseInt(code, 16)));
+
   return decoded;
 }
 
 function parseOGTags(html: string, url: string): OGData {
   const ogData: OGData = { url };
 
-  const metaTagRegex = /<meta\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["']\s+(?:[^>]*?\s+)?content=["']([^"']*?)["'][^>]*>/gi;
+  const metaTagRegex =
+    /<meta\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["']\s+(?:[^>]*?\s+)?content=["']([^"']*?)["'][^>]*>/gi;
   const titleRegex = /<title>([^<]+)<\/title>/i;
 
   let match: RegExpExecArray | null;
@@ -131,7 +129,7 @@ function parseOGTags(html: string, url: string): OGData {
         break;
       case "og:image":
         if (content.startsWith("//")) {
-          ogData.image = "https:" + content;
+          ogData.image = `https:${content}`;
         } else if (content.startsWith("/")) {
           ogData.image = new URL(content, url).href;
         } else if (content.startsWith("http")) {
