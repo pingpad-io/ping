@@ -15,7 +15,7 @@ interface OGData {
 }
 
 const cache = new Map<string, { data: OGData; timestamp: number }>();
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 export async function POST(request: NextRequest) {
   try {

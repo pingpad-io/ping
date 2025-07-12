@@ -36,9 +36,7 @@ export const PostContent = forwardRef<
 
       {linkPreviews.length > 0 && (
         <div className="space-y-3">
-          {linkPreviews.map((url, index) => (
-            <LinkPreview key={`${url}-${index}`} url={url} />
-          ))}
+          <LinkPreview key={`${linkPreviews[0]}-0`} url={linkPreviews[0]} />
         </div>
       )}
 

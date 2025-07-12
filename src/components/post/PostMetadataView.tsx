@@ -71,17 +71,14 @@ export const getPostMediaContent = (metadata: any): React.ReactNode => {
 export const getPostLinkPreviews = (metadata: any): string[] => {
   const content = metadata?.content || "";
 
-  // For LinkMetadata, we handle the preview separately in the view
   if (metadata.__typename === "LinkMetadata") {
     return [];
   }
 
-  // For EmbedMetadata, we also handle it separately
   if (metadata.__typename === "EmbedMetadata") {
     return [];
   }
 
-  // Extract URLs from the content
   return extractUrlsFromText(content);
 };
 

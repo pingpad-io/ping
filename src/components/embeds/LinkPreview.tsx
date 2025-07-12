@@ -1,8 +1,9 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { detectEmbedType, Embed } from "./Embed";
@@ -22,61 +23,40 @@ interface LinkPreviewProps {
   className?: string;
 }
 
+const fetchLinkPreview = async (url: string): Promise<LinkPreviewData> => {
+  const response = await fetch("/api/link-preview", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch preview");
+  }
+
+  return response.json();
+};
+
 export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" }) => {
-  const [preview, setPreview] = useState<LinkPreviewData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
   const embedInfo = detectEmbedType(url);
 
-  useEffect(() => {
-    if (embedInfo.type) {
-      setLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    const fetchPreview = async () => {
-      try {
-        const response = await fetch("/api/link-preview", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch preview");
-        }
-
-        const data = await response.json();
-
-        if (!cancelled) {
-          setPreview(data);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(true);
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchPreview();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [url, embedInfo.type]);
+  const { data: preview, isLoading, isError } = useQuery({
+    queryKey: ["linkPreview", url],
+    queryFn: () => fetchLinkPreview(url),
+    enabled: !embedInfo.type,
+    staleTime: 7 * 24 * 60 * 60 * 1000, // 7 days
+    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 days (formerly cacheTime)
+    retry: 1,
+  });
 
   if (embedInfo.type) {
     return <Embed url={url} className={className} />;
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Card className={`overflow-hidden ${className}`}>
         <div className="flex gap-4 p-4">
@@ -91,7 +71,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
     );
   }
 
-  if (error || !preview) {
+  if (isError || !preview) {
     return null;
   }
 
