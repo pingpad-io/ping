@@ -22,7 +22,12 @@ export const PostStateProvider = ({
 }>) => {
   const postState = usePostState(post, onReply, onMenuAction, onEditToggle);
 
-  return <PostStateContext.Provider value={postState}>{children}</PostStateContext.Provider>;
+  return (
+    <PostStateContext.Provider value={postState}>
+      {children}
+      {postState.DeleteDialog && <postState.DeleteDialog />}
+    </PostStateContext.Provider>
+  );
 };
 
 export const usePostStateContext = () => {
@@ -43,6 +48,7 @@ export const usePostStateWithFallback = (
   const context = useContext(PostStateContext);
   const fallbackState = usePostState(post, onReply, onMenuAction, onEditToggle);
 
-  // Use context if available, otherwise use fallback
-  return context || fallbackState;
+  const state = context || fallbackState;
+  
+  return state;
 };
