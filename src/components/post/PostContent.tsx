@@ -61,7 +61,7 @@ export const PostContent = forwardRef<
           </p>
           {getPostMediaContent(post.quoteOn.metadata) && (
             <div className="mt-2 max-w-full">
-              <div className="[&_img]:max-h-48 [&_img]:object-cover [&_video]:max-h-48 [&_.image-grid]:gap-1 [&_.image-grid_img]:max-h-32 [&>div]:!h-fit [&_.h-full]:!h-fit">
+              <div className="[&_img]:max-h-48 [&_img]:object-cover [&_video]:max-h-48 [&_.fullscreen-video_video]:!max-h-none [&_.fullscreen-video]:!max-h-none [&_.fullscreen-video]:!h-screen [&_.image-grid]:gap-1 [&_.image-grid_img]:max-h-32 [&>div:not(.fullscreen-video)]:!h-fit [&_.h-full:not(.fullscreen-video)]:!h-fit">
                 {getPostMediaContent(post.quoteOn.metadata)}
               </div>
             </div>
