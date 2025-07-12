@@ -35,14 +35,14 @@ export function UserMenuButtons({ handle }: { handle: string; user: User }) {
     <div className="flex flex-col w-48 p-1">
       <Link
         href={`/u/${handle}`}
-        className="relative flex cursor-default select-none items-center rounded-xl px-3 py-2 text-base outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+        className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground"
       >
         <UserIcon size={16} />
         <span className="ml-3">Profile</span>
       </Link>
       <button
         type="button"
-        className="relative flex cursor-default select-none items-center rounded-xl px-3 py-2 text-base outline-none transition-colors hover:bg-accent hover:text-accent-foreground w-full text-left"
+        className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
         onClick={switchProfile}
       >
         <UsersRoundIcon size={16} />
@@ -50,14 +50,14 @@ export function UserMenuButtons({ handle }: { handle: string; user: User }) {
       </button>
       <Link
         href="/settings"
-        className="relative flex cursor-default select-none items-center rounded-xl px-3 py-2 text-base outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+        className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground"
       >
         <SettingsIcon size={16} />
         <span className="ml-3">Settings</span>
       </Link>
       <button
         type="button"
-        className="relative flex cursor-default select-none items-center rounded-xl px-3 py-2 text-base outline-none transition-colors hover:bg-accent hover:text-accent-foreground w-full text-left"
+        className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
         onClick={toggleTheme}
       >
         {theme === "light" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
@@ -65,7 +65,7 @@ export function UserMenuButtons({ handle }: { handle: string; user: User }) {
       </button>
       <button
         type="button"
-        className="relative flex cursor-default select-none items-center rounded-xl px-3 py-2 text-base outline-none transition-colors hover:bg-accent hover:text-accent-foreground w-full text-left"
+        className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
         onClick={logout}
       >
         <LogOutIcon size={16} />
