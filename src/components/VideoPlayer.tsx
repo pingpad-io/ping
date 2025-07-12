@@ -228,7 +228,7 @@ export const VideoPlayer = ({
         className="relative h-full flex flex-col"
       >
         <div className="relative flex-1">
-          <div className={`${isFullscreen ? "fixed" : "absolute"} inset-0`}>
+          <div className={`${isFullscreen ? "fixed inset-0 z-40 bg-black" : "absolute inset-0"}`}>
             {shown &&
               (() => {
                 const currentItem = getCurrentItem();
@@ -236,7 +236,7 @@ export const VideoPlayer = ({
                   <img src={currentItem.item} alt="Gallery item" className="h-full w-full object-contain" />
                 ) : (
                   <div
-                    className="h-full w-full flex items-center justify-center"
+                    className={`h-full w-full flex items-center justify-center ${isFullscreen ? "fullscreen-video [&_video]:!object-contain [&_video]:!w-full [&_video]:!h-full" : ""}`}
                     style={{
                       transform: isFullscreen && isIOSVideo(currentItem.item) ? "rotate(180deg)" : "none",
                     }}
@@ -252,6 +252,7 @@ export const VideoPlayer = ({
                       width="100%"
                       url={currentItem.item}
                       loop
+                      style={isFullscreen ? { objectFit: "contain" } : {}}
                     />
                   </div>
                 );
