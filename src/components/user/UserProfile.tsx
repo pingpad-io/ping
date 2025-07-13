@@ -99,8 +99,8 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
   const followersCount = stats?.graphFollowStats.followers ?? 0;
 
   return (
-    <Card className="p-6 z-20 flex w-full border flex-col gap-4 drop-shadow-md mt-4 rounded-xl overflow-hidden">
-      <div className="flex flex-row gap-4">
+    <Card className="p-6 z-20 flex w-full flex-col gap-4 drop-shadow-md mt-4 rounded-xl overflow-hidden">
+      <div className="flex flex-row gap-6">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 self-start">
           <AvatarViewer user={user} />
         </div>
@@ -108,7 +108,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
         <div className="flex flex-col gap-2 flex-grow">
           <div className="flex flex-col justify-center gap-1">
             <div className="flex items-center gap-2">
-              <div className="text-xl sm:text-2xl font-bold w-fit truncate leading-none">{user.handle}</div>
+              <div className="text-xl sm:text-3xl font-bold w-fit truncate leading-none">{user.handle}</div>
               {isFollowingMe && (
                 <Badge variant="secondary" className="text-xs">
                   Follows you
@@ -136,7 +136,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
         <Button
           size="sm"
           variant="outline"
-          className="w-full bg-transparent"
+          className="w-full mt-4 bg-transparent"
           onClick={() => setIsEditProfileOpen(true)}
         >
           Edit Profile
