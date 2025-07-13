@@ -49,8 +49,6 @@ export const PostOptimisticView = ({ author, isComment = false }: { author: User
             post={mockPost}
             collapsed={false}
             isComment={isComment}
-            isCommentsOpen={false}
-            setCommentsOpen={() => {}}
           />
         </div>
       </CardContent>

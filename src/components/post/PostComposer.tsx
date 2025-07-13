@@ -150,6 +150,7 @@ export default function PostComposer({
   editingPost,
   onCancel,
   feed,
+  isReplyingToComment = false,
 }: {
   user?: User;
   replyingTo?: Post;
@@ -160,6 +161,7 @@ export default function PostComposer({
   editingPost?: Post;
   onCancel?: () => void;
   feed?: string;
+  isReplyingToComment?: boolean;
 }) {
   const { user: contextUser } = useUser();
   const { requireAuth } = useAuth();
@@ -275,7 +277,7 @@ export default function PostComposer({
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
           <div className="flex flex-row gap-2 w-full">
             {currentUser && (
-              <div className={`${replyingTo ? "w-8 h-8" : "w-10 h-10"} self-start`}>
+              <div className={isReplyingToComment ? "w-6 h-6 self-start" : "w-10 h-10 self-start"}>
                 <UserAvatar user={currentUser} link={true} card={false} />
               </div>
             )}

@@ -8,7 +8,6 @@ import { useFilteredUsers } from "../FilteredUsersContext";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
-import { PostComments } from "./PostComments";
 import PostComposer from "./PostComposer";
 import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
@@ -33,21 +32,17 @@ export const PostView = ({
   settings = { isComment: false, showBadges: true, level: 1 },
   defaultReplyOpen = false,
   defaultExpanded = false,
-  defaultCommentsOpen = false,
 }: {
   item: Post;
   settings?: PostViewSettings;
   defaultReplyOpen?: boolean;
   defaultExpanded?: boolean;
-  defaultCommentsOpen?: boolean;
 }) => {
   const pathname = usePathname();
   const router = useRouter();
   const content = "content" in item.metadata ? (item.metadata.content as string) : "";
   const [collapsed, setCollapsed] = useState(defaultExpanded ? false : content.length > 400);
-  const [isCommentsOpen, setCommentsOpen] = useState(defaultCommentsOpen);
   const [isReplyWizardOpen, setReplyWizardOpen] = useState(defaultReplyOpen);
-  const [comments, setComments] = useState(item.comments);
   const [isDissolving, setIsDissolving] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -88,7 +83,7 @@ export const PostView = ({
   }
 
   const handleReply = () => {
-    setReplyWizardOpen(true);
+    setReplyWizardOpen(!isReplyWizardOpen);
   };
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -171,7 +166,7 @@ export const PostView = ({
     <>
       {isDissolving && <DissolveFilter filterId={dissolveFilterId} />}
       <div
-        className={`flex flex-col w-full gap-1 ${isDissolving ? "dissolving" : ""}`}
+        className={`flex flex-col w-full ${isReplyWizardOpen ? "gap-0" : "gap-1"} ${isDissolving ? "dissolving" : ""}`}
         style={{
           filter: isDissolving ? `url(#${dissolveFilterId})` : "none",
           opacity: isDissolving ? 0 : 1,
@@ -183,11 +178,22 @@ export const PostView = ({
         <PostStateProvider post={item} onReply={handleReply} onEditToggle={setIsEditing}>
           <PostContextMenu post={item} onReply={handleReply}>
             <Card
-              className="duration-300 transition-all z-20 cursor-pointer hover:bg-muted/10"
+              className={`duration-300 transition-colors z-20 cursor-pointer hover:bg-muted/10 relative 
+                ${isReplyWizardOpen ? "!rounded-b-none !border-b-0" : ""}`}
               style={{ userSelect: "text" } as React.CSSProperties}
               onClick={handleCardClick}
               onMouseEnter={handleCardHover}
             >
+              {isReplyWizardOpen && (
+                <div
+                  className={`absolute w-0.5 bg-border z-10 rounded-full`}
+                  style={{
+                    left: settings.isComment ? "27px" : "35.5px",
+                    top: settings.isComment ? "48px" : "64px",
+                    height: settings.isComment ? "calc(100% - 2.5rem)" : "calc(100% - 3.4rem)"
+                  }}
+                />
+              )}
               <CardContent className={`flex flex-row p-4 ${settings.isComment ? "gap-2" : "gap-4 "}`}>
                 <span className="min-h-full flex flex-col justify-start items-center relative">
                   <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
@@ -204,10 +210,9 @@ export const PostView = ({
                   {settings?.showBadges && (
                     <ReactionsList
                       isComment={settings.isComment}
-                      isCommentsOpen={isCommentsOpen}
-                      setCommentsOpen={setCommentsOpen}
                       collapsed={collapsed}
                       post={item}
+                      isReplyOpen={isReplyWizardOpen}
                     />
                   )}
                 </div>
@@ -221,29 +226,7 @@ export const PostView = ({
             isOpen={isReplyWizardOpen}
             post={item}
             setOpen={setReplyWizardOpen}
-            onCommentAdded={(comment) => {
-              if (comment) {
-                if ((comment as any).isOptimistic) {
-                  setComments((prev) => [comment, ...prev]);
-                  setCommentsOpen(true);
-                } else {
-                  setComments((prev) =>
-                    prev.map((c) =>
-                      c.id.startsWith("optimistic") && comment.metadata?.content === c.metadata?.content ? comment : c,
-                    ),
-                  );
-                }
-              }
-            }}
-          />
-        )}
-        {isCommentsOpen && (
-          <PostComments
-            level={settings.level + 1}
-            isOpen={isCommentsOpen}
-            post={item}
-            comments={comments}
-            setComments={setComments}
+            isReplyingToComment={settings.isComment}
           />
         )}
       </div>

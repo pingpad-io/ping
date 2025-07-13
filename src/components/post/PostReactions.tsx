@@ -9,26 +9,26 @@ import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
 import { Button } from "../ui/button";
 import type { Post } from "./Post";
+import { usePostStateContext } from "./PostStateContext";
 import RepostDropdown from "./RepostDropdown";
 
 export function ReactionsList({
   post: postProp,
   collapsed,
   isComment,
-  isCommentsOpen,
-  setCommentsOpen,
+  isReplyOpen = false,
 }: {
   post: Post;
   collapsed: boolean;
   isComment: boolean;
-  isCommentsOpen: boolean;
-  setCommentsOpen: (open: boolean) => void;
+  isReplyOpen?: boolean;
 }) {
   const { requireAuth } = useAuth();
   const post = useCachedPost(postProp);
   const { upvote } = usePostMutations(post.id, post);
   const { triggerExplosion } = useExplosion();
   const likeButtonRef = useRef<HTMLSpanElement>(null);
+  const { context } = usePostStateContext();
 
   const handleLikeClick = () => {
     requireAuth(() => {
@@ -47,9 +47,9 @@ export function ReactionsList({
           reactionType="Comment"
           reaction={{
             count: post.reactions.Comment,
-            isActive: false,
+            isActive: isReplyOpen,
           }}
-          onClick={() => requireAuth(() => setCommentsOpen(!isCommentsOpen))}
+          onClick={() => requireAuth(() => context.handleReply())}
         />
       </div>
       <div className="hover-expand rounded-full">

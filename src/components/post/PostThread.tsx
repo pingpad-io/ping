@@ -8,6 +8,7 @@ import type { Post } from "./Post";
 import { PostReplyComposer } from "./PostReplyComposer";
 import { PostSuspense } from "./PostSuspense";
 import { PostView } from "./PostView";
+import { Card } from "../ui/card";
 
 export function PostThread({ post }: { post: Post }) {
   const [allComments, setAllComments] = useState<Post[]>([]);
@@ -61,7 +62,7 @@ export function PostThread({ post }: { post: Post }) {
       {parentThreadLoading && <PostSuspense />}
       <div className="flex flex-col gap-1 min-h-screen">
         <div ref={mainPostRef} className="relative">
-          <PostView item={post} defaultExpanded={true} defaultCommentsOpen={false} defaultReplyOpen={false} />
+          <PostView item={post} defaultExpanded={true} defaultReplyOpen={false} />
         </div>
 
         {authorThread.filter(Boolean).map((p) => (
@@ -69,26 +70,6 @@ export function PostThread({ post }: { post: Post }) {
             <PostView settings={{ inThread: true }} item={p} />
           </div>
         ))}
-
-        <PostReplyComposer
-          post={post}
-          level={0}
-          isOpen={showReply}
-          setOpen={setShowReply}
-          onCommentAdded={(comment) => {
-            if (comment) {
-              if ((comment as any).isOptimistic) {
-                setAllComments((prev) => [comment, ...prev]);
-              } else {
-                setAllComments((prev) =>
-                  prev.map((c) =>
-                    c.id.startsWith("optimistic") && comment.metadata?.content === c.metadata?.content ? comment : c,
-                  ),
-                );
-              }
-            }
-          }}
-        />
 
         {allComments
           .filter((comment) => {
@@ -110,6 +91,7 @@ export function PostThread({ post }: { post: Post }) {
           ))}
 
         {(authorThreadLoading || commentsLoading) && post.reactions.Comment > 0 && <PostSuspense />}
+        {post.reactions.Comment === 0 && <Card className="text-sm p-4 h-24 flex items-center justify-center text-center text-muted-foreground">No comments yet</Card>}
       </div>
     </div>
   );
