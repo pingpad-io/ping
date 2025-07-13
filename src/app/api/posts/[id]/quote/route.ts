@@ -1,9 +1,7 @@
 import { postId } from "@lens-protocol/client";
 import { post as createPost, fetchPost } from "@lens-protocol/client/actions";
-import { textOnly } from "@lens-protocol/metadata";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
-import { uploadMetadata } from "~/utils/uploadMetadata";
 
 export const dynamic = "force-dynamic";
 
@@ -13,10 +11,10 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     const { id } = await context.params;
 
     const body = await request.json();
-    const { content } = body;
+    const { contentUri } = body;
 
-    if (!content || typeof content !== "string") {
-      return NextResponse.json({ error: "Content is required" }, { status: 400 });
+    if (!contentUri || typeof contentUri !== "string") {
+      return NextResponse.json({ error: "ContentUri is required" }, { status: 400 });
     }
 
     const targetPostResult = await fetchPost(client, { post: postId(id) });
@@ -33,11 +31,8 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
       return NextResponse.json({ error: "You cannot quote this post" }, { status: 403 });
     }
 
-    const metadata = textOnly({ content });
-    const metadataUri = await uploadMetadata(metadata);
-
     const result = await createPost(sessionClient, {
-      contentUri: metadataUri,
+      contentUri: contentUri,
       quoteOf: {
         post: postId(id),
       },

@@ -205,7 +205,7 @@ export function usePostSubmission() {
             const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ content }),
+              body: JSON.stringify({ contentUri }),
             });
 
             if (response.ok) {
