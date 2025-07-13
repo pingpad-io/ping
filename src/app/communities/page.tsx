@@ -4,8 +4,8 @@ import { FeedSuspense } from "~/components/FeedSuspense";
 import Groups from "~/components/Groups";
 
 export const metadata: Metadata = {
-  title: "Groups - Pingpad",
-  description: "Discover and join groups on Pingpad",
+  title: "Communities",
+  description: "Discover and join communities on Pingpad",
 };
 
 export default function GroupsPage({ searchParams }: { searchParams?: { q?: string } }) {

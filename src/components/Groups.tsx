@@ -12,6 +12,10 @@ interface GroupsProps {
 
 type GroupWithId = Group & { id: string };
 
+const GroupViewWrapper = ({ item }: { item: GroupWithId }) => {
+  return <GroupView group={item} />;
+};
+
 export default function Groups({ initialQuery = "" }: GroupsProps) {
   const searchParams = useSearchParams();
   const query = initialQuery || searchParams.get("q") || "";
@@ -23,7 +27,7 @@ export default function Groups({ initialQuery = "" }: GroupsProps) {
       </div>
 
       <Feed<GroupWithId>
-        ItemView={GroupView}
+        ItemView={GroupViewWrapper}
         endpoint={`/api/groups${query ? `?q=${encodeURIComponent(query)}` : ""}`}
         queryKey={["groups", query]}
       />

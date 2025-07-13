@@ -5,17 +5,20 @@ import { Users } from "lucide-react";
 import { resolveUrl } from "~/utils/resolveUrl";
 import Link from "~/components/Link";
 import { Card, CardContent } from "../ui/card";
+import { Button } from "../ui/button";
 import { useGroupStats } from "~/hooks/useGroupStats";
+import { useGroupMutations } from "~/hooks/useGroupMutations";
+import { useAuth } from "~/hooks/useAuth";
 
 interface GroupViewProps {
-  item: Group;
+  group: Group;
 }
 
 function MemberCount({ groupId }: { groupId: string }) {
   const { data, isLoading } = useGroupStats(groupId);
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground mt-1">Loading...</p>;
+    return null
   }
 
   if (!data) {
@@ -29,9 +32,24 @@ function MemberCount({ groupId }: { groupId: string }) {
   );
 }
 
-export function GroupView({ item }: GroupViewProps) {
-  const groupUrl = `/g/${item.address}`;
-  const iconUrl = resolveUrl(item.metadata?.icon);
+export function GroupView({ group }: GroupViewProps) {
+  const groupUrl = `/g/${group.address}`;
+  const iconUrl = resolveUrl(group.metadata?.icon);
+  const canJoin = group.operations.canJoin.__typename === "GroupOperationValidationPassed";
+  const canLeave = group.operations.canLeave.__typename === "GroupOperationValidationPassed";
+  const { isAuthenticated } = useAuth();
+  const { joinMutation, leaveMutation } = useGroupMutations(group.address);
+
+  const handleJoinLeave = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (canJoin) {
+      joinMutation.mutate();
+    } else if (canLeave) {
+      leaveMutation.mutate();
+    }
+  };
 
   return (
     <Link href={groupUrl} className="block">
@@ -39,10 +57,10 @@ export function GroupView({ item }: GroupViewProps) {
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0">
-              {item.metadata?.icon ? (
+              {group.metadata?.icon ? (
                 <img
                   src={iconUrl}
-                  alt={item.metadata?.name || item.address}
+                  alt={group.metadata?.name || group.address}
                   className="w-12 h-12 rounded-xl object-cover"
                 />
               ) : (
@@ -54,11 +72,23 @@ export function GroupView({ item }: GroupViewProps) {
 
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-base truncate">
-                {item.metadata?.name || `Group ${item.address.slice(0, 6)}...${item.address.slice(-4)}`}
+                {group.metadata?.name || `Group ${group.address.slice(0, 6)}...${group.address.slice(-4)}`}
               </h3>
 
-              <MemberCount groupId={item.address} />
+              <MemberCount groupId={group.address} />
             </div>
+
+            {isAuthenticated && (canJoin || canLeave) && (
+              <Button
+                size="sm"
+                variant={canLeave ? "outline" : "default"}
+                onClick={handleJoinLeave}
+                // disabled={isLoading}
+                className="flex-shrink-0"
+              >
+                {canLeave ? "Leave" : "Join"}
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
