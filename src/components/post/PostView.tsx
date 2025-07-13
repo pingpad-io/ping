@@ -190,7 +190,7 @@ export const PostView = ({
                   style={{
                     left: settings.isComment ? "27px" : "35.5px",
                     top: settings.isComment ? "48px" : "64px",
-                    height: settings.isComment ? "calc(100% - 2.5rem)" : "calc(100% - 3.4rem)"
+                    height: settings.isComment ? "calc(100% - 2.5rem)" : "calc(100% - 3.5rem)"
                   }}
                 />
               )}

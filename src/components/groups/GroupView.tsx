@@ -2,6 +2,7 @@
 
 import type { Group } from "@lens-protocol/client";
 import { Users } from "lucide-react";
+import { resolveUrl } from "~/utils/resolveUrl";
 import Link from "~/components/Link";
 import { Card, CardContent } from "../ui/card";
 
@@ -11,6 +12,7 @@ interface GroupViewProps {
 
 export function GroupView({ item }: GroupViewProps) {
   const groupUrl = `/g/${item.address}`;
+  const iconUrl = resolveUrl(item.metadata?.icon);
 
   return (
     <Link href={groupUrl} className="block">
@@ -20,9 +22,9 @@ export function GroupView({ item }: GroupViewProps) {
             <div className="flex-shrink-0">
               {item.metadata?.icon ? (
                 <img
-                  src={item.metadata.icon}
+                  src={iconUrl}
                   alt={item.metadata?.name || item.address}
-                  className="w-12 h-12 rounded-full object-cover"
+                  className="w-12 h-12 rounded-xl object-cover"
                 />
               ) : (
                 <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
@@ -39,13 +41,6 @@ export function GroupView({ item }: GroupViewProps) {
               {item.metadata?.description && (
                 <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{item.metadata.description}</p>
               )}
-
-              <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Users className="w-3 h-3" />
-                  Members
-                </span>
-              </div>
             </div>
           </div>
         </CardContent>
