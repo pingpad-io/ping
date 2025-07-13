@@ -5,9 +5,28 @@ import { Users } from "lucide-react";
 import { resolveUrl } from "~/utils/resolveUrl";
 import Link from "~/components/Link";
 import { Card, CardContent } from "../ui/card";
+import { useGroupStats } from "~/hooks/useGroupStats";
 
 interface GroupViewProps {
   item: Group;
+}
+
+function MemberCount({ groupId }: { groupId: string }) {
+  const { data, isLoading } = useGroupStats(groupId);
+
+  if (isLoading) {
+    return <p className="text-sm text-muted-foreground mt-1">Loading...</p>;
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  return (
+    <p className="text-sm text-muted-foreground mt-1">
+      {data.totalMembers} {data.totalMembers === 1 ? "member" : "members"}
+    </p>
+  );
 }
 
 export function GroupView({ item }: GroupViewProps) {
@@ -16,7 +35,7 @@ export function GroupView({ item }: GroupViewProps) {
 
   return (
     <Link href={groupUrl} className="block">
-      <Card className="hover:bg-accent/50 transition-colors cursor-pointer">
+      <Card className="bg-transparent hover:bg-accent/50 transition-colors cursor-pointer">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0">
@@ -27,7 +46,7 @@ export function GroupView({ item }: GroupViewProps) {
                   className="w-12 h-12 rounded-xl object-cover"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center">
                   <Users className="w-6 h-6 text-muted-foreground" />
                 </div>
               )}
@@ -38,9 +57,7 @@ export function GroupView({ item }: GroupViewProps) {
                 {item.metadata?.name || `Group ${item.address.slice(0, 6)}...${item.address.slice(-4)}`}
               </h3>
 
-              {item.metadata?.description && (
-                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{item.metadata.description}</p>
-              )}
+              <MemberCount groupId={item.address} />
             </div>
           </div>
         </CardContent>

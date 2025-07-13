@@ -29,7 +29,7 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
   useEffect(() => {
     router.prefetch("/home");
     router.prefetch("/explore");
-    router.prefetch("/groups");
+    router.prefetch("/communities");
     router.prefetch("/bookmarks");
     if (handle) {
       router.prefetch(`/u/${handle}`);
@@ -44,12 +44,12 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
               ? HomeIcon
               : pathname === "/explore"
                 ? CompassIcon
-                : pathname === "/groups"
+                : pathname === "/communities"
                   ? Users
                   : PingLogo,
           label: "Home",
           onClick: () => router.push("/home"),
-          isActive: pathname === "/home" || pathname === "/explore" || pathname === "/groups",
+          isActive: pathname === "/home" || pathname === "/explore" || pathname === "/communities",
           extra: (
             <div className="flex flex-col w-48 p-1">
               <button
@@ -71,10 +71,10 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
               <button
                 type="button"
                 className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
-                onClick={() => router.push("/groups")}
+                onClick={() => router.push("/communities")}
               >
                 <Users size={16} />
-                <span className="ml-3">Groups</span>
+                <span className="ml-3">Communities</span>
               </button>
             </div>
           ),
@@ -140,12 +140,12 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
               ? HomeIcon
               : pathname === "/explore"
                 ? CompassIcon
-                : pathname === "/groups"
+                : pathname === "/communities"
                   ? Users
                   : PingLogo,
           label: "Home",
           onClick: () => router.push("/home"),
-          isActive: pathname === "/home" || pathname === "/explore" || pathname === "/groups",
+          isActive: pathname === "/home" || pathname === "/explore" || pathname === "/communities",
           extra: (
             <div className="flex flex-col w-48 p-1">
               <button
@@ -167,10 +167,10 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
               <button
                 type="button"
                 className="relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-base outline-none transition-all duration-200 active:scale-[0.96] hover:bg-accent hover:text-accent-foreground w-full text-left"
-                onClick={() => router.push("/groups")}
+                onClick={() => router.push("/communities")}
               >
                 <Users size={16} />
-                <span className="ml-3">Groups</span>
+                <span className="ml-3">Communities</span>
               </button>
             </div>
           ),
