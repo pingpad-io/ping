@@ -193,7 +193,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <Card className="max-w-md w-full rounded-2xl">
+      <Card variant="glass" className="max-w-md w-full rounded-2xl">
         <div className="flex items-center p-4 border-b gap-4">
           <Button variant="ghost" size="icon" onClick={() => disconnect()} className="shrink-0">
             <ChevronLeftIcon className="h-4 w-4" />

@@ -30,7 +30,7 @@ function UserProfileSkeleton() {
   return (
     <>
       {/* UserProfile skeleton - matching the actual component structure */}
-      <div className="p-6 z-20 flex w-full flex-col gap-4 glass drop-shadow-md mt-4 rounded-xl overflow-hidden">
+      <div className="p-6 z-20 flex w-full flex-col gap-4 drop-shadow-md mt-4 rounded-xl overflow-hidden">
         <div className="flex flex-row gap-4">
           <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 self-start">
             <Skeleton className="w-full h-full rounded-full" />
@@ -60,7 +60,7 @@ function UserProfileSkeleton() {
         <Skeleton className="h-9 w-full" />
       </div>
       {/* UserNavigation skeleton */}
-      <nav className="sticky top-3 w-fit max-w-2xl mx-auto glass border border-muted rounded-xl z-[40] flex flex-row justify-start items-start gap-2 p-1">
+      <nav className="sticky top-3 w-fit max-w-2xl mx-auto border border-muted rounded-xl z-[40] flex flex-row justify-start items-start gap-2 p-1">
         <Skeleton className="h-10 w-20 rounded-lg" />
         <Skeleton className="h-10 w-28 rounded-lg" />
         <Skeleton className="h-10 w-20 rounded-lg" />

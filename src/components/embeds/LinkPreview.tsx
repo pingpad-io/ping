@@ -62,7 +62,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
 
   if (isLoading) {
     return (
-      <Card className={`overflow-hidden ${className}`}>
+      <Card className={`overflow-hidden border ${className}`}>
         <div className="flex gap-4 p-4">
           <div className="flex-1 space-y-2">
             <Skeleton className="h-5 w-3/4" />
@@ -112,7 +112,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
           onLoad={handleImageLoad}
           onError={() => setImageLoaded(true)}
         />
-        <Card className={`overflow-hidden ${className}`}>
+        <Card className={`overflow-hidden border ${className}`}>
           <div className="flex gap-4 p-4">
             <div className="flex-1 space-y-2">
               <Skeleton className="h-5 w-3/4" />
@@ -129,7 +129,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
   if (preview.image && isFullWidthLayout) {
     return (
       <Link href={displayUrl} target="_blank" rel="noopener noreferrer" className="block">
-        <Card className={`overflow-hidden hover:bg-muted/50 transition-colors cursor-pointer ${className}`}>
+        <Card className={`overflow-hidden border hover:bg-muted/30 transition-colors cursor-pointer ${className}`}>
           <div className="relative w-full" style={{ aspectRatio: "1.91 / 1" }}>
             <img
               src={preview.image}
@@ -159,7 +159,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
   if (!hasContent) {
     return (
       <Link href={displayUrl} target="_blank" rel="noopener noreferrer" className="block">
-        <Card className={`overflow-hidden hover:bg-muted/50 transition-colors cursor-pointer ${className}`}>
+        <Card className={`overflow-hidden border hover:bg-muted/30 transition-colors cursor-pointer ${className}`}>
           <div className="flex items-center gap-3 p-4">
             <img
               src={faviconUrl}
@@ -184,7 +184,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
 
   return (
     <Link href={displayUrl} target="_blank" rel="noopener noreferrer" className="block">
-      <Card className={`overflow-hidden hover:bg-muted/50 transition-colors cursor-pointer ${className}`}>
+      <Card className={`overflow-hidden border hover:bg-muted/30 transition-colors cursor-pointer ${className}`}>
         <div className="flex gap-4 p-4">
           <div className="flex-1 min-w-0">
             {preview.title ? (

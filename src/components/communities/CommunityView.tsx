@@ -8,7 +8,7 @@ export const CommunityView = ({ item }: { item: Community }) => {
   const icon = getCommunityIcon(item.id);
   return (
     <Link href={`/c/${item.id}`}>
-      <Card className="p-1">
+      <Card className="p-1 transition-colors cursor-pointer">
         <div className="flex flex-row items-center gap-2">
           <div className="flex items-center justify-center">
             <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">

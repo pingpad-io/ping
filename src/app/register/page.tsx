@@ -277,7 +277,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <Card className="w-full max-w-md mx-4 p-0 overflow-hidden">
+      <Card variant="glass" className="w-full max-w-md mx-4 p-0 overflow-hidden">
         <div className="relative">
           <div className="flex items-center justify-between p-4 border-b">
             <Button variant="ghost" size="icon" onClick={handleBack} disabled={isCreating || isInitializing}>

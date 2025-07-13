@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Script from "next/script";
-import { BackgroundGradient } from "~/components/BackgroundGradient";
+// import { BackgroundGradient } from "~/components/BackgroundGradient";
 import { DeletedPostsProvider } from "~/components/DeletedPostsContext";
 import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
 import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
@@ -41,7 +41,7 @@ export default async function RootLayout({ children }) {
             <FilteredUsersProvider>
               <DeletedPostsProvider>
                 <NotificationsProvider>
-                  <BackgroundGradient />
+                  {/* <BackgroundGradient /> */}
                   <AuthWatcher />
                   <Toaster position="top-center" offset={16} />
                   <Menu isAuthenticated={!!profileId} user={user} handle={handle} />

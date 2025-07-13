@@ -16,6 +16,7 @@ import { EditProfileModal } from "./EditProfileModal";
 import { type User } from "./User";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
+import { Card } from "../ui/card";
 
 const MutedBadge = ({ onUnmute }: { onUnmute: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -98,7 +99,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
   const followersCount = stats?.graphFollowStats.followers ?? 0;
 
   return (
-    <div className="p-6 z-20 flex w-full flex-col gap-4 glass drop-shadow-md mt-4 rounded-xl overflow-hidden">
+    <Card className="p-6 z-20 flex w-full border flex-col gap-4 drop-shadow-md mt-4 rounded-xl overflow-hidden">
       <div className="flex flex-row gap-4">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 self-start">
           <AvatarViewer user={user} />
@@ -172,6 +173,6 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
           }}
         />
       )}
-    </div>
+    </Card>
   );
 };

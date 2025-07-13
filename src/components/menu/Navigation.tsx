@@ -31,7 +31,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 export const Navigation = () => {
   return (
-    <nav className="z-[40] w-fit max-w-2xl flex flex-row justify-center items-center border border-muted p-1 sticky top-3 bg-background/50 backdrop-blur-lg rounded-xl overflow-visible">
+    <nav className="z-[40] w-fit max-w-2xl flex flex-row justify-center items-center border border-muted p-1 sticky top-3 rounded-xl overflow-visible">
       <Carousel
         opts={{ dragFree: true, watchDrag: true, slidesToScroll: 6, loop: true, active: true, align: "start" }}
         plugins={[WheelGesturesPlugin({ active: true })]}

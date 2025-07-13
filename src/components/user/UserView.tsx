@@ -8,7 +8,7 @@ import { UserAvatar } from "./UserAvatar";
 export const UserView = ({ item }: { item: User }) => {
   return (
     <Link href={`/u/${item.handle}`}>
-      <Card className="flex flex-row gap-3 p-3 hover:bg-accent/50 transition-colors">
+      <Card className="flex flex-row gap-3 p-3 transition-colors cursor-pointer">
         <div className="w-12 h-12">
           <UserAvatar user={item} />
         </div>

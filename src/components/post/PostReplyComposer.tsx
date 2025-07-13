@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import type { Post } from "./Post";
 import PostComposer from "./PostComposer";
+import { Card } from "../ui/card";
 
 export const PostReplyComposer = ({
   post,
@@ -21,8 +22,8 @@ export const PostReplyComposer = ({
     <div className={"w-full flex flex-col items-end justify-center text-xs sm:text-sm"}>
       <AnimatePresence>
         {isOpen && (
-          <div
-            className={"w-full p-4 glass rounded-xl !rounded-t-none !border-t-0"}
+          <Card
+            className={"w-full p-4 rounded-xl !rounded-t-none !border-t-0"}
           >
             <PostComposer
               replyingTo={post}
@@ -32,7 +33,7 @@ export const PostReplyComposer = ({
               }}
               isReplyingToComment={isReplyingToComment}
             />
-          </div>
+          </Card>
         )}
       </AnimatePresence>
     </div>

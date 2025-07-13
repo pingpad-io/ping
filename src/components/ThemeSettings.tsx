@@ -1,81 +1,81 @@
 "use client";
 
-import { CheckIcon, ImageIcon, RefreshCwIcon } from "lucide-react";
-import { useRef } from "react";
+// import { CheckIcon, ImageIcon, RefreshCwIcon } from "lucide-react";
+// import { useRef } from "react";
 import { ThemeToggle } from "~/components/ThemeToggle";
-import { Button } from "~/components/ui/button";
+// import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Separator } from "~/components/ui/separator";
-import { Slider } from "~/components/ui/slider";
-import { type BackgroundColor, useBackgroundTheme } from "~/hooks/useBackgroundTheme";
+// import { Separator } from "~/components/ui/separator";
+// import { Slider } from "~/components/ui/slider";
+// import { type BackgroundColor, useBackgroundTheme } from "~/hooks/useBackgroundTheme";
 
-interface ColorButtonProps {
-  color: BackgroundColor;
-  isSelected: boolean;
-  onSelect: () => void;
-}
+// interface ColorButtonProps {
+//   color: BackgroundColor;
+//   isSelected: boolean;
+//   onSelect: () => void;
+// }
 
-function ColorButton({ color, isSelected, onSelect }: ColorButtonProps) {
-  const { r, g, b } = color.rgb;
+// function ColorButton({ color, isSelected, onSelect }: ColorButtonProps) {
+//   const { r, g, b } = color.rgb;
 
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={`relative w-12 h-12 rounded-lg border-2 transition-all hover:scale-110 overflow-hidden ${
-        isSelected ? "border-primary ring-2 ring-primary ring-offset-2" : "border-border"
-      }`}
-      title={color.name}
-    >
-      {color.id === "black_and_white" ? (
-        <>
-          <div className="absolute inset-0 bg-black" />
-          <div className="absolute inset-0 bg-white" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 100%)" }} />
-        </>
-      ) : (
-        <div className="absolute inset-0" style={{ backgroundColor: `rgb(${r}, ${g}, ${b})` }} />
-      )}
-      {isSelected && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="rounded-full p-0.5 bg-white">
-            <CheckIcon size={16} className="text-black" />
-          </div>
-        </div>
-      )}
-    </button>
-  );
-}
+//   return (
+//     <button
+//       type="button"
+//       onClick={onSelect}
+//       className={`relative w-12 h-12 rounded-lg border-2 transition-all hover:scale-110 overflow-hidden ${
+//         isSelected ? "border-primary ring-2 ring-primary ring-offset-2" : "border-border"
+//       }`}
+//       title={color.name}
+//     >
+//       {color.id === "black_and_white" ? (
+//         <>
+//           <div className="absolute inset-0 bg-black" />
+//           <div className="absolute inset-0 bg-white" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 100%)" }} />
+//         </>
+//       ) : (
+//         <div className="absolute inset-0" style={{ backgroundColor: `rgb(${r}, ${g}, ${b})` }} />
+//       )}
+//       {isSelected && (
+//         <div className="absolute inset-0 flex items-center justify-center">
+//           <div className="rounded-full p-0.5 bg-white">
+//             <CheckIcon size={16} className="text-black" />
+//           </div>
+//         </div>
+//       )}
+//     </button>
+//   );
+// }
 
 export function ThemeSettings() {
-  const {
-    backgroundColorId,
-    setBackgroundColorId,
-    backgroundMode,
-    setBackgroundMode,
-    availableColors,
-    fetchRandomImage,
-    imageLoading,
-    imageCredits,
-    intensity,
-    setIntensity,
-    blur,
-    setBlur,
-    selectLocalImage,
-  } = useBackgroundTheme();
+  // const {
+  //   backgroundColorId,
+  //   setBackgroundColorId,
+  //   backgroundMode,
+  //   setBackgroundMode,
+  //   availableColors,
+  //   fetchRandomImage,
+  //   imageLoading,
+  //   imageCredits,
+  //   intensity,
+  //   setIntensity,
+  //   blur,
+  //   setBlur,
+  //   selectLocalImage,
+  // } = useBackgroundTheme();
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleModeChange = (mode: "none" | "gradient" | "image") => {
-    setBackgroundMode(mode);
-  };
+  // const handleModeChange = (mode: "none" | "gradient" | "image") => {
+  //   setBackgroundMode(mode);
+  // };
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      selectLocalImage(file);
-      setBackgroundColorId("default");
-    }
-  };
+  // const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     selectLocalImage(file);
+  //     setBackgroundColorId("default");
+  //   }
+  // };
 
   return (
     <Card>
@@ -93,7 +93,7 @@ export function ThemeSettings() {
           </div>
         </div>
 
-        <Separator />
+        {/* <Separator />
 
         <div className="space-y-4">
           <div>
@@ -236,7 +236,7 @@ export function ThemeSettings() {
               )}
             </div>
           )}
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

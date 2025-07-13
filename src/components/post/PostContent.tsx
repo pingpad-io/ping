@@ -42,7 +42,7 @@ export const PostContent = forwardRef<
 
       {post.quoteOn && (
         <Card
-          className="p-3 border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+          className="p-3 border bg-transparent hover:bg-muted/30 transition-colors cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             window.location.href = `/p/${post.quoteOn.id}`;

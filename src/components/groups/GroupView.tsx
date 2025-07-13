@@ -53,7 +53,7 @@ export function GroupView({ group }: GroupViewProps) {
 
   return (
     <Link href={groupUrl} className="block">
-      <Card className="bg-transparent hover:bg-accent/50 transition-colors cursor-pointer">
+      <Card className="transition-colors cursor-pointer">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0">

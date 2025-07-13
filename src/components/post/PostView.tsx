@@ -178,7 +178,7 @@ export const PostView = ({
         <PostStateProvider post={item} onReply={handleReply} onEditToggle={setIsEditing}>
           <PostContextMenu post={item} onReply={handleReply}>
             <Card
-              className={`duration-300 transition-colors z-20 cursor-pointer hover:bg-muted/10 relative 
+              className={`duration-300 transition-colors z-20 cursor-pointer relative 
                 ${isReplyWizardOpen ? "!rounded-b-none !border-b-0" : ""}`}
               style={{ userSelect: "text" } as React.CSSProperties}
               onClick={handleCardClick}
