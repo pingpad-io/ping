@@ -4,6 +4,7 @@ import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import type { Post } from "./Post";
 import { ReactionsList } from "./PostReactions";
+import { PostStateProvider } from "./PostStateContext";
 
 export const PostOptimisticView = ({ author, isComment = false }: { author: User; isComment?: boolean }) => {
   // Mock post object with zero reactions
@@ -45,11 +46,9 @@ export const PostOptimisticView = ({ author, isComment = false }: { author: User
           </div>
           <Skeleton className="h-4 w-full mt-2" />
 
-          <ReactionsList
-            post={mockPost}
-            collapsed={false}
-            isComment={isComment}
-          />
+          <PostStateProvider post={mockPost}>
+            <ReactionsList post={mockPost} collapsed={false} isComment={isComment} />
+          </PostStateProvider>
         </div>
       </CardContent>
     </Card>
