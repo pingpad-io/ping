@@ -2,7 +2,7 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { useUser } from "../user/UserContext";
 import type { Notification } from "./Notification";
 
@@ -73,7 +73,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     enabled: !!user,
     staleTime: 30 * 1000, // Consider data fresh for 30 seconds
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
-    refetchInterval: 30 * 1000, // Poll every 30 seconds
+    refetchInterval: 60 * 1000, // Poll every 60 seconds
     refetchIntervalInBackground: true, // Continue polling in background
   });
 
@@ -98,10 +98,6 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           who: n.who.map((u) => ({ name: u.name, handle: u.handle })),
         });
 
-        if (pathname.includes("/notifications")) {
-          console.log("Refreshing notifications...");
-          router.refresh();
-        }
       }
 
       return isNew;
@@ -117,10 +113,10 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     queryClient.setQueryData(["notifications"], items);
   };
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     console.log("Manually refreshing notifications...");
     await refetch();
-  };
+  }, [refetch]);
 
   useEffect(() => {
     setBaseTitle(document.title);
@@ -135,13 +131,13 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     }
   }, [newCount, baseTitle]);
 
-  const markAllAsRead = () => {
+  const markAllAsRead = useCallback(() => {
     const now = Date.now();
     setLastSeen(now);
     if (typeof window !== "undefined") {
       window.localStorage.setItem("lastSeenNotifications", now.toString());
     }
-  };
+  }, []);
 
   return (
     <NotificationsContext.Provider

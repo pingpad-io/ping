@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { Feed } from "../Feed";
 import { useNotifications } from "./NotificationsContext";
 import { NotificationView } from "./NotificationView";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 export function NotificationsFeed() {
-  const { refresh, markAllAsRead } = useNotifications();
+  const { notifications, refresh, markAllAsRead, isLoading } = useNotifications();
 
   useEffect(() => {
     refresh();
@@ -16,7 +16,29 @@ export function NotificationsFeed() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [refresh, markAllAsRead]);
+  }, []);
 
-  return <Feed ItemView={NotificationView} endpoint="/api/notifications" />;
+  if (isLoading && notifications.length === 0) {
+    return (
+      <div className="flex h-[200px] items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (notifications.length === 0) {
+    return (
+      <div className="flex h-[200px] items-center justify-center text-muted-foreground">
+        No notifications yet
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      {notifications.map((notification) => (
+        <NotificationView key={notification.id} item={notification} />
+      ))}
+    </div>
+  );
 }
