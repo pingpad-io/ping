@@ -2,14 +2,15 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "@vercel/og";
 import { ImageResponseOptions } from "next/server";
-import { parseContent } from "~/utils/parseContent";
 
 export const runtime = "nodejs";
 
 function cleanContent(content: string): string {
   if (!content) return "";
 
-  const cleanedContent = content
+  let cleanedContent = decodeURIComponent(content);
+  
+  cleanedContent = cleanedContent
     .replace(/\\n/g, "\n")
     .replace(/\\r/g, "")
     .replace(/\\t/g, " ")
@@ -23,7 +24,24 @@ function cleanContent(content: string): string {
     .replace(/\s+\n/g, "\n")
     .trim();
 
-  return parseContent(cleanedContent).replaceHandles().toString();
+  cleanedContent = cleanedContent.replace(
+    /https?:\/\/[^\s]+/g,
+    (url) => {
+      try {
+        const urlObj = new URL(url);
+        return `[${urlObj.hostname.replace('www.', '')}]`;
+      } catch {
+        return '[link]';
+      }
+    }
+  );
+
+  cleanedContent = cleanedContent.replace(
+    /@lens\/(\w+)/g,
+    '@$1'
+  );
+
+  return cleanedContent;
 }
 
 export async function GET(request: Request) {
@@ -95,13 +113,13 @@ export async function GET(request: Request) {
 
         {content && (
           <div tw="flex max-w-4xl">
-            <div tw="text-white text-5xl font-medium leading-tight flex flex-col">
+            <div tw="text-white text-4xl font-medium leading-relaxed flex flex-col">
               {(() => {
                 const cleanedContent = cleanContent(content);
                 const truncatedContent =
                   cleanedContent.length > 128 ? `${cleanedContent.slice(0, 128).trim()}...` : cleanedContent;
                 return truncatedContent.split("\n").map((line, index) => (
-                  <div key={index} tw="flex">
+                  <div key={index} tw="flex mb-2">
                     {line}
                   </div>
                 ));
