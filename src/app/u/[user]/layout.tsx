@@ -60,11 +60,21 @@ function UserProfileSkeleton() {
         <Skeleton className="h-9 w-full" />
       </div>
       {/* UserNavigation skeleton */}
-      <nav className="sticky top-3 w-fit max-w-2xl mx-auto border border-muted rounded-xl z-[40] flex flex-row justify-start items-start gap-2 p-1">
-        <Skeleton className="h-10 w-20 rounded-lg" />
-        <Skeleton className="h-10 w-28 rounded-lg" />
-        <Skeleton className="h-10 w-20 rounded-lg" />
-        <Skeleton className="h-10 w-16 rounded-lg" />
+      <nav className="sticky top-3 w-full z-[40] overflow-x-auto px-4">
+        <div className="flex flex-row relative justify-around">
+          <div className="h-10 flex-1 inline-flex gap-1.5 items-start justify-center pt-2">
+            <Skeleton className="h-4 w-4 rounded-full" />
+            <Skeleton className="h-4 w-10" />
+          </div>
+          <div className="h-10 flex-1 inline-flex gap-1.5 items-start justify-center pt-2">
+            <Skeleton className="h-4 w-4 rounded-full" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+          <div className="h-10 flex-1 inline-flex gap-1.5 items-start justify-center pt-2">
+            <Skeleton className="h-4 w-4 rounded-full" />
+            <Skeleton className="h-4 w-12" />
+          </div>
+        </div>
       </nav>
     </>
   );

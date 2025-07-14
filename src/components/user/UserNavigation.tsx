@@ -1,23 +1,56 @@
 "use client";
 
 import { ImagesIcon, MessageCircle, MessageSquare } from "lucide-react";
-import { NavigationItem } from "../menu/Navigation";
+import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import Link from "~/components/Link";
 
 export const UserNavigation = ({ handle }: { handle: string }) => {
+  const pathname = usePathname();
+  
+  const tabs = [
+    { href: `/u/${handle}`, label: "posts", icon: MessageCircle },
+    { href: `/u/${handle}/comments`, label: "comments", icon: MessageSquare },
+    { href: `/u/${handle}/gallery`, label: "gallery", icon: ImagesIcon },
+  ];
+  
+  const activeTab = tabs.findIndex(tab => pathname === tab.href) || 0;
+  
   return (
-    <nav className="sticky top-3 w-fit max-w-full mx-auto border border-muted rounded-xl z-[40] flex flex-row justify-start items-start gap-2 p-1 overflow-x-auto">
-      <NavigationItem href={`/u/${handle}`}>
-        <MessageCircle size={18} />
-        posts
-      </NavigationItem>
-      <NavigationItem href={`/u/${handle}/comments`}>
-        <MessageSquare size={18} />
-        comments
-      </NavigationItem>
-      <NavigationItem href={`/u/${handle}/gallery`}>
-        <ImagesIcon size={18} />
-        gallery
-      </NavigationItem>
+    <nav className="sticky top-3 w-full z-[40] overflow-x-auto px-4">
+      <div className="flex flex-row relative justify-around">
+        {tabs.map((tab, index) => {
+          const Icon = tab.icon;
+          const isActive = pathname === tab.href;
+          
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={`relative h-10 flex-1 overflow-hidden inline-flex gap-1.5 items-start justify-center text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none pt-2 ${
+                isActive ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              <Icon size={18} />
+              {tab.label}
+              {isActive && (
+                <motion.div
+                  className="absolute bottom-0 left-[20%] right-[20%] h-0.5 bg-primary"
+                  layoutId="activeTab"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 380,
+                    damping: 30,
+                  }}
+                />
+              )}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 };
