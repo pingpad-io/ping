@@ -34,7 +34,7 @@ export type User = {
   };
 };
 
-export function lensAcountToUser(account: Account): User {
+export function lensAccountToUser(account: Account): User {
   if (!account) return {} as unknown as User;
 
   const imageUrl = account?.metadata?.picture;

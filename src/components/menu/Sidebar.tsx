@@ -6,7 +6,7 @@ import { ServerSignedIn } from "../auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { lensAcountToUser } from "../user/User";
+import { lensAccountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
 
@@ -14,7 +14,7 @@ const UserBar = async () => {
   const { client, profileId } = await getServerAuth();
 
   const result = await fetchAccount(client, { address: profileId });
-  const user = result.isOk() ? lensAcountToUser(result.value) : null;
+  const user = result.isOk() ? lensAccountToUser(result.value) : null;
   const handleOrProfileId = user?.handle ?? profileId;
 
   return (

@@ -2,7 +2,7 @@
 
 import { useAccounts } from "@lens-protocol/react";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { lensAcountToUser } from "./user/User";
+import { lensAccountToUser } from "./user/User";
 
 export function HandleSearch({ query, maxResults = 10 }: { query: string; maxResults?: number }) {
   const { data: profiles, loading, error } = useAccounts({ filter: { searchBy: { localNameQuery: query } } });
@@ -10,7 +10,7 @@ export function HandleSearch({ query, maxResults = 10 }: { query: string; maxRes
   if (!query) return null;
   if (error && query) throw new Error(error);
 
-  const users = profiles?.items?.slice(0, maxResults).map(lensAcountToUser);
+  const users = profiles?.items?.slice(0, maxResults).map(lensAccountToUser);
   const list = users.map((user) => user.name);
 
   if (loading) return <LoadingSpinner />;

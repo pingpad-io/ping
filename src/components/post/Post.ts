@@ -1,5 +1,5 @@
 import type { AnyPost, Post as LensPost, TimelineItem } from "@lens-protocol/client";
-import { lensAcountToUser, type User } from "../user/User";
+import { lensAccountToUser, type User } from "../user/User";
 
 export type PostReactionType = "Repost" | "Comment" | "Bookmark" | "Collect";
 export type PostReactions = Record<PostReactionType, number> & {
@@ -25,16 +25,16 @@ export type PostActions = {
 
 export type PostMention =
   | {
-      __typename: "AccountMention";
-      account: string;
-      namespace?: string;
-      localName?: string;
-      replace?: {
-        __typename: "MentionReplace";
-        from: string;
-        to: string;
-      };
-    }
+    __typename: "AccountMention";
+    account: string;
+    namespace?: string;
+    localName?: string;
+    replace?: {
+      __typename: "MentionReplace";
+      from: string;
+      to: string;
+    };
+  }
   | { __typename: "GroupMention"; group: string };
 
 export type Post = {
@@ -67,7 +67,7 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
     return {
       ...originalPost,
       isRepost: true,
-      repostedBy: lensAcountToUser(repostItem.author),
+      repostedBy: lensAccountToUser(repostItem.author),
       repostedAt: new Date(repostItem.timestamp),
     };
   }
@@ -83,7 +83,7 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
 
     post = {
       id: item.slug ?? item.id,
-      author: lensAcountToUser(author),
+      author: lensAccountToUser(author),
       reactions: getReactions(item),
       comments: getCommentsFromItem(item),
       reply: getReplyFromItem(item),
@@ -148,7 +148,7 @@ function getCommentsFromItem(post: any) {
 function processComment(comment: any) {
   return {
     id: comment.slug ?? comment.id,
-    author: comment.by ? lensAcountToUser(comment.by) : null,
+    author: comment.by ? lensAccountToUser(comment.by) : null,
     createdAt: new Date(comment.createdAt),
     updatedAt: new Date(comment.createdAt),
     comments: [],

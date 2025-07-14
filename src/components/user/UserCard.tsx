@@ -1,34 +1,46 @@
 "use client";
 
-import { useAccount } from "@lens-protocol/react";
+import { useQuery } from "@tanstack/react-query";
 import { type PropsWithChildren, useState } from "react";
 import { FollowButton } from "../FollowButton";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
-import { lensAcountToUser, type User } from "./User";
+import type { User } from "./User";
 import { UserAvatar } from "./UserAvatar";
+
+const fetchUserByHandle = async (handle: string): Promise<User> => {
+  const response = await fetch(`/api/user/handle/${handle}`);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Failed to load user");
+  }
+
+  return data.user;
+};
 
 export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: string }) => {
   const lowercasedHandle = handle?.toLowerCase();
-  const { data, error, loading } = useAccount({ username: { localName: lowercasedHandle } });
-  const [user, setUser] = useState<User | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const loadCard = () => {
-    if (data) {
-      setUser(lensAcountToUser(data));
-    }
-  };
+  const { data: user, isLoading, isError, error } = useQuery({
+    queryKey: ["user", "handle", lowercasedHandle],
+    queryFn: () => fetchUserByHandle(lowercasedHandle!),
+    enabled: !!lowercasedHandle && isOpen,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+  });
 
   const isFollowingMe = user?.actions?.following;
 
   return (
-    <HoverCard defaultOpen={false} onOpenChange={(open: boolean) => open && loadCard()} closeDelay={100}>
+    <HoverCard defaultOpen={false} onOpenChange={setIsOpen} closeDelay={100}>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
       <HoverCardContent className="w-[20rem] not-prose" side="top">
-        {(loading || !user) && <LoadingSpinner />}
-        {error && <div>Error: {error}</div>}
+        {isLoading && <LoadingSpinner />}
+        {isError && <div>Error: {error?.message || "Failed to load user"}</div>}
         {user && (
           <div className="flex flex-col gap-2">
             <div className="flex flex-row items-start gap-2 text-base">

@@ -13,7 +13,7 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { lensAcountToUser } from "~/components/user/User";
+import { lensAccountToUser } from "~/components/user/User";
 import { UserAvatar } from "~/components/user/UserAvatar";
 import { ConnectedWalletLabel } from "~/components/web3/ConnnectedWalletLabel";
 import { env } from "~/env.mjs";
@@ -231,7 +231,7 @@ export default function LoginPage() {
                           disabled={isLoginPending && selectedAccount === account.address}
                         >
                           <div className="w-9 h-9">
-                            <UserAvatar link={false} user={lensAcountToUser(account)} />
+                            <UserAvatar link={false} user={lensAccountToUser(account)} />
                           </div>
                           <div className="flex flex-col items-start">
                             <span>{username}</span>

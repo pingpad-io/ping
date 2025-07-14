@@ -198,8 +198,8 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
             <PostComposer
               user={user}
               onSuccess={(newPost) => {
+                setIsPostDialogOpen(false);
                 if (newPost && !(newPost as any).isOptimistic) {
-                  setIsPostDialogOpen(false);
                   router.push(`/p/${newPost.id}`);
                 }
               }}

@@ -6,7 +6,7 @@ import { LexicalTypeaheadMenuPlugin, MenuOption } from "@lexical/react/LexicalTy
 import { $getSelection, $isRangeSelection, TextNode } from "lexical";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
-import { lensAcountToUser } from "../user/User";
+import { lensAccountToUser } from "../user/User";
 import { MentionMenuItem, MentionOption } from "./MentionOption";
 
 const MAX_MENTION_SUGGESTIONS = 10;
@@ -34,7 +34,7 @@ function useMentionLookup() {
       return [];
     }
 
-    const users = profiles.items.slice(0, MAX_MENTION_SUGGESTIONS).map(lensAcountToUser);
+    const users = profiles.items.slice(0, MAX_MENTION_SUGGESTIONS).map(lensAccountToUser);
 
     return users.map((user) => new MentionOption(user));
   }, [profiles, loading]);

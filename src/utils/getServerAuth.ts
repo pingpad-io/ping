@@ -1,7 +1,7 @@
 import { AnyClient, SessionClient } from "@lens-protocol/client";
 import { fetchMeDetails } from "@lens-protocol/client/actions";
 import jwt from "jsonwebtoken";
-import { lensAcountToUser, type User } from "~/components/user/User";
+import { lensAccountToUser, type User } from "~/components/user/User";
 import { getLensClient } from "./lens/getLensClient";
 
 interface ServerAuthResult {
@@ -91,7 +91,7 @@ export const getServerAuth = async (): Promise<ServerAuthResult> => {
   }
 
   const handle = account.value.loggedInAs.account.username?.localName;
-  const user = lensAcountToUser(account.value.loggedInAs.account);
+  const user = lensAccountToUser(account.value.loggedInAs.account);
 
   return {
     isAuthenticated: !!address,
