@@ -19,6 +19,7 @@ function cleanContent(content: string): string {
     .replace(/\\'/g, "'")
     .replace(/\\~/g, "~")
     .replace(/\\-/g, "-")
+    .replace(/\\\[/g, "[")
     .replace(/[ \t]+/g, " ")
     .replace(/\n\s+/g, "\n")
     .replace(/\s+\n/g, "\n")
@@ -78,7 +79,7 @@ export async function GET(request: Request) {
 
   if (!handle) {
     return new ImageResponse(
-      <div tw="flex items-center justify-center w-full h-full bg-[#1e1e1e] p-8 text-white flex-col">
+      <div tw="flex items-center justify-center w-full h-full bg-[#000000] p-8 text-white flex-col">
         <div tw="text-white text-4xl font-bold pb-12">Post not found</div>
         <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`} tw="h-8" />
       </div>,
@@ -87,26 +88,37 @@ export async function GET(request: Request) {
   }
 
   return new ImageResponse(
-    <div tw="w-full h-full flex bg-[#1e1e1e] relative overflow-hidden">
+    <div tw="w-full h-full flex bg-[#000000] relative overflow-hidden">
       {image && (
         <div tw="absolute inset-0 flex items-center justify-end">
           <img src={image} tw="w-full" style={{ filter: "brightness(0.3)" }} />
         </div>
       )}
 
+      <div 
+        tw="absolute flex items-center justify-center"
+        style={{ 
+          bottom: "-420px",
+          left: "-420px",
+          width: "840px",
+          height: "840px",
+          opacity: "0.10"
+        }}
+      >
+        <img
+          src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`}
+          tw="w-full h-full"
+        />
+      </div>
+
       <div tw="relative flex flex-col justify-start p-14 w-full h-full">
         <div tw="flex items-center mb-6">
           {profilePictureUrl && (
-            <div tw="flex items-center justify-center w-32 h-32 rounded-full mr-6 overflow-hidden">
+            <div tw="flex items-center justify-center w-24 h-24 rounded-full mr-4 overflow-hidden">
               <img src={profilePictureUrl} tw="w-full" />
             </div>
           )}
           <div tw="flex items-center">
-            <img
-              src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`}
-              tw="h-12"
-              style={{ transform: "translateY(3px)" }}
-            />
             <div tw="text-white text-6xl font-semibold flex pl-2 leading-[48px]">{handle}</div>
           </div>
         </div>
@@ -117,7 +129,7 @@ export async function GET(request: Request) {
               {(() => {
                 const cleanedContent = cleanContent(content);
                 const truncatedContent =
-                  cleanedContent.length > 128 ? `${cleanedContent.slice(0, 128).trim()}...` : cleanedContent;
+                  cleanedContent.length > 280 ? `${cleanedContent.slice(0, 280).trim()}...` : cleanedContent;
                 return truncatedContent.split("\n").map((line, index) => (
                   <div key={index} tw="flex mb-2">
                     {line}
