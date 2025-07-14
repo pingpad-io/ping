@@ -10,6 +10,7 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
 
     const result = await fetchGroup(client, {
       group: params.id,
+
     });
 
     if (result.isErr()) {

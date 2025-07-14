@@ -11,9 +11,9 @@
         "@dnd-kit/utilities": "^3.2.2",
         "@lens-chain/sdk": "^1.0.3",
         "@lens-chain/storage-client": "^1.0.3",
-        "@lens-protocol/client": "0.0.0-canary-20250707123651",
+        "@lens-protocol/client": "^0.0.0-canary-20250710104621",
         "@lens-protocol/metadata": "^2.1.0",
-        "@lens-protocol/react": "0.0.0-canary-20250707123651",
+        "@lens-protocol/react": "^0.0.0-canary-20250710104621",
         "@lens-protocol/wagmi": "^4.1.5",
         "@lexical/clipboard": "^0.32.1",
         "@lexical/code": "^0.32.1",
@@ -463,25 +463,25 @@
 
     "@lens-protocol/blockchain-bindings": ["@lens-protocol/blockchain-bindings@0.10.2", "", { "dependencies": { "@ethersproject/abi": "^5.7.0", "@ethersproject/contracts": "^5.7.0", "@ethersproject/providers": "^5.7.2", "@ethersproject/units": "^5.7.0", "@lens-protocol/domain": "0.12.0", "@lens-protocol/shared-kernel": "0.12.0", "ethers": "^5.7.2", "tslib": "^2.6.2" } }, "sha512-WIlp30gohy/EuTD+Oqb2ACftpIkBE3wOC1WgiaFeu1ybpnIY0PnUn0hAQeecG6TIekhP3VvMXK82BXppsv2Nhw=="],
 
-    "@lens-protocol/client": ["@lens-protocol/client@0.0.0-canary-20250707123651", "", { "dependencies": { "@lens-chain/sdk": "^1.0.0", "@lens-protocol/env": "0.0.0-canary-20250707123651", "@lens-protocol/graphql": "0.0.0-canary-20250707123651", "@lens-protocol/storage": "0.0.0-canary-20250707123651", "@lens-protocol/types": "0.0.0-canary-20250707123651", "@urql/core": "^5.0.8", "@urql/exchange-auth": "^2.2.0", "graphql": "^16.9.0", "jwt-decode": "^4.0.0" }, "peerDependencies": { "ethers": "^6.13.4", "viem": "^2.21.53", "zksync-ethers": "^6.15.3" }, "optionalPeers": ["ethers", "viem", "zksync-ethers"] }, "sha512-TtvseBaAGQ+5+6aYxMaXR6pbtlK0N3ybrfPf9ITB7BFkVrD3gmKDN5rxBkrlyS5ajcAZfKA2SvMg62Czrmq3nA=="],
+    "@lens-protocol/client": ["@lens-protocol/client@0.0.0-canary-20250710104621", "", { "dependencies": { "@lens-chain/sdk": "^1.0.0", "@lens-protocol/env": "0.0.0-canary-20250710104621", "@lens-protocol/graphql": "0.0.0-canary-20250710104621", "@lens-protocol/storage": "0.0.0-canary-20250710104621", "@lens-protocol/types": "0.0.0-canary-20250710104621", "@urql/core": "^5.0.8", "@urql/exchange-auth": "^2.2.0", "@urql/exchange-graphcache": "^7.2.4", "graphql": "^16.9.0", "jwt-decode": "^4.0.0" }, "peerDependencies": { "ethers": "^6.13.4", "viem": "^2.21.53", "zksync-ethers": "^6.15.3" }, "optionalPeers": ["ethers", "viem", "zksync-ethers"] }, "sha512-9nWGqozyMTcQNv1GvOtwD9d3TEdfeJKMNmAch5nlx523J5UlnuAPXOU6MH5vanrNBcdgliqhJpXRzHvikk287Q=="],
 
     "@lens-protocol/domain": ["@lens-protocol/domain@0.12.0", "", { "dependencies": { "@lens-protocol/shared-kernel": "0.12.0", "tslib": "^2.6.2" }, "peerDependencies": { "@faker-js/faker": "^7.6.0", "@jest/globals": "^29.7.0", "jest-mock-extended": "^3.0.5", "jest-when": "^3.6.0", "wait-for-expect": "^3.0.2" }, "optionalPeers": ["@faker-js/faker", "@jest/globals", "jest-mock-extended", "jest-when", "wait-for-expect"] }, "sha512-uyCuHstIPq3vtNkxOFiDah/EfNMjppHDOXnbnstDLpXD7xXZInYtdDqd0ENtg2j+0egGqHwvQJXciSDqGBJzmA=="],
 
-    "@lens-protocol/env": ["@lens-protocol/env@0.0.0-canary-20250707123651", "", { "dependencies": { "@lens-protocol/types": "0.0.0-canary-20250707123651" } }, "sha512-Llk7LS2dS+FSK8y8wbSQgg3WubP3M7hkecFJbF8Xz4Am50/XnsBBtbMtk/18iwa5jmOBa2KAJ2HdcmC+BhvUGA=="],
+    "@lens-protocol/env": ["@lens-protocol/env@0.0.0-canary-20250710104621", "", { "dependencies": { "@lens-protocol/types": "0.0.0-canary-20250710104621" } }, "sha512-Y0TtRGtvDDGHkrHEEi1ELfw6h+LiXW6a46FTGbiqrLNwN93BwV42enDi3HKsNANCKyGxXjObe10JS32aCE8liQ=="],
 
-    "@lens-protocol/graphql": ["@lens-protocol/graphql@0.0.0-canary-20250707123651", "", { "dependencies": { "@lens-protocol/types": "0.0.0-canary-20250707123651", "gql.tada": "^1.8.10", "graphql": "^16.9.0", "type-fest": "^4.26.1" } }, "sha512-e7NVmzDJhNVUHItqD2lcZMjzAewyh72evhLLintfxoI0fkhm0ZrdBpMyEIAR9eqZO641ufQ92BiN1Iqgb6xoqw=="],
+    "@lens-protocol/graphql": ["@lens-protocol/graphql@0.0.0-canary-20250710104621", "", { "dependencies": { "@lens-protocol/types": "0.0.0-canary-20250710104621", "gql.tada": "^1.8.10", "graphql": "^16.9.0", "type-fest": "^4.26.1" } }, "sha512-Ev6OKLgrJWGhB73EN4dwU1SXMWb4pCI0MT0iipAqjwYhz4aEUvOOsamUI9dJnD3cVRPQoHsybU6kbYh4ky3GJQ=="],
 
     "@lens-protocol/metadata": ["@lens-protocol/metadata@2.1.0", "", { "dependencies": { "abitype": "^1.0.8", "json-stable-stringify": "^1.1.1", "uuid": "^9.0.1" }, "peerDependencies": { "zod": "^3.22.3" }, "optionalPeers": ["zod"] }, "sha512-aQOqs/SFLKgFRQLyyOlZtDqni0LtRzOf0W+zfxtovxOCyjFKkhxRvlw+qLqVlaYM1dS50lDZ+7/uVMQ+PH5wIQ=="],
 
-    "@lens-protocol/react": ["@lens-protocol/react@0.0.0-canary-20250707123651", "", { "dependencies": { "@lens-protocol/client": "0.0.0-canary-20250707123651", "@lens-protocol/env": "0.0.0-canary-20250707123651", "@lens-protocol/graphql": "0.0.0-canary-20250707123651", "@lens-protocol/types": "0.0.0-canary-20250707123651", "urql": "^4.2.1" }, "peerDependencies": { "@types/react": "^18.3.12", "ethers": "^6.13.4", "react": "^18.3.1", "viem": "^2.21.33", "zksync-ethers": "^6.15.3" }, "optionalPeers": ["@types/react", "ethers", "viem", "zksync-ethers"] }, "sha512-mhzUsOT6aiCEQVAh407aJv/7sHqLN28ASPJSjCePv/g2ip9ldarHtMY+H1w7rW6e2l0yk6NDCIANx3EgygFrKA=="],
+    "@lens-protocol/react": ["@lens-protocol/react@0.0.0-canary-20250710104621", "", { "dependencies": { "@lens-protocol/client": "0.0.0-canary-20250710104621", "@lens-protocol/env": "0.0.0-canary-20250710104621", "@lens-protocol/graphql": "0.0.0-canary-20250710104621", "@lens-protocol/types": "0.0.0-canary-20250710104621", "urql": "^4.2.1" }, "peerDependencies": { "@types/react": "^18.3.12", "ethers": "^6.13.4", "react": "^18.3.1", "viem": "^2.21.33", "zksync-ethers": "^6.15.3" }, "optionalPeers": ["@types/react", "ethers", "viem", "zksync-ethers"] }, "sha512-rqzBF0ccJZWEdNFGcQsGDQqKWJCWuvYa1kcztaKCKl4gl1Ggo/zgAD1XUon+BJGP3aRlvLi94/dV5fzTE7VLSA=="],
 
     "@lens-protocol/react-web": ["@lens-protocol/react-web@2.3.2", "", { "dependencies": { "@lens-protocol/domain": "0.12.0", "@lens-protocol/react": "2.3.2", "@lens-protocol/shared-kernel": "0.12.0", "@lens-protocol/storage": "0.8.1", "tslib": "^2.6.2" }, "peerDependencies": { "@types/react": "^18.0.0", "@xmtp/react-sdk": "^3.0.0", "react": "^18.2.0" }, "optionalPeers": ["@types/react", "@xmtp/react-sdk"] }, "sha512-/yt8/tYLBJ0rCFc2BxDVU+SIiS0VfkPFy/smhh34RjlwUNRPBN4uACXFN4gwRPEIG66ied0rncKvuUnoh1D2eA=="],
 
     "@lens-protocol/shared-kernel": ["@lens-protocol/shared-kernel@0.12.0", "", { "dependencies": { "@ethersproject/address": "^5.7.0", "decimal.js": "^10.4.3", "lodash": "^4.17.21", "traverse": "^0.6.7", "tslib": "^2.6.2" } }, "sha512-+trBZPjGDSRMVafZF6jXcfKc8UVHr1bVRjxeAVO1ZpR7zWfampJhxMO+7jbmmhvmYmf5Losp7Ffq4//szKloaA=="],
 
-    "@lens-protocol/storage": ["@lens-protocol/storage@0.0.0-canary-20250707123651", "", { "dependencies": { "@lens-protocol/types": "0.0.0-canary-20250707123651", "zod": "^3.23.8" } }, "sha512-+CAddJwxeX1WoLmRq183wMo9N8ovfi0lLD0R3mAyPT5hAVJtci3+stzhoTejQ1dYU4YQwszikLD2ZUj8kLjzsQ=="],
+    "@lens-protocol/storage": ["@lens-protocol/storage@0.0.0-canary-20250710104621", "", { "dependencies": { "@lens-protocol/types": "0.0.0-canary-20250710104621", "zod": "^3.23.8" } }, "sha512-I4kOIi/Pz/zfp9YJ6+w/TsEisJlbAKxMJUuey592ABWe6pSOuZTnto8Zb+Zgg+8bGKy2yuOywpjDJNY2HLOaag=="],
 
-    "@lens-protocol/types": ["@lens-protocol/types@0.0.0-canary-20250707123651", "", { "dependencies": { "neverthrow": "^8.0.0", "type-fest": "^4.26.1" } }, "sha512-roKek/tGcZ0KhFxTXE127m1XHemqGYH11qRYMKnTIQ+g7pY4engp6OjZKSfLJA9TTV0f2t8XzcxunK4U2j+OsA=="],
+    "@lens-protocol/types": ["@lens-protocol/types@0.0.0-canary-20250710104621", "", { "dependencies": { "neverthrow": "^8.0.0", "type-fest": "^4.26.1" } }, "sha512-mb1zgz4Chx3cFTSt5ahRwBrYgTR9bBNr0/WLTQ4i0pgQxNH9wCNAw/lyl0Pbjwq2ZTHh9G8irOCKqDPwrW8kcw=="],
 
     "@lens-protocol/wagmi": ["@lens-protocol/wagmi@4.1.5", "", { "dependencies": { "@ethersproject/providers": "^5.7.2", "@lens-protocol/shared-kernel": "0.12.0" }, "peerDependencies": { "@lens-protocol/react-web": "2.3.2", "@tanstack/react-query": ">=5.0.0", "viem": "2.x", "wagmi": "^2.5.19" } }, "sha512-8C4jQe73PkPAkdlB0WDqtA7k3f9uFMLn/xaJcW8GTbyslYrc1/bDLIIw6KuZMXAvpDX5PJbtUG7AJEgz/jYLmg=="],
 
@@ -1004,6 +1004,8 @@
     "@urql/core": ["@urql/core@5.2.0", "", { "dependencies": { "@0no-co/graphql.web": "^1.0.13", "wonka": "^6.3.2" } }, "sha512-/n0ieD0mvvDnVAXEQgX/7qJiVcvYvNkOHeBvkwtylfjydar123caCXcl58PXFY11oU1oquJocVXHxLAbtv4x1A=="],
 
     "@urql/exchange-auth": ["@urql/exchange-auth@2.2.1", "", { "dependencies": { "@urql/core": "^5.1.1", "wonka": "^6.3.2" } }, "sha512-n4xUxxjvY36GJh539sLaPFyvFzreADOv8EFQdTiXOCIRVoXXhWVVI7DjY/HNtLICfbg1+UlbvQ7sNkwaBouDHg=="],
+
+    "@urql/exchange-graphcache": ["@urql/exchange-graphcache@7.2.4", "", { "dependencies": { "@0no-co/graphql.web": "^1.0.13", "@urql/core": "^5.1.2", "wonka": "^6.3.2" } }, "sha512-kiKbT0ZrtyQmmgNLYR0qkZAJjWHQOtrd+6Dt9JMtm3L/A8r3D6ptcJn668BADP6J+vkxcfNFtdI+0OdmBBkRgw=="],
 
     "@vercel/og": ["@vercel/og@0.6.8", "", { "dependencies": { "@resvg/resvg-wasm": "2.4.0", "satori": "0.12.2", "yoga-wasm-web": "0.3.3" } }, "sha512-e4kQK9mP8ntpo3dACWirGod/hHv4qO5JMj9a/0a2AZto7b4persj5YP7t1Er372gTtYFTYxNhMx34jRvHooglw=="],
 

@@ -1,4 +1,4 @@
-import { type Group, PageSize, type Paginated, type UnexpectedError } from "@lens-protocol/client";
+import { type Group, GroupsOrderBy, PageSize, type Paginated, type UnexpectedError } from "@lens-protocol/client";
 import { fetchGroups } from "@lens-protocol/client/actions";
 import type { Result } from "neverthrow";
 import { type NextRequest, NextResponse } from "next/server";
@@ -20,7 +20,9 @@ export async function GET(request: NextRequest) {
       result = await fetchGroups(client, {
         filter: {
           ...(searchQuery && { searchQuery }),
+
         },
+        orderBy: GroupsOrderBy.LatestFirst,
         pageSize: PageSize.Ten,
         cursor,
       });

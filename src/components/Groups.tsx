@@ -4,7 +4,9 @@ import type { Group } from "@lens-protocol/client";
 import { useSearchParams } from "next/navigation";
 import { Feed } from "~/components/Feed";
 import { GroupView } from "~/components/groups/GroupView";
+import { TrendingGroups } from "~/components/groups/TrendingGroups";
 import { SearchBar } from "~/components/menu/Search";
+import { TRENDING_GROUP_ADDRESSES } from "~/constants/trendingGroups";
 
 interface GroupsProps {
   initialQuery?: string;
@@ -25,6 +27,8 @@ export default function Groups({ initialQuery = "" }: GroupsProps) {
       <div className="mb-6">
         <SearchBar defaultText={query} />
       </div>
+
+      {!query && <TrendingGroups groupAddresses={TRENDING_GROUP_ADDRESSES} />}
 
       <Feed<GroupWithId>
         ItemView={GroupViewWrapper}
