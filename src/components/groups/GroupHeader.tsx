@@ -6,6 +6,7 @@ import { useGroupStats } from "~/hooks/useGroupStats";
 import { useGroupMutations } from "~/hooks/useGroupMutations";
 import { useAuth } from "~/hooks/useAuth";
 import { resolveUrl } from "~/utils/resolveUrl";
+import { formatNumber } from "~/utils/formatNumber";
 import type { GroupWithOperations } from "~/hooks/useGroup";
 import { Card } from "../ui/card";
 
@@ -52,7 +53,7 @@ export function GroupHeader({ group }: GroupHeaderProps) {
         <div className="flex items-center gap-3 mt-1">
           {stats && (
             <p className="text-sm text-muted-foreground">
-              {stats.totalMembers} {stats.totalMembers === 1 ? "member" : "members"}
+              {formatNumber(stats.totalMembers)} {stats.totalMembers === 1 ? "member" : "members"}
             </p>
           )}
           {group.isBanned && (

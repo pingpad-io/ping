@@ -5,6 +5,7 @@ import { Feed } from "../Feed";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { formatNumber } from "~/utils/formatNumber";
 import { type User } from "./User";
 import { UserView } from "./UserView";
 
@@ -20,13 +21,13 @@ export const UserFollowing = ({ user, followingCount, followersCount }: UserFoll
   return (
     <Dialog>
       <DialogTrigger className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-        {followersCount} followers
+        {formatNumber(followersCount)} {followersCount === 1 ? "follower" : "followers"}
       </DialogTrigger>
       <DialogContent className="max-w-lg backdrop-blur-md bg-card/60">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="followers">Followers ({followersCount})</TabsTrigger>
-            <TabsTrigger value="following">Following ({followingCount})</TabsTrigger>
+            <TabsTrigger value="followers">Followers ({formatNumber(followersCount)})</TabsTrigger>
+            <TabsTrigger value="following">Following ({formatNumber(followingCount)})</TabsTrigger>
           </TabsList>
           <TabsContent value="followers" className="mt-4">
             <ScrollArea className="h-[500px]">

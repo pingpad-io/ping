@@ -3,6 +3,7 @@
 import type { Group } from "@lens-protocol/client";
 import { Users } from "lucide-react";
 import { resolveUrl } from "~/utils/resolveUrl";
+import { formatNumber } from "~/utils/formatNumber";
 import Link from "~/components/Link";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
@@ -29,7 +30,7 @@ function MemberCount({ groupId }: { groupId: string }) {
 
   return (
     <p className="text-sm text-muted-foreground mt-1">
-      {data.totalMembers} {data.totalMembers === 1 ? "member" : "members"}
+      {formatNumber(data.totalMembers)} {data.totalMembers === 1 ? "member" : "members"}
     </p>
   );
 }
