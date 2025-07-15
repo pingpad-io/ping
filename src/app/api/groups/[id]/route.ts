@@ -23,7 +23,11 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
     }
 
     return NextResponse.json({
-      group,
+      ...group,
+      isBanned: group.operations?.isBanned || false,
+      canJoin: group.operations?.canJoin?.__typename === "GroupOperationValidationPassed" || false,
+      canLeave: group.operations?.canLeave?.__typename === "GroupOperationValidationPassed" || false,
+      canPost: group.feed?.operations?.canPost?.__typename === "FeedOperationValidationPassed" || false
     });
   } catch (error) {
     console.error("Error fetching group:", error);

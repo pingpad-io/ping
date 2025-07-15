@@ -1,27 +1,13 @@
-import { fetchGroup } from "@lens-protocol/client/actions";
-import type { Metadata } from "next";
-import { ServerSignedIn } from "~/components/auth/ServerSignedIn";
+"use client";
+
 import { Feed } from "~/components/Feed";
 import PostComposer from "~/components/post/PostComposer";
 import { PostView } from "~/components/post/PostView";
-import { getServerAuth } from "~/utils/getServerAuth";
-import { getLensClient } from "~/utils/lens/getLensClient";
-
-export const metadata: Metadata = {
-  title: "Group",
-  description: "Group feed",
-  openGraph: {
-    title: "Group",
-    description: "Group feed",
-    images: [
-      {
-        url: "/logo.png",
-        width: 1200,
-        height: 630,
-      },
-    ],
-  },
-};
+import { GroupHeader } from "~/components/groups/GroupHeader";
+import { GroupNavigation } from "~/components/groups/GroupNavigation";
+import { useGroup } from "~/hooks/useGroup";
+import { FeedSuspense } from "~/components/FeedSuspense";
+import { useAuth } from "~/hooks/useAuth";
 
 interface GroupPageProps {
   params: {
@@ -29,29 +15,50 @@ interface GroupPageProps {
   };
 }
 
-const GroupPage = async ({ params }: GroupPageProps) => {
-  const { user } = await getServerAuth();
-  const client = await getLensClient();
-  const groupResult = await (await fetchGroup(client, { group: params.group }))._unsafeUnwrap(null);
-  const feedAddress = groupResult?.feed?.address;
-  const canPost = groupResult?.feed.operations.canPost.__typename === "FeedOperationValidationPassed";
+export default function GroupPage({ params }: GroupPageProps) {
+  const { data: group, isLoading, error } = useGroup(params.group);
+  const { user } = useAuth();
 
+  if (isLoading) {
+    return (
+      <div className="z-[30] p-4 py-0">
+        <div className="pt-4">
+          <FeedSuspense />
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !group) {
+    return (
+      <div className="z-[30] p-4 py-0">
+        <div className="pt-4">
+          <div className="text-center text-muted-foreground">Group not found</div>
+        </div>
+      </div>
+    );
+  }
+
+  const feedAddress = group.feed?.address;
   const endpoint = feedAddress ? `/api/posts?feed=${feedAddress}` : `/api/posts?group=${params.group}`;
 
   return (
     <div className="z-[30] p-4 py-0">
-      <ServerSignedIn>
-        <div className="pt-4 pb-2">
-          {canPost && (
-            <div className="p-4 glass rounded-xl">
-              <PostComposer user={user} feed={feedAddress} />
-            </div>
-          )}
-        </div>
-      </ServerSignedIn>
-      <Feed ItemView={PostView} endpoint={endpoint} />
+      <div className="pt-4">
+        <GroupHeader group={group} />
+        <GroupNavigation groupAddress={params.group} />
+        
+        {user && (
+          <div className="pb-2">
+            {group.canPost && !group.isBanned && (
+              <div className="p-4 glass rounded-xl">
+                <PostComposer user={user} feed={feedAddress} />
+              </div>
+            )}
+          </div>
+        )}
+        <Feed ItemView={PostView} endpoint={endpoint} />
+      </div>
     </div>
   );
-};
-
-export default GroupPage;
+}

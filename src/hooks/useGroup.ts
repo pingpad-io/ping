@@ -1,17 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Group } from "@lens-protocol/client";
 
-interface GroupResponse {
-  group: Group;
+export interface GroupWithOperations extends Group {
+  isBanned: boolean;
+  canJoin: boolean;
+  canLeave: boolean;
+  canPost: boolean;
 }
 
-const fetchGroup = async (groupId: string): Promise<Group> => {
+const fetchGroup = async (groupId: string): Promise<GroupWithOperations> => {
   const response = await fetch(`/api/groups/${groupId}`);
   if (!response.ok) {
     throw new Error("Failed to fetch group");
   }
-  const data: GroupResponse = await response.json();
-  return data.group;
+  const data = await response.json();
+  return data;
 };
 
 export function useGroup(groupId: string | undefined) {
