@@ -50,7 +50,7 @@ export async function GET(request: Request) {
 
   const fontsDir = path.join(process.cwd(), "public", "fonts");
 
-  const quicksandSemiBold = await readFile(path.join(fontsDir, "Quicksand-SemiBold.ttf"));
+  const quicksandBold = await readFile(path.join(fontsDir, "Quicksand-Bold.ttf"));
   const quicksandMedium = await readFile(path.join(fontsDir, "Quicksand-Medium.ttf"));
 
   const handle = searchParams.get("handle");
@@ -70,9 +70,9 @@ export async function GET(request: Request) {
       },
       {
         name: "Quicksand",
-        data: quicksandSemiBold,
+        data: quicksandBold,
         style: "normal",
-        weight: 600,
+        weight: 700,
       },
     ],
   } as ImageResponseOptions;
@@ -96,17 +96,24 @@ export async function GET(request: Request) {
       )}
 
       <div 
-        tw="absolute flex items-center justify-center"
-        style={{ 
-          bottom: "-420px",
-          left: "-420px",
-          width: "840px",
-          height: "840px",
-          opacity: "0.10"
-        }}
+        tw="absolute flex items-center justify-center bottom-[-140px] left-[-140px] w-[520px] h-[520px] opacity-10"
       >
         <img
           src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`}
+          tw="w-full h-full"
+        />
+      </div>
+      <div 
+        tw="absolute flex items-center justify-center"
+        style={{ 
+          bottom: "32px",
+          right: "32px",
+          width: "80px",
+          height: "80px",
+        }}
+      >
+        <img
+          src={`${process.env.NEXT_PUBLIC_SITE_URL}/ping-brand-logo.png`}
           tw="w-full h-full"
         />
       </div>
@@ -119,13 +126,14 @@ export async function GET(request: Request) {
             </div>
           )}
           <div tw="flex items-center">
-            <div tw="text-white text-6xl font-semibold flex pl-2 leading-[48px]">{handle}</div>
+            <div tw="text-white text-6xl font-bold flex pl-2 leading-[48px]">{handle}</div>
           </div>
         </div>
 
         {content && (
           <div tw="flex max-w-4xl">
-            <div tw="text-white text-4xl font-medium leading-relaxed flex flex-col">
+            <div tw="text-white text-[120px] pl-4 h-24 pt-4 pr-6 flex flex-col justify-center font-bold">"</div>
+            <div tw="flex-1 text-white text-4xl font-medium leading-relaxed flex flex-col">
               {(() => {
                 const cleanedContent = cleanContent(content);
                 const truncatedContent =
