@@ -39,7 +39,7 @@ function cleanContent(content: string): string {
 
   cleanedContent = cleanedContent.replace(
     /@lens\/(\w+)/g,
-    '@$1'
+    '$1'
   );
 
   return cleanedContent;
@@ -96,7 +96,7 @@ export async function GET(request: Request) {
       )}
 
       <div 
-        tw="absolute flex items-center justify-center bottom-[-140px] left-[-140px] w-[520px] h-[520px] opacity-10"
+        tw="absolute flex items-center justify-center bottom-[-50px] left-[-50px] w-[420px] h-[420px] opacity-10"
       >
         <img
           src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`}
@@ -104,17 +104,11 @@ export async function GET(request: Request) {
         />
       </div>
       <div 
-        tw="absolute flex items-center justify-center"
-        style={{ 
-          bottom: "32px",
-          right: "32px",
-          width: "80px",
-          height: "80px",
-        }}
+        tw="absolute flex items-center justify-center bottom-14 right-14"
       >
         <img
           src={`${process.env.NEXT_PUBLIC_SITE_URL}/ping-logo-drop-round.png`}
-          tw="w-full h-full"
+          tw="w-20 h-20"
         />
       </div>
 
@@ -133,7 +127,7 @@ export async function GET(request: Request) {
         {content && (
           <div tw="flex pr-20">
             <div tw="text-white text-6xl min-w-14 px-4 h-16 pt-2 justify-start flex items-start flex flex-col justify-center font-bold">"</div>
-            <div tw="text-white max-w-[900px] text-4xl font-medium flex flex-col" style={{ lineHeight: "1.4" }}>
+            <div tw="text-white flex-1 pr-12 text-4xl font-medium flex flex-col" style={{ lineHeight: "1.4" }}>
               {(() => {
                 const cleanedContent = cleanContent(content);
                 const truncatedContent =
@@ -145,10 +139,6 @@ export async function GET(request: Request) {
                 ));
               })()}
             </div>
-            <div tw="text-white text-6xl h-full justify-end flex items-end flex flex-col justify-center font-bold">
-              <div tw="flex-1"></div>
-              <div tw="text-white text-6xl px-4 h-16 pt-4 justify-start flex items-start flex flex-col justify-center font-bold">"</div>
-              </div>
           </div>
         )}
       </div>
