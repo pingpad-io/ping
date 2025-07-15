@@ -13,6 +13,9 @@ import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
 import { Menu } from "~/components/menu/Menu";
+import { RouteTracker } from "~/components/RouteTracker";
+import { NavigationShortcuts } from "~/components/NavigationShortcuts";
+import { HistoryIndicator } from "~/components/HistoryIndicator";
 
 const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
 
@@ -43,6 +46,9 @@ export default async function RootLayout({ children }) {
                 <NotificationsProvider>
                   {/* <BackgroundGradient /> */}
                   <AuthWatcher />
+                  <RouteTracker />
+                  <NavigationShortcuts />
+                  <HistoryIndicator />
                   <Toaster position="top-center" offset={16} />
                   <Menu isAuthenticated={!!profileId} user={user} handle={handle} />
 

@@ -8,12 +8,12 @@ import { GroupNavigation } from "~/components/groups/GroupNavigation";
 
 interface GroupAboutPageProps {
   params: {
-    group: string;
+    community: string;
   };
 }
 
 export default function GroupAboutPage({ params }: GroupAboutPageProps) {
-  const { data: group, isLoading, error } = useGroup(params.group);
+  const { data: group, isLoading, error } = useGroup(params.community);
 
   if (isLoading) {
     return (
@@ -39,7 +39,7 @@ export default function GroupAboutPage({ params }: GroupAboutPageProps) {
     <div className="z-[30] p-4 py-0">
       <div className="pt-4">
         <GroupHeader group={group} />
-        <GroupNavigation groupAddress={params.group} />
+        <GroupNavigation groupAddress={params.community} />
 
         <Card className="glass">
           <CardContent className="p-6">

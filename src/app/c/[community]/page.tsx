@@ -11,12 +11,12 @@ import { useAuth } from "~/hooks/useAuth";
 
 interface GroupPageProps {
   params: {
-    group: string;
+    community: string;
   };
 }
 
 export default function GroupPage({ params }: GroupPageProps) {
-  const { data: group, isLoading, error } = useGroup(params.group);
+  const { data: group, isLoading, error } = useGroup(params.community);
   const { user } = useAuth();
 
   if (isLoading) {
@@ -40,13 +40,13 @@ export default function GroupPage({ params }: GroupPageProps) {
   }
 
   const feedAddress = group.feed?.address;
-  const endpoint = feedAddress ? `/api/posts?feed=${feedAddress}` : `/api/posts?group=${params.group}`;
+  const endpoint = feedAddress ? `/api/posts?feed=${feedAddress}` : `/api/posts?group=${params.community}`;
 
   return (
     <div className="z-[30] p-4 py-0">
       <div className="pt-4">
         <GroupHeader group={group} />
-        <GroupNavigation groupAddress={params.group} />
+        <GroupNavigation groupAddress={params.community} />
         
         {user && (
           <div className="pb-2">

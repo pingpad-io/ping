@@ -36,7 +36,7 @@ function MemberCount({ groupId }: { groupId: string }) {
 }
 
 export function GroupView({ group, isVertical = false, showJoin = true }: GroupViewProps) {
-  const groupUrl = `/g/${group.address}`;
+  const groupUrl = `/c/${group.address}`;
   const iconUrl = resolveUrl(group.metadata?.icon);
   const canJoin = group.operations.canJoin.__typename === "GroupOperationValidationPassed";
   const canLeave = group.operations.canLeave.__typename === "GroupOperationValidationPassed";
