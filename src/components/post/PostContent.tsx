@@ -29,7 +29,7 @@ export const PostContent = forwardRef<
         }}
         className="overflow-hidden relative"
       >
-        <div className="whitespace-pre-wrap break-words text-sm/tight sm:text-base/tight">{textContent}</div>
+        <div className="whitespace-wrap break-words text-sm/tight sm:text-base/tight">{textContent}</div>
       </motion.div>
 
       {mediaContent}
