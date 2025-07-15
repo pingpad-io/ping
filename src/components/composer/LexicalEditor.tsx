@@ -205,6 +205,7 @@ function EditorContent({
         contentEditable={
           <ContentEditable
             className={`lexical-editor ${disabled ? "opacity-50 pointer-events-none" : ""} ${className}`}
+            data-lexical-editor
           />
         }
         ErrorBoundary={LexicalErrorBoundary}

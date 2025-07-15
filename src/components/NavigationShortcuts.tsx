@@ -48,6 +48,19 @@ export function NavigationShortcuts() {
         return;
       }
 
+      // Check if the target is inside a contenteditable element (Lexical Editor)
+      const target = event.target as HTMLElement;
+      if (target.isContentEditable || target.closest('[contenteditable="true"]')) {
+        return;
+      }
+
+      // Check if the target is inside the PostComposer or any input wrapper
+      if (target.closest('[data-lexical-editor]') || 
+          target.closest('.lexical-editor') ||
+          target.closest('[role="textbox"]')) {
+        return;
+      }
+
       const key = event.key.toUpperCase();
 
       if (key === "H" || key === "L") {
