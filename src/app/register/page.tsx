@@ -253,8 +253,7 @@ export default function RegisterPage() {
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      router.push(`/u/${username}`);
-      router.refresh();
+      window.location.href = `/u/${username}`;
     } catch (error) {
       console.error("Error creating profile:", error);
       toast.error("Failed to create profile. Please try again.");

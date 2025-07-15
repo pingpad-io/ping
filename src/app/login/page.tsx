@@ -116,14 +116,11 @@ export default function LoginPage() {
         throw new Error(`Failed to get authenticated client: ${authenticated.error.message}`);
       }
 
-      toast.success("Welcome to Ping!", { description: "login successful!" });
+      toast.success("Welcome to Ping!");
 
       const username = account.username?.localName || account.address;
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      router.push(`/u/${username}`);
-      router.refresh();
+      window.location.href = `/u/${username}`;
     } catch (err) {
       console.error("Error logging in:", err);
       toast.error(err instanceof Error ? err.message : "Failed to log in. Please try again.");
@@ -222,7 +219,7 @@ export default function LoginPage() {
                     return (
                       <div id={`${idx}`} key={`${account.address}`}>
                         <Button
-                          className="flex flex-row items-center justify-start w-full gap-3"
+                          className="flex flex-row items-center justify-start w-full gap-3 hover:scale-100 active:scale-100"
                           size="default"
                           variant="outline"
                           value={account.address}
