@@ -28,19 +28,18 @@ export function PostComposerHeader({
         <div className="ml-auto">
           <Button
             type="button"
-            variant="link"
+            variant="ghost"
+            size="icon"
             onClick={onCancel}
             disabled={isPosting}
-            className="flex gap-4 w-4 rounded-full hover-expand justify-center [&>span]:hover:scale-110 [&>span]:active:scale-95"
+            className="h-8 w-8 rounded-full hover:bg-transparent button-hover-bg button-hover-bg-equal"
           >
-            <span className="transition-transform">
-              <XIcon
-                size={18}
-                strokeWidth={2.2}
-                stroke="hsl(var(--muted-foreground))"
-                className="transition-all duration-200"
-              />
-            </span>
+            <XIcon
+              size={18}
+              strokeWidth={2.2}
+              stroke="hsl(var(--muted-foreground))"
+              className="transition-all duration-200"
+            />
           </Button>
         </div>
       )}

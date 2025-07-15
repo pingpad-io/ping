@@ -52,17 +52,16 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
         <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="link"
-              className="flex gap-4 w-4 rounded-full hover-expand justify-center [&>span]:hover:scale-110 [&>span]:active:scale-95"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-full hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg button-hover-bg-equal"
             >
-              <span className="transition-transform">
-                <EllipsisIcon
-                  size={18}
-                  strokeWidth={2.2}
-                  stroke="hsl(var(--muted-foreground))"
-                  className="transition-all duration-200"
-                />
-              </span>
+              <EllipsisIcon
+                size={18}
+                strokeWidth={2.2}
+                stroke="hsl(var(--muted-foreground))"
+                className="transition-all duration-200"
+              />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-max">

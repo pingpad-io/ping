@@ -41,46 +41,40 @@ export function ReactionsList({
 
   return (
     <div className="flex flex-row items-center justify-between sm:justify-start gap-6 sm:gap-10 w-full -mb-2 mt-1">
-      <div className="hover-expand rounded-full">
+      <ReactionButton
+        variant={isComment ? "comment" : "post"}
+        reactionType="Comment"
+        reaction={{
+          count: post.reactions.Comment,
+          isActive: isReplyOpen,
+        }}
+        onClick={() => requireAuth(() => context.handleReply())}
+      />
+      <RepostDropdown
+        post={post}
+        variant={isComment ? "comment" : "post"}
+        reactions={{
+          reacted: post.reactions.isReposted,
+          count: post.reactions.Repost,
+          canRepost: post.reactions?.canRepost || false,
+          canQuote: post.reactions?.canQuote || false,
+        }}
+      />
+      <span ref={likeButtonRef}>
         <ReactionButton
           variant={isComment ? "comment" : "post"}
-          reactionType="Comment"
+          reactionType="Like"
           reaction={{
-            count: post.reactions.Comment,
-            isActive: isReplyOpen,
+            count: post.reactions.upvotes || 0,
+            isActive: post.reactions.isUpvoted || false,
           }}
-          onClick={() => requireAuth(() => context.handleReply())}
+          onClick={handleLikeClick}
         />
-      </div>
-      <div className="hover-expand rounded-full">
-        <RepostDropdown
-          post={post}
-          variant={isComment ? "comment" : "post"}
-          reactions={{
-            reacted: post.reactions.isReposted,
-            count: post.reactions.Repost,
-            canRepost: post.reactions?.canRepost || false,
-            canQuote: post.reactions?.canQuote || false,
-          }}
-        />
-      </div>
-      <div className="hover-expand rounded-full">
-        <span ref={likeButtonRef}>
-          <ReactionButton
-            variant={isComment ? "comment" : "post"}
-            reactionType="Like"
-            reaction={{
-              count: post.reactions.upvotes || 0,
-              isActive: post.reactions.isUpvoted || false,
-            }}
-            onClick={handleLikeClick}
-          />
-        </span>
-      </div>
+      </span>
 
       {collapsed && (
         <div className="ml-auto">
-          <Button size="sm" variant="ghost" className="h-max w-12 border-0 px-0 place-content-center items-center">
+          <Button size="sm" variant="ghost" className="h-max w-12 border-0 px-0 place-content-center items-center hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg button-hover-bg-equal">
             <ChevronDownIcon className="h-5" />
           </Button>
         </div>

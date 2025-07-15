@@ -31,9 +31,8 @@ export const ReactionButton: React.FC<ReactionButtonProps> = ({
         e.stopPropagation();
         onClick();
       }}
-      className={
-        "border-0 px-0 place-content-center items-center flex flex-row min-w-[2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95"
-      }
+      className={`border-0 px-0 place-content-center items-center flex flex-row min-w-[2.2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg 
+        ${reaction.count > 0 ? "button-hover-bg-wide" : "button-hover-bg-equal"}`}
       disabled={disabled}
     >
       <TooltipProvider>

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useAuth } from "~/hooks/useAuth";
 import { usePostMutations } from "~/hooks/usePostMutations";
 import { cn } from "~/utils";
+import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import type { Post } from "./Post";
@@ -56,23 +57,21 @@ export default function RepostDropdown({ post, variant = "post", reactions }: Re
     <>
       <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen} modal={false}>
         <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            className={cn(
-              "flex flex-row items-center justify-center gap-1.5 sm:gap-2 md:gap-3 h-9 min-w-[2rem] [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95",
-            )}
+          <Button
+            size="sm"
+            variant="ghost"
+            className={`border-0 px-0 place-content-center items-center flex flex-row min-w-[2.2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg ${reactions.count > 0 ? "button-hover-bg-wide" : "button-hover-bg-equal"
+              }`}
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
-            <span className="transition-transform">
-              <RefreshCwIcon
-                size={variant === "post" ? 18 : 16}
-                strokeWidth={reactions.reacted ? 3 : 2}
-                stroke={reactions.reacted ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"}
-                className="transition-all duration-200"
-              />
-            </span>
+            <RefreshCwIcon
+              size={variant === "post" ? 18 : 16}
+              strokeWidth={reactions.reacted ? 3 : 2}
+              stroke={reactions.reacted ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"}
+              className="transition-all duration-200"
+            />
             {reactions.count > 0 && (
               <span
                 className={cn(
@@ -83,7 +82,7 @@ export default function RepostDropdown({ post, variant = "post", reactions }: Re
                 {reactions.count}
               </span>
             )}
-          </button>
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="center">
           <DropdownMenuItem onClick={() => requireAuth(handleRepost)} className="gap-2">
