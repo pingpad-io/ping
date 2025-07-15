@@ -113,7 +113,7 @@ export async function GET(request: Request) {
         }}
       >
         <img
-          src={`${process.env.NEXT_PUBLIC_SITE_URL}/ping-brand-logo.png`}
+          src={`${process.env.NEXT_PUBLIC_SITE_URL}/ping-logo-drop-round.png`}
           tw="w-full h-full"
         />
       </div>
@@ -131,9 +131,9 @@ export async function GET(request: Request) {
         </div>
 
         {content && (
-          <div tw="flex max-w-4xl">
-            <div tw="text-white text-[120px] pl-4 h-24 pt-4 pr-6 flex flex-col justify-center font-bold">"</div>
-            <div tw="flex-1 text-white text-4xl font-medium leading-relaxed flex flex-col">
+          <div tw="flex pr-20">
+            <div tw="text-white text-6xl min-w-14 px-4 h-16 pt-2 justify-start flex items-start flex flex-col justify-center font-bold">"</div>
+            <div tw="text-white max-w-[900px] text-4xl font-medium flex flex-col" style={{ lineHeight: "1.4" }}>
               {(() => {
                 const cleanedContent = cleanContent(content);
                 const truncatedContent =
@@ -145,6 +145,10 @@ export async function GET(request: Request) {
                 ));
               })()}
             </div>
+            <div tw="text-white text-6xl h-full justify-end flex items-end flex flex-col justify-center font-bold">
+              <div tw="flex-1"></div>
+              <div tw="text-white text-6xl px-4 h-16 pt-4 justify-start flex items-start flex flex-col justify-center font-bold">"</div>
+              </div>
           </div>
         )}
       </div>
