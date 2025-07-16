@@ -10,7 +10,7 @@ export function QuotedPostPreview({ quotedPost }: QuotedPostPreviewProps) {
   const mediaContent = getPostMediaContent(quotedPost.metadata);
 
   return (
-    <div className="p-3 border rounded-lg bg-muted/50">
+    <div className="p-3 mt-2 border rounded-lg bg-muted/50">
       <div className="flex items-center gap-2 mb-1">
         <div className="w-4 h-4">
           <UserAvatar user={quotedPost.author} link={false} card={false} />

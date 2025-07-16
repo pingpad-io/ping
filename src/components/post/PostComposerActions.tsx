@@ -15,7 +15,7 @@ export function PostComposerActions({ onImageClick, onEmojiClick }: PostComposer
   const { theme } = useTheme();
 
   return (
-    <div className="flex items-center gap-2 mt-2">
+    <div className="flex items-center gap-2 mt-1">
       <Button
         type="button"
         variant="ghost"

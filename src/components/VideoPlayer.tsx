@@ -188,7 +188,7 @@ export const VideoPlayer = ({
     <div
       ref={playerWithControlsRef}
       className={`relative flex justify-center items-center rounded-lg overflow-hidden border 
-        ${preview !== "" ? "max-h-[400px] w-fit" : "h-[300px]"}
+        ${preview !== "" ? "max-h-[400px] w-fit" : "h-fit"}
         ${isFullscreen && "w-full"} 
       `}
       onClick={() => {
