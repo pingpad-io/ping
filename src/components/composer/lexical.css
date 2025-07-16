@@ -142,11 +142,12 @@
 .lexical-list-ul {
   padding: 0;
   margin: 0.75rem 0;
-  margin-left: 16px;
+  margin-left: 0px;
 }
 
 .lexical-listitem {
-  margin: 0 8px;
+  margin: 6px 16px;
+  list-style-type: disc;
 }
 
 .lexical-nested-listitem {
@@ -235,6 +236,7 @@
     opacity: 0;
     transform: translate(-50%, -90%);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -100%);
