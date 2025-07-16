@@ -2,6 +2,7 @@
 
 import type { Account } from "@lens-protocol/client";
 import { fetchAccountsAvailable } from "@lens-protocol/client/actions";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeftIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -171,95 +172,141 @@ export default function LoginPage() {
     );
   });
 
-  if (!isConnected) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="max-w-sm w-full px-4">
-          <div className="space-y-6">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold mb-1">Login to Ping</h1>
-              <p className="text-muted-foreground">Select a wallet to connect</p>
-            </div>
-            <ConnectedWalletLabel />
-            <div className="space-y-3">{connectorList}</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <Card variant="glass" className="max-w-md w-full rounded-2xl">
-        <div className="flex items-center p-4 border-b gap-4">
-          <Button variant="ghost" size="icon" onClick={() => disconnect()} className="shrink-0">
-            <ChevronLeftIcon className="h-4 w-4" />
-          </Button>
-          <h1 className="text-lg font-semibold flex-1">Select Your Profile</h1>
-        </div>
-        {loading ? (
-          <div className="w-full h-full flex items-center justify-center p-8">
-            <LoadingSpinner />
-          </div>
-        ) : error ? (
-          <div className="p-8">
-            <Label className="text-center text-red-500">{error.message}</Label>
-          </div>
+      <AnimatePresence mode="wait">
+        {!isConnected ? (
+          <motion.div
+            key="wallet-connect"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="w-full max-w-sm px-4"
+            style={{ width: "100%", maxWidth: "24rem" }}
+          >
+            <motion.div
+              layout
+              transition={{ layout: { duration: 0.3, type: "spring", bounce: 0.3 } }}
+              className="space-y-6 w-full"
+            >
+              <div className="text-center">
+                <h1 className="text-2xl font-bold mb-1">Login to Ping</h1>
+                <p className="text-muted-foreground">Select a wallet to connect</p>
+              </div>
+              <ConnectedWalletLabel />
+              <div className="space-y-3">{connectorList}</div>
+            </motion.div>
+          </motion.div>
         ) : (
-          <div className="flex flex-col">
-            <ScrollArea className="h-[400px] w-full rounded-md p-4">
-              <div className="flex flex-col gap-2">
-                {accounts.length === 0 ? (
-                  <Label className="text-center text-muted-foreground">No Profiles found.</Label>
-                ) : (
-                  accounts.map((account, idx) => {
-                    const username = account.username?.localName
-                      ? `${account.username.localName}`
-                      : `#${account.address}`;
-                    return (
-                      <div id={`${idx}`} key={`${account.address}`}>
-                        <Button
-                          className="flex flex-row items-center justify-start w-full gap-3 hover:scale-100 active:scale-100"
-                          size="default"
-                          variant="outline"
-                          value={account.address}
-                          type="submit"
-                          onClick={() => onSubmit(account)}
-                          disabled={isLoginPending && selectedAccount === account.address}
-                        >
-                          <div className="w-9 h-9">
-                            <UserAvatar link={false} user={lensAccountToUser(account)} />
-                          </div>
-                          <div className="flex flex-col items-start">
-                            <span>{username}</span>
-                          </div>
-                          {isLoginPending && selectedAccount === account.address && (
-                            <LoadingSpinner className="ml-auto" />
+          <motion.div
+            key="profile-select"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="w-full max-w-md"
+            style={{ width: "100%", maxWidth: "28rem" }}
+          >
+            <Card variant="glass" className="w-full rounded-2xl overflow-hidden">
+              <div className="flex items-center p-4 border-b gap-4">
+                <Button variant="ghost" size="icon" onClick={() => disconnect()} className="shrink-0">
+                  <ChevronLeftIcon className="h-4 w-4" />
+                </Button>
+                <h1 className="text-lg font-semibold flex-1">Select Your Profile</h1>
+              </div>
+              <motion.div
+                layout
+                transition={{ layout: { duration: 0.3, type: "spring", bounce: 0.3 } }}
+                className="w-full"
+              >
+                <AnimatePresence mode="wait">
+                  {loading ? (
+                    <motion.div
+                      key="loading"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="w-full h-full flex items-center justify-center p-8"
+                    >
+                      <LoadingSpinner />
+                    </motion.div>
+                  ) : error ? (
+                    <motion.div
+                      key="error"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="p-8"
+                    >
+                      <Label className="text-center text-red-500">{error.message}</Label>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="profiles"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="flex flex-col"
+                    >
+                      <ScrollArea className="h-[400px] w-full rounded-md p-4">
+                        <div className="flex flex-col gap-2">
+                          {accounts.length === 0 ? (
+                            <Label className="text-center text-muted-foreground">No Profiles found.</Label>
+                          ) : (
+                            accounts.map((account, idx) => {
+                              const username = account.username?.localName
+                                ? `${account.username.localName}`
+                                : `#${account.address}`;
+                              return (
+                                <div id={`${idx}`} key={`${account.address}`}>
+                                  <Button
+                                    className="flex flex-row items-center justify-start w-full gap-3 hover:scale-100 active:scale-100"
+                                    size="default"
+                                    variant="outline"
+                                    value={account.address}
+                                    type="submit"
+                                    onClick={() => onSubmit(account)}
+                                    disabled={isLoginPending && selectedAccount === account.address}
+                                  >
+                                    <div className="w-9 h-9">
+                                      <UserAvatar link={false} user={lensAccountToUser(account)} />
+                                    </div>
+                                    <div className="flex flex-col items-start">
+                                      <span>{username}</span>
+                                    </div>
+                                    {isLoginPending && selectedAccount === account.address && (
+                                      <LoadingSpinner className="ml-auto" />
+                                    )}
+                                  </Button>
+                                </div>
+                              );
+                            })
                           )}
+                        </div>
+                      </ScrollArea>
+
+                      <div className="p-4 pt-0">
+                        <Button
+                          className="flex flex-row w-full items-center gap-2"
+                          size="default"
+                          variant="secondary"
+                          onClick={() => {
+                            router.push("/register");
+                          }}
+                        >
+                          <PlusIcon size={22} />
+                          New Profile
                         </Button>
                       </div>
-                    );
-                  })
-                )}
-              </div>
-            </ScrollArea>
-
-            <div className="p-4 pt-0">
-              <Button
-                className="flex flex-row w-full items-center gap-2"
-                size="default"
-                variant="secondary"
-                onClick={() => {
-                  router.push("/register");
-                }}
-              >
-                <PlusIcon size={22} />
-                New Profile
-              </Button>
-            </div>
-          </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            </Card>
+          </motion.div>
         )}
-      </Card>
+      </AnimatePresence>
     </div>
   );
 }
