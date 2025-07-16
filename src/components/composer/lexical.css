@@ -222,3 +222,21 @@
   margin: 1rem 0;
   border-radius: 0.5rem;
 }
+
+.lexical-floating-toolbar {
+  z-index: 50;
+  opacity: 0;
+  animation: lexical-toolbar-fade-in 0.2s ease-out forwards;
+  pointer-events: auto;
+}
+
+@keyframes lexical-toolbar-fade-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -90%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%);
+  }
+}

@@ -30,6 +30,7 @@ import { useCallback, useEffect, useRef } from "react";
 import "./lexical.css";
 import { EmojiTypeaheadPlugin } from "./EmojiTypeaheadPlugin";
 import { MentionsTypeaheadPlugin } from "./MentionsTypeaheadPlugin";
+import { FloatingToolbarPlugin } from "./FloatingToolbarPlugin";
 
 const CUSTOM_AUTOLINK: TextMatchTransformer = {
   ...LINK,
@@ -257,6 +258,7 @@ function EditorContent({
       <PastePlugin onPasteFiles={onPasteFiles} />
       <EmojiTypeaheadPlugin />
       <MentionsTypeaheadPlugin />
+      <FloatingToolbarPlugin />
       <AnchorPointPlugin 
         points={[
           createAnchorPoint(DEFAULT_URL_REGEX, (text) => {
