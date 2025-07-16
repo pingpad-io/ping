@@ -84,36 +84,41 @@
 .lexical-h4,
 .lexical-h5,
 .lexical-h6 {
-  margin: 0;
   font-weight: bold;
 }
 
 .lexical-h1 {
   font-size: 1.75em;
+  margin: 1.5rem 0 1rem 0;
 }
 
 .lexical-h2 {
   font-size: 1.5em;
+  margin: 1.25rem 0 0.75rem 0;
 }
 
 .lexical-h3 {
   font-size: 1.17em;
+  margin: 1rem 0 0.5rem 0;
 }
 
 .lexical-h4 {
   font-size: 1em;
+  margin: 0.75rem 0 0.5rem 0;
 }
 
 .lexical-h5 {
   font-size: 0.83em;
+  margin: 0.75rem 0 0.5rem 0;
 }
 
 .lexical-h6 {
   font-size: 0.67em;
+  margin: 0.75rem 0 0.5rem 0;
 }
 
 .lexical-quote {
-  margin: 0;
+  margin: 1rem 0;
   margin-left: 2px;
   padding-left: 16px;
   border-left: 4px solid #ccc;
@@ -130,13 +135,13 @@
 
 .lexical-list-ol {
   padding: 0;
-  margin: 0;
+  margin: 0.75rem 0;
   margin-left: 16px;
 }
 
 .lexical-list-ul {
   padding: 0;
-  margin: 0;
+  margin: 0.75rem 0;
   margin-left: 16px;
 }
 
@@ -158,7 +163,7 @@
   border-radius: 4px;
   overflow-x: auto;
   position: relative;
-  margin: 8px 0;
+  margin: 1rem 0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -206,4 +211,14 @@
 
 .rtl {
   text-align: right;
+}
+
+.lexical-editor img,
+.lexical-image,
+.lexical-paragraph img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
 }
