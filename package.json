@@ -80,6 +80,7 @@
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "lexical": "^0.32.1",
+    "lexical-anchorpoint": "^0.0.2-alpha.6",
     "lucide-react": "^0.511.0",
     "metascraper": "^5.46.9",
     "metascraper-author": "^5.46.5",

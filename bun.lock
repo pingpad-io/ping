@@ -75,6 +75,7 @@
         "jsonwebtoken": "^9.0.2",
         "jwt-decode": "^4.0.0",
         "lexical": "^0.32.1",
+        "lexical-anchorpoint": "^0.0.2-alpha.6",
         "lucide-react": "^0.511.0",
         "metascraper": "^5.46.9",
         "metascraper-author": "^5.46.5",
@@ -1900,6 +1901,8 @@
     "levn": ["levn@0.4.1", "", { "dependencies": { "prelude-ls": "^1.2.1", "type-check": "~0.4.0" } }, "sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ=="],
 
     "lexical": ["lexical@0.32.1", "", {}, "sha512-Rvr9p00zUwzjXIqElIjMDyl/24QHw68yaqmXUWIT3lSdSAr8OpjSJK3iWBLZwVZwwpVhwShZRckomc+3vSb/zw=="],
+
+    "lexical-anchorpoint": ["lexical-anchorpoint@0.0.2-alpha.6", "", { "peerDependencies": { "@lexical/link": ">=0.10", "@lexical/react": ">=0.10", "lexical": ">=0.10", "react": ">=17.x", "react-dom": ">=17.x" } }, "sha512-F6geA7Kg1REoruaev+Jwp/qwrROI+etUIkV2tSi1EORE1TmzKgUusbsR8zhMizbaIwGyJPz4jDliNRuKXWC0YA=="],
 
     "lib0": ["lib0@0.2.109", "", { "dependencies": { "isomorphic.js": "^0.2.4" }, "bin": { "0gentesthtml": "bin/gentesthtml.js", "0serve": "bin/0serve.js", "0ecdsa-generate-keypair": "bin/0ecdsa-generate-keypair.js" } }, "sha512-jP0gbnyW0kwlx1Atc4dcHkBbrVAkdHjuyHxtClUPYla7qCmwIif1qZ6vQeJdR5FrOVdn26HvQT0ko01rgW7/Xw=="],
 
