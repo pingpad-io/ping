@@ -49,7 +49,7 @@ export default function GroupPage({ params }: GroupPageProps) {
         <GroupNavigation groupAddress={params.community} />
         
         {user && (
-          <div className="pb-2">
+          <div className="">
             {group.canPost && !group.isBanned && (
               <div className="p-4 glass rounded-xl">
                 <PostComposer user={user} feed={feedAddress} />
