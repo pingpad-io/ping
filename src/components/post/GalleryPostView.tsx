@@ -1,8 +1,8 @@
 "use client";
 
+import type { Post } from "~/lib/types/post";
 import Link from "../Link";
 import { Card } from "../ui/card";
-import type { Post } from "./Post";
 
 export const GalleryPostView = ({ item }: { item: Post }) => {
   const metadata = item.metadata;

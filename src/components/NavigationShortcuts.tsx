@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
-import { useAtomValue, useAtom, useSetAtom } from "jotai";
+import { useCallback, useEffect } from "react";
+import { navigationModeAtom, navigationPositionAtom, showNavigationIndicatorAtom } from "~/atoms/navigation";
 import { recentlyVisitedPagesAtom } from "~/atoms/recentlyVisited";
-import { navigationPositionAtom, showNavigationIndicatorAtom, navigationModeAtom } from "~/atoms/navigation";
 
 export function NavigationShortcuts() {
   const router = useRouter();
@@ -13,19 +13,21 @@ export function NavigationShortcuts() {
   const [navigationMode, setNavigationMode] = useAtom(navigationModeAtom);
   const setShowIndicator = useSetAtom(showNavigationIndicatorAtom);
 
-  const navigate = useCallback((path: string, newPosition: number) => {
-    setNavigationPosition(newPosition);
-    router.push(path);
-  }, [router, setNavigationPosition]);
-
+  const navigate = useCallback(
+    (path: string, newPosition: number) => {
+      setNavigationPosition(newPosition);
+      router.push(path);
+    },
+    [router, setNavigationPosition],
+  );
 
   // Exit history mode on click outside history indicator
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
       if (navigationMode === "history") {
         // Check if click is inside history indicator
-        const historyIndicator = document.querySelector('[data-history-indicator]');
-        if (historyIndicator && historyIndicator.contains(event.target as Node)) {
+        const historyIndicator = document.querySelector("[data-history-indicator]");
+        if (historyIndicator?.contains(event.target as Node)) {
           return; // Don't exit history mode if clicking inside history indicator
         }
         setNavigationMode("normal");
@@ -55,9 +57,11 @@ export function NavigationShortcuts() {
       }
 
       // Check if the target is inside the PostComposer or any input wrapper
-      if (target.closest('[data-lexical-editor]') || 
-          target.closest('.lexical-editor') ||
-          target.closest('[role="textbox"]')) {
+      if (
+        target.closest("[data-lexical-editor]") ||
+        target.closest(".lexical-editor") ||
+        target.closest('[role="textbox"]')
+      ) {
         return;
       }
 

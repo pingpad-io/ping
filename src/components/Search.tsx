@@ -6,8 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { FeedSuspense } from "~/components/FeedSuspense";
 import Link from "~/components/Link";
 import { SearchBar } from "~/components/menu/Search";
-import { lensItemToPost } from "~/components/post/Post";
 import { Button } from "~/components/ui/button";
+import { lensItemToPost } from "~/utils/lens/converters/postConverter";
 import { PostView } from "./post/PostView";
 
 export function Search() {

@@ -4,11 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthorThread } from "~/hooks/useAuthorThread";
 import { useParentThread } from "~/hooks/useParentThread";
 import { useScrollManagement } from "~/hooks/useScrollManagement";
-import type { Post } from "./Post";
-import { PostReplyComposer } from "./PostReplyComposer";
+import type { Post } from "~/lib/types/post";
+import { Card } from "../ui/card";
 import { PostSuspense } from "./PostSuspense";
 import { PostView } from "./PostView";
-import { Card } from "../ui/card";
 
 export function PostThread({ post }: { post: Post }) {
   const [allComments, setAllComments] = useState<Post[]>([]);
@@ -91,7 +90,11 @@ export function PostThread({ post }: { post: Post }) {
           ))}
 
         {(authorThreadLoading || commentsLoading) && post.reactions.Comment > 0 && <PostSuspense />}
-        {post.reactions.Comment === 0 && <Card className="text-sm p-4 h-24 flex items-center justify-center text-center text-muted-foreground">No comments yet</Card>}
+        {post.reactions.Comment === 0 && (
+          <Card className="text-sm p-4 h-24 flex items-center justify-center text-center text-muted-foreground">
+            No comments yet
+          </Card>
+        )}
       </div>
     </div>
   );

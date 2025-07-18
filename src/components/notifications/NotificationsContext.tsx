@@ -3,8 +3,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import type { Notification } from "~/lib/types/notification";
 import { useUser } from "../user/UserContext";
-import type { Notification } from "./Notification";
 
 interface NotificationsContextValue {
   notifications: Notification[];
@@ -97,7 +97,6 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           isNew,
           who: n.who.map((u) => ({ name: u.name, handle: u.handle })),
         });
-
       }
 
       return isNew;

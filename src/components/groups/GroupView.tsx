@@ -2,14 +2,14 @@
 
 import type { Group } from "@lens-protocol/client";
 import { Users } from "lucide-react";
-import { resolveUrl } from "~/utils/resolveUrl";
-import { formatNumber } from "~/utils/formatNumber";
 import Link from "~/components/Link";
-import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
-import { useGroupStats } from "~/hooks/useGroupStats";
-import { useGroupMutations } from "~/hooks/useGroupMutations";
 import { useAuth } from "~/hooks/useAuth";
+import { useGroupMutations } from "~/hooks/useGroupMutations";
+import { useGroupStats } from "~/hooks/useGroupStats";
+import { formatNumber } from "~/utils/formatNumber";
+import { resolveUrl } from "~/utils/resolveUrl";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
 
 interface GroupViewProps {
   group: Group;
@@ -21,7 +21,7 @@ function MemberCount({ groupId }: { groupId: string }) {
   const { data, isLoading } = useGroupStats(groupId);
 
   if (isLoading) {
-    return null
+    return null;
   }
 
   if (!data) {
@@ -67,7 +67,13 @@ export function GroupView({ group, isVertical = false, showJoin = true }: GroupV
                   className={isVertical ? "w-20 h-20 rounded-xl object-cover" : "w-12 h-12 rounded-xl object-cover"}
                 />
               ) : (
-                <div className={isVertical ? "w-20 h-20 rounded-xl bg-secondary flex items-center justify-center" : "w-12 h-12 rounded-xl bg-secondary flex items-center justify-center"}>
+                <div
+                  className={
+                    isVertical
+                      ? "w-20 h-20 rounded-xl bg-secondary flex items-center justify-center"
+                      : "w-12 h-12 rounded-xl bg-secondary flex items-center justify-center"
+                  }
+                >
                   <Users className={isVertical ? "w-10 h-10 text-muted-foreground" : "w-6 h-6 text-muted-foreground"} />
                 </div>
               )}

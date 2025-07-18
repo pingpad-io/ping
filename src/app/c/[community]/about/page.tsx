@@ -1,10 +1,10 @@
 "use client";
 
-import { Card, CardContent } from "~/components/ui/card";
-import { useGroup } from "~/hooks/useGroup";
 import { FeedSuspense } from "~/components/FeedSuspense";
 import { GroupHeader } from "~/components/groups/GroupHeader";
 import { GroupNavigation } from "~/components/groups/GroupNavigation";
+import { Card, CardContent } from "~/components/ui/card";
+import { useGroup } from "~/hooks/useGroup";
 
 interface GroupAboutPageProps {
   params: {

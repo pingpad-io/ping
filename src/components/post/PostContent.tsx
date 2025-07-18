@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { forwardRef } from "react";
+import type { Post } from "~/lib/types/post";
 import { LinkPreview } from "../embeds/LinkPreview";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
-import type { Post } from "./Post";
 import { getPostLinkPreviews, getPostMediaContent, getPostTextContent } from "./PostMetadataView";
 
 export const PostContent = forwardRef<

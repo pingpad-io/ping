@@ -1,8 +1,8 @@
+import type { Post } from "~/lib/types/post";
+import type { User } from "~/lib/types/user";
 import { Card, CardContent } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
-import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
-import type { Post } from "./Post";
 import { ReactionsList } from "./PostReactions";
 import { PostStateProvider } from "./PostStateContext";
 

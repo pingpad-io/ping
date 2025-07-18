@@ -1,7 +1,7 @@
 import { Repeat2Icon } from "lucide-react";
 import Link from "~/components/Link";
+import type { Post } from "~/lib/types/post";
 import { TimeElapsedSince } from "../TimeLabel";
-import type { Post } from "./Post";
 
 export const RepostInfo = ({ post }: { post: Post }) => {
   if (!post.isRepost || !post.repostedBy) return null;

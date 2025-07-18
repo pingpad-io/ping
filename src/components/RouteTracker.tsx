@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { usePathname } from "next/navigation";
-import { useSetAtom, useAtomValue } from "jotai";
-import { addRecentlyVisitedPageAtom, addRecentlyVisitedCommunityAtom } from "~/atoms/recentlyVisited";
-import { navigationPositionAtom, navigationModeAtom, isNavigatingFromHistoryAtom } from "~/atoms/navigation";
+import { useEffect } from "react";
+import { isNavigatingFromHistoryAtom, navigationModeAtom, navigationPositionAtom } from "~/atoms/navigation";
+import { addRecentlyVisitedCommunityAtom, addRecentlyVisitedPageAtom } from "~/atoms/recentlyVisited";
 
 export function RouteTracker() {
   const pathname = usePathname();
@@ -60,7 +60,14 @@ export function RouteTracker() {
         });
       }
     }
-  }, [pathname, addRecentlyVisited, addRecentlyVisitedCommunity, navigationMode, isNavigatingFromHistory, setNavigationPosition]);
+  }, [
+    pathname,
+    addRecentlyVisited,
+    addRecentlyVisitedCommunity,
+    navigationMode,
+    isNavigatingFromHistory,
+    setNavigationPosition,
+  ]);
 
   return null;
 }

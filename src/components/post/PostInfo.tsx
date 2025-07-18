@@ -2,10 +2,10 @@ import { EllipsisIcon } from "lucide-react";
 import { useState } from "react";
 import Link from "~/components/Link";
 import { useAuth } from "~/hooks/useAuth";
+import type { Post } from "~/lib/types/post";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import type { Post } from "./Post";
 import { menuItems } from "./PostMenuConfig";
 import { usePostStateContext } from "./PostStateContext";
 

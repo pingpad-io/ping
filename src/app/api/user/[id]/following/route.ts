@@ -1,8 +1,8 @@
 import { PageSize } from "@lens-protocol/client";
 import { fetchFollowing } from "@lens-protocol/client/actions";
 import { NextRequest, NextResponse } from "next/server";
-import { lensAccountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensAccountToUser } from "~/utils/lens/converters/userConverter";
 
 export const dynamic = "force-dynamic";
 

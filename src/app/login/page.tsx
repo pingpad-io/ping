@@ -14,10 +14,10 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { lensAccountToUser } from "~/components/user/User";
 import { UserAvatar } from "~/components/user/UserAvatar";
 import { ConnectedWalletLabel } from "~/components/web3/ConnnectedWalletLabel";
 import { env } from "~/env.mjs";
+import { lensAccountToUser } from "~/utils/lens/converters/userConverter";
 import { getPublicClient } from "~/utils/lens/getLensClient";
 
 export default function LoginPage() {

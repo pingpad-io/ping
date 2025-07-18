@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import type { Post } from "~/components/post/Post";
+import type { Post } from "~/lib/types/post";
 
 interface FeedResponse {
   data: Post[];

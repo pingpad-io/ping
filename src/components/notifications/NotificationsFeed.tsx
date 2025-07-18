@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
+import { LoadingSpinner } from "../LoadingSpinner";
 import { useNotifications } from "./NotificationsContext";
 import { NotificationView } from "./NotificationView";
-import { LoadingSpinner } from "../LoadingSpinner";
 
 export function NotificationsFeed() {
   const { notifications, refresh, markAllAsRead, isLoading } = useNotifications();
@@ -27,11 +27,7 @@ export function NotificationsFeed() {
   }
 
   if (notifications.length === 0) {
-    return (
-      <div className="flex h-[200px] items-center justify-center text-muted-foreground">
-        No notifications yet
-      </div>
-    );
+    return <div className="flex h-[200px] items-center justify-center text-muted-foreground">No notifications yet</div>;
   }
 
   return (

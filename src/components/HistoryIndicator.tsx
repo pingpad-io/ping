@@ -1,11 +1,16 @@
 "use client";
 
-import { useAtomValue, useAtom, useSetAtom } from "jotai";
-import { recentlyVisitedPagesAtom } from "~/atoms/recentlyVisited";
-import { navigationPositionAtom, showNavigationIndicatorAtom, navigationModeAtom, isNavigatingFromHistoryAtom } from "~/atoms/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import {
+  isNavigatingFromHistoryAtom,
+  navigationModeAtom,
+  navigationPositionAtom,
+  showNavigationIndicatorAtom,
+} from "~/atoms/navigation";
+import { recentlyVisitedPagesAtom } from "~/atoms/recentlyVisited";
 
 export function HistoryIndicator() {
   const recentlyVisitedPages = useAtomValue(recentlyVisitedPagesAtom);
@@ -92,7 +97,7 @@ export function HistoryIndicator() {
                         setIsNavigatingFromHistory(true);
                         setNavigationPosition(index);
                         router.push(page.path);
-                        
+
                         setTimeout(() => {
                           setIsNavigatingFromHistory(false);
                         }, 100);
@@ -104,9 +109,7 @@ export function HistoryIndicator() {
                         className={`w-2 h-2 rounded-full flex-shrink-0 transition-colors duration-200 
                           ${index === navigationPosition ? "bg-primary" : "bg-muted"}`}
                       />
-                      <span className="text-sm truncate max-w-[200px] block">
-                        {page.title}
-                      </span>
+                      <span className="text-sm truncate max-w-[200px] block">{page.title}</span>
                     </button>
                   ))}
                 </motion.div>

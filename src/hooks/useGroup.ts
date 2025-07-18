@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import type { Group } from "@lens-protocol/client";
+import { useQuery } from "@tanstack/react-query";
 
 export interface GroupWithOperations extends Group {
   isBanned: boolean;

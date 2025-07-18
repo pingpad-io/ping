@@ -1,7 +1,7 @@
 "use client";
 
-import { ImagesIcon, MessageCircle, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
+import { ImagesIcon, MessageCircle, MessageSquare } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "~/components/Link";
 
@@ -14,12 +14,12 @@ export const UserNavigation = ({ handle }: { handle: string }) => {
     { href: `/u/${handle}/gallery`, label: "Gallery", icon: ImagesIcon },
   ];
 
-  const activeTab = tabs.findIndex(tab => pathname === tab.href) || 0;
+  const activeTab = tabs.findIndex((tab) => pathname === tab.href) || 0;
 
   return (
     <nav className="w-full z-[40] overflow-x-auto px-4 mb-4">
       <div className="flex flex-row relative justify-around">
-        {tabs.map((tab, index) => {
+        {tabs.map((tab, _index) => {
           const Icon = tab.icon;
           const isActive = pathname === tab.href;
 
@@ -27,8 +27,9 @@ export const UserNavigation = ({ handle }: { handle: string }) => {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`relative h-10 flex-1 overflow-hidden inline-flex gap-1.5 items-start justify-center text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none pt-2 ${isActive ? "text-primary" : "text-muted-foreground"
-                }`}
+              className={`relative h-10 flex-1 overflow-hidden inline-flex gap-1.5 items-start justify-center text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none pt-2 ${
+                isActive ? "text-primary" : "text-muted-foreground"
+              }`}
             >
               {/* <Icon size={18} /> */}
               {tab.label}

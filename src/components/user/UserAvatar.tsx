@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
-import type { User } from "./User";
+import type { User } from "~/lib/types/user";
 import { UserCard } from "./UserCard";
 
 export function UserAvatar({ user, link = true, card = true }: { user: User; link?: boolean; card?: boolean }) {

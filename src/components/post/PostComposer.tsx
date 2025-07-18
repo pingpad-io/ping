@@ -22,13 +22,13 @@ import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form
 import { useAuth } from "~/hooks/useAuth";
 import { type MediaItem, useMediaProcessing } from "~/hooks/useMediaProcessing";
 import { MAX_CONTENT_LENGTH, usePostSubmission } from "~/hooks/usePostSubmission";
+import type { Post } from "~/lib/types/post";
+import type { User } from "~/lib/types/user";
 import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
-import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { useUser } from "../user/UserContext";
-import type { Post } from "./Post";
 import { PostComposerActions } from "./PostComposerActions";
 import { PostComposerHeader } from "./PostComposerHeader";
 import { QuotedPostPreview } from "./QuotedPostPreview";

@@ -2,12 +2,12 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { Post } from "~/lib/types/post";
 import { useDeletedPosts } from "../DeletedPostsContext";
 import { DissolveFilter } from "../DissolveFilter";
 import { useFilteredUsers } from "../FilteredUsersContext";
 import { Card, CardContent } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
-import type { Post } from "./Post";
 import PostComposer from "./PostComposer";
 import { PostContent } from "./PostContent";
 import { PostContextMenu } from "./PostContextMenu";
@@ -186,11 +186,11 @@ export const PostView = ({
             >
               {isReplyWizardOpen && (
                 <div
-                  className={`absolute w-0.5 bg-border z-10 rounded-full`}
+                  className={"absolute w-0.5 bg-border z-10 rounded-full"}
                   style={{
                     left: settings.isComment ? "27px" : "35.5px",
                     top: settings.isComment ? "48px" : "64px",
-                    height: settings.isComment ? "calc(100% - 2.5rem)" : "calc(100% - 3.5rem)"
+                    height: settings.isComment ? "calc(100% - 2.5rem)" : "calc(100% - 3.5rem)",
                   }}
                 />
               )}

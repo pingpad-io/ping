@@ -1,5 +1,5 @@
+import type { Post } from "~/lib/types/post";
 import { UserAvatar } from "../user/UserAvatar";
-import type { Post } from "./Post";
 import { getPostMediaContent, getPostTextContent } from "./PostMetadataView";
 
 interface QuotedPostPreviewProps {

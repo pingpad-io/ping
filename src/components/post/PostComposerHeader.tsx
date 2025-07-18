@@ -1,7 +1,7 @@
 import { XIcon } from "lucide-react";
+import type { Post } from "~/lib/types/post";
+import type { User } from "~/lib/types/user";
 import { Button } from "../ui/button";
-import type { User } from "../user/User";
-import type { Post } from "./Post";
 
 interface PostComposerHeaderProps {
   currentUser?: User;

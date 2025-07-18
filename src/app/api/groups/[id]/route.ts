@@ -10,7 +10,6 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
 
     const result = await fetchGroup(client, {
       group: params.id,
-
     });
 
     if (result.isErr()) {
@@ -27,7 +26,7 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
       isBanned: group.operations?.isBanned || false,
       canJoin: group.operations?.canJoin?.__typename === "GroupOperationValidationPassed" || false,
       canLeave: group.operations?.canLeave?.__typename === "GroupOperationValidationPassed" || false,
-      canPost: group.feed?.operations?.canPost?.__typename === "FeedOperationValidationPassed" || false
+      canPost: group.feed?.operations?.canPost?.__typename === "FeedOperationValidationPassed" || false,
     });
   } catch (error) {
     console.error("Error fetching group:", error);

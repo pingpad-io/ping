@@ -1,13 +1,13 @@
 "use client";
 
 import { Feed } from "~/components/Feed";
-import PostComposer from "~/components/post/PostComposer";
-import { PostView } from "~/components/post/PostView";
+import { FeedSuspense } from "~/components/FeedSuspense";
 import { GroupHeader } from "~/components/groups/GroupHeader";
 import { GroupNavigation } from "~/components/groups/GroupNavigation";
-import { useGroup } from "~/hooks/useGroup";
-import { FeedSuspense } from "~/components/FeedSuspense";
+import PostComposer from "~/components/post/PostComposer";
+import { PostView } from "~/components/post/PostView";
 import { useAuth } from "~/hooks/useAuth";
+import { useGroup } from "~/hooks/useGroup";
 
 interface GroupPageProps {
   params: {
@@ -47,7 +47,7 @@ export default function GroupPage({ params }: GroupPageProps) {
       <div className="pt-4">
         <GroupHeader group={group} />
         <GroupNavigation groupAddress={params.community} />
-        
+
         {user && (
           <div className="">
             {group.canPost && !group.isBanned && (

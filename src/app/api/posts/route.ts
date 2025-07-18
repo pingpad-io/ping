@@ -1,8 +1,8 @@
 import { PageSize, PostType } from "@lens-protocol/client";
 import { deletePost, fetchGroup, fetchPosts, post } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
-import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensItemToPost } from "~/utils/lens/converters/postConverter";
 import { uploadMetadata } from "~/utils/uploadMetadata";
 
 export const dynamic = "force-dynamic";

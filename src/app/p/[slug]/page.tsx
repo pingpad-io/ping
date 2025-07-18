@@ -1,9 +1,9 @@
 import { PostReferenceType } from "@lens-protocol/client";
 import { fetchPost, fetchPostReferences } from "@lens-protocol/client/actions";
 import type { Metadata } from "next";
-import { lensItemToPost } from "~/components/post/Post";
 import { PostThread } from "~/components/post/PostThread";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensItemToPost } from "~/utils/lens/converters/postConverter";
 
 /**
  * This route resolves to universal id of the post passed in the [slug]

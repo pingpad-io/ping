@@ -2,8 +2,8 @@
 
 import type { PropsWithChildren } from "react";
 import Link from "~/components/Link";
+import type { Post } from "~/lib/types/post";
 import { ContextMenu as Context, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
-import type { Post } from "./Post";
 import { menuItems } from "./PostMenuConfig";
 import { usePostStateContext } from "./PostStateContext";
 

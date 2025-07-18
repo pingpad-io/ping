@@ -1,13 +1,13 @@
 "use client";
 
-import { Users, Ban } from "lucide-react";
-import { Button } from "../ui/button";
-import { useGroupStats } from "~/hooks/useGroupStats";
-import { useGroupMutations } from "~/hooks/useGroupMutations";
+import { Ban, Users } from "lucide-react";
 import { useAuth } from "~/hooks/useAuth";
-import { resolveUrl } from "~/utils/resolveUrl";
-import { formatNumber } from "~/utils/formatNumber";
 import type { GroupWithOperations } from "~/hooks/useGroup";
+import { useGroupMutations } from "~/hooks/useGroupMutations";
+import { useGroupStats } from "~/hooks/useGroupStats";
+import { formatNumber } from "~/utils/formatNumber";
+import { resolveUrl } from "~/utils/resolveUrl";
+import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
 interface GroupHeaderProps {
@@ -48,7 +48,8 @@ export function GroupHeader({ group }: GroupHeaderProps) {
 
       <div className="flex-1 min-w-0">
         <h1 className="text-2xl font-bold">
-          {group.metadata?.name || (group.address ? `Group ${group.address.slice(0, 6)}...${group.address.slice(-4)}` : "Unknown Group")}
+          {group.metadata?.name ||
+            (group.address ? `Group ${group.address.slice(0, 6)}...${group.address.slice(-4)}` : "Unknown Group")}
         </h1>
         <div className="flex items-center gap-3 mt-1">
           {stats && (
@@ -66,11 +67,7 @@ export function GroupHeader({ group }: GroupHeaderProps) {
       </div>
 
       {isAuthenticated && (canJoin || canLeave) && (
-        <Button
-          variant={canLeave ? "outline" : "default"}
-          onClick={handleJoinLeave}
-          className="px-6"
-        >
+        <Button variant={canLeave ? "outline" : "default"} onClick={handleJoinLeave} className="px-6">
           {canLeave ? "Leave" : "Join"}
         </Button>
       )}

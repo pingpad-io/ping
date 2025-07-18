@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useAccount, useDisconnect } from "wagmi";
 import Link from "~/components/Link";
+import type { User } from "~/lib/types/user";
 import { clearCookies } from "~/utils/clearCookies";
-import type { User } from "../user/User";
 
 export function UserMenuButtons({ handle }: { handle: string; user: User }) {
   const { isConnected } = useAccount();

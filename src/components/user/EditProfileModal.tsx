@@ -18,10 +18,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "~/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
+import type { User } from "~/lib/types/user";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
 import { AvatarViewer } from "./AvatarViewer";
-import type { User } from "./User";
 
 const socialPlatforms = [
   { value: "x", label: "X", placeholder: "username", prefix: "x.com/" },

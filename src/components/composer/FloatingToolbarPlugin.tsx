@@ -1,9 +1,9 @@
 "use client";
 
-import { $getSelection, $isRangeSelection } from "lexical";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { computePosition, flip, offset, shift } from "@floating-ui/dom";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $getSelection, $isRangeSelection } from "lexical";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FloatingToolbar, type ToolbarMode } from "./FloatingToolbar";
 
 export function FloatingToolbarPlugin() {
@@ -19,7 +19,7 @@ export function FloatingToolbarPlugin() {
     }
     editor.getEditorState().read(() => {
       const selection = $getSelection();
-      
+
       if (!$isRangeSelection(selection) || selection.isCollapsed()) {
         setCoordinates(null);
         return;
@@ -52,7 +52,7 @@ export function FloatingToolbarPlugin() {
         }),
       };
 
-      computePosition(virtualEl as any, toolbarRef.current || document.createElement('div'), {
+      computePosition(virtualEl as any, toolbarRef.current || document.createElement("div"), {
         placement: "top",
         middleware: [
           offset(10),
@@ -73,7 +73,7 @@ export function FloatingToolbarPlugin() {
     };
 
     document.addEventListener("selectionchange", handleSelectionChange);
-    
+
     const unregisterListener = editor.registerUpdateListener(() => {
       updateToolbarPosition();
     });
@@ -92,8 +92,8 @@ export function FloatingToolbarPlugin() {
   }, [editor, updateToolbarPosition]);
 
   return (
-    <FloatingToolbar 
-      coordinates={coordinates} 
+    <FloatingToolbar
+      coordinates={coordinates}
       onModeChange={(mode) => {
         modeRef.current = mode;
       }}

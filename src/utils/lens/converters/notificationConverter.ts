@@ -1,18 +1,8 @@
 import type { Notification as LensNotification } from "@lens-protocol/client";
-import { lensItemToPost, type Post } from "../post/Post";
-import { lensAccountToUser, type User } from "../user/User";
-
-export type NotificationType = "Reaction" | "Comment" | "Follow" | "Repost" | "Action" | "Mention" | "Quote";
-
-export type Notification = {
-  __typename: "Notification";
-  id: string;
-  who: User[];
-  actedOn?: Post;
-  createdAt: Date;
-  type: NotificationType;
-  reactionType?: "Upvote" | "Downvote";
-};
+import type { Notification } from "~/lib/types/notification";
+import type { User } from "~/lib/types/user";
+import { lensItemToPost } from "./postConverter";
+import { lensAccountToUser } from "./userConverter";
 
 export function lensNotificationToNative(item: LensNotification): Notification {
   const base = { id: (item as any).id || crypto.randomUUID() };
@@ -145,7 +135,6 @@ export function lensNotificationToNative(item: LensNotification): Notification {
         item: item,
       });
 
-      // Return a fallback notification
       return {
         ...base,
         who: [],

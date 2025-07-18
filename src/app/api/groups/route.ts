@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
       result = await fetchGroups(client, {
         filter: {
           ...(searchQuery && { searchQuery }),
-
         },
         orderBy: GroupsOrderBy.LatestFirst,
         pageSize: PageSize.Ten,

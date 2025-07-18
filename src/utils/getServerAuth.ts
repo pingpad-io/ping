@@ -1,7 +1,8 @@
 import { AnyClient, SessionClient } from "@lens-protocol/client";
 import { fetchMeDetails } from "@lens-protocol/client/actions";
 import jwt from "jsonwebtoken";
-import { lensAccountToUser, type User } from "~/components/user/User";
+import type { User } from "~/lib/types/user";
+import { lensAccountToUser } from "~/utils/lens/converters/userConverter";
 import { getLensClient } from "./lens/getLensClient";
 
 interface ServerAuthResult {

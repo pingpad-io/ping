@@ -1,6 +1,6 @@
 import { useQueries } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import type { Post } from "~/components/post/Post";
+import type { Post } from "~/lib/types/post";
 
 async function fetchPost(id: string): Promise<Post | null> {
   try {

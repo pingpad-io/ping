@@ -9,7 +9,7 @@ function cleanContent(content: string): string {
   if (!content) return "";
 
   let cleanedContent = decodeURIComponent(content);
-  
+
   cleanedContent = cleanedContent
     .replace(/\\n/g, "\n")
     .replace(/\\r/g, "")
@@ -25,22 +25,16 @@ function cleanContent(content: string): string {
     .replace(/\s+\n/g, "\n")
     .trim();
 
-  cleanedContent = cleanedContent.replace(
-    /https?:\/\/[^\s]+/g,
-    (url) => {
-      try {
-        const urlObj = new URL(url);
-        return `[${urlObj.hostname.replace('www.', '')}]`;
-      } catch {
-        return '[link]';
-      }
+  cleanedContent = cleanedContent.replace(/https?:\/\/[^\s]+/g, (url) => {
+    try {
+      const urlObj = new URL(url);
+      return `[${urlObj.hostname.replace("www.", "")}]`;
+    } catch {
+      return "[link]";
     }
-  );
+  });
 
-  cleanedContent = cleanedContent.replace(
-    /@lens\/(\w+)/g,
-    '$1'
-  );
+  cleanedContent = cleanedContent.replace(/@lens\/(\w+)/g, "$1");
 
   return cleanedContent;
 }
@@ -95,21 +89,11 @@ export async function GET(request: Request) {
         </div>
       )}
 
-      <div 
-        tw="absolute flex items-center justify-center bottom-[-50px] left-[-50px] w-[420px] h-[420px] opacity-10"
-      >
-        <img
-          src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`}
-          tw="w-full h-full"
-        />
+      <div tw="absolute flex items-center justify-center bottom-[-50px] left-[-50px] w-[420px] h-[420px] opacity-10">
+        <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`} tw="w-full h-full" />
       </div>
-      <div 
-        tw="absolute flex items-center justify-center bottom-14 right-14"
-      >
-        <img
-          src={`${process.env.NEXT_PUBLIC_SITE_URL}/ping-logo-drop-round.png`}
-          tw="w-20 h-20"
-        />
+      <div tw="absolute flex items-center justify-center bottom-14 right-14">
+        <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/ping-logo-drop-round.png`} tw="w-20 h-20" />
       </div>
 
       <div tw="relative flex flex-col justify-start p-14 w-full h-full">
@@ -126,7 +110,9 @@ export async function GET(request: Request) {
 
         {content && (
           <div tw="flex pr-20">
-            <div tw="text-white text-6xl min-w-14 px-4 h-16 pt-2 justify-start flex items-start flex flex-col justify-center font-bold">"</div>
+            <div tw="text-white text-6xl min-w-14 px-4 h-16 pt-2 justify-start flex items-start flex flex-col justify-center font-bold">
+              "
+            </div>
             <div tw="text-white flex-1 pr-12 text-4xl font-medium flex flex-col" style={{ lineHeight: "1.4" }}>
               {(() => {
                 const cleanedContent = cleanContent(content);

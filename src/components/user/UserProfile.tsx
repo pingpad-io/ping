@@ -6,17 +6,17 @@ import { useState } from "react";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
 import { useAuth } from "~/hooks/useAuth";
 import { useUserActions } from "~/hooks/useUserActions";
+import { type User } from "~/lib/types/user";
 import { FollowButton } from "../FollowButton";
 import PostComposer from "../post/PostComposer";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { EditProfileModal } from "./EditProfileModal";
-import { type User } from "./User";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
-import { Card } from "../ui/card";
 
 const MutedBadge = ({ onUnmute }: { onUnmute: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);

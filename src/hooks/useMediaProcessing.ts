@@ -1,7 +1,7 @@
 import type { MediaImageMimeType } from "@lens-protocol/metadata";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import type { Post } from "~/components/post/Post";
+import type { Post } from "~/lib/types/post";
 import { storageClient } from "~/utils/lens/storage";
 import { castToMediaImageType, normalizeImageMimeType, normalizeVideoMimeType } from "~/utils/mimeTypes";
 

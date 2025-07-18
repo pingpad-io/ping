@@ -2,12 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { type PropsWithChildren, useState } from "react";
+import type { User } from "~/lib/types/user";
 import { FollowButton } from "../FollowButton";
-import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { Skeleton } from "../ui/skeleton";
-import type { User } from "./User";
 import { UserAvatar } from "./UserAvatar";
 
 const fetchUserByHandle = async (handle: string): Promise<User> => {
@@ -25,7 +24,12 @@ export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: st
   const lowercasedHandle = handle?.toLowerCase();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: user, isLoading, isError, error } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["user", "handle", lowercasedHandle],
     queryFn: () => fetchUserByHandle(lowercasedHandle!),
     enabled: !!lowercasedHandle && isOpen,

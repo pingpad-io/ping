@@ -6,7 +6,7 @@ import { LexicalTypeaheadMenuPlugin, MenuOption } from "@lexical/react/LexicalTy
 import { $getSelection, $isRangeSelection, TextNode } from "lexical";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
-import { lensAccountToUser } from "../user/User";
+import { lensAccountToUser } from "~/lib/types/user";
 import { MentionMenuItem, MentionOption } from "./MentionOption";
 
 const MAX_MENTION_SUGGESTIONS = 10;

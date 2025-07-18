@@ -12,10 +12,10 @@ import { UserProvider } from "~/components/user/UserContext";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
-import { Menu } from "~/components/menu/Menu";
-import { RouteTracker } from "~/components/RouteTracker";
-import { NavigationShortcuts } from "~/components/NavigationShortcuts";
 import { HistoryIndicator } from "~/components/HistoryIndicator";
+import { Menu } from "~/components/menu/Menu";
+import { NavigationShortcuts } from "~/components/NavigationShortcuts";
+import { RouteTracker } from "~/components/RouteTracker";
 
 const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
 

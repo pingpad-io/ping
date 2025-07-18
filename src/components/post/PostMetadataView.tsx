@@ -15,6 +15,7 @@ import {
   TransactionMetadataDetails,
   VideoMetadataDetails,
 } from "@lens-protocol/metadata";
+import type { PostMention } from "~/lib/types/post";
 import { castToMediaImageType, castToMediaVideoType, isImageMimeType } from "~/utils/mimeTypes";
 import { AudioPlayer } from "../AudioPlayer";
 import { LinkPreview } from "../embeds/LinkPreview";
@@ -22,7 +23,6 @@ import { ImageViewer } from "../ImageViewer";
 import Markdown, { extractUrlsFromText } from "../Markdown";
 import { Badge } from "../ui/badge";
 import { VideoPlayer } from "../VideoPlayer";
-import type { PostMention } from "./Post";
 
 export const getPostTextContent = (
   metadata: any,

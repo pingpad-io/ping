@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Group } from "@lens-protocol/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface GroupMutationContext {
   previousGroup?: Group;
@@ -15,19 +15,16 @@ export function useGroupMutations(groupId: string) {
       return updater(oldData);
     });
 
-    queryClient.setQueriesData<{ pages: { data: Group[] }[] }>(
-      { queryKey: ["groups"], exact: false },
-      (oldData) => {
-        if (!oldData?.pages) return oldData;
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page) => ({
-            ...page,
-            data: page.data.map((group) => (group.address === groupId ? updater(group) : group)),
-          })),
-        };
-      }
-    );
+    queryClient.setQueriesData<{ pages: { data: Group[] }[] }>({ queryKey: ["groups"], exact: false }, (oldData) => {
+      if (!oldData?.pages) return oldData;
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page) => ({
+          ...page,
+          data: page.data.map((group) => (group.address === groupId ? updater(group) : group)),
+        })),
+      };
+    });
   };
 
   const updateStatsInCache = (increment: number) => {

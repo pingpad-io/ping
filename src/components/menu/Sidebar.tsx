@@ -1,12 +1,12 @@
 import { fetchAccount } from "@lens-protocol/client/actions";
 import { BellIcon, BookmarkIcon, MailIcon } from "lucide-react";
 import Link from "~/components/Link";
+import { lensAccountToUser } from "~/lib/types/user";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { ServerSignedIn } from "../auth/ServerSignedIn";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { lensAccountToUser } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
 import { SearchBar } from "./Search";
 

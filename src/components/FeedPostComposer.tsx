@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { Post } from "./post/Post";
+import type { Post } from "~/lib/types/post";
+import type { User } from "~/lib/types/user";
 import PostComposer from "./post/PostComposer";
 import { PostView } from "./post/PostView";
-import type { User } from "./user/User";
 import { Card } from "./ui/card";
 
 export const FeedPostComposer = ({ user }: { user?: User }) => {

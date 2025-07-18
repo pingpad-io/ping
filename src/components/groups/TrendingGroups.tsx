@@ -1,9 +1,9 @@
 "use client";
 
-import { useGroup } from "~/hooks/useGroup";
-import { GroupView } from "./GroupView";
-import { Skeleton } from "../ui/skeleton";
 import Link from "~/components/Link";
+import { useGroup } from "~/hooks/useGroup";
+import { Skeleton } from "../ui/skeleton";
+import { GroupView } from "./GroupView";
 
 interface TrendingGroupsProps {
   groupAddresses: string[];

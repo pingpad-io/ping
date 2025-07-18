@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, type ReactNode, useContext } from "react";
-import type { User } from "./User";
+import type { User } from "~/lib/types/user";
 
 interface UserContextType {
   user: User | null;

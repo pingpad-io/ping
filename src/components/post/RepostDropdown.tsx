@@ -6,11 +6,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "~/hooks/useAuth";
 import { usePostMutations } from "~/hooks/usePostMutations";
+import type { Post } from "~/lib/types/post";
 import { cn } from "~/utils";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import type { Post } from "./Post";
 import PostComposer from "./PostComposer";
 
 interface RepostDropdownProps {
@@ -60,8 +60,9 @@ export default function RepostDropdown({ post, variant = "post", reactions }: Re
           <Button
             size="sm"
             variant="ghost"
-            className={`border-0 px-0 place-content-center items-center flex flex-row min-w-[2.2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg ${reactions.count > 0 ? "button-hover-bg-wide" : "button-hover-bg-equal"
-              }`}
+            className={`border-0 px-0 place-content-center items-center flex flex-row min-w-[2.2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg ${
+              reactions.count > 0 ? "button-hover-bg-wide" : "button-hover-bg-equal"
+            }`}
             onClick={(e) => {
               e.stopPropagation();
             }}

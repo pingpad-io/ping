@@ -1,7 +1,7 @@
 import { fetchAccount } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
-import { lensAccountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensAccountToUser } from "~/utils/lens/converters/userConverter";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +24,7 @@ export async function GET(_req: NextRequest, { params }: { params: { handle: str
     const { client } = await getServerAuth();
 
     const result = await fetchAccount(client, {
-      username: { localName: handle }
+      username: { localName: handle },
     });
 
     if (result.isErr()) {

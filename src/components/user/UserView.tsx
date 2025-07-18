@@ -1,8 +1,8 @@
 "use client";
 
+import { User } from "~/lib/types/user";
 import Link from "../Link";
 import { Card } from "../ui/card";
-import { User } from "./User";
 import { UserAvatar } from "./UserAvatar";
 
 export const UserView = ({ item }: { item: User }) => {

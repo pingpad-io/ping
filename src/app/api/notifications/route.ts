@@ -1,7 +1,7 @@
 import { fetchNotifications } from "@lens-protocol/client/actions";
 import type { NextRequest } from "next/server";
-import { lensNotificationToNative } from "~/components/notifications/Notification";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensNotificationToNative } from "~/utils/lens/converters/notificationConverter";
 
 export const dynamic = "force-dynamic";
 

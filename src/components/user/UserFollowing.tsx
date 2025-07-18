@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { type User } from "~/lib/types/user";
+import { formatNumber } from "~/utils/formatNumber";
 import { Feed } from "../Feed";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { formatNumber } from "~/utils/formatNumber";
-import { type User } from "./User";
 import { UserView } from "./UserView";
 
 interface UserFollowingProps {

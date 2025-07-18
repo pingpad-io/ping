@@ -5,10 +5,10 @@ import { useRef } from "react";
 import { useAuth } from "~/hooks/useAuth";
 import { useCachedPost } from "~/hooks/useCachedPost";
 import { usePostMutations } from "~/hooks/usePostMutations";
+import type { Post } from "~/lib/types/post";
 import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
 import { Button } from "../ui/button";
-import type { Post } from "./Post";
 import { usePostStateContext } from "./PostStateContext";
 import RepostDropdown from "./RepostDropdown";
 
@@ -74,7 +74,11 @@ export function ReactionsList({
 
       {collapsed && (
         <div className="ml-auto">
-          <Button size="sm" variant="ghost" className="h-max w-12 border-0 px-0 place-content-center items-center hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg button-hover-bg-equal">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-max w-12 border-0 px-0 place-content-center items-center hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg button-hover-bg-equal"
+          >
             <ChevronDownIcon className="h-5" />
           </Button>
         </div>

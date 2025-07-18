@@ -381,8 +381,9 @@ export const VideoPlayer = ({
                     setPlaying(false);
                     navigateToItem(index);
                   }}
-                  className={`w-2 h-2 rounded-full transition-all ${index === activeIndex ? "bg-white" : "bg-white/50"
-                    }`}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === activeIndex ? "bg-white" : "bg-white/50"
+                  }`}
                   aria-label={`Go to item ${index + 1}`}
                 />
               ))}
