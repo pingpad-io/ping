@@ -14,6 +14,7 @@ import {
   toggleTimeDisplayAtom,
   hideMiniPlayerAtom,
   showMiniPlayerAtom,
+  audioDurationAtom,
   type AudioMetadata,
 } from "../atoms/audio";
 
@@ -39,6 +40,7 @@ export const AudioPlayer = ({
   const isPlaying = useAtomValue(audioPlayingAtom);
   const progressPercentage = useAtomValue(audioProgressPercentageAtom);
   const displayTime = useAtomValue(audioDisplayTimeAtom);
+  const duration = useAtomValue(audioDurationAtom);
 
   const playAudio = useSetAtom(playAudioAtom);
   const pauseAudio = useSetAtom(pauseAudioAtom);
@@ -113,15 +115,16 @@ export const AudioPlayer = ({
   };
 
   const handleProgressMouseUp = () => {
-    if (!isDragging || !currentAudio) return;
+    if (!isDragging || !isCurrentAudio) return;
 
-    const duration = currentAudio ? progressPercentage : 0;
-    const newTime = (dragValue / 100) * duration;
-    seekAudio(newTime);
+    if (duration > 0) {
+      const newTime = (dragValue / 100) * duration;
+      seekAudio(newTime);
+    }
     setIsDragging(false);
   };
 
-  const currentProgressPercentage = isDragging ? dragValue : progressPercentage;
+  const currentProgressPercentage = isDragging ? dragValue : (isCurrentAudio ? progressPercentage : 0);
 
   return (
     <div ref={audioPlayerRef} className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
