@@ -16,10 +16,8 @@ export const audioDurationAtom = atom<number>(0);
 export const audioVolumeAtom = atomWithStorage<number>("audio-volume", 1);
 export const audioShowRemainingTimeAtom = atomWithStorage<boolean>("audio-show-remaining", false);
 
-// Mini player visibility
 export const miniPlayerVisibleAtom = atom<boolean>(false);
 
-// Global audio element reference (will be set by MiniMediaPlayer)
 const _globalAudioElementAtom = atom<HTMLAudioElement | null>(null);
 export const globalAudioElementAtom = atom(
   (get) => get(_globalAudioElementAtom),
@@ -28,7 +26,6 @@ export const globalAudioElementAtom = atom(
   }
 );
 
-// Derived atoms for computed values
 export const audioProgressPercentageAtom = atom((get) => {
   const currentTime = get(audioCurrentTimeAtom);
   const duration = get(audioDurationAtom);
@@ -54,14 +51,12 @@ export const audioDisplayTimeAtom = atom((get) => {
   return formatTime(currentTime);
 });
 
-// Action atoms for audio control
 export const playAudioAtom = atom(
   null,
   (get, set, audioData: AudioMetadata) => {
     const audioElement = get(globalAudioElementAtom);
     if (!audioElement) return;
 
-    // If it's a different song, update the source
     const currentAudio = get(currentAudioAtom);
     if (!currentAudio || currentAudio.url !== audioData.url) {
       audioElement.src = audioData.url;
@@ -70,12 +65,10 @@ export const playAudioAtom = atom(
       set(audioDurationAtom as any, 0);
     }
 
-    // Play the audio
     audioElement.play();
     set(audioPlayingAtom, true);
     set(miniPlayerVisibleAtom, true);
 
-    // Update Media Session API
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: audioData.title,
@@ -99,7 +92,6 @@ export const pauseAudioAtom = atom(
       audioElement.pause();
     }
     set(audioPlayingAtom, false);
-    // Don't hide mini player on pause - keep it visible
   }
 );
 

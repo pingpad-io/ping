@@ -22,7 +22,7 @@ import {
   audioVolumeAtom,
 } from "../atoms/audio";
 
-export const MiniMediaPlayer = () => {
+export const FloatingAudioPlayer = () => {
   const router = useRouter();
   const audioRef = useRef<HTMLAudioElement>(null);
 
