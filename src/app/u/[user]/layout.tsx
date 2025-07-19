@@ -6,6 +6,7 @@ import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { getUserByUsername } from "~/utils/getUserByHandle";
+import { lensAccountStatsToUserStats } from "~/lib/types/user";
 
 export const maxDuration = 60;
 export const revalidate = 0;
@@ -16,7 +17,8 @@ async function UserProfileSection({ handle }: { handle: string }) {
   if (!user) return notFound();
 
   const { client } = await getServerAuth();
-  const stats = await fetchAccountStats(client, { account: user.address }).unwrapOr(null);
+  const lensStats = await fetchAccountStats(client, { account: user.address }).unwrapOr(null);
+  const stats = lensAccountStatsToUserStats(lensStats);
 
   return (
     <>

@@ -1,25 +1,24 @@
 "use client";
 
-import { usePosts } from "@lens-protocol/react";
+import { usePostSearch } from "~/hooks/usePostSearch";
 import { ChevronLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { FeedSuspense } from "~/components/FeedSuspense";
 import Link from "~/components/Link";
 import { SearchBar } from "~/components/menu/Search";
 import { Button } from "~/components/ui/button";
-import { lensItemToPost } from "~/utils/lens/converters/postConverter";
 import { PostView } from "./post/PostView";
 
 export function Search() {
   const params = useSearchParams();
   const query = params.get("q");
 
-  const { data, loading, error } = usePosts({ filter: { searchQuery: query } });
+  const { data: posts, loading, error } = usePostSearch(query || undefined);
 
   if (error && query) throw new Error(error);
   if (loading) return <FeedSuspense />;
 
-  const posts = data?.items?.map(lensItemToPost).map((post) => <PostView key={post.id} item={post} />);
+  const postViews = posts?.map((post) => <PostView key={post.id} item={post} />);
 
   return (
     <>
@@ -31,7 +30,7 @@ export function Search() {
         </Link>
         <SearchBar defaultText={query} />
       </div>
-      {query && posts}
+      {query && postViews}
     </>
   );
 }

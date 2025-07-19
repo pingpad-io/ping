@@ -1,12 +1,11 @@
 "use client";
 
-import type { AccountStats } from "@lens-protocol/client";
 import { ShieldOffIcon, VolumeXIcon } from "lucide-react";
 import { useState } from "react";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
 import { useAuth } from "~/hooks/useAuth";
 import { useUserActions } from "~/hooks/useUserActions";
-import { type User } from "~/lib/types/user";
+import { type User, type UserStats } from "~/lib/types/user";
 import { FollowButton } from "../FollowButton";
 import PostComposer from "../post/PostComposer";
 import { TruncatedText } from "../TruncatedText";
@@ -80,7 +79,7 @@ const MentionPostComposer = ({ user, onClose }: { user: User; onClose: () => voi
   return <PostComposer user={currentUser} initialContent={`@lens/${user.handle} `} onSuccess={() => onClose()} />;
 };
 
-export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
+export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | null }) => {
   const { user: authedUser } = useUser();
   const { requireAuth } = useAuth();
   const [isMentionDialogOpen, setIsMentionDialogOpen] = useState(false);
@@ -95,8 +94,8 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
   const isFollowingMe = user.actions.following;
   const isMuted = user.actions?.muted;
   const isBlocked = user.actions?.blocked;
-  const followingCount = stats?.graphFollowStats.following ?? 0;
-  const followersCount = stats?.graphFollowStats.followers ?? 0;
+  const followingCount = stats?.following ?? 0;
+  const followersCount = stats?.followers ?? 0;
 
   return (
     <Card className="p-6 z-20 flex w-full flex-col gap-4 mt-4 rounded-xl overflow-hidden">

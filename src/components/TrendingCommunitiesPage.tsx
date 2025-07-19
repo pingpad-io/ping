@@ -1,14 +1,12 @@
 "use client";
 
-import type { Group } from "@lens-protocol/client";
+import type { Group } from "~/lib/types/group";
 import { ArrowLeft } from "lucide-react";
 import { Feed } from "~/components/Feed";
 import { GroupView } from "~/components/groups/GroupView";
 import Link from "~/components/Link";
 
-type GroupWithId = Group & { id: string };
-
-const GroupViewWrapper = ({ item }: { item: GroupWithId }) => {
+const GroupViewWrapper = ({ item }: { item: Group }) => {
   return <GroupView group={item} />;
 };
 
@@ -26,7 +24,7 @@ export default function TrendingCommunitiesPage() {
         <h1 className="text-2xl font-bold">Trending Communities</h1>
       </div>
 
-      <Feed<GroupWithId> ItemView={GroupViewWrapper} endpoint="/api/groups/trending" queryKey={["trending-groups"]} />
+      <Feed<Group> ItemView={GroupViewWrapper} endpoint="/api/groups/trending" queryKey={["trending-groups"]} />
     </div>
   );
 }

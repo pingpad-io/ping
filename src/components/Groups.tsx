@@ -1,6 +1,6 @@
 "use client";
 
-import type { Group } from "@lens-protocol/client";
+import type { Group } from "~/lib/types/group";
 import { useSearchParams } from "next/navigation";
 import { Feed } from "~/components/Feed";
 import { GroupView } from "~/components/groups/GroupView";
@@ -12,9 +12,8 @@ interface GroupsProps {
   initialQuery?: string;
 }
 
-type GroupWithId = Group & { id: string };
 
-const GroupViewWrapper = ({ item }: { item: GroupWithId }) => {
+const GroupViewWrapper = ({ item }: { item: Group }) => {
   return <GroupView group={item} />;
 };
 
@@ -30,7 +29,7 @@ export default function Groups({ initialQuery = "" }: GroupsProps) {
 
       {!query && <TrendingGroups groupAddresses={TRENDING_GROUP_ADDRESSES} />}
 
-      <Feed<GroupWithId>
+      <Feed<Group>
         ItemView={GroupViewWrapper}
         endpoint={`/api/groups${query ? `?q=${encodeURIComponent(query)}` : ""}`}
         queryKey={["groups", query]}

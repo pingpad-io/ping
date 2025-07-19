@@ -1,12 +1,11 @@
 "use client";
 
-import { useAccounts } from "@lens-protocol/react";
+import { useAccountSearch } from "~/hooks/useAccountSearch";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { LexicalTypeaheadMenuPlugin, MenuOption } from "@lexical/react/LexicalTypeaheadMenuPlugin";
 import { $getSelection, $isRangeSelection, TextNode } from "lexical";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
-import { lensAccountToUser } from "~/lib/types/user";
 import { MentionMenuItem, MentionOption } from "./MentionOption";
 
 const MAX_MENTION_SUGGESTIONS = 10;
@@ -24,20 +23,18 @@ function useMentionLookup() {
     return () => clearTimeout(timer);
   }, [queryString]);
 
-  // Use Lens Protocol to search for users
-  const { data: profiles, loading } = useAccounts({
-    filter: debouncedQuery && debouncedQuery.length > 0 ? { searchBy: { localNameQuery: debouncedQuery } } : undefined,
-  });
+  // Use account search hook
+  const { data: users, loading } = useAccountSearch(debouncedQuery && debouncedQuery.length > 0 ? debouncedQuery : undefined);
 
   const options = useMemo(() => {
-    if (!profiles?.items || loading) {
+    if (!users || loading) {
       return [];
     }
 
-    const users = profiles.items.slice(0, MAX_MENTION_SUGGESTIONS).map(lensAccountToUser);
+    const limitedUsers = users.slice(0, MAX_MENTION_SUGGESTIONS);
 
-    return users.map((user) => new MentionOption(user));
-  }, [profiles, loading]);
+    return limitedUsers.map((user) => new MentionOption(user));
+  }, [users, loading]);
 
   const onSelectOption = useCallback(
     (selectedOption: MenuOption, nodeToRemove: TextNode | null, closeMenu: () => void) => {

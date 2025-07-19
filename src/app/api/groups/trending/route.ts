@@ -2,6 +2,7 @@ import { fetchGroup } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { TRENDING_GROUP_ADDRESSES } from "~/constants/trendingGroups";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensGroupToGroup } from "~/lib/types/group";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
       if (result.isOk()) {
         const group = result.unwrapOr(null);
         if (group) {
-          return { ...group, id: group.address };
+          return lensGroupToGroup(group);
         }
       }
       return null;

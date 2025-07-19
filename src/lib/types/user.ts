@@ -1,4 +1,4 @@
-import type { Account } from "@lens-protocol/client";
+import type { Account, AccountStats as LensAccountStats } from "@lens-protocol/client";
 
 export type UserInterests = {
   category: string;
@@ -18,6 +18,11 @@ export type UserMetadataAttribute = {
   value: string;
 };
 
+export type UserStats = {
+  following: number;
+  followers: number;
+};
+
 export type User = {
   id: string;
   name?: string;
@@ -32,6 +37,7 @@ export type User = {
   metadata?: {
     attributes?: UserMetadataAttribute[];
   };
+  stats?: UserStats;
 };
 
 export function lensAccountToUser(account: Account): User {
@@ -64,6 +70,15 @@ export function lensAccountToUser(account: Account): User {
     metadata: {
       attributes,
     },
+  };
+}
+
+export function lensAccountStatsToUserStats(stats: LensAccountStats | null | undefined): UserStats | undefined {
+  if (!stats) return undefined;
+  
+  return {
+    following: stats.graphFollowStats.following ?? 0,
+    followers: stats.graphFollowStats.followers ?? 0,
   };
 }
 

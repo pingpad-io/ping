@@ -1,8 +1,10 @@
-import { type Group, GroupsOrderBy, PageSize, type Paginated, type UnexpectedError } from "@lens-protocol/client";
+import { GroupsOrderBy, PageSize, type Paginated, type UnexpectedError } from "@lens-protocol/client";
 import { fetchGroups } from "@lens-protocol/client/actions";
 import type { Result } from "neverthrow";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensGroupToGroup } from "~/lib/types/group";
+import type { Group as LensGroup } from "@lens-protocol/client";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +17,7 @@ export async function GET(request: NextRequest) {
   try {
     const { client } = await getServerAuth();
 
-    let result: Result<Paginated<Group>, UnexpectedError>;
+    let result: Result<Paginated<LensGroup>, UnexpectedError>;
     try {
       result = await fetchGroups(client, {
         filter: {
@@ -45,7 +47,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      data: data.items.map((group: any) => ({ ...group, id: group.address })),
+      data: data.items.map((group) => lensGroupToGroup(group)),
       nextCursor: data.pageInfo.next || null,
     });
   } catch (error) {

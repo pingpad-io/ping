@@ -1,6 +1,6 @@
 "use client";
 
-import type { Group } from "@lens-protocol/client";
+import type { Group } from "~/lib/types/group";
 import { Users } from "lucide-react";
 import Link from "~/components/Link";
 import { useAuth } from "~/hooks/useAuth";
@@ -38,8 +38,8 @@ function MemberCount({ groupId }: { groupId: string }) {
 export function GroupView({ group, isVertical = false, showJoin = true }: GroupViewProps) {
   const groupUrl = `/c/${group.address}`;
   const iconUrl = resolveUrl(group.metadata?.icon);
-  const canJoin = group.operations.canJoin.__typename === "GroupOperationValidationPassed";
-  const canLeave = group.operations.canLeave.__typename === "GroupOperationValidationPassed";
+  const canJoin = group.operations?.canJoin || false;
+  const canLeave = group.operations?.canLeave || false;
   const { isAuthenticated } = useAuth();
   const { joinMutation, leaveMutation } = useGroupMutations(group.address);
 
