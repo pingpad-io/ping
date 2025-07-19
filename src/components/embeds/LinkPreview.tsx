@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { Embed, detectEmbedType } from "./Embed";
+import { useState } from "react";
+import { Card } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
+import { detectEmbedType, Embed } from "./Embed";
 
 interface LinkPreviewData {
   title?: string;
@@ -22,63 +23,46 @@ interface LinkPreviewProps {
   className?: string;
 }
 
+const fetchLinkPreview = async (url: string): Promise<LinkPreviewData> => {
+  const response = await fetch("/api/link-preview", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch preview");
+  }
+
+  return response.json();
+};
+
 export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" }) => {
-  const [preview, setPreview] = useState<LinkPreviewData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
   const embedInfo = detectEmbedType(url);
 
-  useEffect(() => {
-    if (embedInfo.type) {
-      setLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    const fetchPreview = async () => {
-      try {
-        const response = await fetch("/api/link-preview", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch preview");
-        }
-
-        const data = await response.json();
-
-        if (!cancelled) {
-          setPreview(data);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(true);
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchPreview();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [url, embedInfo.type]);
+  const {
+    data: preview,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["linkPreview", url],
+    queryFn: () => fetchLinkPreview(url),
+    enabled: !embedInfo.type,
+    staleTime: 7 * 24 * 60 * 60 * 1000, // 7 days
+    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 days
+    retry: 1,
+  });
 
   if (embedInfo.type) {
     return <Embed url={url} className={className} />;
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <Card className={`overflow-hidden ${className}`}>
+      <Card className={`overflow-hidden border ${className}`}>
         <div className="flex gap-4 p-4">
           <div className="flex-1 space-y-2">
             <Skeleton className="h-5 w-3/4" />
@@ -91,7 +75,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
     );
   }
 
-  if (error || !preview) {
+  if (isError || !preview) {
     return null;
   }
 
@@ -128,7 +112,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
           onLoad={handleImageLoad}
           onError={() => setImageLoaded(true)}
         />
-        <Card className={`overflow-hidden ${className}`}>
+        <Card className={`overflow-hidden border ${className}`}>
           <div className="flex gap-4 p-4">
             <div className="flex-1 space-y-2">
               <Skeleton className="h-5 w-3/4" />
@@ -145,7 +129,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
   if (preview.image && isFullWidthLayout) {
     return (
       <Link href={displayUrl} target="_blank" rel="noopener noreferrer" className="block">
-        <Card className={`overflow-hidden hover:bg-muted/50 transition-colors cursor-pointer ${className}`}>
+        <Card className={`overflow-hidden border hover:bg-muted/30 transition-colors cursor-pointer ${className}`}>
           <div className="relative w-full" style={{ aspectRatio: "1.91 / 1" }}>
             <img
               src={preview.image}
@@ -158,13 +142,9 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
             />
           </div>
           <div className="p-4">
-            {preview.title && (
-              <h3 className="font-semibold line-clamp-2 mb-1">{preview.title}</h3>
-            )}
+            {preview.title && <h3 className="font-semibold line-clamp-2 mb-1">{preview.title}</h3>}
             {preview.description && (
-              <p className="text-sm text-muted-foreground line-clamp-3 mb-2">
-                {preview.description}
-              </p>
+              <p className="text-sm text-muted-foreground line-clamp-3 mb-2">{preview.description}</p>
             )}
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <ExternalLink className="h-3 w-3" />
@@ -179,7 +159,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
   if (!hasContent) {
     return (
       <Link href={displayUrl} target="_blank" rel="noopener noreferrer" className="block">
-        <Card className={`overflow-hidden hover:bg-muted/50 transition-colors cursor-pointer ${className}`}>
+        <Card className={`overflow-hidden border hover:bg-muted/30 transition-colors cursor-pointer ${className}`}>
           <div className="flex items-center gap-3 p-4">
             <img
               src={faviconUrl}
@@ -204,7 +184,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
 
   return (
     <Link href={displayUrl} target="_blank" rel="noopener noreferrer" className="block">
-      <Card className={`overflow-hidden hover:bg-muted/50 transition-colors cursor-pointer ${className}`}>
+      <Card className={`overflow-hidden border hover:bg-muted/30 transition-colors cursor-pointer ${className}`}>
         <div className="flex gap-4 p-4">
           <div className="flex-1 min-w-0">
             {preview.title ? (
@@ -213,9 +193,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, className = "" })
               <span className="font-medium text-sm">{domain}</span>
             )}
             {preview.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                {preview.description}
-              </p>
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">{preview.description}</p>
             )}
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               {!preview.image && (

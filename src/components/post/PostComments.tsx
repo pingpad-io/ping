@@ -1,8 +1,8 @@
 import { ChevronDownIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import type { Post } from "~/lib/types/post";
 import { Button } from "../ui/button";
-import type { Post } from "./Post";
 import { CommentSkeleton } from "./PostCommentSkeleton";
 import { PostView } from "./PostView";
 

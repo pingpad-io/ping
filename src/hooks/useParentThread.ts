@@ -1,41 +1,78 @@
+import { useQueries } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import type { Post } from "~/components/post/Post";
-import { fetchParentPost } from "~/utils/postThreadApi";
+import type { Post } from "~/lib/types/post";
 
-export function useParentThread(post: Post) {
-  const [parentThread, setParentThread] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+async function fetchPost(id: string): Promise<Post | null> {
+  try {
+    const res = await fetch(`/api/posts/${id}`);
+    if (!res.ok) throw new Error(res.statusText);
+    const data = await res.json();
 
-  useEffect(() => {
-    let cancelled = false;
+    // Handle both possible response formats
+    const post = data.nativePost || data.data || data;
 
-    async function loadParentThread(current: Post | undefined): Promise<void> {
-      if (!current) {
-        setLoading(false);
-        return;
-      }
-
-      const parentId = current.commentOn?.id ?? current.quoteOn?.id;
-      if (!parentId) {
-        setLoading(false);
-        return;
-      }
-
-      const parent = await fetchParentPost(parentId);
-      if (parent && !cancelled) {
-        setParentThread((prev) => [parent, ...prev]);
-        await loadParentThread(parent);
-      } else {
-        setLoading(false);
-      }
+    // Validate the post has required fields
+    if (!post || typeof post !== "object" || !post.id) {
+      console.error("Invalid post data received:", post);
+      return null;
     }
 
-    loadParentThread(post);
+    return post as Post;
+  } catch (error) {
+    console.error("Failed to fetch post", error);
+    return null;
+  }
+}
 
-    return () => {
-      cancelled = true;
-    };
-  }, [post.id]);
+export function useParentThread(post: Post) {
+  const [parentIds, setParentIds] = useState<string[]>([]);
+
+  // Build the chain of parent IDs
+  useEffect(() => {
+    const ids: string[] = [];
+    let current: Post | undefined = post;
+
+    // Collect all parent IDs up the chain
+    while (current) {
+      const parentId = current.commentOn?.id ?? current.quoteOn?.id;
+      if (parentId) {
+        ids.push(parentId);
+        // We need to wait for the fetch to get the next parent
+        // This will be handled by the queries below
+        break;
+      }
+      current = undefined;
+    }
+
+    setParentIds(ids);
+  }, [post]);
+
+  // Fetch all parents using parallel queries
+  const queries = useQueries({
+    queries: parentIds.map((id) => ({
+      queryKey: ["post", id],
+      queryFn: () => fetchPost(id),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 30 * 60 * 1000, // 30 minutes
+    })),
+  });
+
+  // Check if we need to fetch more parents
+  useEffect(() => {
+    const lastQuery = queries[queries.length - 1];
+    if (lastQuery?.data) {
+      const parentId = lastQuery.data.commentOn?.id ?? lastQuery.data.quoteOn?.id;
+      if (parentId && !parentIds.includes(parentId)) {
+        setParentIds((prev) => [...prev, parentId]);
+      }
+    }
+  }, [queries, parentIds]);
+
+  const loading = queries.some((q) => q.isLoading);
+  const parentThread = queries
+    .map((q) => q.data)
+    .filter((p): p is Post => p !== null && p !== undefined && typeof p === "object" && "id" in p)
+    .reverse(); // Reverse to show oldest parent first
 
   return { parentThread, loading };
 }

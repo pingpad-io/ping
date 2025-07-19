@@ -1,20 +1,18 @@
 import { EllipsisIcon } from "lucide-react";
 import { useState } from "react";
 import Link from "~/components/Link";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
+import type { Post } from "~/lib/types/post";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import type { Post } from "./Post";
 import { menuItems } from "./PostMenuConfig";
-import { usePostStateWithFallback } from "./PostStateContext";
+import { usePostStateContext } from "./PostStateContext";
 
 export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }) => {
   const [open, setOpen] = useState(false);
-  const { requireAuth } = useAuth();
-  const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateWithFallback(post, onReply, () =>
-    setOpen(false),
-  );
+  const { requireAuth } = useUser();
+  const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateContext();
   const author = post.author;
   const handle = author.handle;
   const tags = post?.metadata?.tags || [];
@@ -54,17 +52,16 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
         <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="link"
-              className="flex gap-4 w-4 rounded-full hover-expand justify-center [&>span]:hover:scale-110 [&>span]:active:scale-95"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-full hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg button-hover-bg-equal"
             >
-              <span className="transition-transform">
-                <EllipsisIcon
-                  size={18}
-                  strokeWidth={2.2}
-                  stroke="hsl(var(--muted-foreground))"
-                  className="transition-all duration-200"
-                />
-              </span>
+              <EllipsisIcon
+                size={18}
+                strokeWidth={2.2}
+                stroke="hsl(var(--muted-foreground))"
+                className="transition-all duration-200"
+              />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-max">
@@ -95,9 +92,13 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
                   key={item.id}
                   onClick={() => {
                     if (item.requiresAuth) {
-                      requireAuth(itemProps.onClick);
+                      requireAuth(() => {
+                        itemProps.onClick?.();
+                        setOpen(false);
+                      });
                     } else {
                       itemProps.onClick?.();
+                      setOpen(false);
                     }
                   }}
                   disabled={itemProps.disabled}

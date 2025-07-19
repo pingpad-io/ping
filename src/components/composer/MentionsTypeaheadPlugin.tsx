@@ -1,13 +1,12 @@
 "use client";
 
+import { useAccountSearch } from "~/hooks/useAccountSearch";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { LexicalTypeaheadMenuPlugin, MenuOption } from "@lexical/react/LexicalTypeaheadMenuPlugin";
 import { $getSelection, $isRangeSelection, TextNode } from "lexical";
-import { useAccounts } from "@lens-protocol/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import { MentionMenuItem, MentionOption } from "./MentionOption";
-import { lensAcountToUser } from "../user/User";
 
 const MAX_MENTION_SUGGESTIONS = 10;
 
@@ -24,24 +23,18 @@ function useMentionLookup() {
     return () => clearTimeout(timer);
   }, [queryString]);
 
-  // Use Lens Protocol to search for users
-  const { data: profiles, loading } = useAccounts({
-    filter: debouncedQuery && debouncedQuery.length > 0 
-      ? { searchBy: { localNameQuery: debouncedQuery } }
-      : undefined,
-  });
+  // Use account search hook
+  const { data: users, loading } = useAccountSearch(debouncedQuery && debouncedQuery.length > 0 ? debouncedQuery : undefined);
 
   const options = useMemo(() => {
-    if (!profiles?.items || loading) {
+    if (!users || loading) {
       return [];
     }
 
-    const users = profiles.items
-      .slice(0, MAX_MENTION_SUGGESTIONS)
-      .map(lensAcountToUser);
+    const limitedUsers = users.slice(0, MAX_MENTION_SUGGESTIONS);
 
-    return users.map((user) => new MentionOption(user));
-  }, [profiles, loading]);
+    return limitedUsers.map((user) => new MentionOption(user));
+  }, [users, loading]);
 
   const onSelectOption = useCallback(
     (selectedOption: MenuOption, nodeToRemove: TextNode | null, closeMenu: () => void) => {
@@ -130,14 +123,10 @@ export function MentionsTypeaheadPlugin() {
           <div className="rounded-lg shadow-lg z-[100] bg-card/40 backdrop-blur-md border border-border" style={style}>
             <ul className="list-none m-0 p-0.5 flex flex-col gap-0.5">
               {loading && options.length === 0 && (
-                <li className="px-3 py-2 text-sm text-muted-foreground text-center">
-                  Searching...
-                </li>
+                <li className="px-3 py-2 text-sm text-muted-foreground text-center">Searching...</li>
               )}
               {!loading && options.length === 0 && (
-                <li className="px-3 py-2 text-sm text-muted-foreground text-center">
-                  No users found
-                </li>
+                <li className="px-3 py-2 text-sm text-muted-foreground text-center">No users found</li>
               )}
               {options.map((option, index) => (
                 <MentionMenuItem

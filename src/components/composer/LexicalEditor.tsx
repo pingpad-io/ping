@@ -1,9 +1,17 @@
 "use client";
 
 import { CodeNode } from "@lexical/code";
-import { AutoLinkNode, LinkNode } from "@lexical/link";
+import { $isAutoLinkNode, $isLinkNode, AutoLinkNode, LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
-import { $convertFromMarkdownString, $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
+import {
+  $convertFromMarkdownString,
+  $convertToMarkdownString,
+  ELEMENT_TRANSFORMERS,
+  LINK,
+  TEXT_FORMAT_TRANSFORMERS,
+  type TextMatchTransformer,
+  type Transformer,
+} from "@lexical/markdown";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -16,10 +24,33 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { COMMAND_PRIORITY_LOW, KEY_DOWN_COMMAND, PASTE_COMMAND } from "lexical";
+import { AnchorPointPlugin, createAnchorPoint, DEFAULT_URL_REGEX } from "lexical-anchorpoint";
 import { useCallback, useEffect, useRef } from "react";
 import "./lexical.css";
 import { EmojiTypeaheadPlugin } from "./EmojiTypeaheadPlugin";
+import { FloatingToolbarPlugin } from "./FloatingToolbarPlugin";
 import { MentionsTypeaheadPlugin } from "./MentionsTypeaheadPlugin";
+
+const CUSTOM_AUTOLINK: TextMatchTransformer = {
+  ...LINK,
+  export: (node, exportChildren) => {
+    if (!$isLinkNode(node)) {
+      return null;
+    }
+
+    // For AutoLinkNodes, just return the URL as-is
+    if ($isAutoLinkNode(node)) {
+      return node.getURL();
+    }
+
+    const title = node.getTitle();
+    const textContent = exportChildren(node);
+    const linkContent = title ? `[${textContent}](${node.getURL()} "${title}")` : `[${textContent}](${node.getURL()})`;
+    return linkContent;
+  },
+};
+
+const CUSTOM_TRANSFORMERS: Array<Transformer> = [...ELEMENT_TRANSFORMERS, ...TEXT_FORMAT_TRANSFORMERS, CUSTOM_AUTOLINK];
 
 interface LexicalEditorProps {
   value: string;
@@ -171,7 +202,7 @@ const OnChangePluginWrapper = ({ onChange, value }: { onChange: (value: string) 
   useEffect(() => {
     if (value !== lastValueRef.current && value !== undefined) {
       editor.update(() => {
-        $convertFromMarkdownString(value, TRANSFORMERS);
+        $convertFromMarkdownString(value, CUSTOM_TRANSFORMERS);
       });
       lastValueRef.current = value;
     }
@@ -179,7 +210,7 @@ const OnChangePluginWrapper = ({ onChange, value }: { onChange: (value: string) 
 
   const handleChange = useCallback(() => {
     editor.update(() => {
-      const markdown = $convertToMarkdownString(TRANSFORMERS);
+      const markdown = $convertToMarkdownString(CUSTOM_TRANSFORMERS);
       if (markdown !== lastValueRef.current) {
         lastValueRef.current = markdown;
         onChange(markdown);
@@ -205,6 +236,7 @@ function EditorContent({
         contentEditable={
           <ContentEditable
             className={`lexical-editor ${disabled ? "opacity-50 pointer-events-none" : ""} ${className}`}
+            data-lexical-editor
           />
         }
         ErrorBoundary={LexicalErrorBoundary}
@@ -214,11 +246,22 @@ function EditorContent({
       <HistoryPlugin />
       <ListPlugin />
       <LinkPlugin />
-      <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+      <MarkdownShortcutPlugin transformers={CUSTOM_TRANSFORMERS} />
       <KeyboardShortcutPlugin onKeyDown={onKeyDown} />
       <PastePlugin onPasteFiles={onPasteFiles} />
       <EmojiTypeaheadPlugin />
       <MentionsTypeaheadPlugin />
+      <FloatingToolbarPlugin />
+      <AnchorPointPlugin
+        points={[
+          createAnchorPoint(DEFAULT_URL_REGEX, (text) => {
+            if (!text.startsWith("http://") && !text.startsWith("https://") && !text.startsWith("ftp://")) {
+              return `https://${text}`;
+            }
+            return text;
+          }),
+        ]}
+      />
     </>
   );
 }
@@ -239,7 +282,7 @@ export const LexicalEditorWrapper = ({
     nodes: [HeadingNode, ListNode, ListItemNode, QuoteNode, CodeNode, LinkNode, AutoLinkNode],
     editorState: () => {
       if (value) {
-        $convertFromMarkdownString(value, TRANSFORMERS);
+        $convertFromMarkdownString(value, CUSTOM_TRANSFORMERS);
       }
     },
   };

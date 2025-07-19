@@ -2,30 +2,50 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "~/hooks/useAuth";
-import type { User } from "./post/Post";
+import { useUser } from "~/components/user/UserContext";
+import { useUserMutations } from "~/hooks/useUserMutations";
+import type { User } from "~/lib/types/user";
 import { Button } from "./ui/button";
-import { useUser } from "./user/UserContext";
+import { Dialog, DialogContent } from "./ui/dialog";
+import { UserAvatar } from "./user/UserAvatar";
 
 export const FollowButton = ({ user, className }: { user: User; className?: string }) => {
-  const [following, setFollowing] = useState(user.actions.followed);
+  const [isFollowing, setIsFollowing] = useState(user.actions.followed);
+  const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
   const followsMe = user.actions.following;
-  const { user: authedUser } = useUser();
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
+  const { follow } = useUserMutations(user.id);
 
-  const toggleFollow = async () => {
-    const followingNow = !following;
-    setFollowing(!following);
+  const handleFollow = async () => {
+    const previousState = isFollowing;
+    setIsFollowing(!isFollowing);
 
-    const result = await fetch(`/api/user/${user.id}/follow`, {
-      method: "POST",
-    });
+    try {
+      await follow();
+    } catch (error) {
+      setIsFollowing(previousState);
+      toast.error("Follow action failed");
+    }
+  };
 
-    if (!result.ok) {
-      toast.error(`${followingNow ? "Follow" : "Unfollow"} action failed: ${result.statusText} `);
-      setFollowing(!following); // Revert to the original state
+  const handleUnfollow = async () => {
+    setShowUnfollowDialog(false);
+    const previousState = isFollowing;
+    setIsFollowing(!isFollowing);
+
+    try {
+      await follow();
+    } catch (error) {
+      setIsFollowing(previousState);
+      toast.error("Unfollow action failed");
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (isFollowing) {
+      setShowUnfollowDialog(true);
     } else {
-      toast.success(`${followingNow ? "Followed" : "Unfollowed"} Successfully!`, { description: "Finalized on-chain" });
+      requireAuth(handleFollow);
     }
   };
 
@@ -33,14 +53,39 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
     <>
       <Button
         size="sm"
-        variant={following ? "outline" : "default"}
-        onClick={() => {
-          requireAuth(toggleFollow);
-        }}
+        variant={isFollowing ? "outline" : "default"}
+        onClick={handleButtonClick}
         className={`font-semibold text-sm ${className}`}
       >
-        {following ? "Following" : followsMe ? "Follow back" : "Follow"}
+        {isFollowing ? "Following" : followsMe ? "Follow back" : "Follow"}
       </Button>
+
+      <Dialog open={showUnfollowDialog} onOpenChange={setShowUnfollowDialog}>
+        <DialogContent className="p-0 gap-0 max-w-xs rounded-2xl">
+          <div className="flex flex-col items-center p-6">
+            <div className="w-16 h-16 mb-4">
+              <UserAvatar user={user} link={false} card={false} />
+            </div>
+            <h2 className="text-lg font-semibold">Unfollow {user.handle}?</h2>
+          </div>
+          <div className="flex w-full h-16">
+            <Button
+              variant="ghost"
+              onClick={() => setShowUnfollowDialog(false)}
+              className="w-1/2 rounded-none rounded-bl-lg border-t border-r hover:bg-muted/50"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={handleUnfollow}
+              className="w-1/2 rounded-none rounded-br-lg border-t text-destructive hover:bg-destructive/10 hover:text-destructive"
+            >
+              Unfollow
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { fetchAccount } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
-import { lensAcountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensAccountToUser } from "~/utils/lens/converters/userConverter";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +26,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    const user = lensAcountToUser(account);
+    const user = lensAccountToUser(account);
 
     if (!user) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });

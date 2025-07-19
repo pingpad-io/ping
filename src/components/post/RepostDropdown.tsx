@@ -4,11 +4,13 @@ import { EditIcon, RefreshCwIcon, Repeat2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
+import { usePostMutations } from "~/hooks/usePostMutations";
+import type { Post } from "~/lib/types/post";
 import { cn } from "~/utils";
+import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import type { Post } from "./Post";
 import PostComposer from "./PostComposer";
 
 interface RepostDropdownProps {
@@ -20,50 +22,23 @@ interface RepostDropdownProps {
     canRepost: boolean;
     canQuote: boolean;
   };
-  onRepostChange: (isReposted: boolean, count: number) => void;
 }
 
-export default function RepostDropdown({ post, variant = "post", reactions, onRepostChange }: RepostDropdownProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export default function RepostDropdown({ post, variant = "post", reactions }: RepostDropdownProps) {
   const [showQuoteDialog, setShowQuoteDialog] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
+  const { repost } = usePostMutations(post.id, post);
 
-  const handleRepost = async (action: "toggle" | "create" = "toggle") => {
+  const handleRepost = async () => {
     if (!reactions.canRepost) {
       toast.error("You cannot repost this post");
       return;
     }
 
     setDropdownOpen(false);
-
-    const isUndo = action === "toggle" && reactions.reacted;
-    const newCount = isUndo ? reactions.count - 1 : reactions.count + 1;
-    const wasReacted = reactions.reacted;
-
-    onRepostChange(action === "create" ? true : !wasReacted, newCount);
-
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/posts/${post.id}/repost`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        onRepostChange(wasReacted, reactions.count);
-        throw new Error(error.message || "Failed to repost");
-      }
-    } catch (error) {
-      console.error("Error reposting:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to repost");
-      onRepostChange(wasReacted, reactions.count);
-    } finally {
-      setIsLoading(false);
-    }
+    repost();
   };
 
   const handleQuote = () => {
@@ -82,24 +57,22 @@ export default function RepostDropdown({ post, variant = "post", reactions, onRe
     <>
       <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen} modal={false}>
         <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            disabled={isLoading}
-            className={cn(
-              "flex flex-row items-center justify-center gap-1.5 sm:gap-2 md:gap-3 h-9 min-w-[2rem] [&>span:first-child]:hover:scale-110 [&>span:first-child]:active:scale-95",
-            )}
+          <Button
+            size="sm"
+            variant="ghost"
+            className={`border-0 px-0 place-content-center items-center flex flex-row min-w-[2.2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg ${
+              reactions.count > 0 ? "button-hover-bg-wide" : "button-hover-bg-equal"
+            }`}
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
-            <span className="transition-transform">
-              <RefreshCwIcon
-                size={variant === "post" ? 18 : 16}
-                strokeWidth={reactions.reacted ? 3 : 2}
-                stroke={reactions.reacted ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"}
-                className="transition-all duration-200"
-              />
-            </span>
+            <RefreshCwIcon
+              size={variant === "post" ? 18 : 16}
+              strokeWidth={reactions.reacted ? 3 : 2}
+              stroke={reactions.reacted ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"}
+              className="transition-all duration-200"
+            />
             {reactions.count > 0 && (
               <span
                 className={cn(
@@ -110,19 +83,13 @@ export default function RepostDropdown({ post, variant = "post", reactions, onRe
                 {reactions.count}
               </span>
             )}
-          </button>
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="center">
-          <DropdownMenuItem onClick={() => requireAuth(() => handleRepost("toggle"))} className="gap-2">
+          <DropdownMenuItem onClick={() => requireAuth(handleRepost)} className="gap-2">
             <Repeat2Icon size={18} strokeWidth={2} />
             <span>{reactions.reacted ? "Undo repost" : "Repost"}</span>
           </DropdownMenuItem>
-          {reactions.reacted && (
-            <DropdownMenuItem onClick={() => requireAuth(() => handleRepost("create"))} className="gap-2">
-              <Repeat2Icon size={18} strokeWidth={2} />
-              <span>Repost again</span>
-            </DropdownMenuItem>
-          )}
           <DropdownMenuItem onClick={() => requireAuth(handleQuote)} className="gap-2">
             <EditIcon size={18} strokeWidth={2} />
             <span>Quote</span>
@@ -131,14 +98,13 @@ export default function RepostDropdown({ post, variant = "post", reactions, onRe
       </DropdownMenu>
 
       <Dialog open={showQuoteDialog} onOpenChange={setShowQuoteDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl" onClick={(e) => e.stopPropagation()}>
           <PostComposer
-            postType="post"
             quotedPost={post}
             onClose={() => setShowQuoteDialog(false)}
             onSuccess={(newPost) => {
               setShowQuoteDialog(false);
-              if (newPost) {
+              if (newPost?.id && !newPost.id.startsWith("optimistic-")) {
                 router.push(`/p/${newPost.id}`);
               }
             }}

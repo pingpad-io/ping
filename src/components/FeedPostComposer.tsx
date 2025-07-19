@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { Post } from "./post/Post";
+import type { Post } from "~/lib/types/post";
+import type { User } from "~/lib/types/user";
 import PostComposer from "./post/PostComposer";
 import { PostView } from "./post/PostView";
-import type { User } from "./user/User";
+import { Card } from "./ui/card";
 
 export const FeedPostComposer = ({ user }: { user?: User }) => {
   const [newPosts, setNewPosts] = useState<Post[]>([]);
@@ -14,7 +15,10 @@ export const FeedPostComposer = ({ user }: { user?: User }) => {
       if ((newPost as any).isOptimistic) {
         setNewPosts((prev) => [...prev, newPost]);
       } else {
-        setNewPosts((prev) => prev.map(post => post.id.startsWith('optimistic') && newPost.metadata?.content === post.metadata?.content ? newPost : post)
+        setNewPosts((prev) =>
+          prev.map((post) =>
+            post.id.startsWith("optimistic") && newPost.metadata?.content === post.metadata?.content ? newPost : post,
+          ),
         );
       }
     }
@@ -22,9 +26,9 @@ export const FeedPostComposer = ({ user }: { user?: User }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="p-4 glass rounded-xl">
+      <Card className="p-4">
         <PostComposer user={user} onSuccess={handleSuccess} />
-      </div>
+      </Card>
       {newPosts.length > 0 && (
         <div className="flex flex-col gap-2">
           {newPosts.map((post) => (
@@ -37,4 +41,3 @@ export const FeedPostComposer = ({ user }: { user?: User }) => {
     </div>
   );
 };
-

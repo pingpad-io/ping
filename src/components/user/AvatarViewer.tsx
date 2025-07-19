@@ -1,7 +1,7 @@
 "use client";
 
+import type { User } from "~/lib/types/user";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import type { User } from "./User";
 import { UserAvatar } from "./UserAvatar";
 
 export function AvatarViewer({ user }: { user: User }) {

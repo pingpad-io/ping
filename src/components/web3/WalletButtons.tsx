@@ -119,7 +119,6 @@ export function LogoutButton() {
       variant="destructive"
       onClick={async () => {
         if (isConnected) {
-          // disconnect();
           disconnectWallet();
         }
         await clearCookies();

@@ -1,8 +1,8 @@
 "use client";
 
+import { Play } from "lucide-react";
 import { useState } from "react";
 import { Skeleton } from "../ui/skeleton";
-import { Play } from "lucide-react";
 
 interface YouTubeEmbedProps {
   videoId: string;
@@ -19,7 +19,8 @@ export const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({ videoId, className =
 
   if (!showEmbed) {
     return (
-      <div className={`relative aspect-video rounded-lg overflow-hidden cursor-pointer group ${className}`}
+      <div
+        className={`relative aspect-video rounded-lg overflow-hidden cursor-pointer group ${className}`}
         onClick={() => setShowEmbed(true)}
       >
         <img

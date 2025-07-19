@@ -1,7 +1,7 @@
 import { Edit2Icon } from "lucide-react";
+import type { Post } from "~/lib/types/post";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import type { Post } from "./Post";
 
 export function EditedIndicator({ post }: { post: Post }) {
   const lastUpdated = post.updatedAt ? post.updatedAt.toLocaleString() : post.createdAt.toLocaleString();

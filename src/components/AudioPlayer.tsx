@@ -124,7 +124,7 @@ export const AudioPlayer = ({
   };
 
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
+    const value = Number.parseFloat(e.target.value);
     setDragValue(value);
     setIsDragging(true);
   };
@@ -144,11 +144,7 @@ export const AudioPlayer = ({
   return (
     <div ref={audioPlayerRef} className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
       <div className="h-24 aspect-square overflow-hidden flex-shrink-0">
-        <img 
-          src={cover} 
-          alt={title}
-          className="w-full h-full object-cover"
-        />
+        <img src={cover} alt={title} className="w-full h-full object-cover" />
       </div>
 
       <div className="flex-1 min-w-0 pr-4 space-y-1">
@@ -174,7 +170,7 @@ export const AudioPlayer = ({
         
         <div className="flex items-center gap-3">
           <div className="flex-1 relative h-2 bg-gray-600 rounded-full overflow-hidden">
-            <div 
+            <div
               className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-150"
               style={{ width: `${currentProgressPercentage}%` }}
             />
@@ -191,7 +187,7 @@ export const AudioPlayer = ({
             />
           </div>
 
-          <button 
+          <button
             onClick={toggleTimeDisplay}
             className="text-white text-sm font-mono hover:text-gray-300 transition-colors cursor-pointer select-none min-w-12 text-right"
             disabled={!isCurrentAudio}

@@ -30,7 +30,6 @@ export function detectEmbedType(url: string): EmbedInfo {
         return { type: "youtube", id: videoId };
       }
     }
-
   } catch {}
 
   return { type: null };
@@ -45,7 +44,7 @@ export const Embed: React.FC<EmbedProps> = ({ url, className = "" }) => {
         return <YouTubeEmbed videoId={embedInfo.id} url={url} className={className} />;
       }
       return null;
-    
+
     default:
       return null;
   }

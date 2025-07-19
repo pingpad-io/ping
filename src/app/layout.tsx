@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Script from "next/script";
-import { BackgroundGradient } from "~/components/BackgroundGradient";
 import { DeletedPostsProvider } from "~/components/DeletedPostsContext";
 import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
 import { FloatingAudioPlayer } from "~/components/FloatingAudioPlayer";
@@ -13,9 +12,10 @@ import { UserProvider } from "~/components/user/UserContext";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
 import "../styles/globals.css";
+import { HistoryIndicator } from "~/components/HistoryIndicator";
 import { Menu } from "~/components/menu/Menu";
-
-const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
+import { NavigationShortcuts } from "~/components/NavigationShortcuts";
+import { RouteTracker } from "~/components/RouteTracker";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://pingpad.io"),
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 export const maxDuration = 60;
 
 export default async function RootLayout({ children }) {
-  const { handle, profileId, user } = await getServerAuth();
+  const { handle, isAuthenticated, user } = await getServerAuth();
 
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
@@ -42,10 +42,12 @@ export default async function RootLayout({ children }) {
             <FilteredUsersProvider>
               <DeletedPostsProvider>
                 <NotificationsProvider>
-                  <BackgroundGradient />
-                  <AuthWatcher />
+                  {/* <BackgroundGradient /> */}
+                  <RouteTracker />
+                  <NavigationShortcuts />
+                  <HistoryIndicator />
                   <Toaster position="top-center" offset={16} />
-                  <Menu isAuthenticated={!!profileId} user={user} handle={handle} />
+                  <Menu isAuthenticated={isAuthenticated} user={user} handle={handle} />
 
                   <PageTransition>
                     <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>

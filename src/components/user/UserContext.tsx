@@ -1,16 +1,43 @@
 "use client";
 
-import { createContext, type ReactNode, useContext } from "react";
-import type { User } from "./User";
+import { createContext, type ReactNode, useContext, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import type { User } from "~/lib/types/user";
 
 interface UserContextType {
   user: User | null;
+  isAuthenticated: boolean;
+  requireAuth: (callback?: () => void) => boolean;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children, user }: { children: ReactNode; user: User | null }) {
-  return <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>;
+  const router = useRouter();
+
+  const requireAuth = useCallback(
+    (callback?: () => void) => {
+      if (!user) {
+        router.push("/login");
+        return false;
+      }
+      callback?.();
+      return true;
+    },
+    [user, router],
+  );
+
+  return (
+    <UserContext.Provider 
+      value={{ 
+        user,
+        isAuthenticated: !!user,
+        requireAuth
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
 }
 
 export function useUser() {

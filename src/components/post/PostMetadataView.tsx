@@ -7,8 +7,6 @@ import {
   ImageMetadataDetails,
   LinkMetadataDetails,
   LiveStreamMetadataDetails,
-  MediaImageMimeType,
-  MediaVideoMimeType,
   MintMetadataDetails,
   SpaceMetadataDetails,
   StoryMetadataDetails,
@@ -17,16 +15,20 @@ import {
   TransactionMetadataDetails,
   VideoMetadataDetails,
 } from "@lens-protocol/metadata";
+import type { PostMention } from "~/lib/types/post";
+import { castToMediaImageType, castToMediaVideoType, isImageMimeType } from "~/utils/mimeTypes";
 import { AudioPlayer } from "../AudioPlayer";
+import { LinkPreview } from "../embeds/LinkPreview";
 import { ImageViewer } from "../ImageViewer";
-import Markdown from "../Markdown";
+import Markdown, { extractUrlsFromText } from "../Markdown";
 import { Badge } from "../ui/badge";
 import { VideoPlayer } from "../VideoPlayer";
-import { LinkPreview } from "../embeds/LinkPreview";
 
-import type { PostMention } from "./Post";
-
-export const getPostTextContent = (metadata: any, mentions?: PostMention[], showLinkPreviews?: boolean): React.ReactNode => {
+export const getPostTextContent = (
+  metadata: any,
+  mentions?: PostMention[],
+  showLinkPreviews = false,
+): React.ReactNode => {
   const content = metadata?.content || "";
 
   switch (metadata.__typename) {
@@ -66,6 +68,20 @@ export const getPostMediaContent = (metadata: any, postId?: string): React.React
   }
 };
 
+export const getPostLinkPreviews = (metadata: any): string[] => {
+  const content = metadata?.content || "";
+
+  if (metadata.__typename === "LinkMetadata") {
+    return [];
+  }
+
+  if (metadata.__typename === "EmbedMetadata") {
+    return [];
+  }
+
+  return extractUrlsFromText(content);
+};
+
 export const getPostMetadataView = (metadata: any, mentions?: PostMention[]) => {
   switch (metadata.__typename) {
     case "TextOnlyMetadata":
@@ -103,7 +119,15 @@ export const getPostMetadataView = (metadata: any, mentions?: PostMention[]) => 
   }
 };
 
-const ContentView = ({ content, mentions, showLinkPreviews = false }: { content: string; mentions?: PostMention[]; showLinkPreviews?: boolean }) => {
+const ContentView = ({
+  content,
+  mentions,
+  showLinkPreviews = false,
+}: {
+  content: string;
+  mentions?: PostMention[];
+  showLinkPreviews?: boolean;
+}) => {
   return <Markdown content={content} mentions={mentions} showLinkPreviews={showLinkPreviews} />;
 };
 
@@ -129,12 +153,12 @@ const getImageMediaContent = (metadata: ImageMetadataDetails): React.ReactNode =
 
   const allMedia: MediaAttachment[] = [];
   if (url) {
-    allMedia.push({ item: url, type: metadata.image.type });
+    allMedia.push({ item: url, type: castToMediaImageType(metadata.image.type) });
   }
   if (attachments && Array.isArray(attachments)) {
     attachments.forEach((att: any) => {
       if (att.item && att.type) {
-        allMedia.push({ item: att.item, type: att.type });
+        allMedia.push({ item: att.item, type: castToMediaImageType(att.type) });
       }
     });
   }
@@ -168,12 +192,16 @@ const getVideoMediaContent = (metadata: VideoMetadataDetails): React.ReactNode =
 
   const allMedia: MediaAttachment[] = [];
   if (url) {
-    allMedia.push({ item: url, type: metadata.video.type });
+    allMedia.push({ item: url, type: castToMediaVideoType(metadata.video.type) });
   }
   if (attachments && Array.isArray(attachments)) {
     attachments.forEach((att: any) => {
       if (att.item && att.type) {
-        allMedia.push({ item: att.item, type: att.type });
+        // Normalize the type - it could be either image or video
+        const normalizedType = isImageMimeType(att.type)
+          ? castToMediaImageType(att.type)
+          : castToMediaVideoType(att.type);
+        allMedia.push({ item: att.item, type: normalizedType });
       }
     });
   }
@@ -217,7 +245,7 @@ export const AudioView = ({ metadata, mentions }: { metadata: AudioMetadataDetai
 export const LinkView = ({ metadata, mentions }: { metadata: LinkMetadataDetails; mentions?: PostMention[] }) => {
   // Check if the content already contains the sharing link
   const contentContainsLink = metadata.content.includes(metadata.sharingLink);
-  
+
   return (
     <div>
       <ContentView content={metadata.content} mentions={mentions} />
@@ -303,21 +331,16 @@ export const ThreeDView = ({ metadata, mentions }: { metadata: ThreeDMetadataDet
 
 type MediaAttachment = {
   item: string;
-  type: MediaImageMimeType | MediaVideoMimeType;
-};
-
-const isImageType = (type: string): boolean => {
-  const imageTypes = ["PNG", "JPEG", "GIF", "BMP", "WEBP", "SVG_XML", "TIFF", "AVIF", "HEIC", "X_MS_BMP", "image"];
-  return type.startsWith("image/") || imageTypes.includes(type);
+  type: string;
 };
 
 const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
   return (
-    <div className="mt-2 w-full overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ height: "300px" }}>
+    <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ height: "300px" }}>
       <div className="flex gap-2 h-full items-center" style={{ width: "max-content" }}>
         {items.map((item, index) => (
           <div key={`${item.item}-${index}`} className="h-full flex items-center">
-            {item.type && isImageType(String(item.type)) ? (
+            {item.type && isImageMimeType(String(item.type)) ? (
               <ImageViewer
                 src={item.item}
                 alt={`Gallery image ${index + 1}`}

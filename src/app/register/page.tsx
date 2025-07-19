@@ -4,18 +4,19 @@ import { SessionClient } from "@lens-protocol/client";
 import { canCreateUsername, createAccountWithUsername, fetchAccount } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
 import { account as accountMetadataBuilder } from "@lens-protocol/metadata";
+import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronLeftIcon, Loader2, Upload, User, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAccount, useSignMessage, useWalletClient } from "wagmi";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
-import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { env } from "~/env.mjs";
 import { useDebounce } from "~/hooks/useDebounce";
 import { getPublicClient } from "~/utils/lens/getLensClient";
@@ -79,9 +80,7 @@ export default function RegisterPage() {
     try {
       const client = getPublicClient();
       const appAddress =
-        env.NEXT_PUBLIC_NODE_ENV === "development"
-          ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET
-          : env.NEXT_PUBLIC_APP_ADDRESS;
+        env.NEXT_PUBLIC_NODE_ENV === "development" ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET : env.NEXT_PUBLIC_APP_ADDRESS;
 
       setIsWaitingForSignature(true);
 
@@ -253,10 +252,9 @@ export default function RegisterPage() {
 
       toast.success("Profile created successfully!");
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
-      router.push(`/u/${username}`);
-      window.location.reload();
+      window.location.href = `/u/${username}`;
     } catch (error) {
       console.error("Error creating profile:", error);
       toast.error("Failed to create profile. Please try again.");
@@ -273,178 +271,229 @@ export default function RegisterPage() {
       setOnboardingClient(null);
       setInitError(null);
     } else {
-      router.push('/login');
+      router.push("/login");
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <Card className="w-full max-w-md mx-4 p-0 overflow-hidden">
-        <div className="relative">
-          <div className="flex items-center justify-between p-4 border-b">
-            <Button variant="ghost" size="icon" onClick={handleBack} disabled={isCreating || isInitializing}>
-              <ChevronLeftIcon className="h-4 w-4" />
-            </Button>
-            <h2 className="text-lg font-semibold">
-              {currentStep === "signin" ? "Let's create a new profile" :
-                currentStep === "username" ? "Choose your username" : "Set up your profile"}
-            </h2>
-            <div className="w-10" />
-          </div>
+      <div className="w-full max-w-md mx-4">
+        <Card variant="glass" className="w-full p-0 overflow-hidden">
+          <motion.div
+            layout
+            transition={{ layout: { duration: 0.3, type: "spring", bounce: 0.3 } }}
+            className="relative"
+          >
+            <div className="flex items-center justify-between p-4 border-b">
+              <Button variant="ghost" size="icon" onClick={handleBack} disabled={isCreating || isInitializing}>
+                <ChevronLeftIcon className="h-4 w-4" />
+              </Button>
+              <h2 className="text-lg font-semibold">
+                {currentStep === "signin"
+                  ? "Let's create a new profile"
+                  : currentStep === "username"
+                    ? "Choose your username"
+                    : "Set up your profile"}
+              </h2>
+              <div className="w-10" />
+            </div>
 
-          <div className="flex gap-2 px-4 py-2">
-            <div
-              className={`h-1 flex-1 rounded-full transition-colors ${currentStep === "signin" ? "bg-primary" : "bg-primary"
+            <div className="flex gap-2 px-4 py-2">
+              <div
+                className={`h-1 flex-1 rounded-full transition-colors ${
+                  currentStep === "signin" ? "bg-primary" : "bg-primary"
                 }`}
-            />
-            <div
-              className={`h-1 flex-1 rounded-full transition-colors ${currentStep === "username" ? "bg-primary" : currentStep === "profile" ? "bg-primary" : "bg-muted"
+              />
+              <div
+                className={`h-1 flex-1 rounded-full transition-colors ${
+                  currentStep === "username" ? "bg-primary" : currentStep === "profile" ? "bg-primary" : "bg-muted"
                 }`}
-            />
-            <div
-              className={`h-1 flex-1 rounded-full transition-colors ${currentStep === "profile" ? "bg-primary" : "bg-muted"
+              />
+              <div
+                className={`h-1 flex-1 rounded-full transition-colors ${
+                  currentStep === "profile" ? "bg-primary" : "bg-muted"
                 }`}
-            />
-          </div>
+              />
+            </div>
 
-          <div className="p-6">
-            {currentStep === "signin" ? (
-              <div className="space-y-6">
-                {isInitializing ? (
-                  <div className="space-y-6">
-                    {isWaitingForSignature && (
-                      <p className="mt-8 text-muted-foreground text-center">
-                        This signature verifies you own this wallet address.
-                      </p>
-                    )}
+            <motion.div
+              layout
+              transition={{ layout: { duration: 0.3, type: "spring", bounce: 0.3 } }}
+              className="overflow-hidden w-full"
+            >
+              <AnimatePresence mode="wait">
+                {currentStep === "signin" ? (
+                  <motion.div
+                    key="signin"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-6"
+                  >
+                    <div className="space-y-6">
+                      {isInitializing ? (
+                        <div className="space-y-6">
+                          {isWaitingForSignature && (
+                            <p className="mt-8 text-muted-foreground text-center">
+                              This signature verifies you own this wallet address.
+                            </p>
+                          )}
 
-                    <Button className="w-full items-center flex flex-row gap-2" size="lg" disabled>
-                      <LoadingSpinner size={20} />
-                      Signing in...
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <p className="mt-8 text-muted-foreground text-center">Sign in with your wallet to begin</p>
+                          <Button className="w-full items-center flex flex-row gap-2" size="lg" disabled>
+                            <LoadingSpinner size={20} />
+                            Signing in...
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="mt-8 text-muted-foreground text-center">Sign in with your wallet to begin</p>
 
-                    {initError && (
-                      <div className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 p-3 rounded-md text-center">{initError}</div>
-                    )}
+                          {initError && (
+                            <div className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 p-3 rounded-md text-center">
+                              {initError}
+                            </div>
+                          )}
 
-                    <Button onClick={initializeOnboardingSession} className="w-full" size="lg" disabled={!walletAddress}>
-                      Sign in
-                    </Button>
+                          <Button
+                            onClick={initializeOnboardingSession}
+                            className="w-full"
+                            size="lg"
+                            disabled={!walletAddress}
+                          >
+                            Sign in
+                          </Button>
 
-
-                    {!walletAddress && (
-                      <div className="text-sm text-muted-foreground text-center">
-                        Please connect your wallet first
+                          {!walletAddress && (
+                            <div className="text-sm text-muted-foreground text-center">
+                              Please connect your wallet first
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
+                ) : currentStep === "username" ? (
+                  <motion.div
+                    key="username"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-6"
+                  >
+                    <form onSubmit={handleUsernameSubmit} className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="username">Username</Label>
+                        <div className="relative">
+                          <Input
+                            id="username"
+                            type="text"
+                            value={usernameInput}
+                            onChange={handleUsernameChange}
+                            placeholder="myusername"
+                            className="pr-10"
+                            disabled={isCreating}
+                            autoFocus
+                          />
+                          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                            {isChecking && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                            {!isChecking && isAvailable === true && <Check className="h-4 w-4 text-green-500" />}
+                            {!isChecking && isAvailable === false && <X className="h-4 w-4 text-red-500" />}
+                          </div>
+                        </div>
+                        {error && <p className="text-sm text-red-500">{error}</p>}
+                        <p className="text-sm text-muted-foreground">
+                          Your username must be at least 3 characters long and can only contain lowercase letters,
+                          numbers, and underscores.
+                        </p>
                       </div>
-                    )}
-                  </>
+
+                      <Button
+                        type="submit"
+                        disabled={!isAvailable || usernameInput.length < 3 || isChecking || isCreating}
+                        className="w-full"
+                      >
+                        Continue
+                      </Button>
+                    </form>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="profile"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-6"
+                  >
+                    <div className="space-y-6">
+                      <div className="flex flex-col items-center gap-4">
+                        <Avatar className="h-24 w-24">
+                          <AvatarImage src={profilePictureUrl || undefined} />
+                          <AvatarFallback>
+                            <User className="h-12 w-12" />
+                          </AvatarFallback>
+                        </Avatar>
+
+                        <Label htmlFor="picture" className="cursor-pointer">
+                          <div className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors">
+                            <Upload className="h-4 w-4" />
+                            Upload profile picture
+                          </div>
+                          <Input
+                            id="picture"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="hidden"
+                            disabled={isCreating}
+                          />
+                        </Label>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="displayName">Display Name</Label>
+                        <Input
+                          id="displayName"
+                          type="text"
+                          value={displayName}
+                          onChange={(e) => setDisplayName(e.target.value)}
+                          placeholder="Your display name"
+                          disabled={isCreating}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="bio">Bio (optional)</Label>
+                        <Textarea
+                          id="bio"
+                          value={bio}
+                          onChange={(e) => setBio(e.target.value)}
+                          placeholder="Tell us about yourself..."
+                          rows={3}
+                          disabled={isCreating}
+                        />
+                      </div>
+
+                      <Button onClick={handleCreateProfile} disabled={isCreating || !displayName} className="w-full">
+                        {isCreating ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Creating profile...
+                          </>
+                        ) : (
+                          "Create Profile"
+                        )}
+                      </Button>
+                    </div>
+                  </motion.div>
                 )}
-              </div>
-            ) : currentStep === "username" ? (
-              <form onSubmit={handleUsernameSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
-                  <div className="relative">
-                    <Input
-                      id="username"
-                      type="text"
-                      value={usernameInput}
-                      onChange={handleUsernameChange}
-                      placeholder="myusername"
-                      className="pr-10"
-                      disabled={isCreating}
-                      autoFocus
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                      {isChecking && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                      {!isChecking && isAvailable === true && <Check className="h-4 w-4 text-green-500" />}
-                      {!isChecking && isAvailable === false && <X className="h-4 w-4 text-red-500" />}
-                    </div>
-                  </div>
-                  {error && <p className="text-sm text-red-500">{error}</p>}
-                  <p className="text-sm text-muted-foreground">
-                    Your username must be at least 3 characters long and can only contain lowercase letters, numbers, and
-                    underscores.
-                  </p>
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={!isAvailable || usernameInput.length < 3 || isChecking || isCreating}
-                  className="w-full"
-                >
-                  Continue
-                </Button>
-              </form>
-            ) : (
-              <div className="space-y-6">
-                <div className="flex flex-col items-center gap-4">
-                  <Avatar className="h-24 w-24">
-                    <AvatarImage src={profilePictureUrl || undefined} />
-                    <AvatarFallback>
-                      <User className="h-12 w-12" />
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <Label htmlFor="picture" className="cursor-pointer">
-                    <div className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors">
-                      <Upload className="h-4 w-4" />
-                      Upload profile picture
-                    </div>
-                    <Input
-                      id="picture"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="hidden"
-                      disabled={isCreating}
-                    />
-                  </Label>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="displayName">Display Name</Label>
-                  <Input
-                    id="displayName"
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Your display name"
-                    disabled={isCreating}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bio">Bio (optional)</Label>
-                  <Textarea
-                    id="bio"
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    placeholder="Tell us about yourself..."
-                    rows={3}
-                    disabled={isCreating}
-                  />
-                </div>
-
-                <Button onClick={handleCreateProfile} disabled={isCreating || !displayName} className="w-full">
-                  {isCreating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating profile...
-                    </>
-                  ) : (
-                    "Create Profile"
-                  )}
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      </Card>
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
+        </Card>
+      </div>
     </div>
   );
 }

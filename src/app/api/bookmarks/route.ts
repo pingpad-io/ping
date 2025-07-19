@@ -1,8 +1,8 @@
 import { PageSize } from "@lens-protocol/client";
 import { fetchPostBookmarks } from "@lens-protocol/client/actions";
 import type { NextRequest } from "next/server";
-import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensItemToPost } from "~/utils/lens/converters/postConverter";
 
 export const dynamic = "force-dynamic";
 

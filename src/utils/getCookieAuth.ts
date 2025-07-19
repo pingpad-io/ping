@@ -2,15 +2,17 @@ import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
 interface LensCredentials {
-  accessToken?: string;
-  idToken?: string;
-  refreshToken?: string;
+  data: {
+    accessToken: string;
+    idToken: string;
+    refreshToken: string;
+  };
 }
 
 export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null } => {
   const storage = cookies();
   const lensCredentials = storage.get("lens.mainnet.credentials")?.value;
-  
+
   if (!lensCredentials) {
     return {
       isValid: false,
@@ -20,8 +22,8 @@ export const getCookieAuth = (): { isValid: boolean; refreshToken: string | null
 
   try {
     const credentials: LensCredentials = JSON.parse(lensCredentials);
-    const refreshToken = credentials.refreshToken;
-    
+    const refreshToken = credentials.data.refreshToken;
+
     if (!refreshToken) {
       return {
         isValid: false,

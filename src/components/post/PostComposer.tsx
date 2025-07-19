@@ -9,54 +9,38 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  arrayMove,
-  rectSortingStrategy,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-} from "@dnd-kit/sortable";
+import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { fetchPost, post } from "@lens-protocol/client/actions";
-import { handleOperationWith } from "@lens-protocol/client/viem";
-import { image, MediaImageMimeType, MediaVideoMimeType, textOnly, video } from "@lens-protocol/metadata";
-import EmojiPicker, { type Theme } from "emoji-picker-react";
-import { ImageIcon, SendHorizontalIcon, SmileIcon, VideoIcon, X } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
+import { SendHorizontalIcon, VideoIcon, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useWalletClient } from "wagmi";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
-import { useAuth } from "~/hooks/useAuth";
-import { getLensClient } from "~/utils/lens/getLensClient";
-import { storageClient } from "~/utils/lens/storage";
-import { getCommunityTags } from "../communities/Community";
+import { useUser } from "~/components/user/UserContext";
+import { type MediaItem, useMediaProcessing } from "~/hooks/useMediaProcessing";
+import { MAX_CONTENT_LENGTH, usePostSubmission } from "~/hooks/usePostSubmission";
+import type { Post } from "~/lib/types/post";
+import type { User } from "~/lib/types/user";
 import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import type { User } from "../user/User";
 import { UserAvatar } from "../user/UserAvatar";
-import { useUser } from "../user/UserContext";
-import type { Post } from "./Post";
-import { lensItemToPost } from "./Post";
+import { PostComposerActions } from "./PostComposerActions";
+import { PostComposerHeader } from "./PostComposerHeader";
+import { QuotedPostPreview } from "./QuotedPostPreview";
 
 interface SortableMediaItemProps {
-  file: File;
+  item: MediaItem;
   index: number;
-  id: string;
   onRemove: () => void;
 }
 
-const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps) => {
+const SortableMediaItem = ({ item, index, onRemove }: SortableMediaItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id,
+    id: item.id,
     animateLayoutChanges: () => false,
   });
 
@@ -65,17 +49,19 @@ const SortableMediaItem = ({ file, index, id, onRemove }: SortableMediaItemProps
     transition,
   };
 
-  const isVideo = file.type.startsWith("video/");
+  const isVideo = item.type === "file" ? item.file.type.startsWith("video/") : item.mimeType.startsWith("video/");
   const [url, setUrl] = useState<string>("");
 
   useEffect(() => {
-    const objectUrl = URL.createObjectURL(file);
-    setUrl(objectUrl);
-    
-    return () => {
-      URL.revokeObjectURL(objectUrl);
-    };
-  }, [file]);
+    if (item.type === "file") {
+      const objectUrl = URL.createObjectURL(item.file);
+      setUrl(objectUrl);
+      return () => {
+        URL.revokeObjectURL(objectUrl);
+      };
+    }
+    setUrl(item.url);
+  }, [item]);
 
   return (
     <div
@@ -115,7 +101,7 @@ const MediaPreview = ({
   onRemove,
   onReorder,
 }: {
-  files: Array<{ file: File; id: string }>;
+  files: MediaItem[];
   onRemove: (id: string) => void;
   onReorder: (from: number, to: number) => void;
 }) => {
@@ -145,13 +131,7 @@ const MediaPreview = ({
       <SortableContext items={fileIds} strategy={rectSortingStrategy}>
         <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {files.map((item, index) => (
-            <SortableMediaItem
-              key={item.id}
-              id={item.id}
-              file={item.file}
-              index={index}
-              onRemove={() => onRemove(item.id)}
-            />
+            <SortableMediaItem key={item.id} item={item} index={index} onRemove={() => onRemove(item.id)} />
           ))}
         </div>
       </SortableContext>
@@ -159,47 +139,56 @@ const MediaPreview = ({
   );
 };
 
-
 export default function PostComposer({
   user,
   replyingTo,
   quotedPost,
-  postType = "post",
   onClose,
   onSuccess,
   initialContent = "",
+  editingPost,
+  onCancel,
+  feed,
+  isReplyingToComment = false,
 }: {
   user?: User;
   replyingTo?: Post;
   quotedPost?: Post;
-  postType?: "post" | "reply";
   onClose?: () => void;
   onSuccess?: (post?: Post | null) => void;
   initialContent?: string;
+  editingPost?: Post;
+  onCancel?: () => void;
+  feed?: string;
+  isReplyingToComment?: boolean;
 }) {
   const { user: contextUser } = useUser();
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
   const currentUser = user || contextUser;
-  const [isPosting, setPosting] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState<Array<{ file: File; id: string }>>([]);
 
-  const handleAddFiles = useCallback((acceptedFiles: File[]) => {
-    const validFiles = acceptedFiles.filter((file) => {
-      if (file.size > 8 * 1024 * 1024) {
-        toast.error(`${file.name} is too large. Maximum file size is 8MB.`);
-        return false;
-      }
-      return true;
-    });
+  const {
+    mediaFiles,
+    setMediaFiles,
+    loadExistingMedia,
+    handleAddFiles,
+    removeMedia,
+    reorderMedia,
+    processMediaForSubmission,
+    clearMedia,
+  } = useMediaProcessing();
 
-    if (validFiles.length > 0) {
-      const newFiles = validFiles.map((file) => ({
-        file,
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      }));
-      setMediaFiles((prev) => [...prev, ...newFiles]);
+  const { isPosting, submitPost } = usePostSubmission();
+
+  const pathname = usePathname().split("/");
+  const community = pathname[1] === "c" ? pathname[2] : "";
+
+  // Initialize media from existing post
+  useEffect(() => {
+    if (editingPost) {
+      const existingMedia = loadExistingMedia(editingPost);
+      setMediaFiles(existingMedia);
     }
-  }, []);
+  }, [editingPost, loadExistingMedia, setMediaFiles]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -215,27 +204,24 @@ export default function PostComposer({
     noKeyboard: true,
   });
 
-  const placeholderText = replyingTo
-    ? "write your reply..."
-    : quotedPost
-      ? "add your thoughts..."
-      : "write a new post...";
-  const pathname = usePathname().split("/");
-  const community = pathname[1] === "c" ? pathname[2] : "";
-  const router = useRouter();
-
-  const { data: walletClient } = useWalletClient();
+  const placeholderText = editingPost
+    ? "edit your post..."
+    : replyingTo
+      ? "write your reply..."
+      : quotedPost
+        ? "add your thoughts..."
+        : "write a new post...";
 
   const FormSchema = z.object({
-    content: z.string().max(3000, {
-      message: "Post must not be longer than 3000 characters.",
+    content: z.string().max(MAX_CONTENT_LENGTH, {
+      message: `Post must not be longer than ${MAX_CONTENT_LENGTH} characters.`,
     }),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      content: initialContent,
+      content: editingPost?.metadata?.content || initialContent,
     },
   });
   const watchedContent = form.watch("content");
@@ -246,179 +232,23 @@ export default function PostComposer({
       return;
     }
 
-    setPosting(true);
-    const toastId = Math.random().toString();
-
-    // Create optimistic post
-    const optimisticPost: Post = {
-      id: `optimistic-${Date.now()}`,
-      author: currentUser!,
-      metadata: {
-        content: data.content, // Keep content for matching later
+    await submitPost({
+      content: data.content,
+      mediaFiles,
+      processMediaForSubmission,
+      editingPost,
+      replyingTo,
+      quotedPost,
+      currentUser,
+      community,
+      feed,
+      onSuccess,
+      onClose,
+      clearForm: () => {
+        form.setValue("content", "");
+        clearMedia();
       },
-      createdAt: new Date().toISOString(),
-      reactions: {
-        Like: 0,
-        Repost: 0,
-        Comment: 0,
-        Quote: 0,
-      },
-      isOptimistic: true,
-    } as any;
-
-    // Call onSuccess with optimistic post
-    onSuccess?.(optimisticPost);
-
-    // Clear form immediately after showing optimistic post
-    form.setValue("content", "");
-    setMediaFiles([]);
-
-    const tags = getCommunityTags(community);
-    const client = await getLensClient();
-
-    let metadata: any;
-    try {
-      const content = data.content.length > 0 ? data.content : undefined;
-      // TODO: Mentions are parsed from content by Lens Protocol backend
-      // const mentions = content ? extractMentions(content) : undefined;
-
-      if (mediaFiles.length > 0) {
-        toast.loading("Uploading media files...", { id: toastId });
-
-        // Upload all media files
-        const uploadedFiles = await Promise.all(
-          mediaFiles.map(async ({ file }) => {
-            const { uri } = await storageClient.uploadFile(file);
-            return { uri, type: file.type, file };
-          }),
-        );
-
-        const primaryFile = uploadedFiles[0];
-        const attachments =
-          uploadedFiles.length > 1
-            ? uploadedFiles.slice(1).map((f) => ({
-              item: f.uri,
-              type: f.type.startsWith("image/") ? (f.type as MediaImageMimeType) : (f.type as MediaVideoMimeType),
-            }))
-            : undefined;
-
-        // Check if primary file is video or image
-        if (primaryFile.type.startsWith("video/")) {
-          metadata = video({
-            content,
-            tags: tags,
-            attachments,
-            video: {
-              item: primaryFile.uri,
-              type: primaryFile.type as MediaVideoMimeType,
-            },
-          });
-        } else {
-          metadata = image({
-            content,
-            tags: tags,
-            attachments,
-            image: {
-              item: primaryFile.uri,
-              type: primaryFile.type as MediaImageMimeType,
-            },
-          });
-        }
-      } else {
-        metadata = textOnly({
-          content,
-          tags: tags,
-        });
-      }
-    } catch (error) {
-      toast.error(error.message);
-      setPosting(false);
-      return;
-    }
-
-    try {
-      toast.loading("Uploading...", { id: toastId });
-
-      const metadataFile = new File([JSON.stringify(metadata)], "metadata.json", { type: "application/json" });
-      const { uri: contentUri } = await storageClient.uploadFile(metadataFile);
-
-      toast.loading("Publishing...", { id: toastId });
-      console.log("Uploaded metadata to grove storage:", contentUri);
-
-      if (!client || !client.isSessionClient()) {
-        toast.error("Not authenticated", { id: toastId });
-        setPosting(false);
-        return;
-      }
-
-      // const feed = env.NEXT_PUBLIC_FEED_ADDRESS ? env.NEXT_PUBLIC_FEED_ADDRESS : undefined;
-      const feed = undefined;
-
-      const postData = replyingTo
-        ? {
-          feed,
-          contentUri,
-          commentOn: {
-            post: replyingTo.id,
-          },
-        }
-        : quotedPost
-          ? {
-            feed,
-            contentUri,
-            quoteOf: {
-              post: quotedPost.id,
-            },
-          }
-          : {
-            feed,
-            contentUri,
-          };
-
-      if (quotedPost) {
-        const response = await fetch(`/api/posts/${quotedPost.id}/quote`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: data.content }),
-        });
-
-        if (response.ok) {
-          toast.success("Quoted successfully!", { id: toastId });
-          onSuccess?.(null);
-          onClose?.();
-        } else {
-          const error = await response.json();
-          console.error("Failed to create quote:", error);
-          toast.error(`Failed to quote: ${error.error || "Unknown error"}`, { id: toastId });
-        }
-      } else {
-        const result = await post(client, postData)
-          .andThen(handleOperationWith(walletClient))
-          .andThen(client.waitForTransaction)
-          .andThen((txHash) => fetchPost(client, { txHash }));
-
-        if (result.isOk()) {
-          console.log("Published successfully:", result.value);
-          const newPost = lensItemToPost(result.value);
-          toast.success("Published successfully!", {
-            id: toastId,
-            action: {
-              label: "Show me",
-              onClick: () => newPost && router.push(`/p/${newPost.id}`),
-            },
-          });
-          onSuccess?.(newPost);
-        } else {
-          console.error("Failed to publish:", result.error);
-          toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
-        }
-      }
-    } catch (error) {
-      console.error("Error publishing:", error);
-      toast.error(`Failed to publish: ${error.message}`, { id: toastId });
-    } finally {
-      setPosting(false);
-    }
+    });
   }
 
   const handleEmojiClick = useCallback(
@@ -431,19 +261,11 @@ export default function PostComposer({
     [form],
   );
 
-  const [isEmojiPickerOpen, setEmojiPickerOpen] = useState(false);
-  const { theme } = useTheme();
-
-  const handleRemoveMedia = useCallback((id: string) => {
-    setMediaFiles((prev) => prev.filter((item) => item.id !== id));
-  }, []);
-
-  const handleReorderMedia = useCallback((from: number, to: number) => {
-    setMediaFiles((prev) => arrayMove(prev, from, to));
-  }, []);
+  const handleRemoveMedia = removeMedia;
+  const handleReorderMedia = reorderMedia;
 
   return (
-    <div className="w-full" {...getRootProps()}>
+    <div className="w-full" {...getRootProps()} onClick={(e) => e.stopPropagation()}>
       <input {...getInputProps()} />
       {isDragActive && (
         <div className="absolute inset-0 bg-black/20 z-50 flex items-center justify-center rounded-lg border-2 border-dashed border-primary">
@@ -451,91 +273,75 @@ export default function PostComposer({
         </div>
       )}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row gap-2 w-full items-center">
-          {currentUser && (
-            <div className={`${replyingTo ? "w-8 h-8" : "w-10 h-10"} self-start`}>
-              <UserAvatar user={currentUser} link={true} card={false} />
-            </div>
-          )}
-          <div className="grow flex-1">
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem className="relative">
-                  <FormControl>
-                    <div {...getRootProps()}>
-                      <LexicalEditorWrapper
-                        value={field.value}
-                        onChange={(value) => {
-                          if (!requireAuth()) return;
-                          field.onChange(value);
-                        }}
-                        onKeyDown={(e) => {
-                          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                            onSubmit(form.getValues());
-                          }
-                        }}
-                        onPasteFiles={handleAddFiles}
-                        placeholder={placeholderText}
-                        disabled={isPosting}
-                        className="rounded-xl"
-                      />
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <div className="flex items-center gap-2 mt-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95"
-                onClick={open}
-              >
-                <ImageIcon className="h-5 w-5 text-muted-foreground transition-transform" />
-              </Button>
-              <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="p-0 m-0 rounded-full w-8 h-8 hover-expand [&>svg]:hover:scale-110 [&>svg]:active:scale-95"
-                    onClick={() => setEmojiPickerOpen(!isEmojiPickerOpen)}
-                  >
-                    <SmileIcon className="h-5 w-5 text-muted-foreground transition-transform" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <EmojiPicker
-                    theme={theme as Theme}
-                    className="bg-card text-card-foreground"
-                    onEmojiClick={handleEmojiClick}
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            <MediaPreview files={mediaFiles} onRemove={handleRemoveMedia} onReorder={handleReorderMedia} />
-            {quotedPost && (
-              <div className="mt-2 p-3 border rounded-lg bg-muted/50">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-4 h-4">
-                    <UserAvatar user={quotedPost.author} link={false} card={false} />
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    {quotedPost.author.name} @{quotedPost.author.handle}
-                  </span>
-                </div>
-                <p className="text-sm line-clamp-3">{quotedPost.metadata?.content || ""}</p>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
+          <div className="flex flex-row gap-2 w-full">
+            {currentUser && (
+              <div className={isReplyingToComment ? "w-6 h-6 self-start" : "w-10 h-10 self-start"}>
+                <UserAvatar user={currentUser} link={true} card={false} />
               </div>
             )}
+            <div className="grow flex-1">
+              <PostComposerHeader
+                currentUser={currentUser}
+                editingPost={editingPost}
+                replyingTo={replyingTo}
+                onCancel={onCancel}
+                isPosting={isPosting}
+              />
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormControl>
+                      <div {...getRootProps()}>
+                        <LexicalEditorWrapper
+                          value={field.value}
+                          onChange={(value) => {
+                            if (!requireAuth()) return;
+                            field.onChange(value);
+                          }}
+                          onKeyDown={(e) => {
+                            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                              onSubmit(form.getValues());
+                            }
+                          }}
+                          onPasteFiles={handleAddFiles}
+                          placeholder={placeholderText}
+                          disabled={isPosting}
+                          className="rounded-xl"
+                        />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <PostComposerActions onImageClick={open} onEmojiClick={handleEmojiClick} />
+
+              <MediaPreview files={mediaFiles} onRemove={handleRemoveMedia} onReorder={handleReorderMedia} />
+              {quotedPost && <QuotedPostPreview quotedPost={quotedPost} />}
+              {editingPost && (
+                <div className="mt-4">
+                  <Button disabled={isPosting || isEmpty} type="submit" className="w-full">
+                    {isPosting ? (
+                      <span className="flex items-center gap-2">
+                        <LoadingSpinner />
+                        <span>Updating...</span>
+                      </span>
+                    ) : (
+                      "Save"
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+            {!editingPost && (
+              <Button disabled={isPosting || isEmpty} size="icon" type="submit" className="h-8 w-8 self-start">
+                {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon className="h-4 w-4" />}
+              </Button>
+            )}
           </div>
-          <Button disabled={isPosting || isEmpty} size="icon" type="submit" className="h-8 w-8 self-start">
-            {isPosting ? <LoadingSpinner /> : <SendHorizontalIcon className="h-4 w-4" />}
-          </Button>
         </form>
       </Form>
     </div>

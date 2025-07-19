@@ -1,8 +1,8 @@
 import { fetchPostsToExplore, fetchTimeline } from "@lens-protocol/client/actions";
 import { PageSize, TimelineEventItemType } from "@lens-protocol/react";
 import { type NextRequest, NextResponse } from "next/server";
-import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensItemToPost } from "~/utils/lens/converters/postConverter";
 
 export const dynamic = "force-dynamic";
 
@@ -11,15 +11,20 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor") || undefined;
 
   try {
-    const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
+    const { client, sessionClient, isAuthenticated, address } = await getServerAuth();
 
     let data;
 
     if (isAuthenticated && sessionClient) {
       data = await fetchTimeline(sessionClient, {
-        account: profileId,
+        account: address,
         filter: {
-          eventType: [TimelineEventItemType.Post],
+          eventType: [
+            TimelineEventItemType.Post,
+            TimelineEventItemType.Quote,
+            TimelineEventItemType.Comment,
+            TimelineEventItemType.Repost,
+          ],
         },
         cursor,
       });

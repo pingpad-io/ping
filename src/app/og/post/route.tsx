@@ -2,14 +2,15 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "@vercel/og";
 import { ImageResponseOptions } from "next/server";
-import { parseContent } from "~/utils/parseContent";
 
 export const runtime = "nodejs";
 
 function cleanContent(content: string): string {
   if (!content) return "";
 
-  const cleanedContent = content
+  let cleanedContent = decodeURIComponent(content);
+
+  cleanedContent = cleanedContent
     .replace(/\\n/g, "\n")
     .replace(/\\r/g, "")
     .replace(/\\t/g, " ")
@@ -18,12 +19,24 @@ function cleanContent(content: string): string {
     .replace(/\\'/g, "'")
     .replace(/\\~/g, "~")
     .replace(/\\-/g, "-")
+    .replace(/\\\[/g, "[")
     .replace(/[ \t]+/g, " ")
     .replace(/\n\s+/g, "\n")
     .replace(/\s+\n/g, "\n")
     .trim();
 
-  return parseContent(cleanedContent).replaceHandles().toString();
+  cleanedContent = cleanedContent.replace(/https?:\/\/[^\s]+/g, (url) => {
+    try {
+      const urlObj = new URL(url);
+      return `[${urlObj.hostname.replace("www.", "")}]`;
+    } catch {
+      return "[link]";
+    }
+  });
+
+  cleanedContent = cleanedContent.replace(/@lens\/(\w+)/g, "$1");
+
+  return cleanedContent;
 }
 
 export async function GET(request: Request) {
@@ -31,7 +44,7 @@ export async function GET(request: Request) {
 
   const fontsDir = path.join(process.cwd(), "public", "fonts");
 
-  const quicksandSemiBold = await readFile(path.join(fontsDir, "Quicksand-SemiBold.ttf"));
+  const quicksandBold = await readFile(path.join(fontsDir, "Quicksand-Bold.ttf"));
   const quicksandMedium = await readFile(path.join(fontsDir, "Quicksand-Medium.ttf"));
 
   const handle = searchParams.get("handle");
@@ -51,16 +64,16 @@ export async function GET(request: Request) {
       },
       {
         name: "Quicksand",
-        data: quicksandSemiBold,
+        data: quicksandBold,
         style: "normal",
-        weight: 600,
+        weight: 700,
       },
     ],
   } as ImageResponseOptions;
 
   if (!handle) {
     return new ImageResponse(
-      <div tw="flex items-center justify-center w-full h-full bg-[#1e1e1e] p-8 text-white flex-col">
+      <div tw="flex items-center justify-center w-full h-full bg-[#000000] p-8 text-white flex-col">
         <div tw="text-white text-4xl font-bold pb-12">Post not found</div>
         <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`} tw="h-8" />
       </div>,
@@ -69,39 +82,44 @@ export async function GET(request: Request) {
   }
 
   return new ImageResponse(
-    <div tw="w-full h-full flex bg-[#1e1e1e] relative overflow-hidden">
+    <div tw="w-full h-full flex bg-[#000000] relative overflow-hidden">
       {image && (
         <div tw="absolute inset-0 flex items-center justify-end">
           <img src={image} tw="w-full" style={{ filter: "brightness(0.3)" }} />
         </div>
       )}
 
+      <div tw="absolute flex items-center justify-center bottom-[-50px] left-[-50px] w-[420px] h-[420px] opacity-10">
+        <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`} tw="w-full h-full" />
+      </div>
+      <div tw="absolute flex items-center justify-center bottom-14 right-14">
+        <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/ping-logo-drop-round.png`} tw="w-20 h-20" />
+      </div>
+
       <div tw="relative flex flex-col justify-start p-14 w-full h-full">
         <div tw="flex items-center mb-6">
           {profilePictureUrl && (
-            <div tw="flex items-center justify-center w-32 h-32 rounded-full mr-6 overflow-hidden">
+            <div tw="flex items-center justify-center w-24 h-24 rounded-full mr-4 overflow-hidden">
               <img src={profilePictureUrl} tw="w-full" />
             </div>
           )}
           <div tw="flex items-center">
-            <img
-              src={`${process.env.NEXT_PUBLIC_SITE_URL}/logo-white.svg`}
-              tw="h-12"
-              style={{ transform: "translateY(3px)" }}
-            />
-            <div tw="text-white text-6xl font-semibold flex pl-2 leading-[48px]">{handle}</div>
+            <div tw="text-white text-6xl font-bold flex pl-2 leading-[48px]">{handle}</div>
           </div>
         </div>
 
         {content && (
-          <div tw="flex max-w-4xl">
-            <div tw="text-white text-5xl font-medium leading-tight flex flex-col">
+          <div tw="flex pr-20">
+            <div tw="text-white text-6xl min-w-14 px-4 h-16 pt-2 justify-start flex items-start flex flex-col justify-center font-bold">
+              "
+            </div>
+            <div tw="text-white flex-1 pr-12 text-4xl font-medium flex flex-col" style={{ lineHeight: "1.4" }}>
               {(() => {
                 const cleanedContent = cleanContent(content);
                 const truncatedContent =
-                  cleanedContent.length > 128 ? `${cleanedContent.slice(0, 128).trim()}...` : cleanedContent;
+                  cleanedContent.length > 280 ? `${cleanedContent.slice(0, 280).trim()}...` : cleanedContent;
                 return truncatedContent.split("\n").map((line, index) => (
-                  <div key={index} tw="flex">
+                  <div key={index} tw="flex mb-2">
                     {line}
                   </div>
                 ));

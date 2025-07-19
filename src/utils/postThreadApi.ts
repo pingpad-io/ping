@@ -1,4 +1,4 @@
-import type { Post } from "~/components/post/Post";
+import type { Post } from "~/lib/types/post";
 
 export async function fetchParentPost(id: string): Promise<Post | null> {
   try {

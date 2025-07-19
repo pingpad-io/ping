@@ -1,6 +1,6 @@
 import { MenuOption } from "@lexical/react/LexicalTypeaheadMenuPlugin";
+import type { User } from "~/lib/types/user";
 import { UserAvatar } from "../user/UserAvatar";
-import type { User } from "../user/User";
 
 export class MentionOption extends MenuOption {
   user: User;

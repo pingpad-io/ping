@@ -1,8 +1,8 @@
 import { PageSize } from "@lens-protocol/client";
 import { fetchFollowers } from "@lens-protocol/client/actions";
 import { NextRequest, NextResponse } from "next/server";
-import { lensAcountToUser } from "~/components/user/User";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { lensAccountToUser } from "~/utils/lens/converters/userConverter";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const followers = result.value;
-    const users = followers.items.map((item) => lensAcountToUser(item.follower));
+    const users = followers.items.map((item) => lensAccountToUser(item.follower));
 
     return NextResponse.json({ data: users, nextCursor: followers.pageInfo.next }, { status: 200 });
   } catch (error) {

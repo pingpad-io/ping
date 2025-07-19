@@ -1,9 +1,9 @@
 import { PageSize, PostType } from "@lens-protocol/client";
-import { deletePost, fetchPosts, post } from "@lens-protocol/client/actions";
+import { deletePost, fetchGroup, fetchPosts, post } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
-import { lensItemToPost } from "~/components/post/Post";
 import { getServerAuth } from "~/utils/getServerAuth";
-import { storageClient } from "~/utils/lens/storage";
+import { lensItemToPost } from "~/utils/lens/converters/postConverter";
+import { uploadMetadata } from "~/utils/uploadMetadata";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +12,11 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor") || undefined;
   const type = searchParams.get("type") || "post";
   const address = searchParams.get("address") || undefined;
+  const group = searchParams.get("group") || undefined;
+  const feed = searchParams.get("feed") || undefined;
 
   try {
-    const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
+    const { client } = await getServerAuth();
 
     let postTypes: PostType[];
 
@@ -41,6 +43,18 @@ export async function GET(req: NextRequest) {
     const filter: any = { postTypes };
     if (address) {
       filter.authors = [address];
+    } else if (feed) {
+      filter.feeds = [{ feed }];
+    } else if (group) {
+      const groupResult = await fetchGroup(client, { group });
+      if (groupResult.isErr()) {
+        return NextResponse.json({ error: `Failed to fetch group: ${groupResult.error.message}` }, { status: 500 });
+      }
+      const feedAddress = groupResult.value.feed?.address;
+      if (!feedAddress) {
+        return NextResponse.json({ error: "Group has no associated feed" }, { status: 500 });
+      }
+      filter.feeds = [{ feed: feedAddress }];
     } else {
       filter.feeds = [{ globalFeed: true }];
     }
@@ -65,9 +79,9 @@ export async function GET(req: NextRequest) {
       });
 
     return NextResponse.json({ data: posts, nextCursor: data.value.pageInfo.next }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to fetch feed: ", error);
-    return NextResponse.json({ error: `Failed to fetch feed: ${error.message}` }, { status: 500 });
+    return NextResponse.json({ error: `Failed to fetch feed: ${error?.message || "Unknown error"}` }, { status: 500 });
   }
 }
 
@@ -80,7 +94,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    const { client, isAuthenticated, profileId } = await getServerAuth();
+    const { client, isAuthenticated } = await getServerAuth();
 
     if (!isAuthenticated) {
       throw new Error("Not authenticated");
@@ -113,9 +127,9 @@ export async function POST(req: NextRequest) {
 
     const data = await parseRequestBody(req);
 
-    const { client, handle, profileId } = await getServerAuth();
+    const { client, handle, isAuthenticated } = await getServerAuth();
 
-    if (!profileId) {
+    if (!isAuthenticated) {
       throw new Error("Not authenticated");
     }
 
@@ -123,7 +137,8 @@ export async function POST(req: NextRequest) {
       throw new Error("Not authenticated with a session client");
     }
 
-    const contentUri = await uploadMetadata(data, handle);
+    const contentUri = await uploadMetadata(data);
+    console.log(`Uploaded metadata for ${handle} to ${contentUri}`);
     const postResult = await createPost(client, contentUri, replyingTo);
 
     if (postResult && typeof postResult.unwrapOr === "function") {
@@ -161,25 +176,7 @@ async function parseRequestBody(req: NextRequest) {
   return data;
 }
 
-async function uploadMetadata(data: any, handle: string) {
-  try {
-    const metadataFile = new File([JSON.stringify(data)], "metadata.json", { type: "application/json" });
-
-    const { uri } = await storageClient.uploadFile(metadataFile);
-
-    if (!uri) {
-      throw new Error("Failed to upload metadata");
-    }
-
-    console.log(`Uploaded metadata for ${handle} to ${uri}`);
-    return uri;
-  } catch (error) {
-    console.error("Error uploading metadata:", error);
-    throw new Error(`Failed to upload metadata: ${error.message}`);
-  }
-}
-
-async function createPost(client, contentUri, replyingTo) {
+async function createPost(client: any, contentUri: string, replyingTo: string | undefined) {
   if (replyingTo) {
     return await post(client, {
       contentUri,

@@ -19,13 +19,13 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Link from "~/components/Link";
 import { useUserActions } from "~/hooks/useUserActions";
+import type { Notification } from "~/lib/types/notification";
 import { useFilteredUsers } from "../FilteredUsersContext";
 import { TruncatedText } from "../TruncatedText";
 import { Card, CardContent } from "../ui/card";
 import { ContextMenu as Context, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import { UserAvatarArray } from "../user/UserAvatar";
 import { useUser } from "../user/UserContext";
-import type { Notification } from "./Notification";
 import { useNotifications } from "./NotificationsContext";
 
 export const NotificationView = ({ item }: { item: Notification }) => {

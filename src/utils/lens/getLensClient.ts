@@ -34,9 +34,8 @@ export const getOnboardingClient = async (address: string, signMessage: (message
   if (!address) return null;
 
   const { env } = await import("~/env.mjs");
-  const appAddress = env.NEXT_PUBLIC_NODE_ENV === "development" 
-    ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET 
-    : env.NEXT_PUBLIC_APP_ADDRESS;
+  const appAddress =
+    env.NEXT_PUBLIC_NODE_ENV === "development" ? env.NEXT_PUBLIC_APP_ADDRESS_TESTNET : env.NEXT_PUBLIC_APP_ADDRESS;
 
   const authenticated = await publicClient.login({
     onboardingUser: {

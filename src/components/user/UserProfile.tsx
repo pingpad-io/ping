@@ -1,19 +1,18 @@
 "use client";
 
-import type { AccountStats } from "@lens-protocol/client";
 import { ShieldOffIcon, VolumeXIcon } from "lucide-react";
 import { useState } from "react";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
-import { useAuth } from "~/hooks/useAuth";
 import { useUserActions } from "~/hooks/useUserActions";
+import { type User, type UserStats } from "~/lib/types/user";
 import { FollowButton } from "../FollowButton";
 import PostComposer from "../post/PostComposer";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { EditProfileModal } from "./EditProfileModal";
-import { type User } from "./User";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
 
@@ -79,9 +78,9 @@ const MentionPostComposer = ({ user, onClose }: { user: User; onClose: () => voi
   return <PostComposer user={currentUser} initialContent={`@lens/${user.handle} `} onSuccess={() => onClose()} />;
 };
 
-export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats | null }) => {
+export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | null }) => {
   const { user: authedUser } = useUser();
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
   const [isMentionDialogOpen, setIsMentionDialogOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const userActions = useUserActions(user || ({} as User));
@@ -94,12 +93,12 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
   const isFollowingMe = user.actions.following;
   const isMuted = user.actions?.muted;
   const isBlocked = user.actions?.blocked;
-  const followingCount = stats?.graphFollowStats.following ?? 0;
-  const followersCount = stats?.graphFollowStats.followers ?? 0;
+  const followingCount = stats?.following ?? 0;
+  const followersCount = stats?.followers ?? 0;
 
   return (
-    <div className="p-6 z-20 flex w-full flex-col gap-4 glass drop-shadow-md mt-4 rounded-xl overflow-hidden">
-      <div className="flex flex-row gap-4">
+    <Card className="p-6 z-20 flex w-full flex-col gap-4 mt-4 rounded-xl overflow-hidden">
+      <div className="flex flex-row gap-6">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 self-start">
           <AvatarViewer user={user} />
         </div>
@@ -107,7 +106,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
         <div className="flex flex-col gap-2 flex-grow">
           <div className="flex flex-col justify-center gap-1">
             <div className="flex items-center gap-2">
-              <div className="text-xl sm:text-2xl font-bold w-fit truncate leading-none">{user.handle}</div>
+              <div className="text-xl sm:text-3xl font-bold w-fit truncate leading-none">{user.handle}</div>
               {isFollowingMe && (
                 <Badge variant="secondary" className="text-xs">
                   Follows you
@@ -135,7 +134,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
         <Button
           size="sm"
           variant="outline"
-          className="w-full bg-transparent"
+          className="w-full mt-4 bg-transparent"
           onClick={() => setIsEditProfileOpen(true)}
         >
           Edit Profile
@@ -172,6 +171,6 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: AccountStats
           }}
         />
       )}
-    </div>
+    </Card>
   );
 };
