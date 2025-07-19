@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Script from "next/script";
-// import { BackgroundGradient } from "~/components/BackgroundGradient";
 import { DeletedPostsProvider } from "~/components/DeletedPostsContext";
 import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
 import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
@@ -16,8 +15,6 @@ import { HistoryIndicator } from "~/components/HistoryIndicator";
 import { Menu } from "~/components/menu/Menu";
 import { NavigationShortcuts } from "~/components/NavigationShortcuts";
 import { RouteTracker } from "~/components/RouteTracker";
-
-const AuthWatcher = dynamic(() => import("~/components/auth/AuthWatcher"), { ssr: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://pingpad.io"),
@@ -45,7 +42,6 @@ export default async function RootLayout({ children }) {
               <DeletedPostsProvider>
                 <NotificationsProvider>
                   {/* <BackgroundGradient /> */}
-                  <AuthWatcher />
                   <RouteTracker />
                   <NavigationShortcuts />
                   <HistoryIndicator />

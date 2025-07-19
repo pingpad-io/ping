@@ -19,14 +19,6 @@ export const metadata: Metadata = {
 const LandingPage = () => {
   return (
     <div className="relative min-h-screen">
-      {/* <div className="fixed inset-0 -z-10 dark:block hidden"> */}
-      {/* <Squares
-          direction="up"
-          speed={0}
-          borderColor="#1a1a1a"
-          hoverFillColor="#0a0a0a"
-        /> */}
-      {/* </div> */}
       <div className="flex flex-col min-h-screen items-center justify-center relative z-10">
         <div className="text-3xl text-center drop-shadow-md dark:drop-shadow-glow">
           <h1>
