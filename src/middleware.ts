@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAuthTokenValid && pathname === "/") {
-    // If authenticated redirect the root path to /home
+    // If authenticated redirect the / to /home
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
@@ -36,7 +36,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // For all other routes, continue as normal
   return NextResponse.next();
 }
 

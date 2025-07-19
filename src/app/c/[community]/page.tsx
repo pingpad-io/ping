@@ -51,7 +51,7 @@ export default function GroupPage({ params }: GroupPageProps) {
         {user && (
           <div className="">
             {group.canPost && !group.isBanned && (
-              <div className="p-4 glass rounded-xl">
+              <div className="p-4 rounded-xl">
                 <PostComposer user={user} feed={feedAddress} />
               </div>
             )}
