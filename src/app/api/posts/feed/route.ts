@@ -11,13 +11,13 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor") || undefined;
 
   try {
-    const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
+    const { client, sessionClient, isAuthenticated, address } = await getServerAuth();
 
     let data;
 
     if (isAuthenticated && sessionClient) {
       data = await fetchTimeline(sessionClient, {
-        account: profileId,
+        account: address,
         filter: {
           eventType: [
             TimelineEventItemType.Post,

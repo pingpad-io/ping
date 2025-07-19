@@ -23,7 +23,6 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { newCount } = useNotifications();
-  console.log(isAuthenticated, handle, user)
 
   useEffect(() => {
     router.prefetch("/home");

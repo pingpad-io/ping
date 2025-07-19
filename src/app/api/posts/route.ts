@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   const feed = searchParams.get("feed") || undefined;
 
   try {
-    const { client, sessionClient, isAuthenticated, profileId } = await getServerAuth();
+    const { client } = await getServerAuth();
 
     let postTypes: PostType[];
 
@@ -94,7 +94,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    const { client, isAuthenticated, profileId } = await getServerAuth();
+    const { client, isAuthenticated } = await getServerAuth();
 
     if (!isAuthenticated) {
       throw new Error("Not authenticated");
@@ -127,9 +127,9 @@ export async function POST(req: NextRequest) {
 
     const data = await parseRequestBody(req);
 
-    const { client, handle, profileId } = await getServerAuth();
+    const { client, handle, isAuthenticated } = await getServerAuth();
 
-    if (!profileId) {
+    if (!isAuthenticated) {
       throw new Error("Not authenticated");
     }
 

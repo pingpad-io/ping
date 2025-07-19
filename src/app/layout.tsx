@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 export const maxDuration = 60;
 
 export default async function RootLayout({ children }) {
-  const { handle, profileId, user } = await getServerAuth();
+  const { handle, isAuthenticated, user } = await getServerAuth();
 
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
@@ -46,7 +46,7 @@ export default async function RootLayout({ children }) {
                   <NavigationShortcuts />
                   <HistoryIndicator />
                   <Toaster position="top-center" offset={16} />
-                  <Menu isAuthenticated={!!profileId} user={user} handle={handle} />
+                  <Menu isAuthenticated={isAuthenticated} user={user} handle={handle} />
 
                   <PageTransition>
                     <div className="min-w-0 max-w-2xl mx-auto grow sm:shrink lg:max-w-2xl h-full">{children}</div>

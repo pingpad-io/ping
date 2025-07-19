@@ -1,12 +1,12 @@
 import type { PropsWithChildren } from "react";
-import { validateSession } from "~/utils/validateSession";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 interface ServerAuthProps extends PropsWithChildren {
   whenSignedOut?: boolean;
 }
 
 export async function ServerAuth({ children, whenSignedOut = false }: ServerAuthProps) {
-  const { isAuthenticated } = await validateSession();
+  const { isAuthenticated } = await getServerAuth();
 
   const shouldRender = whenSignedOut ? !isAuthenticated : isAuthenticated;
 

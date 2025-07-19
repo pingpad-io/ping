@@ -1,11 +1,12 @@
 import { AnyClient, SessionClient } from "@lens-protocol/client";
+import { fetchMeDetails } from "@lens-protocol/client/actions";
 import type { User } from "~/lib/types/user";
+import { lensAccountToUser } from "~/utils/lens/converters/userConverter";
 import { getLensClient } from "./lens/getLensClient";
-import { validateSession } from "./validateSession";
+import { getCookieAuth } from "./getCookieAuth";
 
 interface ServerAuthResult {
   isAuthenticated: boolean;
-  profileId: string | null;
   address: string | null;
   handle: string | null;
   client: AnyClient;
@@ -15,15 +16,53 @@ interface ServerAuthResult {
 
 export const getServerAuth = async (): Promise<ServerAuthResult> => {
   const client = await getLensClient();
-  const session = await validateSession();
-
-  return {
-    isAuthenticated: session.isAuthenticated,
-    profileId: session.address,
-    address: session.address,
-    handle: session.handle,
+  
+  const unauthenticatedResult: ServerAuthResult = {
+    isAuthenticated: false,
+    address: null,
+    handle: null,
     client,
-    sessionClient: session.sessionClient,
-    user: session.user,
+    sessionClient: null,
+    user: null,
   };
+
+  const { isValid } = getCookieAuth();
+  if (!isValid) {
+    return unauthenticatedResult;
+  }
+
+  try {
+    if (!client.isSessionClient()) {
+      return unauthenticatedResult;
+    }
+
+    const sessionClient = client as SessionClient;
+    const authenticatedUser = sessionClient.getAuthenticatedUser();
+
+    if (authenticatedUser.isErr() || !authenticatedUser.value) {
+      return unauthenticatedResult;
+    }
+
+    const account = await fetchMeDetails(sessionClient);
+
+    if (account.isErr()) {
+      return unauthenticatedResult;
+    }
+
+    const address = authenticatedUser.value.address;
+    const handle = account.value.loggedInAs.account.username?.localName || null;
+    const user = lensAccountToUser(account.value.loggedInAs.account);
+
+    return {
+      isAuthenticated: true,
+      address,
+      handle,
+      client,
+      sessionClient,
+      user,
+    };
+  } catch (error) {
+    console.error("Server auth error:", error);
+    return unauthenticatedResult;
+  }
 };
