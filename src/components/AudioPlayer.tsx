@@ -142,7 +142,7 @@ export const AudioPlayer = ({
   const currentProgressPercentage = isDragging ? dragValue : (isCurrentAudio ? progressPercentage : 0);
 
   return (
-    <div ref={audioPlayerRef} className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
+    <div ref={audioPlayerRef} className="w-full bg-gradient-to-r from-zinc-100/20 dark:from-zinc-800/50 to-zinc-200/30 dark:to-zinc-900/50 backdrop-blur-md rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
       <div className="h-24 aspect-square overflow-hidden flex-shrink-0">
         <img src={cover} alt={title} className="w-full h-full object-cover" />
       </div>
@@ -152,26 +152,26 @@ export const AudioPlayer = ({
           <div>
             <button
               onClick={handlePlayPause}
-              className="w-12 h-12 rounded-full select-none flex items-center justify-center bg-white/5 hover:bg-white/10 active:scale-95 hover:scale-105 transition-all duration-150 flex-shrink-0"
+              className="w-12 h-12 rounded-full select-none flex items-center justify-center bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 active:scale-95 hover:scale-105 transition-all duration-150 flex-shrink-0"
             >
               {isCurrentlyPlaying ? (
-                <PauseIcon size={24} className="text-white" />
+                <PauseIcon size={24} className="dark:text-white text-black" />
               ) : (
-                <PlayIcon size={24} className="text-white ml-1" />
+                <PlayIcon size={24} className="dark:text-white text-black ml-1" />
               )}
             </button>
           </div>
 
-          <div className="text-white mb-1">
+          <div className="dark:text-white text-black mb-1">
             <div className="font-semibold text-lg truncate">{title}</div>
-            <div className="text-gray-400 text-sm truncate">{author}</div>
+            <div className="dark:text-zinc-400 text-zinc-600 text-sm truncate">{author}</div>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="flex-1 relative h-2 bg-gray-600 rounded-full overflow-hidden">
+          <div className="flex-1 relative h-2 bg-black/20 dark:bg-white/20 rounded-full overflow-hidden">
             <div
-              className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-150"
+              className="absolute top-0 left-0 h-full bg-black dark:bg-white rounded-full transition-all duration-150"
               style={{ width: `${currentProgressPercentage}%` }}
             />
             <input
@@ -189,7 +189,7 @@ export const AudioPlayer = ({
 
           <button
             onClick={toggleTimeDisplay}
-            className="text-white text-sm font-mono hover:text-gray-300 transition-colors cursor-pointer select-none min-w-12 text-right"
+            className="dark:text-white text-black text-sm font-mono hover:opacity-80 transition-opacity cursor-pointer select-none min-w-12 text-right"
             disabled={!isCurrentAudio}
           >
             {isCurrentAudio ? displayTime : "0:00"}
