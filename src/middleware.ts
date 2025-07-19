@@ -1,10 +1,10 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { validateSession } from "./utils/validateSession";
+import { getCookieAuth } from "./utils/getCookieAuth";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const { isAuthenticated: isAuthTokenValid } = await validateSession();
+  const { isValid: isAuthTokenValid } = getCookieAuth();
 
   // Check for the .lens postfix
   const lensNamespace = /^\/u\/(.+)\.lens$/;
