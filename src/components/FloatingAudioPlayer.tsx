@@ -20,6 +20,7 @@ import {
   stopAudioAtom,
   toggleTimeDisplayAtom,
   audioVolumeAtom,
+  visibleAudioPlayerUrlAtom,
 } from "../atoms/audio";
 
 export const FloatingAudioPlayer = () => {
@@ -32,6 +33,7 @@ export const FloatingAudioPlayer = () => {
   const displayTime = useAtomValue(audioDisplayTimeAtom);
   const isVisible = useAtomValue(miniPlayerVisibleAtom);
   const volume = useAtomValue(audioVolumeAtom);
+  const visibleAudioPlayerUrl = useAtomValue(visibleAudioPlayerUrlAtom);
 
   const pauseAudio = useSetAtom(pauseAudioAtom);
   const playAudio = useSetAtom(playAudioAtom);
@@ -155,7 +157,7 @@ export const FloatingAudioPlayer = () => {
     <>
       <audio ref={audioRef} />
       <AnimatePresence>
-        {(isVisible && currentAudio) && (
+        {(isVisible && currentAudio && visibleAudioPlayerUrl !== currentAudio.url) && (
           <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

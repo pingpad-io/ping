@@ -18,6 +18,14 @@ export const audioShowRemainingTimeAtom = atomWithStorage<boolean>("audio-show-r
 
 export const miniPlayerVisibleAtom = atom<boolean>(false);
 
+const _visibleAudioPlayerUrlAtom = atom<string | null>(null);
+export const visibleAudioPlayerUrlAtom = atom(
+  (get) => get(_visibleAudioPlayerUrlAtom),
+  (_get, set, url: string | null) => {
+    set(_visibleAudioPlayerUrlAtom as any, url);
+  }
+);
+
 const _globalAudioElementAtom = atom<HTMLAudioElement | null>(null);
 export const globalAudioElementAtom = atom(
   (get) => get(_globalAudioElementAtom),
@@ -67,7 +75,6 @@ export const playAudioAtom = atom(
 
     audioElement.play();
     set(audioPlayingAtom, true);
-    set(miniPlayerVisibleAtom, true);
 
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({

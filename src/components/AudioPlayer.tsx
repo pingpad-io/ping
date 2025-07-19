@@ -15,6 +15,7 @@ import {
   hideMiniPlayerAtom,
   showMiniPlayerAtom,
   audioDurationAtom,
+  visibleAudioPlayerUrlAtom,
   type AudioMetadata,
 } from "../atoms/audio";
 
@@ -33,7 +34,7 @@ export const AudioPlayer = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragValue, setDragValue] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState<boolean | null>(null);
   const audioPlayerRef = useRef<HTMLDivElement>(null);
 
   const currentAudio = useAtomValue(currentAudioAtom);
@@ -48,6 +49,8 @@ export const AudioPlayer = ({
   const toggleTimeDisplay = useSetAtom(toggleTimeDisplayAtom);
   const hideMiniPlayer = useSetAtom(hideMiniPlayerAtom);
   const showMiniPlayer = useSetAtom(showMiniPlayerAtom);
+  const setVisibleAudioPlayerUrl = useSetAtom(visibleAudioPlayerUrlAtom);
+  const visibleAudioPlayerUrl = useAtomValue(visibleAudioPlayerUrlAtom);
 
   const isCurrentAudio = currentAudio?.url === url;
   const isCurrentlyPlaying = isCurrentAudio && isPlaying;
@@ -56,6 +59,11 @@ export const AudioPlayer = ({
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setVisibleAudioPlayerUrl(url);
+        } else if (visibleAudioPlayerUrl === url) {
+          setVisibleAudioPlayerUrl(null);
+        }
       },
       {
         root: null,
@@ -72,11 +80,14 @@ export const AudioPlayer = ({
       if (audioPlayerRef.current) {
         observer.unobserve(audioPlayerRef.current);
       }
+      if (visibleAudioPlayerUrl === url) {
+        setVisibleAudioPlayerUrl(null);
+      }
     };
-  }, []);
+  }, [url, setVisibleAudioPlayerUrl, visibleAudioPlayerUrl]);
 
   useEffect(() => {
-    if (isCurrentAudio) {
+    if (isCurrentAudio && isVisible !== null) {
       if (isVisible) {
         hideMiniPlayer();
       } else if (currentAudio) {
@@ -105,6 +116,10 @@ export const AudioPlayer = ({
         postId: postId || '',
       };
       playAudio(audioData);
+
+      if (isVisible === false) {
+        showMiniPlayer();
+      }
     }
   };
 
