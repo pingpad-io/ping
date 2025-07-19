@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
 import { useUserMutations } from "~/hooks/useUserMutations";
 import type { User } from "~/lib/types/user";
 import { Button } from "./ui/button";
@@ -13,7 +13,7 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
   const [isFollowing, setIsFollowing] = useState(user.actions.followed);
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
   const followsMe = user.actions.following;
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
   const { follow } = useUserMutations(user.id);
 
   const handleFollow = async () => {

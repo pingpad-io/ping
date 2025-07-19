@@ -4,7 +4,7 @@ import { EditIcon, RefreshCwIcon, Repeat2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
 import { usePostMutations } from "~/hooks/usePostMutations";
 import type { Post } from "~/lib/types/post";
 import { cn } from "~/utils";
@@ -28,7 +28,7 @@ export default function RepostDropdown({ post, variant = "post", reactions }: Re
   const [showQuoteDialog, setShowQuoteDialog] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
   const { repost } = usePostMutations(post.id, post);
 
   const handleRepost = async () => {

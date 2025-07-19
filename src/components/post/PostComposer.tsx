@@ -19,7 +19,7 @@ import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
 import { type MediaItem, useMediaProcessing } from "~/hooks/useMediaProcessing";
 import { MAX_CONTENT_LENGTH, usePostSubmission } from "~/hooks/usePostSubmission";
 import type { Post } from "~/lib/types/post";
@@ -28,7 +28,6 @@ import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import { UserAvatar } from "../user/UserAvatar";
-import { useUser } from "../user/UserContext";
 import { PostComposerActions } from "./PostComposerActions";
 import { PostComposerHeader } from "./PostComposerHeader";
 import { QuotedPostPreview } from "./QuotedPostPreview";
@@ -164,7 +163,7 @@ export default function PostComposer({
   isReplyingToComment?: boolean;
 }) {
   const { user: contextUser } = useUser();
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
   const currentUser = user || contextUser;
 
   const {

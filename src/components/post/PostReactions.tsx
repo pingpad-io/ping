@@ -2,7 +2,7 @@
 
 import { ChevronDownIcon } from "lucide-react";
 import { useRef } from "react";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
 import { useCachedPost } from "~/hooks/useCachedPost";
 import { usePostMutations } from "~/hooks/usePostMutations";
 import type { Post } from "~/lib/types/post";
@@ -23,7 +23,7 @@ export function ReactionsList({
   isComment: boolean;
   isReplyOpen?: boolean;
 }) {
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
   const post = useCachedPost(postProp);
   const { upvote } = usePostMutations(post.id, post);
   const { triggerExplosion } = useExplosion();

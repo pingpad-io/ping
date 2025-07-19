@@ -3,7 +3,6 @@
 import { ShieldOffIcon, VolumeXIcon } from "lucide-react";
 import { useState } from "react";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
-import { useAuth } from "~/hooks/useAuth";
 import { useUserActions } from "~/hooks/useUserActions";
 import { type User, type UserStats } from "~/lib/types/user";
 import { FollowButton } from "../FollowButton";
@@ -81,7 +80,7 @@ const MentionPostComposer = ({ user, onClose }: { user: User; onClose: () => voi
 
 export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | null }) => {
   const { user: authedUser } = useUser();
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
   const [isMentionDialogOpen, setIsMentionDialogOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const userActions = useUserActions(user || ({} as User));

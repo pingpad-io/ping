@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PingLogo from "~/components/icons/PingLogo";
 import { Dock } from "~/components/ui/dock";
-import { useAuth } from "~/hooks/useAuth";
 import { cn } from "~/utils";
 import { useNotifications } from "../notifications/NotificationsContext";
 import PostComposer from "../post/PostComposer";
@@ -21,7 +20,6 @@ interface MenuClientProps {
 
 export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
-  const { redirectToLogin } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const { newCount } = useNotifications();
@@ -178,7 +176,7 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
         {
           icon: LogInIcon,
           label: "Log in",
-          onClick: () => redirectToLogin(),
+          onClick: () => router.push("/login"),
           isActive: pathname === "/login" || pathname === "/register",
         },
       ];

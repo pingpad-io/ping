@@ -1,7 +1,7 @@
 "use client";
 
 import { Ban, Users } from "lucide-react";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
 import type { GroupWithOperations } from "~/hooks/useGroup";
 import { useGroupMutations } from "~/hooks/useGroupMutations";
 import { useGroupStats } from "~/hooks/useGroupStats";
@@ -18,7 +18,7 @@ export function GroupHeader({ group }: GroupHeaderProps) {
   const iconUrl = resolveUrl(group.metadata?.icon);
   const canJoin = group.canJoin || false;
   const canLeave = group.canLeave || false;
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useUser();
   const { joinMutation, leaveMutation } = useGroupMutations(group.address || "");
   const { data: stats } = useGroupStats(group.address || "");
 

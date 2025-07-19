@@ -1,22 +1,26 @@
 import type { PropsWithChildren } from "react";
-import { getCookieAuth } from "~/utils/getCookieAuth";
+import { validateSession } from "~/utils/validateSession";
 
-export async function ServerSignedIn(props: PropsWithChildren) {
-  const { isValid: isAuthenticated } = getCookieAuth();
+interface ServerAuthProps extends PropsWithChildren {
+  whenSignedOut?: boolean;
+}
 
-  if (!isAuthenticated) {
+export async function ServerAuth({ children, whenSignedOut = false }: ServerAuthProps) {
+  const { isAuthenticated } = await validateSession();
+
+  const shouldRender = whenSignedOut ? !isAuthenticated : isAuthenticated;
+
+  if (!shouldRender) {
     return null;
   }
 
-  return <>{props.children}</>;
+  return <>{children}</>;
+}
+
+export async function ServerSignedIn(props: PropsWithChildren) {
+  return <ServerAuth {...props} />;
 }
 
 export async function ServerSignedOut(props: PropsWithChildren) {
-  const { isValid: isAuthenticated } = getCookieAuth();
-
-  if (isAuthenticated) {
-    return null;
-  }
-
-  return <>{props.children}</>;
+  return <ServerAuth {...props} whenSignedOut />;
 }

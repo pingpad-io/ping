@@ -1,7 +1,7 @@
 import { EllipsisIcon } from "lucide-react";
 import { useState } from "react";
 import Link from "~/components/Link";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
 import type { Post } from "~/lib/types/post";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
@@ -11,7 +11,7 @@ import { usePostStateContext } from "./PostStateContext";
 
 export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }) => {
   const [open, setOpen] = useState(false);
-  const { requireAuth } = useAuth();
+  const { requireAuth } = useUser();
   const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateContext();
   const author = post.author;
   const handle = author.handle;

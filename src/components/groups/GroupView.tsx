@@ -3,7 +3,7 @@
 import type { Group } from "~/lib/types/group";
 import { Users } from "lucide-react";
 import Link from "~/components/Link";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
 import { useGroupMutations } from "~/hooks/useGroupMutations";
 import { useGroupStats } from "~/hooks/useGroupStats";
 import { formatNumber } from "~/utils/formatNumber";
@@ -40,7 +40,7 @@ export function GroupView({ group, isVertical = false, showJoin = true }: GroupV
   const iconUrl = resolveUrl(group.metadata?.icon);
   const canJoin = group.operations?.canJoin || false;
   const canLeave = group.operations?.canLeave || false;
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useUser();
   const { joinMutation, leaveMutation } = useGroupMutations(group.address);
 
   const handleJoinLeave = (e: React.MouseEvent) => {

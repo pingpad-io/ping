@@ -6,7 +6,7 @@ import { GroupHeader } from "~/components/groups/GroupHeader";
 import { GroupNavigation } from "~/components/groups/GroupNavigation";
 import PostComposer from "~/components/post/PostComposer";
 import { PostView } from "~/components/post/PostView";
-import { useAuth } from "~/hooks/useAuth";
+import { useUser } from "~/components/user/UserContext";
 import { useGroup } from "~/hooks/useGroup";
 
 interface GroupPageProps {
@@ -17,7 +17,7 @@ interface GroupPageProps {
 
 export default function GroupPage({ params }: GroupPageProps) {
   const { data: group, isLoading, error } = useGroup(params.community);
-  const { user } = useAuth();
+  const { user } = useUser();
 
   if (isLoading) {
     return (
