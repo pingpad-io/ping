@@ -24,17 +24,6 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.65rem;
-
-    /* Background gradient variables - Purple theme default */
-    /* --bg-gradient-1: rgba(139, 92, 246, 0.55);
-    --bg-gradient-2: rgba(236, 72, 153, 0.55);
-    --bg-gradient-3: rgba(168, 85, 247, 0.55);
-    --bg-gradient-pattern: radial-gradient(ellipse at top, var(--bg-gradient-1) 0%, transparent 70%),
-      radial-gradient(ellipse at bottom right, var(--bg-gradient-2) 0%, transparent 70%),
-      radial-gradient(ellipse at center left, var(--bg-gradient-3) 0%, transparent 70%);
-    --bg-image-url: none;
-    --bg-blur: 0px;
-    --bg-opacity: 0.5; */
   }
 
   .dark {
@@ -57,14 +46,6 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
-
-    /* Background gradient variables for dark mode - Purple theme default */
-    /* --bg-gradient-1: rgba(139, 92, 246, 0.5);
-    --bg-gradient-2: rgba(236, 72, 153, 0.5);
-    --bg-gradient-3: rgba(168, 85, 247, 0.5);
-    --bg-image-url: none;
-    --bg-blur: 0px;
-    --bg-opacity: 0.5; */
   }
 }
 
@@ -272,8 +253,8 @@
     /* Counteract scale(1.05) */
   }
 
-  .button-hover-bg.active\\:scale-95:active::before,
-  .button-hover-bg.data-\\[state\\=open\\]\\:scale-95[data-state="open"]::before {
+  .button-hover-bg.active:scale-95:active::before,
+  .button-hover-bg.data-[state=open]:scale-95[data-state="open"]::before {
     transform: scale(1.053);
     /* Counteract scale(0.95) */
   }
