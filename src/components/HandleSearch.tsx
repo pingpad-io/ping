@@ -10,7 +10,7 @@ export function HandleSearch({ query, maxResults = 10 }: { query: string; maxRes
   if (error && query) throw new Error(error);
 
   const limitedUsers = users?.slice(0, maxResults);
-  const list = limitedUsers?.map((user) => user.name) || [];
+  const list = limitedUsers?.map((user) => `@${user.username}`) || [];
 
   if (loading) return <LoadingSpinner />;
 

@@ -15,7 +15,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
   const { requireAuth } = useUser();
   const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateContext();
   const author = post.author;
-  const handle = author.handle;
+  const handle = author.username;
   const tags = post?.metadata?.tags || [];
 
   let community = null;

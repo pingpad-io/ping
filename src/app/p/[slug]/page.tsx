@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       throw new Error("(╥_╥) Post not found");
     });
 
-  const handle = post.author.handle;
+  const handle = post.author.username;
   const content = "content" in post.metadata ? (post.metadata.content as string) : "";
   const title = `${handle}'s post`;
   const ending = content.length > 300 ? "..." : "";

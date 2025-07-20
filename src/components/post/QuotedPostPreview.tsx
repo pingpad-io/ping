@@ -15,8 +15,8 @@ export function QuotedPostPreview({ quotedPost }: QuotedPostPreviewProps) {
         <div className="w-4 h-4">
           <UserAvatar user={quotedPost.author} link={false} card={false} />
         </div>
-        <span className="text-sm text-muted-foreground">
-          {quotedPost.author.name} @{quotedPost.author.handle}
+        <span className="text-sm text-bold text-muted-foreground">
+          {quotedPost.author.username}
         </span>
       </div>
       <p className="text-sm line-clamp-3">{getPostTextContent(quotedPost.metadata, quotedPost.mentions, false)}</p>

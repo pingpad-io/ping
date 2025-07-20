@@ -6,7 +6,7 @@ import { TimeElapsedSince } from "../TimeLabel";
 export const RepostInfo = ({ post }: { post: Post }) => {
   if (!post.isRepost || !post.repostedBy) return null;
 
-  const username = post.repostedBy.handle;
+  const username = post.repostedBy.username;
 
   return (
     <Link

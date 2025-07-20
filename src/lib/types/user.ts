@@ -26,7 +26,7 @@ export type UserStats = {
 export type User = {
   id: string;
   name?: string;
-  handle: string;
+  username: string;
   address: string;
   namespace: string;
   actions?: UserActions;
@@ -65,7 +65,7 @@ export function lensAccountToUser(account: Account): User {
     description: account?.metadata?.bio,
     actions,
     name: account?.metadata?.name,
-    handle: account.username?.localName,
+    username: account.username?.localName,
     namespace: account.username?.namespace?.address,
     metadata: {
       attributes,
@@ -75,7 +75,7 @@ export function lensAccountToUser(account: Account): User {
 
 export function lensAccountStatsToUserStats(stats: LensAccountStats | null | undefined): UserStats | undefined {
   if (!stats) return undefined;
-  
+
   return {
     following: stats.graphFollowStats.following ?? 0,
     followers: stats.graphFollowStats.followers ?? 0,

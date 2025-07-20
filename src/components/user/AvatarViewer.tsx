@@ -6,7 +6,7 @@ import { UserAvatar } from "./UserAvatar";
 
 export function AvatarViewer({ user }: { user: User }) {
   const src = user.profilePictureUrl;
-  const alt = `${user.name || user.handle}'s profile picture`;
+  const alt = `@${user.username}'s profile picture`;
 
   return (
     <Dialog>

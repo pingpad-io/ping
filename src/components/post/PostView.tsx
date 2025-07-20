@@ -52,7 +52,7 @@ export const PostView = ({
   const dissolveFilterId = useMemo(() => `dissolve-${item.id}-${Date.now()}`, [item.id]);
   const isMuted = item.author.actions?.muted;
   const isBlocked = item.author.actions?.blocked;
-  const isOnUserProfile = pathname?.startsWith(`/u/${item.author.handle}`);
+  const isOnUserProfile = pathname?.startsWith(`/u/${item.author.username}`);
   const isJustMuted = mutedUsers.has(item.author.id);
   const isJustBlocked = blockedUsers.has(item.author.id);
   const isJustDeleted = deletedPosts.has(item.id);

@@ -267,7 +267,7 @@ export function EditProfileModal({ user, open, onOpenChange, onSuccess }: EditPr
       }
 
       const metadata = account({
-        name: user.name || user.handle,
+        name: user.name || user.username,
         bio: data.bio || undefined,
         picture: pictureUri || undefined,
         attributes: attributes.length > 0 ? attributes : undefined,
@@ -347,7 +347,7 @@ export function EditProfileModal({ user, open, onOpenChange, onSuccess }: EditPr
               <div className="flex-1">
                 <FormLabel>Username</FormLabel>
                 <div className="relative">
-                  <Input value={user.handle} disabled className="pr-10" />
+                  <Input value={user.username} disabled className="pr-10" />
                   <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
               </div>

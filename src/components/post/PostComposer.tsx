@@ -392,7 +392,7 @@ function ComposerContent() {
             <div className="grow flex-1">
               <div className="flex h-5 justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-xs sm:text-sm">{currentUser?.handle}</span>
+                  <span className="font-bold text-xs sm:text-sm">{currentUser?.username}</span>
                   {editingPost && (
                     <span className="text-muted-foreground text-xs sm:text-sm">editing</span>
                   )}

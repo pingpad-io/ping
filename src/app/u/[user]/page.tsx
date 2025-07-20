@@ -5,22 +5,21 @@ import { PostView } from "~/components/post/PostView";
 import { getUserByUsername } from "~/utils/getUserByHandle";
 
 export async function generateMetadata({ params }: { params: { user: string } }): Promise<Metadata> {
-  const handle = params.user;
-  const user = await getUserByUsername(handle);
+  const username = params.user;
+  const user = await getUserByUsername(username);
 
   if (!user) {
     return {
-      title: handle,
-      description: `${handle} on Pingpad`,
+      title: username,
+      description: `${username} on Pingpad`,
     };
   }
 
-  const displayName = user.name || handle;
-  const title = `${handle}`;
-  const description = user.description || `${handle} on Pingpad`;
+  const title = `${username}`;
+  const description = user.description || `${username} on Pingpad`;
 
-  const ogImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}og/user?handle=${handle}&name=${encodeURIComponent(
-    displayName,
+  const ogImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}og/user?handle=${username}&name=${encodeURIComponent(
+    username,
   )}&profilePictureUrl=${user.profilePictureUrl}`;
 
   return {
@@ -31,7 +30,7 @@ export async function generateMetadata({ params }: { params: { user: string } })
       title,
       description,
       type: "profile",
-      url: `https://pingpad.io/u/${handle}`,
+      url: `https://pingpad.io/u/${username}`,
       siteName: "Pingpad",
       locale: "en_US",
     },
@@ -39,8 +38,8 @@ export async function generateMetadata({ params }: { params: { user: string } })
 }
 
 const user = async ({ params }: { params: { user: string } }) => {
-  const handle = params.user;
-  const user = await getUserByUsername(handle);
+  const username = params.user;
+  const user = await getUserByUsername(username);
 
   if (!user) return notFound();
 

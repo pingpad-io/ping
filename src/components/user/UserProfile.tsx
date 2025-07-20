@@ -101,7 +101,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
         <div className="flex flex-col gap-2 flex-grow">
           <div className="flex flex-col justify-center gap-1">
             <div className="flex items-center gap-2">
-              <div className="text-xl sm:text-3xl font-bold w-fit truncate leading-none">{user.handle}</div>
+              <div className="text-xl sm:text-3xl font-bold w-fit truncate leading-none">{user.username}</div>
               {isFollowingMe && (
                 <Badge variant="secondary" className="text-xs">
                   Follows you
@@ -153,7 +153,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
       <Dialog open={isMentionDialogOpen} onOpenChange={setIsMentionDialogOpen} modal={true}>
         <DialogContent className="max-w-full sm:max-w-[700px]">
           <Card className="p-4">
-            <PostComposer user={authedUser} initialContent={`@lens/${user.handle} `} onSuccess={() => setIsMentionDialogOpen(false)} />
+            <PostComposer user={authedUser} initialContent={`@lens/${user.username} `} onSuccess={() => setIsMentionDialogOpen(false)} />
           </Card>
         </DialogContent>
       </Dialog>

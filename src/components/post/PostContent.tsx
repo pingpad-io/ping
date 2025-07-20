@@ -56,7 +56,7 @@ export const PostContent = forwardRef<
               <UserAvatar user={post.quoteOn.author} link={true} card={false} />
             </div>
             <div className="text-sm text-muted-foreground">
-              <span>{post.quoteOn.author.handle}</span>
+              <span>{post.quoteOn.author.username}</span>
             </div>
           </div>
           <p className="text-sm line-clamp-3 text-foreground/90">

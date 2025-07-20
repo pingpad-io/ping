@@ -3,7 +3,7 @@ import Link from "~/components/Link";
 import type { Post } from "~/lib/types/post";
 
 export const ReplyInfo = ({ post }: { post: Post }) => {
-  const username = post.reply?.author?.handle;
+  const username = post.reply?.author?.username;
   let content = "";
   if (post?.reply?.metadata && "content" in post.reply.metadata) {
     content = post.reply.metadata.content.substring(0, 100);

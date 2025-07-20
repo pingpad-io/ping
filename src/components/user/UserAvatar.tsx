@@ -4,7 +4,7 @@ import type { User } from "~/lib/types/user";
 import { UserCard } from "./UserCard";
 
 export function UserAvatar({ user, link = true, card = true }: { user: User; link?: boolean; card?: boolean }) {
-  const fallback = user?.name?.slice(0, 2) ?? user?.handle?.slice(0, 2) ?? "";
+  const fallback = user?.username?.slice(0, 2) ?? "";
   const avatar = (
     <Avatar suppressHydrationWarning className="w-full h-full m-0">
       <AvatarImage alt={user?.profilePictureUrl} src={user?.profilePictureUrl} className="m-0 object-cover" />
@@ -12,13 +12,13 @@ export function UserAvatar({ user, link = true, card = true }: { user: User; lin
     </Avatar>
   );
   const avatarLink = link ? (
-    <Link className="w-full h-full" href={`/u/${user.handle}`} prefetch>
+    <Link className="w-full h-full" href={`/u/${user.username}`} prefetch>
       {avatar}
     </Link>
   ) : (
     avatar
   );
-  const avatarCard = card ? <UserCard handle={user.handle}>{avatarLink}</UserCard> : avatarLink;
+  const avatarCard = card ? <UserCard handle={user.username}>{avatarLink}</UserCard> : avatarLink;
 
   return avatarCard;
 }
