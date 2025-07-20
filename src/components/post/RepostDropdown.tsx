@@ -61,16 +61,15 @@ export default function RepostDropdown({ post, variant = "post", reactions }: Re
           <Button
             size="sm"
             variant="ghost"
-            className={`border-0 px-0 place-content-center items-center flex flex-row min-w-[2.2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg ${
-              reactions.count > 0 ? "button-hover-bg-wide" : "button-hover-bg-equal"
-            }`}
+            className={`border-0 px-0 place-content-center items-center flex flex-row min-w-[2.2rem] gap-1.5 sm:gap-2 md:gap-3 hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg ${reactions.count > 0 ? "button-hover-bg-wide" : "button-hover-bg-equal"
+              }`}
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <RefreshCwIcon
               size={variant === "post" ? 18 : 16}
-              strokeWidth={reactions.reacted ? 3 : 2}
+              strokeWidth={reactions.reacted ? 3 : 2.3}
               stroke={reactions.reacted ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"}
               className="transition-all duration-200"
             />

@@ -55,7 +55,7 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
         size="sm"
         variant={isFollowing ? "outline" : "default"}
         onClick={handleButtonClick}
-        className={`font-semibold text-sm ${className}`}
+        className={`font-semibold h-8 text-sm ${className}`}
       >
         {isFollowing ? "Following" : followsMe ? "Follow back" : "Follow"}
       </Button>
