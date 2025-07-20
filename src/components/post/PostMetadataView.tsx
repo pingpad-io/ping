@@ -350,7 +350,7 @@ const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
               />
             ) : (
               <div className="h-full flex items-center" style={{ height: "300px" }}>
-                <VideoPlayer url={item.item} preview="" galleryItems={items} currentIndex={index} autoplay={true} />
+                <VideoPlayer url={item.item} preview="" galleryItems={items} currentIndex={index} autoplay={index === 0} />
               </div>
             )}
           </div>
