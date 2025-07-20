@@ -5,6 +5,7 @@ import { FeedSuspense } from "~/components/FeedSuspense";
 import { GroupHeader } from "~/components/groups/GroupHeader";
 import { GroupNavigation } from "~/components/groups/GroupNavigation";
 import PostComposer from "~/components/post/PostComposer";
+import { Card } from "~/components/ui/card";
 import { PostView } from "~/components/post/PostView";
 import { useUser } from "~/components/user/UserContext";
 import { useGroup } from "~/hooks/useGroup";
@@ -51,9 +52,9 @@ export default function GroupPage({ params }: GroupPageProps) {
         {user && (
           <div className="">
             {group.canPost && !group.isBanned && (
-              <div className="p-4 rounded-xl">
-                <PostComposer user={user} feed={feedAddress} />
-              </div>
+              <Card className="p-4">
+                <PostComposer user={user} feed={feedAddress} community={params.community} />
+              </Card>
             )}
           </div>
         )}

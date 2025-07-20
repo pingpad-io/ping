@@ -8,6 +8,7 @@ import { Dock } from "~/components/ui/dock";
 import { cn } from "~/utils";
 import { useNotifications } from "../notifications/NotificationsContext";
 import PostComposer from "../post/PostComposer";
+import { Card } from "../ui/card";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { UserAvatar } from "../user/UserAvatar";
 import { UserMenuButtons } from "./UserMenu";
@@ -193,15 +194,17 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
       {isAuthenticated && (
         <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen} modal={true}>
           <DialogContent className="max-w-full sm:max-w-[700px]">
-            <PostComposer
-              user={user}
-              onSuccess={(newPost) => {
-                setIsPostDialogOpen(false);
-                if (newPost && !(newPost as any).isOptimistic) {
-                  router.push(`/p/${newPost.id}`);
-                }
-              }}
-            />
+            <Card className="p-4">
+              <PostComposer
+                user={user}
+                onSuccess={(newPost) => {
+                  setIsPostDialogOpen(false);
+                  if (newPost && !(newPost as any).isOptimistic) {
+                    router.push(`/p/${newPost.id}`);
+                  }
+                }}
+              />
+            </Card>
           </DialogContent>
         </Dialog>
       )}

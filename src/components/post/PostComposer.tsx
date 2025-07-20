@@ -17,28 +17,36 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { useUser } from "~/components/user/UserContext";
-import { type MediaItem, useMediaProcessing } from "~/hooks/useMediaProcessing";
 import { MAX_CONTENT_LENGTH, usePostSubmission } from "~/hooks/usePostSubmission";
 import type { Post } from "~/lib/types/post";
 import type { User } from "~/lib/types/user";
+import { storageClient } from "~/utils/lens/storage";
+import { castToMediaImageType, castToMediaVideoType, normalizeImageMimeType, normalizeVideoMimeType } from "~/utils/mimeTypes";
 import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui/button";
 import { UserAvatar } from "../user/UserAvatar";
+import { ComposerProvider, useComposer } from "./ComposerContext";
 import { PostComposerActions } from "./PostComposerActions";
-import { PostComposerHeader } from "./PostComposerHeader";
 import { QuotedPostPreview } from "./QuotedPostPreview";
 
-interface SortableMediaItemProps {
-  item: MediaItem;
-  index: number;
-  onRemove: () => void;
-}
+const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
-const SortableMediaItem = ({ item, index, onRemove }: SortableMediaItemProps) => {
+type MediaItem =
+  | { type: "file"; file: File; id: string }
+  | { type: "url"; url: string; mimeType: string; id: string };
+
+const FormSchema = z.object({
+  content: z.string().max(MAX_CONTENT_LENGTH, {
+    message: `Post must not be longer than ${MAX_CONTENT_LENGTH} characters.`,
+  }),
+});
+
+const MediaItem = ({ item, index, onRemove }: { item: MediaItem; index: number; onRemove: () => void }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
     animateLayoutChanges: () => false,
@@ -56,9 +64,7 @@ const SortableMediaItem = ({ item, index, onRemove }: SortableMediaItemProps) =>
     if (item.type === "file") {
       const objectUrl = URL.createObjectURL(item.file);
       setUrl(objectUrl);
-      return () => {
-        URL.revokeObjectURL(objectUrl);
-      };
+      return () => URL.revokeObjectURL(objectUrl);
     }
     setUrl(item.url);
   }, [item]);
@@ -80,7 +86,6 @@ const SortableMediaItem = ({ item, index, onRemove }: SortableMediaItemProps) =>
             <img src={url} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
           )}
         </div>
-
         <button
           type="button"
           onClick={(e) => {
@@ -118,7 +123,6 @@ const MediaPreview = ({
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
     if (over && active.id !== over.id) {
       const oldIndex = fileIds.indexOf(active.id as string);
       const newIndex = fileIds.indexOf(over.id as string);
@@ -131,7 +135,7 @@ const MediaPreview = ({
       <SortableContext items={fileIds} strategy={rectSortingStrategy}>
         <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {files.map((item, index) => (
-            <SortableMediaItem key={item.id} item={item} index={index} onRemove={() => onRemove(item.id)} />
+            <MediaItem key={item.id} item={item} index={index} onRemove={() => onRemove(item.id)} />
           ))}
         </div>
       </SortableContext>
@@ -139,84 +143,43 @@ const MediaPreview = ({
   );
 };
 
-export default function PostComposer({
-  user,
-  replyingTo,
-  quotedPost,
-  onClose,
-  onSuccess,
-  initialContent = "",
-  editingPost,
-  onCancel,
-  feed,
-  isReplyingToComment = false,
-}: {
+export interface PostComposerProps {
   user?: User;
   replyingTo?: Post;
   quotedPost?: Post;
-  onClose?: () => void;
-  onSuccess?: (post?: Post | null) => void;
-  initialContent?: string;
   editingPost?: Post;
-  onCancel?: () => void;
+  initialContent?: string;
+  community?: string;
   feed?: string;
+  onSuccess?: (post?: Post | null) => void;
+  onCancel?: () => void;
   isReplyingToComment?: boolean;
-}) {
-  const { user: contextUser } = useUser();
-  const { requireAuth } = useUser();
-  const currentUser = user || contextUser;
+}
+
+function ComposerContent() {
+  const { user: contextUser, requireAuth } = useUser();
+  const { isPosting, submitPost } = usePostSubmission();
+  const pathname = usePathname();
 
   const {
-    mediaFiles,
-    setMediaFiles,
-    loadExistingMedia,
-    handleAddFiles,
-    removeMedia,
-    reorderMedia,
-    processMediaForSubmission,
-    clearMedia,
-  } = useMediaProcessing();
+    user,
+    replyingTo,
+    quotedPost,
+    editingPost,
+    initialContent = "",
+    community,
+    feed,
+    isReplyingToComment = false,
+    onSuccess,
+    onCancel,
+  } = useComposer();
 
-  const { isPosting, submitPost } = usePostSubmission();
+  const currentUser = user || contextUser;
+  const [mediaFiles, setMediaFiles] = useState<MediaItem[]>([]);
 
-  const pathname = usePathname().split("/");
-  const community = pathname[1] === "c" ? pathname[2] : "";
-
-  // Initialize media from existing post
-  useEffect(() => {
-    if (editingPost) {
-      const existingMedia = loadExistingMedia(editingPost);
-      setMediaFiles(existingMedia);
-    }
-  }, [editingPost, loadExistingMedia, setMediaFiles]);
-
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      handleAddFiles(acceptedFiles);
-    },
-    [handleAddFiles],
-  );
-
-  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
-    onDrop,
-    accept: { "image/*": [], "video/*": [] },
-    noClick: true,
-    noKeyboard: true,
-  });
-
-  const placeholderText = editingPost
-    ? "edit your post..."
-    : replyingTo
-      ? "write your reply..."
-      : quotedPost
-        ? "add your thoughts..."
-        : "write a new post...";
-
-  const FormSchema = z.object({
-    content: z.string().max(MAX_CONTENT_LENGTH, {
-      message: `Post must not be longer than ${MAX_CONTENT_LENGTH} characters.`,
-    }),
-  });
+  const pathSegments = pathname.split("/");
+  const communityFromPath = pathSegments[1] === "c" ? pathSegments[2] : "";
+  const finalCommunity = community || communityFromPath;
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -224,13 +187,148 @@ export default function PostComposer({
       content: editingPost?.metadata?.content || initialContent,
     },
   });
+
   const watchedContent = form.watch("content");
   const isEmpty = !watchedContent.trim() && mediaFiles.length === 0;
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (!requireAuth()) {
-      return;
+  useEffect(() => {
+    if (editingPost?.metadata) {
+      const existingMedia: MediaItem[] = [];
+      const metadata = editingPost.metadata;
+
+      if (metadata.__typename === "ImageMetadata" && metadata.image?.item) {
+        existingMedia.push({
+          type: "url",
+          url: metadata.image.item,
+          mimeType: normalizeImageMimeType(metadata.image.type) || "image/jpeg",
+          id: `existing-${Date.now()}-0`,
+        });
+      } else if (metadata.__typename === "VideoMetadata" && metadata.video?.item) {
+        existingMedia.push({
+          type: "url",
+          url: metadata.video.item,
+          mimeType: normalizeVideoMimeType(metadata.video.type) || "video/mp4",
+          id: `existing-${Date.now()}-0`,
+        });
+      }
+
+      if (metadata.attachments && Array.isArray(metadata.attachments)) {
+        metadata.attachments.forEach((att: any, index: number) => {
+          if (att.item) {
+            existingMedia.push({
+              type: "url",
+              url: att.item,
+              mimeType: att.type || "image/jpeg",
+              id: `existing-${Date.now()}-${index + 1}`,
+            });
+          }
+        });
+      }
+
+      setMediaFiles(existingMedia);
     }
+  }, [editingPost]);
+
+  // Media handlers
+  const handleAddFiles = useCallback((acceptedFiles: File[]) => {
+    const validFiles = acceptedFiles.filter((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`${file.name} is too large. Maximum file size is 8MB.`);
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length > 0) {
+      const newFiles: MediaItem[] = validFiles.map((file) => ({
+        type: "file",
+        file,
+        id: `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+      }));
+      setMediaFiles((prev) => [...prev, ...newFiles]);
+    }
+  }, []);
+
+  const removeMedia = useCallback((id: string) => {
+    setMediaFiles((prev) => prev.filter((item) => item.id !== id));
+  }, []);
+
+  const reorderMedia = useCallback((from: number, to: number) => {
+    setMediaFiles((prev) => {
+      const result = Array.from(prev);
+      const [removed] = result.splice(from, 1);
+      result.splice(to, 0, removed);
+      return result;
+    });
+  }, []);
+
+  const processMediaForSubmission = useCallback(async (toastId?: string) => {
+    if (mediaFiles.length === 0) {
+      return { primaryMedia: null, attachments: undefined };
+    }
+
+    try {
+      if (toastId) {
+        toast.loading(`Uploading ${mediaFiles.length} file${mediaFiles.length > 1 ? 's' : ''}...`, { id: toastId });
+      }
+
+      const uploadPromises = mediaFiles.map(async (item, index) => {
+        try {
+          if (item.type === "file") {
+            const { uri } = await storageClient.uploadFile(item.file);
+            return { uri, type: item.file.type, originalId: item.id };
+          }
+          return { uri: item.url, type: item.mimeType, originalId: item.id };
+        } catch (error) {
+          console.error(`Failed to upload file ${index + 1}:`, error);
+          throw new Error(`Failed to upload ${item.type === "file" ? item.file.name : "file"}: ${error.message}`);
+        }
+      });
+
+      const uploadedMedia = await Promise.all(uploadPromises);
+      
+      const primaryMedia = uploadedMedia[0] || null;
+      const attachments = uploadedMedia.length > 1 
+        ? uploadedMedia.slice(1).map((m) => {
+            if (m.type.startsWith("image/")) {
+              return {
+                item: m.uri,
+                type: castToMediaImageType(m.type),
+              };
+            } else if (m.type.startsWith("video/")) {
+              return {
+                item: m.uri,
+                type: castToMediaVideoType(m.type),
+              };
+            }
+            return null;
+          }).filter(Boolean)
+        : undefined;
+
+      return { 
+        primaryMedia, 
+        attachments: attachments && attachments.length > 0 ? attachments : undefined 
+      };
+    } catch (error) {
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
+      throw error;
+    }
+  }, [mediaFiles]);
+
+  // Dropzone setup
+  const onDrop = useCallback((acceptedFiles: File[]) => handleAddFiles(acceptedFiles), [handleAddFiles]);
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+    onDrop,
+    accept: { "image/*": [], "video/*": [] },
+    noClick: true,
+    noKeyboard: true,
+  });
+
+  // Submit handler
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!requireAuth()) return;
 
     await submitPost({
       content: data.content,
@@ -240,13 +338,18 @@ export default function PostComposer({
       replyingTo,
       quotedPost,
       currentUser,
-      community,
+      community: finalCommunity,
       feed,
-      onSuccess,
-      onClose,
+      onSuccess: (post) => {
+        onSuccess?.(post);
+        if (replyingTo || quotedPost) {
+          onCancel?.();
+        }
+      },
+      onClose: onCancel,
       clearForm: () => {
         form.setValue("content", "");
-        clearMedia();
+        setMediaFiles([]);
       },
     });
   }
@@ -255,14 +358,22 @@ export default function PostComposer({
     (emoji: any) => {
       if (!requireAuth()) return;
       const content = form.getValues("content");
-      const newContent = content + emoji.emoji;
-      form.setValue("content", newContent, { shouldValidate: true });
+      form.setValue("content", content + emoji.emoji, { shouldValidate: true });
     },
-    [form],
+    [form, requireAuth],
   );
 
-  const handleRemoveMedia = removeMedia;
-  const handleReorderMedia = reorderMedia;
+  const placeholderText = editingPost
+    ? "edit your post..."
+    : replyingTo
+      ? "write your reply..."
+      : quotedPost
+        ? "add your thoughts..."
+        : initialContent?.includes("@lens/")
+          ? "mention user..."
+          : "write a new post...";
+
+  const isSmallAvatar = replyingTo && isReplyingToComment;
 
   return (
     <div className="w-full" {...getRootProps()} onClick={(e) => e.stopPropagation()}>
@@ -276,18 +387,21 @@ export default function PostComposer({
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
           <div className="flex flex-row gap-2 w-full">
             {currentUser && (
-              <div className={isReplyingToComment ? "w-6 h-6 self-start" : "w-10 h-10 self-start"}>
+              <div className={isSmallAvatar ? "w-6 h-6 self-start" : "w-10 h-10 self-start"}>
                 <UserAvatar user={currentUser} link={true} card={false} />
               </div>
             )}
             <div className="grow flex-1">
-              <PostComposerHeader
-                currentUser={currentUser}
-                editingPost={editingPost}
-                replyingTo={replyingTo}
-                onCancel={onCancel}
-                isPosting={isPosting}
-              />
+              {editingPost && (
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-muted-foreground">Editing post</span>
+                  {onCancel && (
+                    <Button variant="ghost" size="sm" onClick={onCancel} disabled={isPosting}>
+                      Cancel
+                    </Button>
+                  )}
+                </div>
+              )}
               <FormField
                 control={form.control}
                 name="content"
@@ -318,9 +432,9 @@ export default function PostComposer({
               />
 
               <PostComposerActions onImageClick={open} onEmojiClick={handleEmojiClick} />
-
-              <MediaPreview files={mediaFiles} onRemove={handleRemoveMedia} onReorder={handleReorderMedia} />
+              <MediaPreview files={mediaFiles} onRemove={removeMedia} onReorder={reorderMedia} />
               {quotedPost && <QuotedPostPreview quotedPost={quotedPost} />}
+
               {editingPost && (
                 <div className="mt-4">
                   <Button disabled={isPosting || isEmpty} type="submit" className="w-full">
@@ -345,5 +459,37 @@ export default function PostComposer({
         </form>
       </Form>
     </div>
+  );
+}
+
+export default function PostComposer({
+  user,
+  replyingTo,
+  quotedPost,
+  editingPost,
+  initialContent = "",
+  community,
+  feed,
+  onSuccess,
+  onCancel,
+  isReplyingToComment = false,
+}: PostComposerProps) {
+  const contextValue = {
+    user,
+    replyingTo,
+    quotedPost,
+    editingPost,
+    initialContent,
+    community,
+    feed,
+    isReplyingToComment,
+    onSuccess,
+    onCancel,
+  };
+
+  return (
+    <ComposerProvider value={contextValue}>
+      <ComposerContent />
+    </ComposerProvider>
   );
 }

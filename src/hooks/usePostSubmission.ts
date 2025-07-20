@@ -6,7 +6,6 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
 import { getCommunityTags } from "~/components/communities/Community";
-import type { MediaItem } from "~/hooks/useMediaProcessing";
 import type { Post } from "~/lib/types/post";
 import type { User } from "~/lib/types/user";
 import { lensItemToPost } from "~/utils/lens/converters/postConverter";
@@ -14,8 +13,11 @@ import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
 import { castToMediaImageType, castToMediaVideoType } from "~/utils/mimeTypes";
 
-// Constants
 export const MAX_CONTENT_LENGTH = 3000;
+
+type MediaItem =
+  | { type: "file"; file: File; id: string }
+  | { type: "url"; url: string; mimeType: string; id: string };
 
 interface MediaProcessingResult {
   primaryMedia: { uri: string; type: string } | null;
@@ -39,8 +41,19 @@ interface SubmissionOptions {
 
 export function usePostSubmission() {
   const [isPosting, setPosting] = useState(false);
+  const [optimisticPosts, setOptimisticPosts] = useState<Post[]>([]);
   const router = useRouter();
   const { data: walletClient } = useWalletClient();
+
+  // Replace optimistic post with real post
+  const replaceOptimisticPost = useCallback((optimisticId: string, realPost: Post) => {
+    setOptimisticPosts((prev) => prev.filter((p) => p.id !== optimisticId));
+  }, []);
+
+  // Clear optimistic posts
+  const clearOptimisticPosts = useCallback(() => {
+    setOptimisticPosts([]);
+  }, []);
 
   const submitPost = useCallback(
     async ({
@@ -60,12 +73,15 @@ export function usePostSubmission() {
       setPosting(true);
       const toastId = Math.random().toString();
 
-      if (!editingPost && !quotedPost && currentUser) {
-        const optimisticPost: Post = {
+      // Create optimistic post for new posts (not edits)
+      let optimisticPost: Post | null = null;
+      if (!editingPost && currentUser) {
+        optimisticPost = {
           id: `optimistic-${Date.now()}`,
           author: currentUser,
           metadata: {
             content: content,
+            __typename: mediaFiles.length > 0 ? "ImageMetadata" : "TextOnlyMetadata",
           },
           createdAt: new Date().toISOString(),
           reactions: {
@@ -75,10 +91,12 @@ export function usePostSubmission() {
             Quote: 0,
           },
           isOptimistic: true,
+          replyTo: replyingTo?.id,
+          quotedPost: quotedPost,
         } as any;
 
+        setOptimisticPosts((prev) => [...prev, optimisticPost!]);
         onSuccess?.(optimisticPost);
-
         clearForm();
       }
 
@@ -139,8 +157,11 @@ export function usePostSubmission() {
           });
         }
       } catch (error: any) {
-        toast.error(error.message);
+        toast.error(error.message, { id: toastId });
         setPosting(false);
+        if (optimisticPost) {
+          setOptimisticPosts((prev) => prev.filter((p) => p.id !== optimisticPost.id));
+        }
         return;
       }
 
@@ -255,6 +276,12 @@ export function usePostSubmission() {
             if (result.isOk()) {
               console.log("Published successfully:", result.value);
               const newPost = lensItemToPost(result.value);
+              
+              // Replace optimistic post if it exists
+              if (optimisticPost) {
+                replaceOptimisticPost(optimisticPost.id, newPost);
+              }
+              
               toast.success("Published successfully!", {
                 id: toastId,
                 action: {
@@ -265,6 +292,10 @@ export function usePostSubmission() {
               onSuccess?.(newPost);
             } else {
               console.error("Failed to publish:", result.error);
+              // Remove optimistic post on failure
+              if (optimisticPost) {
+                setOptimisticPosts((prev) => prev.filter((p) => p.id !== optimisticPost.id));
+              }
               toast.error(`Failed to publish: ${String(result.error)}`, { id: toastId });
             }
           }
@@ -272,15 +303,21 @@ export function usePostSubmission() {
       } catch (error: any) {
         console.error("Error publishing:", error);
         toast.error(`Failed to publish: ${error.message}`, { id: toastId });
+        if (optimisticPost) {
+          setOptimisticPosts((prev) => prev.filter((p) => p.id !== optimisticPost.id));
+        }
       } finally {
         setPosting(false);
       }
     },
-    [router, walletClient],
+    [router, walletClient, replaceOptimisticPost],
   );
 
   return {
     isPosting,
     submitPost,
+    optimisticPosts,
+    replaceOptimisticPost,
+    clearOptimisticPosts,
   };
 }

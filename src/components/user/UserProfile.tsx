@@ -72,11 +72,6 @@ const BlockedBadge = ({ onUnblock }: { onUnblock: () => void }) => {
   );
 };
 
-const MentionPostComposer = ({ user, onClose }: { user: User; onClose: () => void }) => {
-  const { user: currentUser } = useUser();
-
-  return <PostComposer user={currentUser} initialContent={`@lens/${user.handle} `} onSuccess={() => onClose()} />;
-};
 
 export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | null }) => {
   const { user: authedUser } = useUser();
@@ -157,7 +152,9 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
 
       <Dialog open={isMentionDialogOpen} onOpenChange={setIsMentionDialogOpen} modal={true}>
         <DialogContent className="max-w-full sm:max-w-[700px]">
-          <MentionPostComposer user={user} onClose={() => setIsMentionDialogOpen(false)} />
+          <Card className="p-4">
+            <PostComposer user={authedUser} initialContent={`@lens/${user.handle} `} onSuccess={() => setIsMentionDialogOpen(false)} />
+          </Card>
         </DialogContent>
       </Dialog>
 

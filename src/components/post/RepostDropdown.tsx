@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import PostComposer from "./PostComposer";
+import { Card } from "../ui/card";
 
 interface RepostDropdownProps {
   post: Post;
@@ -99,16 +100,18 @@ export default function RepostDropdown({ post, variant = "post", reactions }: Re
 
       <Dialog open={showQuoteDialog} onOpenChange={setShowQuoteDialog}>
         <DialogContent className="max-w-2xl" onClick={(e) => e.stopPropagation()}>
-          <PostComposer
-            quotedPost={post}
-            onClose={() => setShowQuoteDialog(false)}
-            onSuccess={(newPost) => {
-              setShowQuoteDialog(false);
-              if (newPost?.id && !newPost.id.startsWith("optimistic-")) {
-                router.push(`/p/${newPost.id}`);
-              }
-            }}
-          />
+          <Card className="p-4">
+            <PostComposer
+              quotedPost={post}
+              onCancel={() => setShowQuoteDialog(false)}
+              onSuccess={(newPost) => {
+                setShowQuoteDialog(false);
+                if (newPost?.id && !newPost.id.startsWith("optimistic-")) {
+                  router.push(`/p/${newPost.id}`);
+                }
+              }}
+            />
+          </Card>
         </DialogContent>
       </Dialog>
     </>

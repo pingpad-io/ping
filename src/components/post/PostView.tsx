@@ -14,7 +14,6 @@ import { PostContextMenu } from "./PostContextMenu";
 import { PostInfo } from "./PostInfo";
 import { PostOptimisticView } from "./PostOptimisticView";
 import { ReactionsList } from "./PostReactions";
-import { PostReplyComposer } from "./PostReplyComposer";
 import { ReplyInfo } from "./PostReplyInfo";
 import { RepostInfo } from "./PostRepostInfo";
 import { PostStateProvider } from "./PostStateContext";
@@ -221,13 +220,15 @@ export const PostView = ({
           </PostContextMenu>
         </PostStateProvider>
         {isReplyWizardOpen && (
-          <PostReplyComposer
-            level={settings.level || 1}
-            isOpen={isReplyWizardOpen}
-            post={item}
-            setOpen={setReplyWizardOpen}
-            isReplyingToComment={settings.isComment}
-          />
+          <Card className="w-full p-4 rounded-xl !rounded-t-none !border-t-0">
+            <PostComposer
+              replyingTo={item}
+              isReplyingToComment={settings.isComment}
+              onSuccess={() => {
+                setReplyWizardOpen(false);
+              }}
+            />
+          </Card>
         )}
       </div>
     </>
