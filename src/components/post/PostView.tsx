@@ -142,20 +142,27 @@ export const PostView = ({
     return <PostOptimisticView author={item.author} isComment={settings.isComment} />;
   }
 
-  // If in edit mode, show just the composer
   if (isEditing) {
     return (
       <Card className="w-full">
-        <CardContent className="p-4">
-          <PostComposer
-            user={item.author}
-            editingPost={item}
-            onCancel={() => setIsEditing(false)}
-            onSuccess={() => {
-              setIsEditing(false);
-              router.refresh();
-            }}
-          />
+        <CardContent className="flex flex-row p-4 gap-4">
+          <span className="min-h-full flex flex-col justify-start items-center relative">
+            <div className={`shrink-0 z-20 grow-0 rounded-full ${settings.isComment ? "w-6 h-6" : "w-10 h-10"}`}>
+              <UserAvatar user={item.author} />
+            </div>
+          </span>
+          <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
+            <PostComposer
+              user={item.author}
+              editingPost={item}
+              quotedPost={item.quoteOn}
+              onCancel={() => setIsEditing(false)}
+              onSuccess={() => {
+                setIsEditing(false);
+                router.refresh();
+              }}
+            />
+          </div>
         </CardContent>
       </Card>
     );

@@ -286,28 +286,28 @@ function ComposerContent() {
       });
 
       const uploadedMedia = await Promise.all(uploadPromises);
-      
+
       const primaryMedia = uploadedMedia[0] || null;
-      const attachments = uploadedMedia.length > 1 
+      const attachments = uploadedMedia.length > 1
         ? uploadedMedia.slice(1).map((m) => {
-            if (m.type.startsWith("image/")) {
-              return {
-                item: m.uri,
-                type: castToMediaImageType(m.type),
-              };
-            } else if (m.type.startsWith("video/")) {
-              return {
-                item: m.uri,
-                type: castToMediaVideoType(m.type),
-              };
-            }
-            return null;
-          }).filter(Boolean)
+          if (m.type.startsWith("image/")) {
+            return {
+              item: m.uri,
+              type: castToMediaImageType(m.type),
+            };
+          } else if (m.type.startsWith("video/")) {
+            return {
+              item: m.uri,
+              type: castToMediaVideoType(m.type),
+            };
+          }
+          return null;
+        }).filter(Boolean)
         : undefined;
 
-      return { 
-        primaryMedia, 
-        attachments: attachments && attachments.length > 0 ? attachments : undefined 
+      return {
+        primaryMedia,
+        attachments: attachments && attachments.length > 0 ? attachments : undefined
       };
     } catch (error) {
       if (toastId) {
@@ -385,19 +385,28 @@ function ComposerContent() {
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
-          <div className="flex flex-row gap-2 w-full">
-            {currentUser && (
-              <div className={isSmallAvatar ? "w-6 h-6 self-start" : "w-10 h-10 self-start"}>
-                <UserAvatar user={currentUser} link={true} card={false} />
-              </div>
-            )}
+          <div className="flex flex-row gap-4 w-full">
             <div className="grow flex-1">
               {editingPost && (
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-muted-foreground">Editing post</span>
+                <div className="flex h-5 justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-xs sm:text-sm">{currentUser?.handle || editingPost.author.handle}</span>
+                    <span className="text-muted-foreground text-xs sm:text-sm">editing</span>
+                  </div>
                   {onCancel && (
-                    <Button variant="ghost" size="sm" onClick={onCancel} disabled={isPosting}>
-                      Cancel
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-full hover:bg-transparent hover:scale-105 active:scale-95 button-hover-bg button-hover-bg-equal"
+                      onClick={onCancel}
+                      disabled={isPosting}
+                    >
+                      <X
+                        size={18}
+                        strokeWidth={2.2}
+                        stroke="hsl(var(--muted-foreground))"
+                        className="transition-all duration-200"
+                      />
                     </Button>
                   )}
                 </div>
