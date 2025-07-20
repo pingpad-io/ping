@@ -56,4 +56,5 @@ export type Post = {
   isRepost?: boolean;
   repostedBy?: User;
   repostedAt?: Date;
+  isEdited?: boolean;
 };

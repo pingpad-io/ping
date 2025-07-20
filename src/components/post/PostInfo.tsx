@@ -1,4 +1,4 @@
-import { EllipsisIcon } from "lucide-react";
+import { EllipsisIcon, PenIcon } from "lucide-react";
 import { useState } from "react";
 import Link from "~/components/Link";
 import { useUser } from "~/components/user/UserContext";
@@ -6,6 +6,7 @@ import type { Post } from "~/lib/types/post";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { menuItems } from "./PostMenuConfig";
 import { usePostStateContext } from "./PostStateContext";
 
@@ -48,6 +49,20 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
       <span className="text-muted-foreground">
         <TimeElapsedSince date={post.createdAt} />
       </span>
+      {post.isEdited && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-muted-foreground stroke-muted-foreground flex items-center justify-center cursor-default">
+                <PenIcon rotate={180} size={12} strokeWidth={2} className="inline-block" />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>This post was edited</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
       <div className="ml-auto">
         <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
