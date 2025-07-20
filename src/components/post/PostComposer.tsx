@@ -435,7 +435,6 @@ function ComposerContent() {
                           onPasteFiles={handleAddFiles}
                           placeholder={placeholderText}
                           disabled={isPosting}
-                          className="rounded-xl"
                         />
                       </div>
                     </FormControl>
