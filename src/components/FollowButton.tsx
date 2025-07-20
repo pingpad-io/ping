@@ -55,7 +55,7 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
         size="sm"
         variant={isFollowing ? "outline" : "default"}
         onClick={handleButtonClick}
-        className={`font-semibold text-sm ${className}`}
+        className={`font-semibold h-8 text-sm ${className}`}
       >
         {isFollowing ? "Following" : followsMe ? "Follow back" : "Follow"}
       </Button>
@@ -66,7 +66,7 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
             <div className="w-16 h-16 mb-4">
               <UserAvatar user={user} link={false} card={false} />
             </div>
-            <h2 className="text-lg font-semibold">Unfollow {user.handle}?</h2>
+            <h2 className="text-lg font-semibold">Unfollow {user.username}?</h2>
           </div>
           <div className="flex w-full h-16">
             <Button

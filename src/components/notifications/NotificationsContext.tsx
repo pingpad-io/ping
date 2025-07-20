@@ -25,10 +25,10 @@ function parseNotification(raw: any): Notification {
     createdAt: new Date(raw.createdAt),
     actedOn: raw.actedOn
       ? {
-          ...raw.actedOn,
-          createdAt: new Date(raw.actedOn.createdAt),
-          updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
-        }
+        ...raw.actedOn,
+        createdAt: new Date(raw.actedOn.createdAt),
+        updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
+      }
       : undefined,
   } as Notification;
 }
@@ -95,7 +95,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           notificationTime,
           lastSeen,
           isNew,
-          who: n.who.map((u) => ({ name: u.name, handle: u.handle })),
+          who: n.who.map((u) => ({ name: u.name, handle: u.username })),
         });
       }
 

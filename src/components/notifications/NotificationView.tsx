@@ -49,7 +49,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const isJustMuted = item.who.some((user) => mutedUsers.has(user.id));
   const isJustBlocked = item.who.some((user) => blockedUsers.has(user.id));
 
-  const isOnUserProfile = item.who.some((user) => pathname?.startsWith(`/u/${user.handle}`));
+  const isOnUserProfile = item.who.some((user) => pathname?.startsWith(`/u/${user.username}`));
 
   useEffect(() => {
     setTimeout(() => {
@@ -99,12 +99,12 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const notificationText = notificationTextMap[item.type];
 
   const usersText = users.map((profile, i, arr) => {
-    const userName = profile.name || profile.handle;
+    const userName = profile.username;
     const userLink = (
       <Link
         key={profile.id + item.id + notificationTime}
         className="font-bold hover:underline whitespace-nowrap"
-        href={`/u/${profile.handle}`}
+        href={`/u/${profile.username}`}
       >
         {userName}
       </Link>
@@ -202,7 +202,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
             <>
               <ContextMenuItem
                 onClick={() => {
-                  router.push(`/u/${primaryUser.handle}`);
+                  router.push(`/u/${primaryUser.username}`);
                 }}
               >
                 <ExternalLinkIcon size={12} className="mr-2 h-4 w-4" />
@@ -282,11 +282,10 @@ export const NotificationView = ({ item }: { item: Notification }) => {
 
                 {(originalPostContent || originalPostImage) && (
                   <Link
-                    href={`/p/${
-                      item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
+                    href={`/p/${item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
                         ? item.actedOn.commentOn?.id || item.actedOn.reply?.id
                         : item?.actedOn?.id
-                    }`}
+                      }`}
                     className="block rounded p-1 -m-1"
                   >
                     <div className="flex flex-row items-center gap-2 text-muted-foreground/60 text-sm line-clamp-1 text-ellipsis overflow-hidden">

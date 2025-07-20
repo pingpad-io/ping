@@ -51,7 +51,7 @@ function useMentionLookup() {
 
         nodeToRemove.remove();
         // Insert the mention in Lens format
-        selection.insertRawText(`@lens/${mentionOption.user.handle} `);
+        selection.insertRawText(`@lens/${mentionOption.user.username} `);
         closeMenu();
       });
     },

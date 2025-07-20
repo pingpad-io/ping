@@ -72,7 +72,7 @@ export const UserCard = ({ children, handle }: PropsWithChildren & { handle?: st
                   <UserAvatar card={false} user={user} />
                 </div>
                 <div className="flex flex-wrap gap-2 min-w-0 flex-1">
-                  <span className="font-bold truncate text-lg">{user.handle}</span>
+                  <span className="font-bold truncate text-lg">{user.username}</span>
                   {isFollowingMe && (
                     <Badge className="text-sm h-fit w-fit mt-1" variant="secondary">
                       Follows you

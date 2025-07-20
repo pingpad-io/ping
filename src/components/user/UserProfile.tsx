@@ -92,24 +92,22 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
   const followersCount = stats?.followers ?? 0;
 
   return (
-    <Card className="p-6 z-20 flex w-full flex-col gap-4 mt-4 rounded-xl overflow-hidden">
+    <Card className="p-6 pb-0 z-20 flex w-full flex-col gap-6 mt-4 rounded-xl overflow-hidden">
       <div className="flex flex-row gap-6">
         <div className="flex shrink-0 grow-0 w-12 h-12 sm:w-24 sm:h-24 self-start">
           <AvatarViewer user={user} />
         </div>
 
-        <div className="flex flex-col gap-2 flex-grow">
-          <div className="flex flex-col justify-center gap-1">
-            <div className="flex items-center gap-2">
-              <div className="text-xl sm:text-3xl font-bold w-fit truncate leading-none">{user.handle}</div>
-              {isFollowingMe && (
-                <Badge variant="secondary" className="text-xs">
-                  Follows you
-                </Badge>
-              )}
-              {isMuted && !isUserProfile && <MutedBadge onUnmute={unmuteUser} />}
-              {isBlocked && !isUserProfile && <BlockedBadge onUnblock={unblockUser} />}
-            </div>
+        <div className="flex flex-col gap-2  flex-grow">
+          <div className="flex gap-2">
+            <div className="text-xl sm:text-3xl/6 font-bold  w-fit truncate">{user.username}</div>
+            {isFollowingMe && (
+              <Badge variant="secondary" className="text-xs h-6 font-semibold">
+                Follows you
+              </Badge>
+            )}
+            {isMuted && !isUserProfile && <MutedBadge onUnmute={unmuteUser} />}
+            {isBlocked && !isUserProfile && <BlockedBadge onUnblock={unblockUser} />}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -129,7 +127,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
         <Button
           size="sm"
           variant="outline"
-          className="w-full mt-4 bg-transparent"
+          className="w-full mt-4 bg-transparent font-semibold"
           onClick={() => setIsEditProfileOpen(true)}
         >
           Edit Profile
@@ -143,9 +141,9 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
             onClick={() => {
               requireAuth(() => setIsMentionDialogOpen(true));
             }}
-            className="flex-1 bg-transparent"
+            className="flex-1 h-8 bg-transparent text-sm font-semibold"
           >
-            Mention
+            Ping
           </Button>
         </div>
       )}
@@ -153,7 +151,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
       <Dialog open={isMentionDialogOpen} onOpenChange={setIsMentionDialogOpen} modal={true}>
         <DialogContent className="max-w-full sm:max-w-[700px]">
           <Card className="p-4">
-            <PostComposer user={authedUser} initialContent={`@lens/${user.handle} `} onSuccess={() => setIsMentionDialogOpen(false)} />
+            <PostComposer user={authedUser} initialContent={`@lens/${user.username} `} onSuccess={() => setIsMentionDialogOpen(false)} />
           </Card>
         </DialogContent>
       </Dialog>

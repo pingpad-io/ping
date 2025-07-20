@@ -41,7 +41,7 @@ export const PostOptimisticView = ({ author, isComment = false }: { author: User
         </span>
         <div className="flex w-3/4 shrink group max-w-2xl grow flex-col place-content-start">
           <div className="flex h-5 flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm">
-            <span className="font-bold w-fit">{author.handle}</span>
+            <span className="font-bold w-fit">{author.username}</span>
             <span className="text-muted-foreground">just now</span>
           </div>
           <Skeleton className="h-4 w-full mt-2" />

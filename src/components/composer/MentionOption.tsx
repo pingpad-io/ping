@@ -6,7 +6,7 @@ export class MentionOption extends MenuOption {
   user: User;
 
   constructor(user: User) {
-    super(user.handle);
+    super(user.username);
     this.user = user;
   }
 }
@@ -38,8 +38,7 @@ export function MentionMenuItem({ index, isSelected, onClick, onMouseEnter, opti
         <UserAvatar user={option.user} link={false} card={false} />
       </div>
       <div className="flex-1">
-        <p className="font-medium text-sm">{option.user.name}</p>
-        <p className="text-xs opacity-70">@{option.user.handle}</p>
+        <p className="font-medium text-sm">@{option.user.username}</p>
       </div>
     </li>
   );

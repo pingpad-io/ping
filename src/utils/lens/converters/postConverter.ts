@@ -39,6 +39,7 @@ export function lensItemToPost(item: AnyPost | TimelineItem): Post | null {
       mentions: getMentionsFromItem(item),
       createdAt: new Date(timestamp),
       updatedAt: new Date(timestamp),
+      isEdited: item.isEdited || false,
       platform: "lens",
       __typename: "Post",
     };
@@ -100,6 +101,7 @@ function processComment(comment: any) {
     comments: [],
     reactions: getReactions(comment),
     metadata: comment.metadata,
+    isEdited: comment.isEdited || false,
     platform: "lens",
     __typename: "Post" as const,
   };
