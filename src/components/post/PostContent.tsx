@@ -5,13 +5,16 @@ import { LinkPreview } from "../embeds/LinkPreview";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import { getPostLinkPreviews, getPostMediaContent, getPostTextContent } from "./PostMetadataView";
+import { useRouter } from "next/navigation";
 
 export const PostContent = forwardRef<
   HTMLDivElement,
   { post: Post; collapsed: boolean; setCollapsed: (value: boolean) => void }
 >(({ post, collapsed }, ref) => {
+  const router = useRouter();
+
   const textContent = getPostTextContent(post.metadata, post.mentions, false);
-  const mediaContent = getPostMediaContent(post.metadata);
+  const mediaContent = getPostMediaContent(post.metadata, post.id);
   const linkPreviews = getPostLinkPreviews(post.metadata);
 
   return (
@@ -45,7 +48,7 @@ export const PostContent = forwardRef<
           className="p-3 border bg-transparent hover:bg-muted/30 transition-colors cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
-            window.location.href = `/p/${post.quoteOn.id}`;
+            router.push(`/p/${post.quoteOn.id}`);
           }}
         >
           <div className="flex items-center gap-2">
@@ -59,10 +62,10 @@ export const PostContent = forwardRef<
           <p className="text-sm line-clamp-3 text-foreground/90">
             {getPostTextContent(post.quoteOn.metadata, post.quoteOn.mentions, false)}
           </p>
-          {getPostMediaContent(post.quoteOn.metadata) && (
+          {getPostMediaContent(post.quoteOn.metadata, post.quoteOn.id) && (
             <div className="mt-2 max-w-full">
               <div className="[&_img]:max-h-48 [&_img]:object-cover [&_video]:max-h-48 [&_.fullscreen-video_video]:!max-h-none [&_.fullscreen-video]:!max-h-none [&_.fullscreen-video]:!h-screen [&_.image-grid]:gap-1 [&_.image-grid_img]:max-h-32 [&>div:not(.fullscreen-video)]:!h-fit [&_.h-full:not(.fullscreen-video)]:!h-fit">
-                {getPostMediaContent(post.quoteOn.metadata)}
+                {getPostMediaContent(post.quoteOn.metadata, post.quoteOn.id)}
               </div>
             </div>
           )}

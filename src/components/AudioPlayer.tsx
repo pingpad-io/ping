@@ -1,142 +1,126 @@
 "use client";
 
+import { useAtomValue, useSetAtom } from "jotai";
 import { PauseIcon, PlayIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import {
+  audioDisplayTimeAtom,
+  audioProgressPercentageAtom,
+  currentAudioAtom,
+  audioPlayingAtom,
+  playAudioAtom,
+  pauseAudioAtom,
+  seekAudioAtom,
+  toggleTimeDisplayAtom,
+  hideMiniPlayerAtom,
+  showMiniPlayerAtom,
+  audioDurationAtom,
+  visibleAudioPlayerUrlAtom,
+  type AudioMetadata,
+} from "../atoms/audio";
 
 export const AudioPlayer = ({
   url,
   cover,
   author,
   title,
+  postId,
 }: {
   url: string;
   cover: string;
   author: string;
   title: string;
+  postId?: string;
 }) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragValue, setDragValue] = useState(0);
-  const [showTimeRemaining, setShowTimeRemaining] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean | null>(null);
+  const audioPlayerRef = useRef<HTMLDivElement>(null);
+
+  const currentAudio = useAtomValue(currentAudioAtom);
+  const isPlaying = useAtomValue(audioPlayingAtom);
+  const progressPercentage = useAtomValue(audioProgressPercentageAtom);
+  const displayTime = useAtomValue(audioDisplayTimeAtom);
+  const duration = useAtomValue(audioDurationAtom);
+
+  const playAudio = useSetAtom(playAudioAtom);
+  const pauseAudio = useSetAtom(pauseAudioAtom);
+  const seekAudio = useSetAtom(seekAudioAtom);
+  const toggleTimeDisplay = useSetAtom(toggleTimeDisplayAtom);
+  const hideMiniPlayer = useSetAtom(hideMiniPlayerAtom);
+  const showMiniPlayer = useSetAtom(showMiniPlayerAtom);
+  const setVisibleAudioPlayerUrl = useSetAtom(visibleAudioPlayerUrlAtom);
+  const visibleAudioPlayerUrl = useAtomValue(visibleAudioPlayerUrlAtom);
+
+  const isCurrentAudio = currentAudio?.url === url;
+  const isCurrentlyPlaying = isCurrentAudio && isPlaying;
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setVisibleAudioPlayerUrl(url);
+        } else if (visibleAudioPlayerUrl === url) {
+          setVisibleAudioPlayerUrl(null);
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      }
+    );
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
-    const updateDuration = () => setDuration(audio.duration);
-    const handleEnded = () => setPlaying(false);
-
-    audio.addEventListener("timeupdate", updateTime);
-    audio.addEventListener("loadedmetadata", updateDuration);
-    audio.addEventListener("ended", handleEnded);
+    if (audioPlayerRef.current) {
+      observer.observe(audioPlayerRef.current);
+    }
 
     return () => {
-      audio.removeEventListener("timeupdate", updateTime);
-      audio.removeEventListener("loadedmetadata", updateDuration);
-      audio.removeEventListener("ended", handleEnded);
+      if (audioPlayerRef.current) {
+        observer.unobserve(audioPlayerRef.current);
+      }
+      if (visibleAudioPlayerUrl === url) {
+        setVisibleAudioPlayerUrl(null);
+      }
     };
-  }, []);
+  }, [url, setVisibleAudioPlayerUrl, visibleAudioPlayerUrl]);
 
   useEffect(() => {
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: title,
-        artist: author,
-        artwork: [
-          {
-            src: cover,
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: cover,
-            sizes: "256x256",
-            type: "image/png",
-          },
-          {
-            src: cover,
-            sizes: "128x128",
-            type: "image/png",
-          },
-          {
-            src: cover,
-            sizes: "96x96",
-            type: "image/png",
-          },
-        ],
-      });
-
-      navigator.mediaSession.setActionHandler("play", () => {
-        const audio = audioRef.current;
-        if (audio) {
-          audio.play();
-          setPlaying(true);
-        }
-      });
-
-      navigator.mediaSession.setActionHandler("pause", () => {
-        const audio = audioRef.current;
-        if (audio) {
-          audio.pause();
-          setPlaying(false);
-        }
-      });
-
-      navigator.mediaSession.setActionHandler("seekbackward", (details) => {
-        const audio = audioRef.current;
-        if (audio) {
-          const skipTime = details.seekOffset || 10;
-          audio.currentTime = Math.max(audio.currentTime - skipTime, 0);
-        }
-      });
-
-      navigator.mediaSession.setActionHandler("seekforward", (details) => {
-        const audio = audioRef.current;
-        if (audio) {
-          const skipTime = details.seekOffset || 10;
-          audio.currentTime = Math.min(audio.currentTime + skipTime, audio.duration);
-        }
-      });
-
-      navigator.mediaSession.setActionHandler("seekto", (details) => {
-        const audio = audioRef.current;
-        if (audio && details.seekTime !== undefined) {
-          audio.currentTime = details.seekTime;
-        }
-      });
+    if (isCurrentAudio && isVisible !== null) {
+      if (isVisible) {
+        hideMiniPlayer();
+      } else if (currentAudio) {
+        showMiniPlayer();
+      }
     }
-  }, [title, author, cover]);
+  }, [isCurrentAudio, isVisible, currentAudio, hideMiniPlayer, showMiniPlayer]);
 
   useEffect(() => {
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.playbackState = playing ? "playing" : "paused";
-    }
-  }, [playing]);
-
-  useEffect(() => {
-    if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession) {
-      navigator.mediaSession.setPositionState({
-        duration: duration,
-        playbackRate: 1,
-        position: currentTime,
-      });
-    }
-  }, [currentTime, duration]);
+    return () => {
+      if (isCurrentAudio && currentAudio) {
+        showMiniPlayer();
+      }
+    };
+  }, [isCurrentAudio, currentAudio, showMiniPlayer]);
 
   const handlePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (playing) {
-      audio.pause();
+    if (isCurrentlyPlaying) {
+      pauseAudio();
     } else {
-      audio.play();
+      const audioData: AudioMetadata = {
+        url,
+        title,
+        artist: author,
+        cover,
+        postId: postId || '',
+      };
+      playAudio(audioData);
+
+      if (isVisible === false) {
+        showMiniPlayer();
+      }
     }
-    setPlaying(!playing);
   };
 
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,41 +130,19 @@ export const AudioPlayer = ({
   };
 
   const handleProgressMouseUp = () => {
-    if (!isDragging) return;
+    if (!isDragging || !isCurrentAudio) return;
 
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const newTime = (dragValue / 100) * duration;
-    audio.currentTime = newTime;
-    setCurrentTime(newTime);
+    if (duration > 0) {
+      const newTime = (dragValue / 100) * duration;
+      seekAudio(newTime);
+    }
     setIsDragging(false);
   };
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  };
-
-  const toggleTimeDisplay = () => {
-    setShowTimeRemaining(!showTimeRemaining);
-  };
-
-  const getDisplayTime = () => {
-    if (showTimeRemaining) {
-      const remaining = duration - currentTime;
-      return `-${formatTime(remaining)}`;
-    }
-    return formatTime(currentTime);
-  };
-
-  const progressPercentage = isDragging ? dragValue : duration ? (currentTime / duration) * 100 : 0;
+  const currentProgressPercentage = isDragging ? dragValue : (isCurrentAudio ? progressPercentage : 0);
 
   return (
-    <div className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
-      <audio ref={audioRef} src={url} loop />
-
+    <div ref={audioPlayerRef} className="w-full bg-gradient-to-r from-zinc-100/20 dark:from-zinc-800/50 to-zinc-200/30 dark:to-zinc-900/50 backdrop-blur-md rounded-md overflow-hidden flex items-center gap-4 relative max-h-24">
       <div className="h-24 aspect-square overflow-hidden flex-shrink-0">
         <img src={cover} alt={title} className="w-full h-full object-cover" />
       </div>
@@ -190,45 +152,47 @@ export const AudioPlayer = ({
           <div>
             <button
               onClick={handlePlayPause}
-              className="w-12 h-12 rounded-full select-none flex items-center justify-center bg-white/5 hover:bg-white/10 active:scale-95 hover:scale-105 transition-all duration-150 flex-shrink-0"
+              className="w-12 h-12 rounded-full select-none flex items-center justify-center bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 active:scale-95 hover:scale-105 transition-all duration-150 flex-shrink-0"
             >
-              {playing ? (
-                <PauseIcon size={24} className="text-white" />
+              {isCurrentlyPlaying ? (
+                <PauseIcon size={24} className="dark:text-white text-black" />
               ) : (
-                <PlayIcon size={24} className="text-white ml-1" />
+                <PlayIcon size={24} className="dark:text-white text-black ml-1" />
               )}
             </button>
           </div>
 
-          <div className="text-white mb-1">
+          <div className="dark:text-white text-black mb-1">
             <div className="font-semibold text-lg truncate">{title}</div>
-            <div className="text-gray-400 text-sm truncate">{author}</div>
+            <div className="dark:text-zinc-400 text-zinc-600 text-sm truncate">{author}</div>
           </div>
         </div>
-
+        
         <div className="flex items-center gap-3">
-          <div className="flex-1 relative h-2 bg-gray-600 rounded-full overflow-hidden">
+          <div className="flex-1 relative h-2 bg-black/20 dark:bg-white/20 rounded-full overflow-hidden">
             <div
-              className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-150"
-              style={{ width: `${progressPercentage}%` }}
+              className="absolute top-0 left-0 h-full bg-black dark:bg-white rounded-full transition-all duration-150"
+              style={{ width: `${currentProgressPercentage}%` }}
             />
             <input
               type="range"
               min={0}
               max={100}
-              value={progressPercentage}
+              value={currentProgressPercentage}
               onChange={handleProgressChange}
               onMouseUp={handleProgressMouseUp}
               onTouchEnd={handleProgressMouseUp}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer active:opacity-85"
+              disabled={!isCurrentAudio}
             />
           </div>
 
           <button
             onClick={toggleTimeDisplay}
-            className="text-white text-sm font-mono hover:text-gray-300 transition-colors cursor-pointer select-none min-w-12 text-right"
+            className="dark:text-white text-black text-sm font-mono hover:opacity-80 transition-opacity cursor-pointer select-none min-w-12 text-right"
+            disabled={!isCurrentAudio}
           >
-            {getDisplayTime()}
+            {isCurrentAudio ? displayTime : "0:00"}
           </button>
         </div>
       </div>
