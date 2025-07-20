@@ -99,7 +99,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const notificationText = notificationTextMap[item.type];
 
   const usersText = users.map((profile, i, arr) => {
-    const userName = profile.name || profile.handle;
+    const userName = profile.handle;
     const userLink = (
       <Link
         key={profile.id + item.id + notificationTime}
