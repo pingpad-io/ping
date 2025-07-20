@@ -127,7 +127,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
         <Button
           size="sm"
           variant="outline"
-          className="w-full mt-4 bg-transparent font-semibold"
+          className="w-full mt-4 h-8 bg-transparent font-semibold"
           onClick={() => setIsEditProfileOpen(true)}
         >
           Edit Profile
