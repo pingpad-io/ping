@@ -194,7 +194,6 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
       {isAuthenticated && (
         <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen} modal={true}>
           <DialogContent className="max-w-full sm:max-w-[700px]">
-            <Card className="p-4">
               <PostComposer
                 user={user}
                 onSuccess={(newPost) => {
@@ -204,7 +203,6 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
                   }
                 }}
               />
-            </Card>
           </DialogContent>
         </Dialog>
       )}

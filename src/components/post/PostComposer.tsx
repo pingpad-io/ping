@@ -386,31 +386,34 @@ function ComposerContent() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
           <div className="flex flex-row gap-4 w-full">
+            <div className={`shrink-0 z-20 grow-0 rounded-full ${isSmallAvatar ? "w-6 h-6" : "w-10 h-10"}`}>
+              <UserAvatar user={currentUser} />
+            </div>
             <div className="grow flex-1">
-              {editingPost && (
-                <div className="flex h-5 justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs sm:text-sm">{currentUser?.handle || editingPost.author.handle}</span>
+              <div className="flex h-5 justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-xs sm:text-sm">{currentUser?.handle}</span>
+                  {editingPost && (
                     <span className="text-muted-foreground text-xs sm:text-sm">editing</span>
-                  </div>
-                  {onCancel && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-full hover:bg-transparent hover:scale-105 active:scale-95 button-hover-bg button-hover-bg-equal"
-                      onClick={onCancel}
-                      disabled={isPosting}
-                    >
-                      <X
-                        size={18}
-                        strokeWidth={2.2}
-                        stroke="hsl(var(--muted-foreground))"
-                        className="transition-all duration-200"
-                      />
-                    </Button>
                   )}
                 </div>
-              )}
+                {editingPost && onCancel && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-full hover:bg-transparent hover:scale-105 active:scale-95 button-hover-bg button-hover-bg-equal"
+                    onClick={onCancel}
+                    disabled={isPosting}
+                  >
+                    <X
+                      size={18}
+                      strokeWidth={2.2}
+                      stroke="hsl(var(--muted-foreground))"
+                      className="transition-all duration-200"
+                    />
+                  </Button>
+                )}
+              </div>
               <FormField
                 control={form.control}
                 name="content"
