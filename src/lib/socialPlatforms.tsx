@@ -16,7 +16,25 @@ import {
   FaXTwitter,
   FaYoutube,
 } from "react-icons/fa6";
-import { SiBluesky } from "react-icons/si";
+import { SiBluesky, SiFarcaster } from "react-icons/si";
+
+function cleanUsername(value: string, removeProtocol = true, removeDomains: string[] = [], removeTrailingSlash = true, removeAt = true): string {
+  let username = value;
+  if (removeProtocol) {
+    username = username.replace(/^https?:\/\//, "");
+  }
+  for (const domain of removeDomains) {
+    const regex = new RegExp(`^(www\\.)?${domain.replace(/\./g, "\\.")}\\/?`, "i");
+    username = username.replace(regex, "");
+  }
+  if (removeTrailingSlash) {
+    username = username.replace(/\/$/, "");
+  }
+  if (removeAt) {
+    username = username.replace(/^@/, "");
+  }
+  return username;
+}
 
 export interface SocialPlatform {
   value: string;
@@ -24,6 +42,7 @@ export interface SocialPlatform {
   placeholder: string;
   prefix: string;
   icon: IconType | LucideIcon;
+  domains?: string[];
   getUrl: (value: string) => string;
 }
 
@@ -34,12 +53,9 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "x.com/",
     icon: FaXTwitter,
+    domains: ["x.com", "twitter.com"],
     getUrl: (value: string) => {
-      let username = value;
-      username = username.replace(/^https?:\/\//, "");
-      username = username.replace(/^(www\.)?(x|twitter)\.com\//, "");
-      username = username.replace(/\/$/, "");
-      username = username.replace(/^@/, "");
+      const username = cleanUsername(value, true, ["x.com", "twitter.com"]);
       return `https://x.com/${username}`;
     },
   },
@@ -57,12 +73,9 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "@",
     icon: FaTelegram,
+    domains: ["t.me", "telegram.me"],
     getUrl: (value: string) => {
-      let username = value;
-      username = username.replace(/^https?:\/\//, "");
-      username = username.replace(/^(www\.)?(t\.me|telegram\.me)\//, "");
-      username = username.replace(/\/$/, "");
-      username = username.replace(/^@/, "");
+      const username = cleanUsername(value, true, ["t.me", "telegram.me"]);
       return `https://t.me/${username}`;
     },
   },
@@ -72,6 +85,7 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "@",
     icon: FaDiscord,
+    domains: ["discord.com", "discord.gg"],
     getUrl: (value: string) => `https://discord.com/users/${value.replace(/^@/, "")}`,
   },
   {
@@ -80,14 +94,9 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "instagram.com/",
     icon: FaInstagram,
+    domains: ["instagram.com"],
     getUrl: (value: string) => {
-      // Handle various input formats
-      let username = value;
-      // Remove URL parts
-      username = username.replace(/^https?:\/\//, "");
-      username = username.replace(/^(www\.)?instagram\.com\//, "");
-      username = username.replace(/\/$/, ""); // Remove trailing slash
-      username = username.replace(/^@/, ""); // Remove @ if present
+      const username = cleanUsername(value, true, ["instagram.com"]);
       return `https://instagram.com/${username}`;
     },
   },
@@ -97,6 +106,7 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "tiktok.com/",
     icon: FaTiktok,
+    domains: ["tiktok.com"],
     getUrl: (value: string) => {
       let username = value;
       username = username.replace(/^https?:\/\//, "");
@@ -112,6 +122,7 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "youtube.com/",
     icon: FaYoutube,
+    domains: ["youtube.com", "youtu.be"],
     getUrl: (value: string) => {
       let username = value;
       username = username.replace(/^https?:\/\//, "");
@@ -126,7 +137,11 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "twitch.tv/",
     icon: FaTwitch,
-    getUrl: (value: string) => `https://twitch.tv/${value}`,
+    domains: ["twitch.tv"],
+    getUrl: (value: string) => {
+      const username = cleanUsername(value, true, ["twitch.tv"]);
+      return `https://twitch.tv/${username}`;
+    },
   },
   {
     value: "facebook",
@@ -134,11 +149,9 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "facebook.com/",
     icon: FaFacebook,
+    domains: ["facebook.com", "fb.com"],
     getUrl: (value: string) => {
-      let username = value;
-      username = username.replace(/^https?:\/\//, "");
-      username = username.replace(/^(www\.)?(facebook|fb)\.com\//, "");
-      username = username.replace(/\/$/, "");
+      const username = cleanUsername(value, true, ["facebook.com", "fb.com"]);
       return `https://facebook.com/${username}`;
     },
   },
@@ -148,6 +161,7 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "linkedin.com/",
     icon: FaLinkedin,
+    domains: ["linkedin.com"],
     getUrl: (value: string) => {
       let username = value;
       username = username.replace(/^https?:\/\//, "");
@@ -162,7 +176,11 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "pinterest.com/",
     icon: FaPinterest,
-    getUrl: (value: string) => `https://pinterest.com/${value}`,
+    domains: ["pinterest.com"],
+    getUrl: (value: string) => {
+      const username = cleanUsername(value, true, ["pinterest.com"]);
+      return `https://pinterest.com/${username}`;
+    },
   },
   {
     value: "reddit",
@@ -170,7 +188,11 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "reddit.com/",
     icon: FaReddit,
-    getUrl: (value: string) => `https://reddit.com/u/${value}`,
+    domains: ["reddit.com"],
+    getUrl: (value: string) => {
+      const username = cleanUsername(value, true, ["reddit.com"]);
+      return `https://reddit.com/u/${username}`;
+    },
   },
   {
     value: "snapchat",
@@ -178,7 +200,11 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "snapchat.com/",
     icon: FaSnapchat,
-    getUrl: (value: string) => `https://snapchat.com/add/${value}`,
+    domains: ["snapchat.com"],
+    getUrl: (value: string) => {
+      const username = cleanUsername(value, true, ["snapchat.com"]);
+      return `https://snapchat.com/add/${username}`;
+    },
   },
   {
     value: "spotify",
@@ -186,7 +212,11 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "spotify.com/",
     icon: FaSpotify,
-    getUrl: (value: string) => `https://open.spotify.com/user/${value}`,
+    domains: ["spotify.com", "open.spotify.com"],
+    getUrl: (value: string) => {
+      const username = cleanUsername(value, true, ["spotify.com", "open.spotify.com"]);
+      return `https://open.spotify.com/user/${username}`;
+    },
   },
   {
     value: "bluesky",
@@ -194,7 +224,23 @@ export const socialPlatforms: SocialPlatform[] = [
     placeholder: "username",
     prefix: "bsky.app/",
     icon: SiBluesky,
-    getUrl: (value: string) => `https://bsky.app/profile/${value}`,
+    domains: ["bsky.app", "bluesky.social"],
+    getUrl: (value: string) => {
+      const username = cleanUsername(value, true, ["bsky.app", "bluesky.social"]);
+      return `https://bsky.app/profile/${username}`;
+    },
+  },
+  {
+    value: "farcaster",
+    label: "Farcaster",
+    placeholder: "username",
+    prefix: "farcaster.xyz/",
+    icon: SiFarcaster,
+    domains: ["farcaster.xyz", "warpcast.com"],
+    getUrl: (value: string) => {
+      const username = cleanUsername(value, true, ["farcaster.xyz", "warpcast.com"]);
+      return `https://farcaster.xyz/${username}`;
+    },
   },
   {
     value: "link",
@@ -205,3 +251,21 @@ export const socialPlatforms: SocialPlatform[] = [
     getUrl: (value: string) => value,
   },
 ];
+
+export function detectPlatform(value: string): SocialPlatform | null {
+  if (!value) return null;
+
+  const lowerValue = value.toLowerCase();
+
+  for (const platform of socialPlatforms) {
+    if (platform.domains) {
+      for (const domain of platform.domains) {
+        if (lowerValue.includes(domain)) {
+          return platform;
+        }
+      }
+    }
+  }
+
+  return null;
+}

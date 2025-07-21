@@ -131,9 +131,10 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
                           href={websiteAttr.value}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                          className="flex items-center gap-1 text-sm text-muted-foreground no-underline"
                         >
-                          {cleanUrl}
+                          <LinkIcon className="h-4 w-4" />
+                          <span className="text-[#60a5fa] hover:underline">{cleanUrl}</span>
                         </a>
                       );
                     }
@@ -196,7 +197,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
         <Button
           size="sm"
           variant="outline"
-          className="w-full mt-4 h-8 bg-transparent font-semibold"
+          className="w-full h-8 bg-transparent font-semibold"
           onClick={() => setIsEditProfileOpen(true)}
         >
           Edit Profile

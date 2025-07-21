@@ -18,7 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "~/components/ui/input";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Textarea } from "~/components/ui/textarea";
-import { socialPlatforms } from "~/lib/socialPlatforms";
+import { detectPlatform, socialPlatforms } from "~/lib/socialPlatforms";
 import type { User } from "~/lib/types/user";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
@@ -47,43 +47,6 @@ interface EditProfileModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
-}
-
-function detectPlatform(value: string): (typeof socialPlatforms)[0] | null {
-  if (!value) return null;
-
-  const lowerValue = value.toLowerCase();
-
-  // Check for common patterns
-  if (lowerValue.includes("x.com") || lowerValue.includes("twitter.com"))
-    return socialPlatforms.find((p) => p.value === "x") || null;
-  if (lowerValue.includes("instagram.com") || lowerValue.includes("instagram.com"))
-    return socialPlatforms.find((p) => p.value === "instagram") || null;
-  if (lowerValue.includes("facebook.com") || lowerValue.includes("fb.com"))
-    return socialPlatforms.find((p) => p.value === "facebook") || null;
-  if (lowerValue.includes("linkedin.com")) return socialPlatforms.find((p) => p.value === "linkedin") || null;
-  if (lowerValue.includes("youtube.com") || lowerValue.includes("youtu.be"))
-    return socialPlatforms.find((p) => p.value === "youtube") || null;
-  if (lowerValue.includes("tiktok.com")) return socialPlatforms.find((p) => p.value === "tiktok") || null;
-  if (lowerValue.includes("twitch.tv")) return socialPlatforms.find((p) => p.value === "twitch") || null;
-  if (lowerValue.includes("telegram.me") || lowerValue.includes("t.me"))
-    return socialPlatforms.find((p) => p.value === "telegram") || null;
-  if (lowerValue.includes("discord.com") || lowerValue.includes("discord.gg"))
-    return socialPlatforms.find((p) => p.value === "discord") || null;
-  if (lowerValue.includes("pinterest.com")) return socialPlatforms.find((p) => p.value === "pinterest") || null;
-  if (lowerValue.includes("reddit.com")) return socialPlatforms.find((p) => p.value === "reddit") || null;
-  if (lowerValue.includes("snapchat.com")) return socialPlatforms.find((p) => p.value === "snapchat") || null;
-  if (lowerValue.includes("spotify.com")) return socialPlatforms.find((p) => p.value === "spotify") || null;
-  if (lowerValue.includes("bsky.app") || lowerValue.includes("bluesky"))
-    return socialPlatforms.find((p) => p.value === "bluesky") || null;
-
-  // Check if it starts with @ (common for social handles)
-  if (lowerValue.startsWith("@")) {
-    // Could be telegram, discord, x/twitter, etc
-    return null;
-  }
-
-  return null;
 }
 
 function SocialLinkInput({
@@ -141,7 +104,6 @@ export function EditProfileModal({ user, open, onOpenChange, onSuccess }: EditPr
   });
 
   const socialLinks = form.watch("socialLinks") || [];
-  const website = form.watch("website") || "";
 
   useEffect(() => {
     if (open) {
@@ -161,7 +123,6 @@ export function EditProfileModal({ user, open, onOpenChange, onSuccess }: EditPr
         }
       }
 
-      // Always add an empty field at the end for new entries
       if (existingSocialLinks.length === 0 || existingSocialLinks[existingSocialLinks.length - 1].value !== "") {
         existingSocialLinks.push({
           id: Date.now().toString(),
