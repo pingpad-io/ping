@@ -5,6 +5,7 @@ import {
   CirclePlusIcon,
   ExternalLinkIcon,
   HeartIcon,
+  MessageCircleIcon,
   MessageSquareIcon,
   MessageSquareQuoteIcon,
   Repeat2Icon,
@@ -83,21 +84,15 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     setReplyWizardOpen(!isReplyWizardOpen);
   };
 
-  const post = (
-    <Link className="hover:underline" href={`/p/${item?.actedOn?.id}`}>
-      post
-    </Link>
-  );
-
   // biome-ignore format: keep it compact
   const notificationTextMap = {
-    Reaction: <> liked your{post} <HeartIcon className="-mb-0.5" size={16} /></>,
-    Comment: <> commented on your{post} <MessageSquareIcon className="-mb-0.5" size={16} /></>,
-    Follow: <> started following you <UserPlusIcon className="-mb-0.5" size={16} /></>,
-    Mention: <> mentioned you in their{post} <AtSignIcon className="-mb-0.5" size={16} /></>,
-    Repost: <> reposted your{post} <Repeat2Icon className="-mb-0.5" size={16} /></>,
-    Action: <> acted on your{post} <CirclePlusIcon className="-mb-0.5" size={16} /></>,
-    Quote: <> quoted your{post} <MessageSquareQuoteIcon className="-mb-0.5" size={16} /></>,
+    Reaction: <> <span className="font-semibold">liked</span> <HeartIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Comment: <> <span className="font-semibold">commented</span> <MessageCircleIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Follow: <> <span className="font-semibold">started following you</span> <UserPlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Mention: <> <span className="font-semibold">mentioned</span> you <AtSignIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Repost: <> <span className="font-semibold">reposted</span> <Repeat2Icon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Action: <> <span className="font-semibold">acted</span> <CirclePlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Quote: <> <span className="font-semibold">quoted</span> <MessageSquareQuoteIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
   };
 
   const maxUsersPerNotification = 5;
@@ -121,7 +116,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     const lastText = wasTruncated ? <>{amountTruncated} others</> : userLink;
 
     if (i === 0) return <span key={`${profile.id + item.id + item.type}first`}>{userLink}</span>;
-    if (i === arr.length - 1) return <span key={`${profile.id + item.id + item.type}last`}> and {lastText}</span>;
+    if (i === arr.length - 1) return <span key={`${profile.id + item.id + item.type}last`}>and {lastText}</span>;
     return <span key={`${profile.id + item.id + item.type}comma`}>, {userLink}</span>;
   });
 
@@ -219,7 +214,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                   }}
                 >
                   <ExternalLinkIcon size={12} className="mr-2 h-4 w-4" />
-                  view profile
+                  View profile
                 </ContextMenuItem>
 
                 {user?.id !== primaryUser.id && (
@@ -238,7 +233,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                       ) : (
                         <VolumeXIcon size={12} className="mr-2 h-4 w-4" />
                       )}
-                      {primaryUser.actions?.muted ? "unmute user" : "mute user"}
+                      {primaryUser.actions?.muted ? "Unmute user" : "Mute user"}
                     </ContextMenuItem>
 
                     <ContextMenuItem
@@ -255,7 +250,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                       ) : (
                         <ShieldIcon size={12} className="mr-2 h-4 w-4" />
                       )}
-                      {primaryUser.actions?.blocked ? "unblock user" : "block user"}
+                      {primaryUser.actions?.blocked ? "Unblock user" : "Block user"}
                     </ContextMenuItem>
                   </>
                 )}
@@ -276,33 +271,36 @@ export const NotificationView = ({ item }: { item: Notification }) => {
           </ContextMenuContent>
           <ContextMenuTrigger asChild>
             <Card
-              className={`${highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"} ${
-                isReplyWizardOpen && showReactions ? "!rounded-b-none !border-b-0" : ""
-              }`}
+              className={`${highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"} ${isReplyWizardOpen && showReactions ? "!rounded-b-none !border-b-0" : ""
+                }`}
               style={{
                 filter: isDissolving ? `url(#dissolve-${item.id})` : undefined,
                 opacity: isDissolving ? 0 : 1,
                 transition: "opacity 1s ease-out",
               }}
             >
-              <CardContent className="flex h-fit w-full flex-row gap-4 p-2 sm:p-4">
+              <CardContent className="flex h-fit w-full max-w-3xl flex-row gap-4 p-2 sm:p-4">
                 <div className="shrink-0 grow-0 rounded-full">
                   <UserAvatarArray users={users} amountTruncated={wasTruncated ? amountTruncated : undefined} />
                 </div>
-                <div className="flex flex-col shrink group max-w-md grow gap-1 place-content-center">
-                  <div className="flex flex-wrap whitespace-pre-wrap truncate text-ellipsis overflow-hidden">
-                    {usersText}
-                    <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
-                    <span className="text-muted-foreground ml-1">· <TimeElapsedSince date={item.createdAt} /></span>
+                <div className="flex flex-col shrink grow gap-1 place-content-center w-full">
+                  <div className="flex flex-row items-center justify-between w-full gap-2 select-none">
+                    <div className="flex flex-wrap items-center gap-1 whitespace-pre-wrap truncate text-ellipsis overflow-hidden">
+                      {usersText}
+                      <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
+                    </div>
+                    <span className="text-muted-foreground/60 shrink-0">
+                      <TimeElapsedSince date={item.createdAt} />
+                    </span>
                   </div>
 
                   {(originalPostContent || originalPostImage) && (
                     <Link
                       href={`/p/${item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
-                          ? item.actedOn.commentOn?.id || item.actedOn.reply?.id
-                          : item?.actedOn?.id
+                        ? item.actedOn.commentOn?.id || item.actedOn.reply?.id
+                        : item?.actedOn?.id
                         }`}
-                      className="block rounded p-1 -m-1"
+                      className="block rounded "
                     >
                       <div className="flex flex-row items-center gap-2 text-muted-foreground/60 text-sm line-clamp-1 text-ellipsis overflow-hidden">
                         {originalPostImage && (
@@ -320,7 +318,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                   )}
 
                   {item.type === "Comment" && (replyContent || replyImage) && (
-                    <Link href={`/p/${item.actedOn?.id}`} className="block rounded p-1 -m-1">
+                    <Link href={`/p/${item.actedOn?.id}`} className="block rounded">
                       <div className="flex flex-row items-center gap-2 text-foreground text-sm line-clamp-2 text-ellipsis overflow-hidden">
                         {replyImage && <img src={replyImage} alt="" className="w-6 h-6 object-cover rounded" />}
                         {replyContent && (
@@ -331,12 +329,14 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                   )}
 
                   {showReactions && (
-                    <ReactionsList
-                      post={item.actedOn}
-                      isComment={true}
-                      collapsed={false}
-                      isReplyOpen={isReplyWizardOpen}
-                    />
+                    <div className="-mt-1">
+                      <ReactionsList
+                        post={item.actedOn}
+                        isComment={true}
+                        collapsed={false}
+                        isReplyOpen={isReplyWizardOpen}
+                      />
+                    </div>
                   )}
                 </div>
               </CardContent>
