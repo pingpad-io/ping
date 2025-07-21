@@ -40,7 +40,7 @@ export function ReactionsList({
   };
 
   return (
-    <div className="flex flex-row items-center justify-between sm:justify-start gap-6 sm:gap-10 w-full -mb-2 mt-1">
+    <div className="flex flex-row items-center justify-between sm:justify-start gap-6 sm:gap-10 w-full -mb-2">
       <ReactionButton
         variant={isComment ? "comment" : "post"}
         reactionType="Comment"

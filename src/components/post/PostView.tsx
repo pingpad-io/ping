@@ -207,12 +207,14 @@ export const PostView = ({
                   <PostInfo post={item} onReply={handleReply} />
                   <PostContent ref={postContentRef} post={item} collapsed={collapsed} setCollapsed={setCollapsed} />
                   {settings?.showBadges && (
-                    <ReactionsList
-                      isComment={settings.isComment}
-                      collapsed={collapsed}
-                      post={item}
-                      isReplyOpen={isReplyWizardOpen}
-                    />
+                    <div className="mt-1">
+                      <ReactionsList
+                        isComment={settings.isComment}
+                        collapsed={collapsed}
+                        post={item}
+                        isReplyOpen={isReplyWizardOpen}
+                      />
+                    </div>
                   )}
                 </div>
               </CardContent>
