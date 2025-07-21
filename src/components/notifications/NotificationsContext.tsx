@@ -25,10 +25,10 @@ function parseNotification(raw: any): Notification {
     createdAt: new Date(raw.createdAt),
     actedOn: raw.actedOn
       ? {
-        ...raw.actedOn,
-        createdAt: new Date(raw.actedOn.createdAt),
-        updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
-      }
+          ...raw.actedOn,
+          createdAt: new Date(raw.actedOn.createdAt),
+          updatedAt: raw.actedOn.updatedAt ? new Date(raw.actedOn.updatedAt) : undefined,
+        }
       : undefined,
   } as Notification;
 }

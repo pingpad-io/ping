@@ -1,9 +1,10 @@
 "use client";
 
-import { ShieldOffIcon, VolumeXIcon } from "lucide-react";
+import { Link as LinkIcon, ShieldOffIcon, VolumeXIcon } from "lucide-react";
 import { useState } from "react";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
 import { useUserActions } from "~/hooks/useUserActions";
+import { socialPlatforms } from "~/lib/socialPlatforms";
 import { type User, type UserStats } from "~/lib/types/user";
 import { FollowButton } from "../FollowButton";
 import PostComposer from "../post/PostComposer";
@@ -72,7 +73,6 @@ const BlockedBadge = ({ onUnblock }: { onUnblock: () => void }) => {
   );
 };
 
-
 export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | null }) => {
   const { user: authedUser } = useUser();
   const { requireAuth } = useUser();
@@ -116,8 +116,77 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
                 <TruncatedText text={user.description} maxLength={300} isMarkdown={true} />
               </div>
             )}
-            <div className="flex justify-start">
-              <UserFollowing user={user} followingCount={followingCount} followersCount={followersCount} />
+            <div className="flex items-center gap-4 justify-between">
+              <div className="flex items-center gap-4">
+                <UserFollowing user={user} followingCount={followingCount} followersCount={followersCount} />
+
+                {/* Website link */}
+                {user.metadata?.attributes &&
+                  (() => {
+                    const websiteAttr = user.metadata.attributes.find((attr) => attr.key === "website");
+                    if (websiteAttr) {
+                      const cleanUrl = websiteAttr.value.replace(/^https?:\/\//, "");
+                      return (
+                        <a
+                          href={websiteAttr.value}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          {cleanUrl}
+                        </a>
+                      );
+                    }
+                    return null;
+                  })()}
+              </div>
+
+              {/* Social icons */}
+              {user.metadata?.attributes &&
+                (() => {
+                  const socialIcons = user.metadata.attributes
+                    .filter((attr) => attr.key !== "website")
+                    .map((attr) => {
+                      const platform = socialPlatforms.find((p) => p.value === attr.key);
+
+                      // Use generic link icon for unrecognized platforms
+                      if (!platform && attr.key === "link") {
+                        return (
+                          <a
+                            key={`${attr.key}-${attr.value}`}
+                            href={attr.value}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label="Link"
+                          >
+                            <LinkIcon className="h-5 w-5" />
+                          </a>
+                        );
+                      }
+
+                      if (!platform) return null;
+
+                      const Icon = platform.icon;
+                      const url = platform.getUrl(attr.value);
+
+                      return (
+                        <a
+                          key={attr.key}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label={`${platform.label} profile`}
+                        >
+                          <Icon className="h-5 w-5" />
+                        </a>
+                      );
+                    })
+                    .filter(Boolean);
+
+                  return socialIcons.length > 0 ? <div className="flex items-center gap-3">{socialIcons}</div> : null;
+                })()}
             </div>
           </div>
         </div>
@@ -151,7 +220,11 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
       <Dialog open={isMentionDialogOpen} onOpenChange={setIsMentionDialogOpen} modal={true}>
         <DialogContent className="max-w-full sm:max-w-[700px]">
           <Card className="p-4">
-            <PostComposer user={authedUser} initialContent={`@lens/${user.username} `} onSuccess={() => setIsMentionDialogOpen(false)} />
+            <PostComposer
+              user={authedUser}
+              initialContent={`@lens/${user.username} `}
+              onSuccess={() => setIsMentionDialogOpen(false)}
+            />
           </Card>
         </DialogContent>
       </Dialog>

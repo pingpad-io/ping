@@ -15,9 +15,7 @@ import { castToMediaImageType, castToMediaVideoType } from "~/utils/mimeTypes";
 
 export const MAX_CONTENT_LENGTH = 3000;
 
-type MediaItem =
-  | { type: "file"; file: File; id: string }
-  | { type: "url"; url: string; mimeType: string; id: string };
+type MediaItem = { type: "file"; file: File; id: string } | { type: "url"; url: string; mimeType: string; id: string };
 
 interface MediaProcessingResult {
   primaryMedia: { uri: string; type: string } | null;
@@ -46,7 +44,7 @@ export function usePostSubmission() {
   const { data: walletClient } = useWalletClient();
 
   // Replace optimistic post with real post
-  const replaceOptimisticPost = useCallback((optimisticId: string, realPost: Post) => {
+  const replaceOptimisticPost = useCallback((optimisticId: string, _realPost: Post) => {
     setOptimisticPosts((prev) => prev.filter((p) => p.id !== optimisticId));
   }, []);
 
@@ -276,12 +274,12 @@ export function usePostSubmission() {
             if (result.isOk()) {
               console.log("Published successfully:", result.value);
               const newPost = lensItemToPost(result.value);
-              
+
               // Replace optimistic post if it exists
               if (optimisticPost) {
                 replaceOptimisticPost(optimisticPost.id, newPost);
               }
-              
+
               toast.success("Published successfully!", {
                 id: toastId,
                 action: {

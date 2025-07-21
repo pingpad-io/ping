@@ -3,9 +3,11 @@ import { lensAccountToUser } from "~/lib/types/user";
 
 export function useAccountSearch(query?: string) {
   const result = useLensAccounts({
-    filter: query ? {
-      searchBy: { localNameQuery: query }
-    } : undefined,
+    filter: query
+      ? {
+          searchBy: { localNameQuery: query },
+        }
+      : undefined,
   });
 
   return {

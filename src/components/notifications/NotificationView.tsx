@@ -6,7 +6,6 @@ import {
   ExternalLinkIcon,
   HeartIcon,
   MessageCircleIcon,
-  MessageSquareIcon,
   MessageSquareQuoteIcon,
   Repeat2Icon,
   ShieldIcon,
@@ -22,11 +21,11 @@ import Link from "~/components/Link";
 import { useUserActions } from "~/hooks/useUserActions";
 import type { Notification } from "~/lib/types/notification";
 import { useFilteredUsers } from "../FilteredUsersContext";
-import { TimeElapsedSince } from "../TimeLabel";
-import { TruncatedText } from "../TruncatedText";
 import PostComposer from "../post/PostComposer";
 import { ReactionsList } from "../post/PostReactions";
 import { PostStateProvider } from "../post/PostStateContext";
+import { TimeElapsedSince } from "../TimeLabel";
+import { TruncatedText } from "../TruncatedText";
 import { Card, CardContent } from "../ui/card";
 import { ContextMenu as Context, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import { UserAvatarArray } from "../user/UserAvatar";
@@ -88,7 +87,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const notificationTextMap = {
     Reaction: <> <span className="font-semibold">liked</span> <HeartIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
     Comment: <> <span className="font-semibold">commented</span> <MessageCircleIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
-    Follow: <> <span className="font-semibold">started following you</span> <UserPlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Follow: <> <span className="font-semibold">followed</span> <UserPlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
     Mention: <> <span className="font-semibold">mentioned</span> you <AtSignIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
     Repost: <> <span className="font-semibold">reposted</span> <Repeat2Icon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
     Action: <> <span className="font-semibold">acted</span> <CirclePlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
@@ -271,8 +270,9 @@ export const NotificationView = ({ item }: { item: Notification }) => {
           </ContextMenuContent>
           <ContextMenuTrigger asChild>
             <Card
-              className={`${highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"} ${isReplyWizardOpen && showReactions ? "!rounded-b-none !border-b-0" : ""
-                }`}
+              className={`${highlight ? "bg-accent/20" : "bg-transparent backdrop-blur-3xl backdrop-opacity-80"} ${
+                isReplyWizardOpen && showReactions ? "!rounded-b-none !border-b-0" : ""
+              }`}
               style={{
                 filter: isDissolving ? `url(#dissolve-${item.id})` : undefined,
                 opacity: isDissolving ? 0 : 1,
@@ -296,10 +296,11 @@ export const NotificationView = ({ item }: { item: Notification }) => {
 
                   {(originalPostContent || originalPostImage) && (
                     <Link
-                      href={`/p/${item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
-                        ? item.actedOn.commentOn?.id || item.actedOn.reply?.id
-                        : item?.actedOn?.id
-                        }`}
+                      href={`/p/${
+                        item.type === "Comment" && (item.actedOn?.commentOn || item.actedOn?.reply)
+                          ? item.actedOn.commentOn?.id || item.actedOn.reply?.id
+                          : item?.actedOn?.id
+                      }`}
                       className="block rounded "
                     >
                       <div className="flex flex-row items-center gap-2 text-muted-foreground/60 text-sm line-clamp-1 text-ellipsis overflow-hidden">

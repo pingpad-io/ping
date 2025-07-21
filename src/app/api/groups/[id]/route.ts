@@ -1,7 +1,7 @@
 import { fetchGroup } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
-import { getServerAuth } from "~/utils/getServerAuth";
 import { lensGroupToGroup } from "~/lib/types/group";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 

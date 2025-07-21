@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { forwardRef } from "react";
 import type { Post } from "~/lib/types/post";
 import { LinkPreview } from "../embeds/LinkPreview";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import { getPostLinkPreviews, getPostMediaContent, getPostTextContent } from "./PostMetadataView";
-import { useRouter } from "next/navigation";
 
 export const PostContent = forwardRef<
   HTMLDivElement,

@@ -4,9 +4,9 @@ import { Suspense } from "react";
 import { Skeleton } from "~/components/ui/skeleton";
 import { UserNavigation } from "~/components/user/UserNavigation";
 import { UserProfile } from "~/components/user/UserProfile";
+import { lensAccountStatsToUserStats } from "~/lib/types/user";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { getUserByUsername } from "~/utils/getUserByHandle";
-import { lensAccountStatsToUserStats } from "~/lib/types/user";
 
 export const maxDuration = 60;
 export const revalidate = 0;
