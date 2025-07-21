@@ -1,5 +1,6 @@
+import { PageSize } from "@lens-protocol/client";
 import { fetchPostsToExplore, fetchTimeline } from "@lens-protocol/client/actions";
-import { PageSize, TimelineEventItemType } from "@lens-protocol/react";
+import { TimelineEventItemType } from "@lens-protocol/graphql";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerAuth } from "~/utils/getServerAuth";
 import { lensItemToPost } from "~/utils/lens/converters/postConverter";
