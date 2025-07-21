@@ -334,7 +334,6 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                       <ReactionsList
                         post={item.actedOn}
                         isComment={true}
-                        collapsed={false}
                         isReplyOpen={isReplyWizardOpen}
                       />
                     </div>

@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronDownIcon } from "lucide-react";
 import { useRef } from "react";
 import { useUser } from "~/components/user/UserContext";
 import { useCachedPost } from "~/hooks/useCachedPost";
@@ -8,18 +7,15 @@ import { usePostMutations } from "~/hooks/usePostMutations";
 import type { Post } from "~/lib/types/post";
 import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
-import { Button } from "../ui/button";
 import { usePostStateContext } from "./PostStateContext";
 import RepostDropdown from "./RepostDropdown";
 
 export function ReactionsList({
   post: postProp,
-  collapsed,
   isComment,
   isReplyOpen = false,
 }: {
   post: Post;
-  collapsed: boolean;
   isComment: boolean;
   isReplyOpen?: boolean;
 }) {
@@ -72,17 +68,6 @@ export function ReactionsList({
         />
       </span>
 
-      {collapsed && (
-        <div className="ml-auto">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-max w-12 border-0 px-0 place-content-center items-center hover:bg-transparent hover:scale-105 active:scale-95 data-[state=open]:scale-95 button-hover-bg button-hover-bg-equal"
-          >
-            <ChevronDownIcon className="h-5" />
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

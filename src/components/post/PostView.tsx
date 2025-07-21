@@ -210,7 +210,6 @@ export const PostView = ({
                     <div className="mt-1">
                       <ReactionsList
                         isComment={settings.isComment}
-                        collapsed={collapsed}
                         post={item}
                         isReplyOpen={isReplyWizardOpen}
                       />
