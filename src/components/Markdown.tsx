@@ -133,7 +133,7 @@ const Markdown: React.FC<{
   };
 
   const components: Components = {
-    p: ({ children }) => <p className="lexical-paragraph">{children}</p>,
+    p: ({ children }) => <p className="lexical-paragraph mb-4 last:mb-0">{children}</p>,
     h1: ({ children }) => <h1 className="lexical-h1">{children}</h1>,
     h2: ({ children }) => <h2 className="lexical-h2">{children}</h2>,
     h3: ({ children }) => <h3 className="lexical-h3">{children}</h3>,
