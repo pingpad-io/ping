@@ -1,8 +1,8 @@
 "use client";
 
+import type { User } from "@cartel-sh/ui";
 import { useRouter } from "next/navigation";
 import { createContext, type ReactNode, useCallback, useContext } from "react";
-import type { User } from "~/lib/types/user";
 
 interface UserContextType {
   user: User | null;

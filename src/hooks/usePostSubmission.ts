@@ -1,3 +1,4 @@
+import type { Post, User } from "@cartel-sh/ui";
 import { editPost, fetchPost, post } from "@lens-protocol/client/actions";
 import { handleOperationWith } from "@lens-protocol/client/viem";
 import { image, textOnly, video } from "@lens-protocol/metadata";
@@ -6,8 +7,6 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useWalletClient } from "wagmi";
 import { getCommunityTags } from "~/components/communities/Community";
-import type { Post } from "~/lib/types/post";
-import type { User } from "~/lib/types/user";
 import { lensItemToPost } from "~/utils/lens/converters/postConverter";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";

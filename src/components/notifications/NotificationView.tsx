@@ -1,5 +1,6 @@
 "use client";
 
+import type { Notification } from "@cartel-sh/ui";
 import {
   AtSignIcon,
   CirclePlusIcon,
@@ -19,7 +20,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Link from "~/components/Link";
 import { useUserActions } from "~/hooks/useUserActions";
-import type { Notification } from "~/lib/types/notification";
 import { useFilteredUsers } from "../FilteredUsersContext";
 import PostComposer from "../post/PostComposer";
 import { ReactionsList } from "../post/PostReactions";

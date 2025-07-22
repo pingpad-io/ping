@@ -1,6 +1,6 @@
+import { lensGroupToGroup } from "@cartel-sh/ui";
 import { fetchGroup } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
-import { lensGroupToGroup } from "~/lib/types/group";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";

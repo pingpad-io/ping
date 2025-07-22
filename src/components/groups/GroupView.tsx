@@ -1,11 +1,11 @@
 "use client";
 
+import type { Group } from "@cartel-sh/ui";
 import { Users } from "lucide-react";
 import Link from "~/components/Link";
 import { useUser } from "~/components/user/UserContext";
 import { useGroupMutations } from "~/hooks/useGroupMutations";
 import { useGroupStats } from "~/hooks/useGroupStats";
-import type { Group } from "~/lib/types/group";
 import { formatNumber } from "~/utils/formatNumber";
 import { resolveUrl } from "~/utils/resolveUrl";
 import { Button } from "../ui/button";

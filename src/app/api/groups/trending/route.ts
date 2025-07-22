@@ -1,7 +1,7 @@
+import { lensGroupToGroup } from "@cartel-sh/ui";
 import { fetchGroup } from "@lens-protocol/client/actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { TRENDING_GROUP_ADDRESSES } from "~/constants/trendingGroups";
-import { lensGroupToGroup } from "~/lib/types/group";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";

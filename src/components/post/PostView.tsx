@@ -1,8 +1,8 @@
 "use client";
 
+import type { Post } from "@cartel-sh/ui";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Post } from "~/lib/types/post";
 import { useDeletedPosts } from "../DeletedPostsContext";
 import { DissolveFilter } from "../DissolveFilter";
 import { useFilteredUsers } from "../FilteredUsersContext";

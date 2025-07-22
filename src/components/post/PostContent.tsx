@@ -1,7 +1,7 @@
+import type { Post } from "@cartel-sh/ui";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { forwardRef } from "react";
-import type { Post } from "~/lib/types/post";
 import { LinkPreview } from "../embeds/LinkPreview";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";

@@ -1,8 +1,7 @@
 "use client";
 
+import type { Post, User } from "@cartel-sh/ui";
 import { createContext, type ReactNode, useContext } from "react";
-import type { Post } from "~/lib/types/post";
-import type { User } from "~/lib/types/user";
 
 interface ComposerContextValue {
   user?: User;

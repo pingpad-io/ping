@@ -1,5 +1,6 @@
 "use client";
 
+import type { User } from "@cartel-sh/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { uri } from "@lens-protocol/client";
 import { setAccountMetadata } from "@lens-protocol/client/actions";
@@ -19,7 +20,6 @@ import { Input } from "~/components/ui/input";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Textarea } from "~/components/ui/textarea";
 import { detectPlatform, socialPlatforms } from "~/lib/socialPlatforms";
-import type { User } from "~/lib/types/user";
 import { getLensClient } from "~/utils/lens/getLensClient";
 import { storageClient } from "~/utils/lens/storage";
 import { AvatarViewer } from "./AvatarViewer";

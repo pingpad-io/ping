@@ -1,12 +1,12 @@
 "use client";
 
+import type { Group } from "@cartel-sh/ui";
 import { useSearchParams } from "next/navigation";
 import { Feed } from "~/components/Feed";
 import { GroupView } from "~/components/groups/GroupView";
 import { TrendingGroups } from "~/components/groups/TrendingGroups";
 import { SearchBar } from "~/components/menu/Search";
 import { TRENDING_GROUP_ADDRESSES } from "~/constants/trendingGroups";
-import type { Group } from "~/lib/types/group";
 
 interface GroupsProps {
   initialQuery?: string;

@@ -1,5 +1,4 @@
-import type { Post } from "~/lib/types/post";
-import type { User } from "~/lib/types/user";
+import type { Post, User } from "@cartel-sh/ui";
 import { Card, CardContent } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { UserAvatar } from "../user/UserAvatar";

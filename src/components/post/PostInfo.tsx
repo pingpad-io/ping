@@ -1,3 +1,4 @@
+import type { Post } from "@cartel-sh/ui";
 import { Check, Copy, EllipsisIcon, Link2, PenIcon } from "lucide-react";
 import { useState } from "react";
 import { RiBlueskyLine } from "react-icons/ri";
@@ -5,7 +6,6 @@ import { SiFarcaster, SiX } from "react-icons/si";
 import { toast } from "sonner";
 import Link from "~/components/Link";
 import { useUser } from "~/components/user/UserContext";
-import type { Post } from "~/lib/types/post";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
 import { GlassEffect } from "../ui/glass-effect";
