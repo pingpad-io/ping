@@ -72,14 +72,7 @@ export const usePostState = (
   };
 
   const share = () => {
-    navigator.clipboard.writeText(shareLink).then(
-      () => {
-        toast.success("Copied link to clipboard");
-      },
-      () => {
-        toast.error("Error copying link to clipboard!");
-      },
-    );
+    // Share functionality is now handled in PostInfo.tsx as a submenu
     onMenuAction?.();
   };
 
