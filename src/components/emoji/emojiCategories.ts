@@ -19,6 +19,7 @@ export interface EmojiCategory {
   id: string;
   name: string;
   icon: string;
+  lucideIcon: string;
   group: number;
 }
 
@@ -27,54 +28,63 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
     id: "smileys",
     name: "Smileys & Emotion",
     icon: "😀",
+    lucideIcon: "Smile",
     group: EMOJI_GROUPS.SMILEYS_EMOTION,
   },
   {
     id: "people",
     name: "People & Body",
     icon: "👋",
+    lucideIcon: "User",
     group: EMOJI_GROUPS.PEOPLE_BODY,
   },
   {
     id: "animals",
     name: "Animals & Nature",
     icon: "🐵",
+    lucideIcon: "TreePine",
     group: EMOJI_GROUPS.ANIMALS_NATURE,
   },
   {
     id: "food",
     name: "Food & Drink",
     icon: "🍇",
+    lucideIcon: "Apple",
     group: EMOJI_GROUPS.FOOD_DRINK,
   },
   {
     id: "travel",
     name: "Travel & Places",
     icon: "🌍",
+    lucideIcon: "MapPin",
     group: EMOJI_GROUPS.TRAVEL_PLACES,
   },
   {
     id: "activities",
     name: "Activities",
     icon: "🎃",
+    lucideIcon: "Gamepad2",
     group: EMOJI_GROUPS.ACTIVITIES,
   },
   {
     id: "objects",
     name: "Objects",
     icon: "👓",
+    lucideIcon: "Package",
     group: EMOJI_GROUPS.OBJECTS,
   },
   {
     id: "symbols",
     name: "Symbols",
     icon: "🏧",
+    lucideIcon: "Hash",
     group: EMOJI_GROUPS.SYMBOLS,
   },
   {
     id: "flags",
     name: "Flags",
     icon: "🏁",
+    lucideIcon: "Flag",
     group: EMOJI_GROUPS.FLAGS,
   },
 ];

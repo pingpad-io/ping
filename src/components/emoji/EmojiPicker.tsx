@@ -1,6 +1,18 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
+import { 
+  Apple, 
+  Clock, 
+  Flag, 
+  Gamepad2, 
+  Hash, 
+  MapPin, 
+  Package, 
+  SearchIcon, 
+  Smile, 
+  TreePine, 
+  User 
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
@@ -56,7 +68,10 @@ export function EmojiPicker({ onEmojiClick, className = "" }: EmojiPickerProps) 
 
   // Handle emoji selection
   const handleEmojiClick = useCallback(
-    (emoji: EmojiWithGroup) => {
+    (emoji: EmojiWithGroup, event: React.MouseEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      
       addToRecent(emoji);
       onEmojiClick({
         emoji: emoji.emoji,
@@ -85,17 +100,33 @@ export function EmojiPicker({ onEmojiClick, className = "" }: EmojiPickerProps) 
     setSearchQuery("");
   }, []);
 
+  // Icon mapping for categories
+  const getIconComponent = (lucideIcon: string) => {
+    const iconMap: Record<string, React.ComponentType<any>> = {
+      Smile,
+      User,
+      TreePine,
+      Apple,
+      MapPin,
+      Gamepad2,
+      Package,
+      Hash,
+      Flag,
+    };
+    return iconMap[lucideIcon] || Smile;
+  };
+
   return (
-    <div className={`w-80 ${className}`}>
+    <div className={`w-80 max-w-[90vw] ${className}`}>
       {/* Search */}
-      <div className="p-3 border-b">
+      <div className="border-b pb-1.5">
         <div className="relative">
           <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Search emojis..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-8"
+            className="pl-9 h-8 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             autoComplete="off"
           />
         </div>
@@ -104,22 +135,25 @@ export function EmojiPicker({ onEmojiClick, className = "" }: EmojiPickerProps) 
       <Tabs value={activeCategory} onValueChange={handleCategoryChange}>
         {/* Category Tabs */}
         <div className="border-b">
-          <TabsList className="w-full h-auto p-1 bg-transparent">
+          <TabsList className="w-full h-auto p-1 bg-transparent grid grid-cols-10 sm:grid-cols-10 gap-0">
             {recentEmojis.length > 0 && (
-              <TabsTrigger value="recent" className="p-1 text-xs data-[state=active]:bg-accent" title="Recent">
-                🕐
+              <TabsTrigger value="recent" className="flex-1 p-2 text-xs data-[state=active]:bg-accent" title="Recent">
+                <Clock className="h-4 w-4" />
               </TabsTrigger>
             )}
-            {EMOJI_CATEGORIES.map((category) => (
-              <TabsTrigger
-                key={category.id}
-                value={category.id}
-                className="p-1 text-xs data-[state=active]:bg-accent"
-                title={category.name}
-              >
-                {category.icon}
-              </TabsTrigger>
-            ))}
+            {EMOJI_CATEGORIES.map((category) => {
+              const IconComponent = getIconComponent(category.lucideIcon);
+              return (
+                <TabsTrigger
+                  key={category.id}
+                  value={category.id}
+                  className="flex-1 p-2 text-xs data-[state=active]:bg-accent"
+                  title={category.name}
+                >
+                  <IconComponent className="h-4 w-4" />
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
         </div>
 
@@ -127,14 +161,14 @@ export function EmojiPicker({ onEmojiClick, className = "" }: EmojiPickerProps) 
         <div className="h-[300px]">
           <ScrollArea className="h-full">
             <div className="p-2">
-              <div className="grid grid-cols-8 gap-1">
+              <div className="grid grid-cols-6 sm:grid-cols-8 gap-1">
                 {displayEmojis.map((emoji, index) => (
                   <Button
                     key={`${emoji.emoji}-${index}`}
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
-                    onClick={() => handleEmojiClick(emoji)}
+                    onClick={(e) => handleEmojiClick(emoji, e)}
                     title={`:${emoji.names[0]}:`}
                   >
                     <span className="text-lg">{emoji.emoji}</span>

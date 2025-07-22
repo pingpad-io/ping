@@ -44,7 +44,7 @@ export function lensNotificationToNative(item: LensNotification): Notification {
 
     case "AccountActionExecutedNotification": {
       const action = item.actions[0];
-      
+
       if (!action) {
         return {
           ...base,
