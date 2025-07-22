@@ -6,7 +6,6 @@ import { LinkPreview } from "../embeds/LinkPreview";
 import { Card } from "../ui/card";
 import { UserAvatar } from "../user/UserAvatar";
 import { getPostLinkPreviews, getPostMediaContent, getPostTextContent } from "./PostMetadataView";
-import { ChevronDownIcon } from "lucide-react";
 
 export const PostContent = forwardRef<
   HTMLDivElement,

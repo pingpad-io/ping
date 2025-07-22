@@ -11,4 +11,5 @@ export type Notification = {
   createdAt: Date;
   type: NotificationType;
   reactionType?: "Upvote" | "Downvote";
+  actionType?: string;
 };

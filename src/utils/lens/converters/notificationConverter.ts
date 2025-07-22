@@ -38,11 +38,13 @@ export function lensNotificationToNative(item: LensNotification): Notification {
         actedOn: lensItemToPost(item.post) || undefined,
         createdAt: new Date(item.post.timestamp),
         type: "Action",
+        actionType: "PostAction",
         __typename: "Notification",
       };
 
     case "AccountActionExecutedNotification": {
       const action = item.actions[0];
+      
       if (!action) {
         return {
           ...base,
@@ -55,29 +57,46 @@ export function lensNotificationToNative(item: LensNotification): Notification {
 
       let who: User[] = [];
       let createdAt = new Date();
+      let actionType = "Unknown";
 
-      switch (action.__typename) {
+      const actionAny = action as any;
+      const itemAny = item as any;
+
+      switch (actionAny.__typename) {
         case "TippingAccountActionExecuted":
-          if ((action as any).account) {
-            who = [lensAccountToUser((action as any).account)];
+          // The account is in executedBy property
+          if (actionAny.executedBy) {
+            who = [lensAccountToUser(actionAny.executedBy)];
           }
-          createdAt = new Date((action as any).executedAt || Date.now());
+          createdAt = new Date(actionAny.executedAt || Date.now());
+          actionType = "Tipping";
           break;
 
         case "UnknownAccountActionExecuted":
-          if ((action as any).account) {
-            who = [lensAccountToUser((action as any).account)];
+          // Check for executedBy first, then other possible properties
+          if (actionAny.executedBy) {
+            who = [lensAccountToUser(actionAny.executedBy)];
+          } else if (actionAny.account) {
+            who = [lensAccountToUser(actionAny.account)];
           }
-          createdAt = new Date((action as any).executedAt || Date.now());
+          createdAt = new Date(actionAny.executedAt || Date.now());
+          actionType = "Unknown";
           break;
 
         default:
-          if ((action as any).account) {
-            who = [lensAccountToUser((action as any).account)];
+          // Check for executedBy first, then other possible properties
+          if (actionAny.executedBy) {
+            who = [lensAccountToUser(actionAny.executedBy)];
+          } else if (actionAny.account) {
+            who = [lensAccountToUser(actionAny.account)];
           }
-          if ((action as any).executedAt) {
-            createdAt = new Date((action as any).executedAt);
+          if (actionAny.executedAt) {
+            createdAt = new Date(actionAny.executedAt);
           }
+          actionType =
+            typeof actionAny.__typename === "string"
+              ? actionAny.__typename.replace("AccountActionExecuted", "")
+              : "Unknown";
           break;
       }
 
@@ -86,6 +105,7 @@ export function lensNotificationToNative(item: LensNotification): Notification {
         who,
         createdAt,
         type: "Action",
+        actionType,
         __typename: "Notification",
       };
     }
@@ -140,6 +160,7 @@ export function lensNotificationToNative(item: LensNotification): Notification {
         who: [],
         createdAt: new Date(),
         type: "Action",
+        actionType: typeof item.__typename === "string" ? item.__typename : "Unknown",
         __typename: "Notification",
       };
   }

@@ -67,7 +67,6 @@ export function ReactionsList({
           onClick={handleLikeClick}
         />
       </span>
-
     </div>
   );
 }

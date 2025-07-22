@@ -18,7 +18,13 @@ import {
 } from "react-icons/fa6";
 import { SiBluesky, SiFarcaster } from "react-icons/si";
 
-function cleanUsername(value: string, removeProtocol = true, removeDomains: string[] = [], removeTrailingSlash = true, removeAt = true): string {
+function cleanUsername(
+  value: string,
+  removeProtocol = true,
+  removeDomains: string[] = [],
+  removeTrailingSlash = true,
+  removeAt = true,
+): string {
   let username = value;
   if (removeProtocol) {
     username = username.replace(/^https?:\/\//, "");

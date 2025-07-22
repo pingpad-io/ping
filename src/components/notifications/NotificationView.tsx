@@ -88,9 +88,11 @@ export const NotificationView = ({ item }: { item: Notification }) => {
     Reaction: <> <span className="font-semibold">liked</span> <HeartIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
     Comment: <> <span className="font-semibold">commented</span> <MessageCircleIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
     Follow: <> <span className="font-semibold">followed</span> <UserPlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
-    Mention: <> <span className="font-semibold">mentioned</span> you <AtSignIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Mention: <> <span className="font-semibold">mentioned</span>you<AtSignIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
     Repost: <> <span className="font-semibold">reposted</span> <Repeat2Icon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
-    Action: <> <span className="font-semibold">acted</span> <CirclePlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
+    Action: item.actionType === "Tipping" 
+      ? <> <span className="font-semibold">tipped</span> <CirclePlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></> 
+      : <> <span className="font-semibold">{item.actionType === "PostAction" ? "performed an action on" : "acted"}</span> <CirclePlusIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
     Quote: <> <span className="font-semibold">quoted</span> <MessageSquareQuoteIcon className="-mb-0.5" size={16} strokeWidth={2.4} /></>,
   };
 
@@ -101,7 +103,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
   const amountTruncated = uniqueUsers.length - maxUsersPerNotification;
   const notificationText = notificationTextMap[item.type];
 
-  const usersText = users.map((profile, i, arr) => {
+  const usersText = users.reduce((acc, profile, i, arr) => {
     const userName = profile.username;
     const userLink = (
       <Link
@@ -112,12 +114,16 @@ export const NotificationView = ({ item }: { item: Notification }) => {
         {userName}
       </Link>
     );
-    const lastText = wasTruncated ? <>{amountTruncated} others</> : userLink;
+    const lastText = wasTruncated ? <span key="truncated">{amountTruncated} others</span> : userLink;
 
-    if (i === 0) return <span key={`${profile.id + item.id + item.type}first`}>{userLink}</span>;
-    if (i === arr.length - 1) return <span key={`${profile.id + item.id + item.type}last`}>and {lastText}</span>;
-    return <span key={`${profile.id + item.id + item.type}comma`}>, {userLink}</span>;
-  });
+    if (i === 0) {
+      return [userLink];
+    }
+    if (i === arr.length - 1) {
+      return [...acc, <span key={`and-${i}`}> and </span>, lastText];
+    }
+    return [...acc, <span key={`comma-${i}`}>, </span>, userLink];
+  }, [] as React.ReactNode[]);
 
   // For Comment notifications, we need to handle original post vs comment content
   let originalPostContent = "";
@@ -285,8 +291,8 @@ export const NotificationView = ({ item }: { item: Notification }) => {
                 </div>
                 <div className="flex flex-col shrink grow gap-1 place-content-center w-full">
                   <div className="flex flex-row items-center justify-between w-full gap-2 select-none">
-                    <div className="flex flex-wrap items-center gap-1 whitespace-pre-wrap truncate text-ellipsis overflow-hidden">
-                      {usersText}
+                    <div className="flex flex-wrap items-center gap-1 truncate text-ellipsis overflow-hidden">
+                      <span>{usersText}</span>
                       <span className="flex flex-row gap-1 justify-center place-items-center">{notificationText}</span>
                     </div>
                     <span className="text-muted-foreground/60 shrink-0">
@@ -331,11 +337,7 @@ export const NotificationView = ({ item }: { item: Notification }) => {
 
                   {showReactions && (
                     <div className="-mt-1">
-                      <ReactionsList
-                        post={item.actedOn}
-                        isComment={true}
-                        isReplyOpen={isReplyWizardOpen}
-                      />
+                      <ReactionsList post={item.actedOn} isComment={true} isReplyOpen={isReplyWizardOpen} />
                     </div>
                   )}
                 </div>
