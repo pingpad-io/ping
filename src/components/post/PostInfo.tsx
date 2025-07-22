@@ -48,7 +48,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
       name: "Farcaster",
       icon: <SiFarcaster className="w-4 h-4" />,
       getShareUrl: (url: string, title?: string) => {
-        const text = title ? `${title}\n\n${url}` : url;
+        const text = title && title.trim() ? `${title.trim()}\n\n${url}` : url;
         return `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`;
       },
     },
@@ -65,16 +65,18 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
         </svg>
       ),
-      getShareUrl: (url: string, title?: string) =>
-        `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}${
-          title ? `&text=${encodeURIComponent(title)}` : ""
-        }`,
+      getShareUrl: (url: string, title?: string) => {
+        // Twitter includes both text and URL in the same parameter for better control
+        const text = title && title.trim() ? `${title.trim()} | ${url}` : url;
+        return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      },
     },
     {
       name: "Bluesky",
       icon: <RiBlueskyLine className="w-4 h-4" />,
       getShareUrl: (url: string, title?: string) => {
-        const text = title ? `${title}\n\n${url}` : url;
+        // Bluesky seems to strip newlines, so we'll use a separator
+        const text = title && title.trim() ? `${title.trim()} | ${url}` : url;
         return `https://bsky.app/intent/compose?text=${encodeURIComponent(text)}`;
       },
     },
