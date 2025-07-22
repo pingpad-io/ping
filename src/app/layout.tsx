@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import { DeletedPostsProvider } from "~/components/DeletedPostsContext";
 import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
@@ -7,7 +6,6 @@ import { FloatingAudioPlayer } from "~/components/FloatingAudioPlayer";
 import { NotificationsProvider } from "~/components/notifications/NotificationsContext";
 import { PageTransition } from "~/components/PageTransition";
 import { Providers } from "~/components/Providers";
-import { Toaster } from "~/components/ui/sonner";
 import { UserProvider } from "~/components/user/UserContext";
 import { quicksand } from "~/styles/fonts";
 import { getServerAuth } from "~/utils/getServerAuth";
@@ -58,9 +56,6 @@ export default async function RootLayout({ children }) {
             </FilteredUsersProvider>
           </UserProvider>
         </Providers>
-        <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme>
-          <Toaster position="top-center" offset={16} />
-        </ThemeProvider>
       </body>
     </html>
   );
