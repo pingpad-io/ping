@@ -8,7 +8,6 @@ import Link from "~/components/Link";
 import { useUser } from "~/components/user/UserContext";
 import { TimeElapsedSince } from "../TimeLabel";
 import { Button } from "../ui/button";
-import { GlassEffect } from "../ui/glass-effect";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,7 +47,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
       name: "Farcaster",
       icon: <SiFarcaster className="w-4 h-4" />,
       getShareUrl: (url: string, title?: string) => {
-        const text = title && title.trim() ? `${title.trim()}\n\n${url}` : url;
+        const text = title?.trim() ? `${title.trim()}\n\n${url}` : url;
         return `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`;
       },
     },
@@ -57,7 +56,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
       icon: <SiX className="w-4 h-4" />,
       getShareUrl: (url: string, title?: string) => {
         // Twitter includes both text and URL in the same parameter for better control
-        const text = title && title.trim() ? `${title.trim()} | ${url}` : url;
+        const text = title?.trim() ? `${title.trim()} | ${url}` : url;
         return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
       },
     },
@@ -66,7 +65,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
       icon: <RiBlueskyLine className="w-4 h-4" />,
       getShareUrl: (url: string, title?: string) => {
         // Bluesky seems to strip newlines, so we'll use a separator
-        const text = title && title.trim() ? `${title.trim()} | ${url}` : url;
+        const text = title?.trim() ? `${title.trim()} | ${url}` : url;
         return `https://bsky.app/intent/compose?text=${encodeURIComponent(text)}`;
       },
     },
@@ -181,10 +180,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
                           {platform.name}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuItem
-                        onClick={handleCopyLink}
-                        className="flex items-center gap-3"
-                      >
+                      <DropdownMenuItem onClick={handleCopyLink} className="flex items-center gap-3">
                         {copied ? (
                           <>
                             <Check className="h-4 w-4" />
