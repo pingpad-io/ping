@@ -70,7 +70,6 @@
     "dayjs": "^1.11.13",
     "embla-carousel-react": "^8.5.2",
     "embla-carousel-wheel-gestures": "^8.0.1",
-    "emoji-picker-react": "^4.12.2",
     "emojibase": "^16.0.0",
     "emojibase-data": "^16.0.3",
     "eslint-config-next": "latest",

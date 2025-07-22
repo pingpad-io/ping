@@ -263,25 +263,6 @@
   }
 }
 
-/* Emoji Picker React shadcn Theme */
-
-.EmojiPickerReact {
-  --epr-emoji-size: 24px;
-  --epr-emoji-gap: 1px;
-  --epr-hover-bg-color: var(--primary);
-  --epr-bg-color: var(--card);
-  --epr-category-label-bg-color: hsla(var(--card) / 0.8);
-  --epr-text-color: var(--card-foreground);
-}
-
-/* Dark theme overrides */
-.EmojiPickerReact.epr-dark-theme {
-  --epr-hover-bg-color: var(--primary);
-  --epr-bg-color: var(--card);
-  --epr-category-label-bg-color: hsla(var(--card) / 0.8);
-  --epr-text-color: var(--card-foreground);
-}
-
 /* Dissolve animation helper - actual effect is handled by SVG filter */
 .dissolving {
   pointer-events: none;

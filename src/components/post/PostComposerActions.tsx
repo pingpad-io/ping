@@ -1,7 +1,6 @@
-import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { ImageIcon, SmileIcon } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useState } from "react";
+import { EmojiPicker } from "../emoji/EmojiPicker";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
@@ -12,7 +11,6 @@ interface PostComposerActionsProps {
 
 export function PostComposerActions({ onImageClick, onEmojiClick }: PostComposerActionsProps) {
   const [isEmojiPickerOpen, setEmojiPickerOpen] = useState(false);
-  const { theme } = useTheme();
 
   return (
     <div className="flex items-center gap-2">
@@ -37,7 +35,7 @@ export function PostComposerActions({ onImageClick, onEmojiClick }: PostComposer
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <EmojiPicker theme={theme as Theme} className="bg-card text-card-foreground" onEmojiClick={onEmojiClick} />
+          <EmojiPicker onEmojiClick={onEmojiClick} />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
