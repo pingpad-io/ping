@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import { DeletedPostsProvider } from "~/components/DeletedPostsContext";
 import { FilteredUsersProvider } from "~/components/FilteredUsersContext";
@@ -56,8 +57,10 @@ export default async function RootLayout({ children }) {
               </DeletedPostsProvider>
             </FilteredUsersProvider>
           </UserProvider>
-          <Toaster position="top-center" offset={16} />
         </Providers>
+        <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme>
+          <Toaster position="top-center" offset={16} />
+        </ThemeProvider>
       </body>
     </html>
   );
