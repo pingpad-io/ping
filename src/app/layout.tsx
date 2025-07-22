@@ -45,7 +45,6 @@ export default async function RootLayout({ children }) {
                   <RouteTracker />
                   <NavigationShortcuts />
                   <HistoryIndicator />
-                  <Toaster position="top-center" offset={16} />
                   <Menu isAuthenticated={isAuthenticated} user={user} handle={handle} />
 
                   <PageTransition>
@@ -57,6 +56,7 @@ export default async function RootLayout({ children }) {
               </DeletedPostsProvider>
             </FilteredUsersProvider>
           </UserProvider>
+          <Toaster position="top-center" offset={16} />
         </Providers>
       </body>
     </html>
