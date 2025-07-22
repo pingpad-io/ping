@@ -1,6 +1,6 @@
+import type { Post } from "@cartel-sh/ui";
 import { Repeat2Icon } from "lucide-react";
 import Link from "~/components/Link";
-import type { Post } from "~/lib/types/post";
 import { getTimeAgo } from "~/utils/formatTime";
 import { TimeElapsedSince } from "../TimeLabel";
 

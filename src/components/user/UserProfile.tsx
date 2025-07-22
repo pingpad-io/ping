@@ -1,11 +1,11 @@
 "use client";
 
+import { type User, type UserStats } from "@cartel-sh/ui";
 import { Link as LinkIcon, ShieldOffIcon, VolumeXIcon } from "lucide-react";
 import { useState } from "react";
 import { AvatarViewer } from "~/components/user/AvatarViewer";
 import { useUserActions } from "~/hooks/useUserActions";
 import { socialPlatforms } from "~/lib/socialPlatforms";
-import { type User, type UserStats } from "~/lib/types/user";
 import { FollowButton } from "../FollowButton";
 import PostComposer from "../post/PostComposer";
 import { TruncatedText } from "../TruncatedText";

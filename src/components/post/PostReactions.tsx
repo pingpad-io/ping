@@ -1,10 +1,10 @@
 "use client";
 
+import type { Post } from "@cartel-sh/ui";
 import { useRef } from "react";
 import { useUser } from "~/components/user/UserContext";
 import { useCachedPost } from "~/hooks/useCachedPost";
 import { usePostMutations } from "~/hooks/usePostMutations";
-import type { Post } from "~/lib/types/post";
 import { useExplosion } from "../ExplosionPortal";
 import { ReactionButton } from "../ReactionButton";
 import { usePostStateContext } from "./PostStateContext";

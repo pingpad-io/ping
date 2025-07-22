@@ -1,6 +1,6 @@
 "use client";
 
-import type { Post } from "~/lib/types/post";
+import type { Post } from "@cartel-sh/ui";
 import Link from "../Link";
 import { Card } from "../ui/card";
 

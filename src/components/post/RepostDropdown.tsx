@@ -1,12 +1,12 @@
 "use client";
 
+import type { Post } from "@cartel-sh/ui";
 import { EditIcon, RefreshCwIcon, Repeat2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useUser } from "~/components/user/UserContext";
 import { usePostMutations } from "~/hooks/usePostMutations";
-import type { Post } from "~/lib/types/post";
 import { cn } from "~/utils";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";

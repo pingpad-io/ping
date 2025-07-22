@@ -1,6 +1,5 @@
+import type { Notification, User } from "@cartel-sh/ui";
 import type { Notification as LensNotification } from "@lens-protocol/client";
-import type { Notification } from "~/lib/types/notification";
-import type { User } from "~/lib/types/user";
 import { lensItemToPost } from "./postConverter";
 import { lensAccountToUser } from "./userConverter";
 

@@ -1,10 +1,10 @@
 "use client";
 
+import type { Group } from "@cartel-sh/ui";
 import { ArrowLeft } from "lucide-react";
 import { Feed } from "~/components/Feed";
 import { GroupView } from "~/components/groups/GroupView";
 import Link from "~/components/Link";
-import type { Group } from "~/lib/types/group";
 
 const GroupViewWrapper = ({ item }: { item: Group }) => {
   return <GroupView group={item} />;

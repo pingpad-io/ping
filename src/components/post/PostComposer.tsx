@@ -1,5 +1,6 @@
 "use client";
 
+import type { Post, User } from "@cartel-sh/ui";
 import {
   closestCenter,
   DndContext,
@@ -22,8 +23,6 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { useUser } from "~/components/user/UserContext";
 import { MAX_CONTENT_LENGTH, usePostSubmission } from "~/hooks/usePostSubmission";
-import type { Post } from "~/lib/types/post";
-import type { User } from "~/lib/types/user";
 import { storageClient } from "~/utils/lens/storage";
 import {
   castToMediaImageType,

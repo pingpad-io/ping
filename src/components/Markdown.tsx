@@ -1,9 +1,9 @@
+import type { PostMention } from "@cartel-sh/ui";
 import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown/lib/ast-to-react";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
-import type { PostMention } from "~/lib/types/post";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { parseContent } from "~/utils/parseContent";
 import { CommunityHandle } from "./communities/CommunityHandle";

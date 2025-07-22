@@ -1,6 +1,6 @@
+import type { User } from "@cartel-sh/ui";
 import { AnyClient, SessionClient } from "@lens-protocol/client";
 import { fetchMeDetails } from "@lens-protocol/client/actions";
-import type { User } from "~/lib/types/user";
 import { lensAccountToUser } from "~/utils/lens/converters/userConverter";
 import { getCookieAuth } from "./getCookieAuth";
 import { getLensClient } from "./lens/getLensClient";
