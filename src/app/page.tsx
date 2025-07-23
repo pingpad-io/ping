@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NewLandingPage from "~/components/landing/NewLandingPage";
 
 export const metadata: Metadata = {
   title: "Pingpad",
@@ -18,15 +19,7 @@ export const metadata: Metadata = {
 
 const LandingPage = () => {
   return (
-    <div className="relative min-h-screen">
-      <div className="flex flex-col min-h-screen items-center justify-center relative z-10">
-        <div className="text-3xl text-center drop-shadow-md dark:drop-shadow-glow">
-          <h1>
-            a <b>better</b> social
-          </h1>
-        </div>
-      </div>
-    </div>
+    <NewLandingPage />
   );
 };
 

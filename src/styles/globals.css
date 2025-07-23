@@ -316,3 +316,18 @@
     width 0.2s ease,
     height 0.2s ease;
 }
+
+/* Smooth scroll for OverlayScrollbars viewport */
+[data-overlayscrollbars-viewport] {
+  scroll-behavior: smooth;
+}
+
+/* Optional: También puedes aplicar smooth scroll al elemento raíz y html */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Si quieres un control más fino del smooth scroll, puedes usar esto también */
+[data-overlayscrollbars-viewport] * {
+  scroll-behavior: inherit;
+}
