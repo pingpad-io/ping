@@ -15,6 +15,7 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "@ecp.eth/sdk": "^0.0.24",
     "@floating-ui/dom": "^1.7.2",
     "@floating-ui/react": "^0.27.13",
     "@lens-chain/sdk": "^1.0.3",
@@ -127,7 +128,7 @@
     "tailwindcss-animate": "^1.0.7",
     "theme-change": "^2.5.0",
     "unsplash-js": "^7.0.19",
-    "viem": "^2.30.3",
+    "viem": "^2.33.0",
     "wagmi": "^2.15.6",
     "zod": "^3.24.2"
   },
