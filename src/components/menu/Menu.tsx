@@ -12,13 +12,14 @@ import { Dialog, DialogContent } from "../ui/dialog";
 import { UserAvatar } from "../user/UserAvatar";
 import { UserMenuButtons } from "./UserMenu";
 
+import type { User } from "@cartel-sh/ui";
+
 interface MenuClientProps {
   isAuthenticated: boolean;
-  handle?: string | null;
-  user: any;
+  user?: User | null;
 }
 
-export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
+export function Menu({ isAuthenticated, user }: MenuClientProps) {
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -29,10 +30,12 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
     router.prefetch("/explore");
     router.prefetch("/communities");
     router.prefetch("/bookmarks");
-    if (handle) {
-      router.prefetch(`/u/${handle}`);
+    if (user?.username) {
+      router.prefetch(`/u/${user.username}`);
+    } else if (user?.address) {
+      router.prefetch(`/u/${user.address}`);
     }
-  }, [router, handle]);
+  }, [router, user]);
 
   const dockItems = isAuthenticated
     ? [
@@ -107,17 +110,17 @@ export function Menu({ isAuthenticated, handle, user }: MenuClientProps) {
             <div
               className={cn(
                 "w-7 h-7 p-0 shrink-0 rounded-full overflow-hidden",
-                (pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`)) &&
+                (pathname === `/u/${user?.username || user?.address}` || pathname.startsWith(`/u/${user?.username || user?.address}/`)) &&
                   "ring-2 ring-primary/50 ring-offset-2 ring-offset-background",
               )}
             >
               <UserAvatar link={false} card={false} user={user} />
             </div>
           ),
-          onClick: () => router.push(`/u/${handle}`),
+          onClick: () => router.push(`/u/${user?.username || user?.address}`),
           label: "Profile",
-          extra: <UserMenuButtons handle={handle!} user={user} />,
-          isActive: pathname === `/u/${handle}` || pathname.startsWith(`/u/${handle}/`),
+          extra: <UserMenuButtons user={user} />,
+          isActive: pathname === `/u/${user?.username || user?.address}` || pathname.startsWith(`/u/${user?.username || user?.address}/`),
         },
         {
           customIcon:
