@@ -28,7 +28,7 @@ export async function getServerAuth(): Promise<ServerAuthResult> {
       return { isAuthenticated: false };
     }
     
-    const user = await fetchEnsUser(session.siwe.address);
+    const user = await fetchEnsUser(session.siwe.address, session.siwe.address);
     
     return {
       isAuthenticated: true,

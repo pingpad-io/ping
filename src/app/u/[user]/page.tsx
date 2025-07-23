@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: { user: string } })
   };
 }
 
-const user = async ({ params }: { params: { user: string } }) => {
+const UserPage = async ({ params }: { params: { user: string } }) => {
   const username = params.user;
   const user = await getUserByUsername(username);
 
@@ -46,4 +46,4 @@ const user = async ({ params }: { params: { user: string } }) => {
   return <Feed ItemView={PostView} endpoint={`/api/posts?address=${user.address}&type=main`} />;
 };
 
-export default user;
+export default UserPage;

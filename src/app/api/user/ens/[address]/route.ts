@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchEnsUser } from "~/utils/ens/converters/userConverter";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export async function GET(
   _req: NextRequest,
@@ -15,7 +16,9 @@ export async function GET(
       );
     }
     
-    const user = await fetchEnsUser(address);
+    // Get current user's address to check following relationships
+    const { address: currentUserAddress } = await getServerAuth();
+    const user = await fetchEnsUser(address, currentUserAddress);
     
     if (!user) {
       return NextResponse.json(

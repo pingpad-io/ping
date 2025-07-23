@@ -69,26 +69,108 @@ export function ensAccountToUser(account: EthFollowAccount): User {
     namespace: "ens",
     metadata: attributes.length > 0 ? {
       attributes
-    } : undefined
+    } : undefined,
+    // Default actions - user is not following/followed by current user
+    actions: {
+      followed: false,
+      following: false,
+      blocked: false,
+      muted: false
+    },
+    // Default stats
+    stats: {
+      following: 0,
+      followers: 0
+    }
   };
   
   return user;
 }
 
-// Helper function to fetch and convert user data
-export async function fetchEnsUser(addressOrEns: string): Promise<User | null> {
+// Helper function to fetch user stats from EthFollow
+async function fetchUserStats(addressOrEns: string): Promise<{ following: number; followers: number } | null> {
   try {
     const response = await fetch(
-      `https://api.ethfollow.xyz/api/v1/users/${addressOrEns}/account`,
-      { next: { revalidate: 3600 } } // Cache for 1 hour
+      `https://api.ethfollow.xyz/api/v1/users/${addressOrEns}/stats`,
+      { next: { revalidate: 300 } } // Cache for 5 minutes
     );
     
     if (!response.ok) {
       return null;
     }
     
-    const data: EthFollowAccount = await response.json();
-    return ensAccountToUser(data);
+    const data = await response.json();
+    return {
+      following: data.following_count || 0,
+      followers: data.followers_count || 0
+    };
+  } catch (error) {
+    console.error("Failed to fetch user stats:", error);
+    return null;
+  }
+}
+
+// Helper function to fetch and convert user data
+export async function fetchEnsUser(addressOrEns: string, currentUserAddress?: string): Promise<User | null> {
+  try {
+    // Fetch ENS data
+    const ensResponse = await fetch(
+      `https://api.ethfollow.xyz/api/v1/users/${addressOrEns}/account`,
+      { next: { revalidate: 3600 } } // Cache for 1 hour
+    );
+    
+    if (!ensResponse.ok) {
+      return null;
+    }
+    
+    const ensData: EthFollowAccount = await ensResponse.json();
+    const user = ensAccountToUser(ensData);
+    
+    // Fetch real stats from EthFollow
+    const stats = await fetchUserStats(addressOrEns);
+    if (stats) {
+      user.stats = {
+        following: stats.following,
+        followers: stats.followers
+      };
+    }
+    
+    // If we have a current user, check following relationship
+    if (currentUserAddress) {
+      try {
+        // Check if current user follows this user
+        const followingResponse = await fetch(
+          `https://api.ethfollow.xyz/api/v1/users/${currentUserAddress}/following`,
+          { next: { revalidate: 300 } }
+        );
+        
+        if (followingResponse.ok) {
+          const followingData = await followingResponse.json();
+          const isFollowing = followingData.following?.some((account: any) => 
+            account.address?.toLowerCase() === user.address.toLowerCase()
+          );
+          user.actions.followed = isFollowing || false;
+        }
+        
+        // Check if this user follows current user
+        const followerResponse = await fetch(
+          `https://api.ethfollow.xyz/api/v1/users/${addressOrEns}/following`,
+          { next: { revalidate: 300 } }
+        );
+        
+        if (followerResponse.ok) {
+          const followerData = await followerResponse.json();
+          const followsMe = followerData.following?.some((account: any) => 
+            account.address?.toLowerCase() === currentUserAddress.toLowerCase()
+          );
+          user.actions.following = followsMe || false;
+        }
+      } catch (error) {
+        console.error("Failed to fetch following relationships:", error);
+      }
+    }
+    
+    return user;
   } catch (error) {
     console.error("Failed to fetch ENS user:", error);
     return null;
