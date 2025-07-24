@@ -9,7 +9,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-  transpilePackages: ['@lens-protocol', 'lucide-react'],
+  transpilePackages: ['ethereum-identity-kit', 'lucide-react'],
 
   images: {
     remotePatterns: [

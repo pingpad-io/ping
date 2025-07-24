@@ -46,8 +46,9 @@ npm run check
 
 **Web3 Integration:**
 - ENS (Ethereum Name Service) - for name resolution
-- EFP (Ethereum Follow Protocol) - for social graph management
 - ECP (Ethereum Comments Protocol) - for decentralized comments
+- EFP (Ethereum Follow Protocol) - for social graph management
+- Ethereum Identity Kit - for interactions with EFP
 - Wagmi for Ethereum interactions
 - Viem for blockchain utilities
 
@@ -101,6 +102,14 @@ Prioritize having fewer files. Only create new files when absolutely necessary. 
   - Full: https://docs.ethcomments.xyz/llms-full.txt - Complete protocol specification
   
 **Using ECP docs**: Start with the minimal LLM docs to understand basic comment operations. Reference the full docs for advanced features like moderation, threading, and custom implementations.
+
+### Ethereum Identity Kit
+- **Documentation**: https://ethidentitykit.com/docs
+- **LLM-optimized docs**:
+  - Minimal: https://ethidentitykit.com/llms/complete/llms.txt 
+  - Full: https://ethidentitykit.com/llms/complete/llms-full.txt - Complete specification
+
+**Using Ethereum Identity Kit docs**: Start with the minimal LLM docs to understand basic comment operations. Reference the full docs for advanced features like moderation, threading, and custom implementations.
 
 ### ENS (Ethereum Name Service)
 ENS is used for resolving human-readable names to Ethereum addresses and other resources. Key integration points:

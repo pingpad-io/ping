@@ -1,10 +1,9 @@
 "use client";
 
-import { chains } from "@lens-chain/sdk/viem";
-import { LensProvider, mainnet, PublicClient } from "@lens-protocol/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ConnectKitProvider } from "connectkit";
+import { TransactionProvider } from "ethereum-identity-kit";
 import { familyAccountsConnector } from "family";
 import { Provider as JotaiProvider } from "jotai";
 import { ThemeProvider } from "next-themes";
@@ -16,18 +15,23 @@ import { injected, walletConnect } from "wagmi/connectors";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { ExplosionProvider } from "./ExplosionPortal";
+import { getAvailableChains, getAllChains } from "~/config/networks";
 import "overlayscrollbars/styles/overlayscrollbars.css";
 import { Toaster } from "~/components/ui/sonner";
 
 const projectId = env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 const url = getBaseUrl();
 
+const availableChains = getAvailableChains();
+const allChains = getAllChains();
+const transports = allChains.reduce((acc, chain) => {
+  acc[chain.id] = http();
+  return acc;
+}, {} as Record<number, ReturnType<typeof http>>);
+
 const wagmiConfig = createConfig({
-  chains: [chains.mainnet],
-  transports: {
-    [chains.mainnet.id]: http(),
-    [chains.testnet.id]: http(),
-  },
+  chains: availableChains,
+  transports,
   ssr: true,
   connectors: [
     familyAccountsConnector(),
@@ -80,9 +84,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  const publicClient = PublicClient.create({
-    environment: mainnet,
-  });
 
   return (
     <JotaiProvider>
@@ -90,15 +91,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <WagmiProvider config={wagmiConfig}>
           <QueryClientProvider client={queryClient}>
             <ConnectKitProvider>
-              <LensProvider client={publicClient}>
-                <ExplosionProvider>
-                  <OverlayScrollbarsComponent defer className="h-full">
-                    {children}
-                  </OverlayScrollbarsComponent>
-                  <Toaster position="top-center" offset={16} />
-                  <ReactQueryDevtools initialIsOpen={false} />
-                </ExplosionProvider>
-              </LensProvider>
+              <TransactionProvider>
+                  <ExplosionProvider>
+                    <OverlayScrollbarsComponent defer className="h-full">
+                      {children}
+                    </OverlayScrollbarsComponent>
+                    <Toaster position="top-center" offset={16} />
+                    <ReactQueryDevtools initialIsOpen={false} />
+                  </ExplosionProvider>
+              </TransactionProvider>
             </ConnectKitProvider>
           </QueryClientProvider>
         </WagmiProvider>
