@@ -86,6 +86,7 @@ export function useAuth() {
       });
 
       router.push("/home");
+      window.location.reload();
     } catch (err: any) {
       console.error("Sign in error:", err);
       setError(err.message || "Failed to sign in");
@@ -101,6 +102,7 @@ export function useAuth() {
       setSession({ isAuthenticated: false });
       disconnect();
       router.push("/");
+      window.location.reload();
     } catch (err) {
       console.error("Sign out error:", err);
     } finally {
