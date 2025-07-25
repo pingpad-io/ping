@@ -18,7 +18,7 @@ export function UserAvatar({ user, link = true, card = true }: { user: User; lin
   ) : (
     avatar
   );
-  const avatarCard = card ? <UserCard handle={user.username}>{avatarLink}</UserCard> : avatarLink;
+  const avatarCard = card && (user?.username || user?.address) ? <UserCard handle={user?.username} address={user?.address}>{avatarLink}</UserCard> : avatarLink;
 
   return avatarCard;
 }
