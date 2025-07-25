@@ -2,25 +2,25 @@
 
 import { Ban, Users } from "lucide-react";
 import { useUser } from "~/components/user/UserContext";
-import type { GroupWithOperations } from "~/hooks/useGroup";
-// import { useGroupMutations } from "~/hooks/useGroupMutations";
-import { useGroupStats } from "~/hooks/useGroupStats";
+import type { CommunityWithOperations } from "~/hooks/useCommunity";
+// import { useCommunityMutations } from "~/hooks/useCommunityMutations";
+import { useCommunityStats } from "~/hooks/useCommunityStats";
 import { formatNumber } from "~/utils/formatNumber";
 import { resolveUrl } from "~/utils/resolveUrl";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
-interface GroupHeaderProps {
-  group: GroupWithOperations;
+interface CommunityHeaderProps {
+  community: CommunityWithOperations;
 }
 
-export function GroupHeader({ group }: GroupHeaderProps) {
-  const iconUrl = resolveUrl(group.metadata?.icon);
-  const canJoin = group.canJoin || false;
-  const canLeave = group.canLeave || false;
+export function CommunityHeader({ community }: CommunityHeaderProps) {
+  const iconUrl = resolveUrl(community.metadata?.icon);
+  const canJoin = community.canJoin || false;
+  const canLeave = community.canLeave || false;
   const { isAuthenticated } = useUser();
-  // const { joinMutation, leaveMutation } = useGroupMutations(group.address || "");
-  const { data: stats } = useGroupStats(group.address || "");
+  // const { joinMutation, leaveMutation } = useCommunityMutations(community.address || "");
+  const { data: stats } = useCommunityStats(community.address || "");
 
   const handleJoinLeave = () => {
     // if (canJoin) {
@@ -33,10 +33,10 @@ export function GroupHeader({ group }: GroupHeaderProps) {
   return (
     <Card className="flex items-center gap-4 p-4 rounded-xl mb-4">
       <div className="flex-shrink-0">
-        {group.metadata?.icon ? (
+        {community.metadata?.icon ? (
           <img
             src={iconUrl}
-            alt={group.metadata?.name || group.address}
+            alt={community.metadata?.name || community.address}
             className="w-16 h-16 rounded-xl object-cover"
           />
         ) : (
@@ -48,8 +48,8 @@ export function GroupHeader({ group }: GroupHeaderProps) {
 
       <div className="flex-1 min-w-0">
         <h1 className="text-2xl font-bold">
-          {group.metadata?.name ||
-            (group.address ? `Group ${group.address.slice(0, 6)}...${group.address.slice(-4)}` : "Unknown Group")}
+          {community.metadata?.name ||
+            (community.address ? `Community ${community.address.slice(0, 6)}...${community.address.slice(-4)}` : "Unknown Community")}
         </h1>
         <div className="flex items-center gap-3 mt-1">
           {stats && (
@@ -57,10 +57,10 @@ export function GroupHeader({ group }: GroupHeaderProps) {
               {formatNumber(stats.totalMembers)} {stats.totalMembers === 1 ? "member" : "members"}
             </p>
           )}
-          {group.isBanned && (
+          {community.isBanned && (
             <div className="flex items-center gap-1 text-sm text-destructive">
               <Ban size={14} />
-              <span>You are banned from this group</span>
+              <span>You are banned from this community</span>
             </div>
           )}
         </div>

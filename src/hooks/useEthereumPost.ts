@@ -25,10 +25,12 @@ export function useEthereumPost(options?: UseSimplePostCommentOptions) {
   const postComment = useMutation({
     mutationFn: async ({
       content,
-      parentId
+      parentId,
+      channelId
     }: {
       content: string;
       parentId?: string;
+      channelId?: string;
     }) => {
       if (!address) {
         throw new Error("Please connect your wallet");
@@ -47,7 +49,9 @@ export function useEthereumPost(options?: UseSimplePostCommentOptions) {
           chainId: chainId || 8453, // Default to Base
         };
 
-        if (!parentId) {
+        if (channelId && !parentId) {
+          requestBody.channelId = channelId;
+        } else if (!parentId) {
           requestBody.targetUri = "app://pingpad";
         }
 

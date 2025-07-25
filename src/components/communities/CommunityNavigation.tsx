@@ -5,12 +5,12 @@ import { Info, MessageCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "~/components/Link";
 
-export const GroupNavigation = ({ groupAddress }: { groupAddress: string }) => {
+export const CommunityNavigation = ({ communityAddress }: { communityAddress: string }) => {
   const pathname = usePathname();
 
   const tabs = [
-    { href: `/c/${groupAddress}`, label: "Posts", icon: MessageCircle },
-    { href: `/c/${groupAddress}/about`, label: "About", icon: Info },
+    { href: `/c/${communityAddress}`, label: "Posts", icon: MessageCircle },
+    { href: `/c/${communityAddress}/about`, label: "About", icon: Info },
   ];
 
   const activeTab = tabs.findIndex((tab) => pathname === tab.href) || 0;

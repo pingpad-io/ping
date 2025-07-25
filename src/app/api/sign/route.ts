@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     console.log("[SIGN-COMMENT] Request body:", JSON.stringify(body, null, 2));
 
-    const { content, targetUri, parentId, author, chainId } = body;
+    const { content, targetUri, parentId, author, chainId, channelId } = body;
 
     if (!content || !author) {
       console.error("[SIGN-COMMENT] Missing required fields:", { content: !!content, author: !!author });
@@ -60,8 +60,8 @@ export async function POST(req: NextRequest) {
 
     // Create comment data
     // For replies, targetUri should be undefined
-    // For top-level posts, use a consistent app-specific URI
-    const finalTargetUri = parentId ? undefined : (targetUri || "app://pingpad.io");
+    // For top-level posts, use a consistent app-specific URI or channelId
+    const finalTargetUri = parentId ? undefined : (channelId || targetUri || "app://pingpad.io");
 
     console.log("[SIGN-COMMENT] Creating comment data with:", {
       content,
@@ -69,15 +69,25 @@ export async function POST(req: NextRequest) {
       parentId,
       author,
       app: app.address,
+      channelId,
     });
 
-    const commentData = createCommentData({
+    const commentDataOptions: any = {
       content,
       targetUri: finalTargetUri,
       parentId,
       author,
       app: app.address,
-    });
+    };
+
+    // Add channelId if provided (for channel posts)
+    if (channelId && !parentId) {
+      commentDataOptions.channelId = channelId;
+      // When posting to a channel, don't use targetUri
+      delete commentDataOptions.targetUri;
+    }
+
+    const commentData = createCommentData(commentDataOptions);
 
     console.log("[SIGN-COMMENT] Comment data created:", JSON.stringify(commentData, (key, value) => {
       if (typeof value === 'bigint') {

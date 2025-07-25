@@ -10,6 +10,9 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
   const address = searchParams.get("address");
+  const channelId = searchParams.get("channelId") || searchParams.get("channel");
+  const feed = searchParams.get("feed");
+  const group = searchParams.get("group");
   const limit = parseInt(searchParams.get("limit") || "50");
 
   const { address: currentUserAddress } = await getServerAuth();
@@ -17,6 +20,9 @@ export async function GET(req: NextRequest) {
   try {
     console.log("Fetching posts with params:", {
       address,
+      channelId,
+      feed,
+      group,
       limit,
       cursor,
       chainId: DEFAULT_CHAIN_ID
@@ -33,6 +39,10 @@ export async function GET(req: NextRequest) {
     if (cursor) queryParams.append('cursor', cursor);
     if (address) {
       queryParams.append('author', address);
+    } else if (channelId || feed || group) {
+      // For channel/group feeds, use the channel ID as targetUri
+      const targetChannelId = channelId || feed || group;
+      queryParams.append('channelId', targetChannelId);
     } else {
       // For main feed, query our app-specific targetUri
       queryParams.append('targetUri', 'app://pingpad');

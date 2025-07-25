@@ -1,4 +1,4 @@
-export const TRENDING_GROUP_ADDRESSES = [
+export const TRENDING_COMMUNITY_ADDRESSES = [
   "0xb49d9dbbac3acbd5c263f5c204ad9cf859f54869",
   "0xb2953f8f18a6e58187f721d10244fdca12e42415",
   "0x4be5b4519814a57e6f9aafc6afbb37eaeee35aa3",

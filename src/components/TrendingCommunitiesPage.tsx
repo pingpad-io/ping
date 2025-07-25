@@ -3,11 +3,11 @@
 import type { Group } from "@cartel-sh/ui";
 import { ArrowLeft } from "lucide-react";
 import { Feed } from "~/components/Feed";
-import { GroupView } from "~/components/groups/GroupView";
+import { CommunityView } from "~/components/communities/CommunityView";
 import Link from "~/components/Link";
 
-const GroupViewWrapper = ({ item }: { item: Group }) => {
-  return <GroupView group={item} />;
+const CommunityViewWrapper = ({ item }: { item: Group }) => {
+  return <CommunityView community={item} />;
 };
 
 export default function TrendingCommunitiesPage() {
@@ -24,7 +24,7 @@ export default function TrendingCommunitiesPage() {
         <h1 className="text-2xl font-bold">Trending Communities</h1>
       </div>
 
-      <Feed<Group> ItemView={GroupViewWrapper} endpoint="/api/groups/trending" queryKey={["trending-groups"]} />
+      <Feed<Group> ItemView={CommunityViewWrapper} endpoint="/api/communities/trending" queryKey={["trending-communities"]} />
     </div>
   );
 }

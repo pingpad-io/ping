@@ -392,6 +392,7 @@ function ComposerContent() {
     post({
       content: finalContent,
       parentId: replyingTo?.id,
+      channelId: feed || community,
     });
   }
 
