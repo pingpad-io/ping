@@ -3,7 +3,7 @@
 import { Ban, Users } from "lucide-react";
 import { useUser } from "~/components/user/UserContext";
 import type { GroupWithOperations } from "~/hooks/useGroup";
-import { useGroupMutations } from "~/hooks/useGroupMutations";
+// import { useGroupMutations } from "~/hooks/useGroupMutations";
 import { useGroupStats } from "~/hooks/useGroupStats";
 import { formatNumber } from "~/utils/formatNumber";
 import { resolveUrl } from "~/utils/resolveUrl";
@@ -19,15 +19,15 @@ export function GroupHeader({ group }: GroupHeaderProps) {
   const canJoin = group.canJoin || false;
   const canLeave = group.canLeave || false;
   const { isAuthenticated } = useUser();
-  const { joinMutation, leaveMutation } = useGroupMutations(group.address || "");
+  // const { joinMutation, leaveMutation } = useGroupMutations(group.address || "");
   const { data: stats } = useGroupStats(group.address || "");
 
   const handleJoinLeave = () => {
-    if (canJoin) {
-      joinMutation.mutate();
-    } else if (canLeave) {
-      leaveMutation.mutate();
-    }
+    // if (canJoin) {
+    //   joinMutation.mutate();
+    // } else if (canLeave) {
+    //   leaveMutation.mutate();
+    // }
   };
 
   return (

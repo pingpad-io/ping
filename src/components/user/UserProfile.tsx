@@ -13,7 +13,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Dialog, DialogContent } from "../ui/dialog";
-import { EditProfileModal } from "./EditProfileModal";
+// import { EditProfileModal } from "./EditProfileModal";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
 
@@ -77,7 +77,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
   const { user: authedUser } = useUser();
   const { requireAuth } = useUser();
   const [isMentionDialogOpen, setIsMentionDialogOpen] = useState(false);
-  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  // const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const userActions = useUserActions(user || ({} as User));
 
   if (!user) return null;
@@ -198,7 +198,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
           size="sm"
           variant="outline"
           className="w-full h-8 bg-transparent font-semibold"
-          onClick={() => setIsEditProfileOpen(true)}
+          onClick={() => {/* setIsEditProfileOpen(true) */}}
         >
           Edit Profile
         </Button>
@@ -230,7 +230,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
         </DialogContent>
       </Dialog>
 
-      {isUserProfile && (
+      {/* {isUserProfile && (
         <EditProfileModal
           user={user}
           open={isEditProfileOpen}
@@ -239,7 +239,7 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
             window.location.reload();
           }}
         />
-      )}
+      )} */}
     </Card>
   );
 };

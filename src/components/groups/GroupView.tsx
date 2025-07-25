@@ -4,7 +4,7 @@ import type { Group } from "@cartel-sh/ui";
 import { Users } from "lucide-react";
 import Link from "~/components/Link";
 import { useUser } from "~/components/user/UserContext";
-import { useGroupMutations } from "~/hooks/useGroupMutations";
+// import { useGroupMutations } from "~/hooks/useGroupMutations";
 import { useGroupStats } from "~/hooks/useGroupStats";
 import { formatNumber } from "~/utils/formatNumber";
 import { resolveUrl } from "~/utils/resolveUrl";
@@ -41,17 +41,17 @@ export function GroupView({ group, isVertical = false, showJoin = true }: GroupV
   const canJoin = group.operations?.canJoin || false;
   const canLeave = group.operations?.canLeave || false;
   const { isAuthenticated } = useUser();
-  const { joinMutation, leaveMutation } = useGroupMutations(group.address);
+  // const { joinMutation, leaveMutation } = useGroupMutations(group.address);
 
   const handleJoinLeave = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (canJoin) {
-      joinMutation.mutate();
-    } else if (canLeave) {
-      leaveMutation.mutate();
-    }
+    // if (canJoin) {
+    //   joinMutation.mutate();
+    // } else if (canLeave) {
+    //   leaveMutation.mutate();
+    // }
   };
 
   return (

@@ -2,23 +2,23 @@
 
 import { ChevronLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { FeedSuspense } from "~/components/FeedSuspense";
+// import { FeedSuspense } from "~/components/FeedSuspense";
 import Link from "~/components/Link";
 import { SearchBar } from "~/components/menu/Search";
 import { Button } from "~/components/ui/button";
-import { usePostSearch } from "~/hooks/usePostSearch";
-import { PostView } from "./post/PostView";
+// import { usePostSearch } from "~/hooks/usePostSearch";
+// import { PostView } from "./post/PostView";
 
 export function Search() {
   const params = useSearchParams();
   const query = params.get("q");
 
-  const { data: posts, loading, error } = usePostSearch(query || undefined);
+  // const { data: posts, loading, error } = usePostSearch(query || undefined);
 
-  if (error && query) throw new Error(error);
-  if (loading) return <FeedSuspense />;
+  // if (error && query) throw new Error(error);
+  // if (loading) return <FeedSuspense />;
 
-  const postViews = posts?.map((post) => <PostView key={post.id} item={post} />);
+  // const postViews = posts?.map((post) => <PostView key={post.id} item={post} />);
 
   return (
     <>
@@ -30,7 +30,7 @@ export function Search() {
         </Link>
         <SearchBar defaultText={query} />
       </div>
-      {query && postViews}
+      {/* {query && postViews} */}
     </>
   );
 }

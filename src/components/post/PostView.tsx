@@ -57,6 +57,7 @@ export const PostView = ({
   const isJustBlocked = blockedUsers.has(item.author.id);
   const isJustDeleted = deletedPosts.has(item.id);
 
+
   useEffect(() => {
     if ((isJustMuted || isJustBlocked) && !isOnUserProfile) {
       setIsDissolving(true);
@@ -137,7 +138,6 @@ export const PostView = ({
     }
   };
 
-  // If it's an optimistic post, show skeleton
   if ((item as any).isOptimistic) {
     return <PostOptimisticView author={item.author} isComment={settings.isComment} />;
   }

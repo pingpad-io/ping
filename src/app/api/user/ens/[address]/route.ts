@@ -16,7 +16,6 @@ export async function GET(
       );
     }
     
-    // Get current user's address to check following relationships
     const { address: currentUserAddress } = await getServerAuth();
     const user = await fetchEnsUser(address, currentUserAddress);
     

@@ -14,12 +14,10 @@ interface ECPComment {
 }
 
 export function ecpCommentToPost(comment: ECPComment): Post {
-  // Extract address from author field
+  console.log(comment)
   const authorAddress = comment.author.toLowerCase();
-  
-  // Format address for display
   const displayName = `${authorAddress.slice(0, 6)}...${authorAddress.slice(-4)}`;
-  
+
   return {
     id: comment.id,
     author: {
@@ -42,10 +40,9 @@ export function ecpCommentToPost(comment: ECPComment): Post {
     },
     metadata: {
       content: comment.content,
-      // ECP comments are text-only
       __typename: "TextOnlyMetadata" as const
     },
-    createdAt: typeof comment.timestamp === 'number' 
+    createdAt: typeof comment.timestamp === 'number'
       ? new Date(comment.timestamp * 1000) // Convert Unix timestamp to Date
       : new Date(comment.timestamp), // Already ISO string
     updatedAt: typeof comment.timestamp === 'number'

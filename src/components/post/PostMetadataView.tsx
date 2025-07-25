@@ -1,5 +1,5 @@
 import type { PostMention } from "@cartel-sh/ui";
-import {
+import type {
   ArticleMetadataDetails,
   AudioMetadataDetails,
   CheckingInMetadataDetails,
@@ -8,6 +8,7 @@ import {
   ImageMetadataDetails,
   LinkMetadataDetails,
   LiveStreamMetadataDetails,
+  MediaAttachment,
   MintMetadataDetails,
   SpaceMetadataDetails,
   StoryMetadataDetails,
@@ -15,7 +16,7 @@ import {
   ThreeDMetadataDetails,
   TransactionMetadataDetails,
   VideoMetadataDetails,
-} from "@lens-protocol/metadata";
+} from "~/types/metadata";
 import { castToMediaImageType, castToMediaVideoType, isImageMimeType } from "~/utils/mimeTypes";
 import { AudioPlayer } from "../AudioPlayer";
 import { LinkPreview } from "../embeds/LinkPreview";
@@ -327,11 +328,6 @@ export const TransactionView = ({
 
 export const ThreeDView = ({ metadata, mentions }: { metadata: ThreeDMetadataDetails; mentions?: PostMention[] }) => {
   return <ContentView content={metadata.content} mentions={mentions} />;
-};
-
-type MediaAttachment = {
-  item: string;
-  type: string;
 };
 
 const MediaGallery = ({ items }: { items: MediaAttachment[] }) => {
