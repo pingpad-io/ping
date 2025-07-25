@@ -42,6 +42,7 @@ export function useMintEFP() {
             [1, 1, BigInt(chainId), listRecordsContractAddress, nonce]
           ),
         ],
+        account: accountAddress
       })
       
       console.log('[useMintEFP] Mint transaction hash:', mintHash)
@@ -67,7 +68,7 @@ export function useMintEFP() {
           [{ key: 'user', value: accountAddress }],
           [], // No list operations for initial creation
         ],
-        account: ''
+        account: accountAddress
       })
       
       console.log('[useMintEFP] Set user transaction hash:', setUserHash)

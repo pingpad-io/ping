@@ -6,7 +6,8 @@
     "build": "bunx --bun next build",
     "dev": "bunx --bun next dev --turbo",
     "start": "bunx --bun next start",
-    "check": "bunx @biomejs/biome check --write --unsafe ./src/*"
+    "check": "bunx @biomejs/biome check --write --unsafe ./src/*",
+    "generate-app-key": "bun scripts/generate-app-key.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.775.0",

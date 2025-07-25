@@ -22,8 +22,10 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/src/components/ui/form";
 import { useUser } from "~/components/user/UserContext";
-// import { MAX_CONTENT_LENGTH, usePostSubmission } from "~/hooks/usePostSubmission";
+import { useEthereumPost } from "~/hooks/useEthereumPost";
 import { storageClient } from "~/utils/lens/storage";
+
+export const MAX_CONTENT_LENGTH = 1000;
 import {
   castToMediaImageType,
   castToMediaVideoType,
@@ -39,7 +41,6 @@ import { PostComposerActions } from "./PostComposerActions";
 import { QuotedPostPreview } from "./QuotedPostPreview";
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
-const MAX_CONTENT_LENGTH = 1000; // Define locally since import is commented out
 
 type MediaItem = { type: "file"; file: File; id: string } | { type: "url"; url: string; mimeType: string; id: string };
 
@@ -161,8 +162,6 @@ export interface PostComposerProps {
 
 function ComposerContent() {
   const { user: contextUser, requireAuth } = useUser();
-  // const { isPosting, submitPost } = usePostSubmission();
-  const isPosting = false; // Temporary placeholder
   const pathname = usePathname();
 
   const {
@@ -180,6 +179,17 @@ function ComposerContent() {
 
   const currentUser = user || contextUser;
   const [mediaFiles, setMediaFiles] = useState<MediaItem[]>([]);
+
+  const { postMutation: post, isPosting } = useEthereumPost({
+    onSuccess: () => {
+      onSuccess?.(null);
+      form.setValue("content", "");
+      setMediaFiles([]);
+      if (replyingTo || quotedPost) {
+        onCancel?.();
+      }
+    },
+  });
 
   const pathSegments = pathname.split("/");
   const communityFromPath = pathSegments[1] === "c" ? pathSegments[2] : "";
@@ -296,23 +306,23 @@ function ComposerContent() {
         const attachments =
           uploadedMedia.length > 1
             ? uploadedMedia
-                .slice(1)
-                .map((m) => {
-                  if (m.type.startsWith("image/")) {
-                    return {
-                      item: m.uri,
-                      type: castToMediaImageType(m.type),
-                    };
-                  }
-                  if (m.type.startsWith("video/")) {
-                    return {
-                      item: m.uri,
-                      type: castToMediaVideoType(m.type),
-                    };
-                  }
-                  return null;
-                })
-                .filter(Boolean)
+              .slice(1)
+              .map((m) => {
+                if (m.type.startsWith("image/")) {
+                  return {
+                    item: m.uri,
+                    type: castToMediaImageType(m.type),
+                  };
+                }
+                if (m.type.startsWith("video/")) {
+                  return {
+                    item: m.uri,
+                    type: castToMediaVideoType(m.type),
+                  };
+                }
+                return null;
+              })
+              .filter(Boolean)
             : undefined;
 
         return {
@@ -342,29 +352,47 @@ function ComposerContent() {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     if (!requireAuth()) return;
 
-    // Commented out since submitPost is not available
-    // await submitPost({
-    //   content: data.content,
-    //   mediaFiles,
-    //   processMediaForSubmission,
-    //   editingPost,
-    //   replyingTo,
-    //   quotedPost,
-    //   currentUser,
-    //   community: finalCommunity,
-    //   feed,
-    //   onSuccess: (post) => {
-    //     onSuccess?.(post);
-    //     if (replyingTo || quotedPost) {
-    //       onCancel?.();
-    //     }
-    //   },
-    //   onClose: onCancel,
-    //   clearForm: () => {
-    //     form.setValue("content", "");
-    //     setMediaFiles([]);
-    //   },
-    // });
+    let finalContent = data.content;
+
+    // Process media files
+    if (mediaFiles.length > 0) {
+      const toastId = "upload-media";
+      try {
+        toast.loading("Uploading media...", { id: toastId });
+        const { primaryMedia, attachments } = await processMediaForSubmission(toastId);
+
+        // Append media URLs to content
+        if (primaryMedia) {
+          finalContent += `\n\n${primaryMedia.uri}`;
+        }
+        if (attachments) {
+          attachments.forEach((att: any) => {
+            finalContent += `\n${att.item}`;
+          });
+        }
+        toast.dismiss(toastId);
+      } catch (error) {
+        toast.error("Failed to upload media", { id: toastId });
+        return;
+      }
+    }
+
+    // Add quote reference if needed
+    if (quotedPost) {
+      finalContent += `\n\nQuoting: https://pingpad.io/p/${quotedPost.id}`;
+    }
+
+    console.log("[POST-COMPOSER] Submitting comment with:", {
+      content: finalContent,
+      parentId: replyingTo?.id,
+      hasMedia: mediaFiles.length > 0,
+      hasQuote: !!quotedPost,
+    });
+
+    post({
+      content: finalContent,
+      parentId: replyingTo?.id,
+    });
   }
 
   const handleEmojiClick = useCallback(
