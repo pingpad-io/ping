@@ -70,7 +70,7 @@ const AboutPage = () => {
                 <AccordionItem value="item-1">
                   <AccordionTrigger>Current status?</AccordionTrigger>
                   <AccordionContent>
-                    In development. Pingpad is live on Lens v3! <br />
+                    In development. Pingpad is live on Ethereum!
                     <br />
                     <a className="underline" href="https://github.com/pingpad-io/ping">
                       Contributions

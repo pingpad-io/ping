@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PostThread } from "~/components/post/PostThread";
-import { getServerAuth } from "~/utils/getServerAuth";
+import { getBaseUrl } from "~/utils/getBaseUrl";
 
 /**
  * This route resolves to universal id of the post passed in the [slug]
@@ -21,9 +22,25 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 const post = async ({ params }: { params: { slug: string } }) => {
-  const auth = await getServerAuth();
+  try {
+    const response = await fetch(`${getBaseUrl()}/api/posts/${params.slug}`, {
+      cache: 'no-store'
+    });
 
-  return <PostThread post={null} />;
+    if (!response.ok) {
+      if (response.status === 404) {
+        notFound();
+      }
+      throw new Error('Failed to fetch post');
+    }
+
+    const postData = await response.json();
+
+    return <PostThread post={postData} />;
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    notFound();
+  }
 };
 
 export default post;

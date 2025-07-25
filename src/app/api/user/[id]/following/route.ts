@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ensAccountToUser } from "~/utils/ens/converters/userConverter";
+import { API_URLS } from "~/config/api";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     // Fetch following from EthFollow API
     const response = await fetch(
-      `https://api.ethfollow.xyz/api/v1/users/${id}/following?limit=${limit}&offset=${offset}`,
+      `${API_URLS.EFP}/users/${id}/following?limit=${limit}&offset=${offset}`,
       { next: { revalidate: 300 } } // Cache for 5 minutes
     );
     

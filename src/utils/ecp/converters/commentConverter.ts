@@ -2,21 +2,32 @@ import type { Post } from "@cartel-sh/ui";
 import { fetchEnsUser } from "~/utils/ens/converters/userConverter";
 
 // ECP comment structure from the indexer API
-interface ECPComment {
+export interface ECPComment {
   id: string;
-  author: string;
+  author: {
+    address?: string;
+  } | string;
   content: string;
-  timestamp: number | string; // Can be Unix timestamp or ISO string
-  upvotes?: number;
-  downvotes?: number;
-  replies?: number;
+  createdAt: number | string;
+  reactions?: {
+    upvotes?: number;
+    downvotes?: number;
+  };
+  replies?: {
+    count?: number;
+  };
   parentId?: string;
   targetUri?: string;
 }
 
 export async function ecpCommentToPost(comment: ECPComment, currentUserAddress?: string): Promise<Post> {
-  console.log(comment)
-  const authorAddress = comment.author.toLowerCase();
+  
+  // Handle both nested author object and flat author string
+  const authorAddress = (typeof comment.author === 'string' 
+    ? comment.author 
+    : comment.author.address || ''
+  ).toLowerCase();
+  
   const displayName = `${authorAddress.slice(0, 6)}...${authorAddress.slice(-4)}`;
   
   const ensUser = await fetchEnsUser(authorAddress, currentUserAddress);
@@ -40,6 +51,11 @@ export async function ecpCommentToPost(comment: ECPComment, currentUserAddress?:
     }
   };
 
+  const timestamp = comment.createdAt;
+  const createdAt = typeof timestamp === 'number'
+    ? new Date(timestamp * 1000) // Convert Unix timestamp to Date
+    : new Date(timestamp); // Already ISO string
+
   return {
     id: comment.id,
     author,
@@ -47,21 +63,17 @@ export async function ecpCommentToPost(comment: ECPComment, currentUserAddress?:
       content: comment.content,
       __typename: "TextOnlyMetadata" as const
     },
-    createdAt: typeof comment.timestamp === 'number'
-      ? new Date(comment.timestamp * 1000) // Convert Unix timestamp to Date
-      : new Date(comment.timestamp), // Already ISO string
-    updatedAt: typeof comment.timestamp === 'number'
-      ? new Date(comment.timestamp * 1000)
-      : new Date(comment.timestamp),
+    createdAt,
+    updatedAt: createdAt,
     platform: "lens" as const, 
     __typename: "Post" as const,
     isEdited: false,
     reactions: {
       Bookmark: 0,
       Collect: 0,
-      Comment: comment.replies || 0,
+      Comment: comment.replies?.count || 0,
       Repost: 0,
-      upvotes: comment.upvotes || 0,
+      upvotes: comment.reactions?.upvotes || 0,
       isUpvoted: false,
       isBookmarked: false,
       isCollected: false,
@@ -72,7 +84,7 @@ export async function ecpCommentToPost(comment: ECPComment, currentUserAddress?:
       canQuote: true,
       canDecrypt: false,
       canEdit: false,
-      totalReactions: (comment.upvotes || 0) + (comment.replies || 0)
+      totalReactions: (comment.reactions?.upvotes || 0) + (comment.replies?.count || 0)
     },
     comments: [], // Replies will be fetched separately
     mentions: undefined

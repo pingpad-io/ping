@@ -2,11 +2,9 @@ import { type NextRequest, NextResponse } from "next/server";
 import { ecpCommentToPost } from "~/utils/ecp/converters/commentConverter";
 import { postIdToEcpTarget } from "~/utils/ecp/targetConverter";
 import { getServerAuth } from "~/utils/getServerAuth";
+import { API_URLS } from "~/config/api";
 
 export const dynamic = "force-dynamic";
-
-// ECP API endpoint
-const ECP_API_URL = "https://api.ethcomments.xyz";
 
 // Support multiple chains: Base and Mainnet
 const SUPPORTED_CHAIN_IDS = [8453, 1];
@@ -38,7 +36,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     if (cursor) queryParams.append('cursor', cursor);
     
     const apiResponse = await fetch(
-      `${ECP_API_URL}/api/comments?${queryParams}`,
+      `${API_URLS.ECP}/api/comments?${queryParams}`,
       { headers: { 'Accept': 'application/json' } }
     );
     
@@ -49,17 +47,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const response = await apiResponse.json();
     const ecpComments = response.results || [];
     
-    const comments = await Promise.all(ecpComments.map((comment: any) => ecpCommentToPost({
-      id: comment.id,
-      author: comment.author.address || comment.author, 
-      content: comment.content,
-      timestamp: comment.createdAt,
-      upvotes: comment.reactions?.upvotes || 0,
-      downvotes: comment.reactions?.downvotes || 0,
-      replies: comment.replies?.count || 0,
-      parentId: comment.parentId,
-      targetUri: comment.targetUri
-    }, currentUserAddress)));
+    const comments = await Promise.all(ecpComments.map((comment: any) => ecpCommentToPost(comment, currentUserAddress)));
     
     // Use the cursor from the response for pagination
     const nextCursor = response.pagination?.hasNext ? response.pagination.endCursor : null;

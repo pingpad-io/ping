@@ -1,4 +1,5 @@
 import type { User } from "@cartel-sh/ui";
+import { API_URLS } from "~/config/api";
 
 interface EnsRecord {
   avatar?: string;
@@ -91,7 +92,7 @@ export function ensAccountToUser(account: EthFollowAccount): User {
 async function fetchUserStats(addressOrEns: string): Promise<{ following: number; followers: number } | null> {
   try {
     const response = await fetch(
-      `https://api.ethfollow.xyz/api/v1/users/${addressOrEns}/stats`,
+      `${API_URLS.EFP}/users/${addressOrEns}/stats`,
       { next: { revalidate: 300 } } // Cache for 5 minutes
     );
     
@@ -115,7 +116,7 @@ export async function fetchEnsUser(addressOrEns: string, currentUserAddress?: st
   try {
     // Fetch ENS data
     const ensResponse = await fetch(
-      `https://api.ethfollow.xyz/api/v1/users/${addressOrEns}/account`,
+      `${API_URLS.EFP}/users/${addressOrEns}/account`,
       { next: { revalidate: 3600 } } // Cache for 1 hour
     );
     
@@ -140,7 +141,7 @@ export async function fetchEnsUser(addressOrEns: string, currentUserAddress?: st
       try {
         // Check if current user follows this user
         const followingResponse = await fetch(
-          `https://api.ethfollow.xyz/api/v1/users/${currentUserAddress}/following`,
+          `${API_URLS.EFP}/users/${currentUserAddress}/following`,
           { next: { revalidate: 300 } }
         );
         
@@ -154,7 +155,7 @@ export async function fetchEnsUser(addressOrEns: string, currentUserAddress?: st
         
         // Check if this user follows current user
         const followerResponse = await fetch(
-          `https://api.ethfollow.xyz/api/v1/users/${addressOrEns}/following`,
+          `${API_URLS.EFP}/users/${addressOrEns}/following`,
           { next: { revalidate: 300 } }
         );
         

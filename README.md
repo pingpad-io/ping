@@ -6,7 +6,7 @@ clarity paves the way for brilliance. [ping](https://pingpad.io) is a minimalist
 
 **how?**
 
-built on top of [lens](https://lens.xyz), media is stored on [grove](https://grove.xyz)
+built on top of ENS, EFP & ECP
 
 
 ## Contributing

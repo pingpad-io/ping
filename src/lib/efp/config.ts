@@ -1,4 +1,5 @@
 import { base } from "wagmi/chains";
+import { API_URLS } from "~/config/api";
 
 // Base mainnet EFP contracts
 export const EFP_CONTRACTS = {
@@ -9,6 +10,6 @@ export const EFP_CONTRACTS = {
   TokenURIProvider: "0xC8BA343aeaF2b3b3EC79C25f05F4Ef459D9c7eFB" as const,
 } as const;
 
-export const EFP_API_BASE_URL = "https://api.ethfollow.xyz/api/v1";
+export const EFP_API_BASE_URL = API_URLS.EFP;
 
 export const EFP_CHAIN_ID = base.id;
