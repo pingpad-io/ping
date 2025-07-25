@@ -1,4 +1,5 @@
 import type { Post } from "@cartel-sh/ui";
+import { fetchEnsUser } from "~/utils/ens/converters/userConverter";
 
 // ECP comment structure from the indexer API
 interface ECPComment {
@@ -13,31 +14,35 @@ interface ECPComment {
   targetUri?: string;
 }
 
-export function ecpCommentToPost(comment: ECPComment): Post {
+export async function ecpCommentToPost(comment: ECPComment, currentUserAddress?: string): Promise<Post> {
   console.log(comment)
   const authorAddress = comment.author.toLowerCase();
   const displayName = `${authorAddress.slice(0, 6)}...${authorAddress.slice(-4)}`;
+  
+  const ensUser = await fetchEnsUser(authorAddress, currentUserAddress);
+  
+  const author = ensUser || {
+    id: authorAddress,
+    address: authorAddress,
+    username: displayName, 
+    namespace: "ens",
+    profilePictureUrl: `https://api.dicebear.com/7.x/identicon/svg?seed=${authorAddress}`,
+    description: null,
+    actions: {
+      followed: false,
+      following: false,
+      blocked: false,
+      muted: false
+    },
+    stats: {
+      following: 0,
+      followers: 0
+    }
+  };
 
   return {
     id: comment.id,
-    author: {
-      id: authorAddress,
-      address: authorAddress,
-      username: displayName, // Will be resolved to ENS on client
-      namespace: "ens",
-      profilePictureUrl: `https://api.dicebear.com/7.x/identicon/svg?seed=${authorAddress}`,
-      description: null,
-      actions: {
-        followed: false,
-        following: false,
-        blocked: false,
-        muted: false
-      },
-      stats: {
-        following: 0,
-        followers: 0
-      }
-    },
+    author,
     metadata: {
       content: comment.content,
       __typename: "TextOnlyMetadata" as const
@@ -48,7 +53,7 @@ export function ecpCommentToPost(comment: ECPComment): Post {
     updatedAt: typeof comment.timestamp === 'number'
       ? new Date(comment.timestamp * 1000)
       : new Date(comment.timestamp),
-    platform: "lens" as const, // Using lens as fallback since ECP isn't in PostPlatform type
+    platform: "lens" as const, 
     __typename: "Post" as const,
     isEdited: false,
     reactions: {

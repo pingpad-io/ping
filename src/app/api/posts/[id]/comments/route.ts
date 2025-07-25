@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { ecpCommentToPost } from "~/utils/ecp/converters/commentConverter";
 import { postIdToEcpTarget } from "~/utils/ecp/targetConverter";
+import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 
@@ -13,9 +14,9 @@ const SUPPORTED_CHAIN_IDS = [8453, 1];
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const id = params.id;
   const limit = parseInt(req.nextUrl.searchParams.get("limit") ?? "50");
-  
-  // Support cursor-based pagination for Feed component
   const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
+
+  const { address: currentUserAddress } = await getServerAuth();
 
   if (!id) {
     return NextResponse.json({ error: "Missing publication id" }, { status: 400 });
@@ -46,14 +47,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
     
     const response = await apiResponse.json();
-
-    // The response has a results array
     const ecpComments = response.results || [];
     
-    // Convert ECP comments to Post format
-    const comments = ecpComments.map((comment: any) => ecpCommentToPost({
+    const comments = await Promise.all(ecpComments.map((comment: any) => ecpCommentToPost({
       id: comment.id,
-      author: comment.author.address || comment.author, // Handle both nested and flat author
+      author: comment.author.address || comment.author, 
       content: comment.content,
       timestamp: comment.createdAt,
       upvotes: comment.reactions?.upvotes || 0,
@@ -61,7 +59,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       replies: comment.replies?.count || 0,
       parentId: comment.parentId,
       targetUri: comment.targetUri
-    }));
+    }, currentUserAddress)));
     
     // Use the cursor from the response for pagination
     const nextCursor = response.pagination?.hasNext ? response.pagination.endCursor : null;
@@ -70,7 +68,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       {
         comments,
         nextCursor,
-        data: comments, // For Feed component compatibility
+        data: comments, 
       },
       { status: 200 }
     );
