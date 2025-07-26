@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
-import { useAccount, useSwitchChain } from "wagmi";
+import { CheckCircle2, Info, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
+import { useAccount, useSwitchChain } from "wagmi";
 import { base } from "wagmi/chains";
 import { Button } from "~/components/ui/button";
-import { Loader2, CheckCircle2, Info } from "lucide-react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Card } from "~/components/ui/card";
 import { useEFPList } from "~/hooks/useEFPList";
 import { useEFPListDetails } from "~/hooks/useEFPListDetails";
 import { useMintEFP } from "~/hooks/useMintEFP";
-import { Card } from "~/components/ui/card";
 
 export default function MintEFPPage() {
   const { address, chain } = useAccount();
@@ -22,7 +22,7 @@ export default function MintEFPPage() {
   const { hasEFPList, lists, primaryListId, isLoading: isLoadingLists, refetch: refetchLists } = useEFPList();
   const { details, stats } = useEFPListDetails(primaryListId);
   const { mint, listHasBeenMinted, isSettingUser } = useMintEFP();
-  
+
   const handleSwitchChain = async () => {
     if (chain?.id !== base.id) {
       setIsSwitchingChain(true);
@@ -31,7 +31,7 @@ export default function MintEFPPage() {
         setIsSwitchingChain(false);
         return true;
       } catch (error) {
-        toast.error(`Failed to switch to Base network`);
+        toast.error("Failed to switch to Base network");
         console.error("Chain switch error:", error);
         setIsSwitchingChain(false);
         return false;
@@ -55,7 +55,7 @@ export default function MintEFPPage() {
         selectedChainId: base.id,
         setNewListAsPrimary: true,
       });
-      
+
       await refetchLists();
       toast.success("EFP List minted successfully!");
     } catch (error) {
@@ -79,10 +79,7 @@ export default function MintEFPPage() {
               Your EFP List has been minted successfully. You can now follow users on Pingpad.
             </p>
           </div>
-          <Button 
-            onClick={() => router.push("/")}
-            className="w-full sm:w-auto"
-          >
+          <Button onClick={() => router.push("/")} className="w-full sm:w-auto">
             Return to Home
           </Button>
         </div>
@@ -108,12 +105,12 @@ export default function MintEFPPage() {
             {hasEFPList ? "You Already Have an EFP List" : "Create Your Follow List"}
           </h1>
           <p className="text-muted-foreground">
-            {hasEFPList 
+            {hasEFPList
               ? "You already have an EFP List NFT and can follow users on Pingpad."
               : "To follow users on Pingpad, you need an EFP List NFT. This is a one-time setup that allows you to manage your social connections onchain."}
           </p>
         </div>
-        
+
         {isLoadingLists && address ? (
           <div className="flex items-center justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -123,13 +120,13 @@ export default function MintEFPPage() {
             <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <p className="font-medium text-green-900 dark:text-green-100">You have {lists.length} EFP {lists.length === 1 ? 'List' : 'Lists'}</p>
+                <p className="font-medium text-green-900 dark:text-green-100">
+                  You have {lists.length} EFP {lists.length === 1 ? "List" : "Lists"}
+                </p>
               </div>
               {primaryListId && (
                 <div className="space-y-1">
-                  <p className="text-sm text-green-700 dark:text-green-300">
-                    Primary List ID: {primaryListId}
-                  </p>
+                  <p className="text-sm text-green-700 dark:text-green-300">Primary List ID: {primaryListId}</p>
                   {stats && (
                     <div className="flex gap-4 text-sm text-green-700 dark:text-green-300">
                       <span>{stats.followers_count} followers</span>
@@ -144,16 +141,10 @@ export default function MintEFPPage() {
                 </div>
               )}
               {lists.length > 1 && (
-                <p className="text-sm text-green-700 dark:text-green-300">
-                  List IDs: {lists.join(', ')}
-                </p>
+                <p className="text-sm text-green-700 dark:text-green-300">List IDs: {lists.join(", ")}</p>
               )}
             </div>
-            <Button 
-              onClick={() => router.push("/")}
-              className="w-full"
-              size="lg"
-            >
+            <Button onClick={() => router.push("/")} className="w-full" size="lg">
               Return to Home
             </Button>
           </div>
@@ -185,28 +176,21 @@ export default function MintEFPPage() {
         {!hasEFPList && (
           <div className="space-y-3">
             {!address ? (
-              <p className="text-center text-muted-foreground">
-                Please connect your wallet to continue
-              </p>
+              <p className="text-center text-muted-foreground">Please connect your wallet to continue</p>
             ) : chain?.id !== base.id ? (
-              <Button 
-                onClick={handleSwitchChain} 
-                disabled={isSwitchingChain}
-                className="w-full"
-                size="lg"
-              >
+              <Button onClick={handleSwitchChain} disabled={isSwitchingChain} className="w-full" size="lg">
                 {isSwitchingChain ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Switching to Base...
                   </>
                 ) : (
-                  `Switch to Base Network`
+                  "Switch to Base Network"
                 )}
               </Button>
             ) : (
-              <Button 
-                onClick={handleMintNFT} 
+              <Button
+                onClick={handleMintNFT}
                 disabled={isMintingInProgress || isLoadingLists}
                 className="w-full"
                 size="lg"
@@ -221,7 +205,7 @@ export default function MintEFPPage() {
                 )}
               </Button>
             )}
-            
+
             <Link href="/">
               <Button variant="ghost" className="w-full">
                 Cancel

@@ -16,7 +16,7 @@ async function UserProfileSection({ handle }: { handle: string }) {
   const stats = user.stats || {
     following: 0,
     followers: 0,
-    interests: []
+    interests: [],
   };
 
   return (

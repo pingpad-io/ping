@@ -8,22 +8,22 @@ export function ecpChannelToCommunity(channel: ECPChannel): Group {
     timestamp: new Date(channel.createdAt),
     metadata: {
       name: channel.name,
-      slug: channel.name.toLowerCase().replace(/\s+/g, '-'),
+      slug: channel.name.toLowerCase().replace(/\s+/g, "-"),
       description: channel.description || undefined,
       icon: channel.metadata?.icon || undefined,
-      ...(channel.metadata || {})
+      ...(channel.metadata || {}),
     },
     feed: {
-      address: channel.id
+      address: channel.id,
     },
     operations: {
       canJoin: true,
       canLeave: false,
       canPost: true,
-      isBanned: false
+      isBanned: false,
     },
     owner: channel.owner,
     canPost: true,
-    isBanned: false
+    isBanned: false,
   };
 }

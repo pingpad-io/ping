@@ -42,38 +42,35 @@ export interface EFPListDetails {
 }
 
 export function useEFPListDetails(listId: string | null | undefined): EFPListDetails {
-  const { 
-    data: details, 
-    isLoading: isLoadingDetails, 
+  const {
+    data: details,
+    isLoading: isLoadingDetails,
     error: detailsError,
-    refetch: refetchDetails 
+    refetch: refetchDetails,
   } = useQuery({
     queryKey: ["efp-list-details", listId],
     queryFn: async () => {
       if (!listId) return null;
-      
+
       try {
-        const response = await fetch(
-          `${EFP_API_BASE_URL}/lists/${listId}/details`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          }
-        );
-        
+        const response = await fetch(`${EFP_API_BASE_URL}/lists/${listId}/details`, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+
         if (!response.ok) {
           if (response.status === 404) {
             return null;
           }
           throw new Error("Failed to fetch list details");
         }
-        
-        const data = await response.json() as ListDetailsResponse;
+
+        const data = (await response.json()) as ListDetailsResponse;
         return data;
       } catch (err) {
-        console.error('[useEFPListDetails] Error fetching details:', err);
+        console.error("[useEFPListDetails] Error fetching details:", err);
         throw err;
       }
     },
@@ -81,38 +78,35 @@ export function useEFPListDetails(listId: string | null | undefined): EFPListDet
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const { 
-    data: stats, 
-    isLoading: isLoadingStats, 
+  const {
+    data: stats,
+    isLoading: isLoadingStats,
     error: statsError,
-    refetch: refetchStats 
+    refetch: refetchStats,
   } = useQuery({
     queryKey: ["efp-list-stats", listId],
     queryFn: async () => {
       if (!listId) return null;
-      
+
       try {
-        const response = await fetch(
-          `${EFP_API_BASE_URL}/lists/${listId}/stats`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          }
-        );
-        
+        const response = await fetch(`${EFP_API_BASE_URL}/lists/${listId}/stats`, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+
         if (!response.ok) {
           if (response.status === 404) {
             return null;
           }
           throw new Error("Failed to fetch list stats");
         }
-        
-        const data = await response.json() as ListStatsResponse;
+
+        const data = (await response.json()) as ListStatsResponse;
         return data;
       } catch (err) {
-        console.error('[useEFPListDetails] Error fetching stats:', err);
+        console.error("[useEFPListDetails] Error fetching stats:", err);
         throw err;
       }
     },

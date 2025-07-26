@@ -89,7 +89,7 @@ export type MediaAttachment = {
   type: string;
 };
 
-export type AnyMetadata = 
+export type AnyMetadata =
   | TextOnlyMetadataDetails
   | ArticleMetadataDetails
   | ImageMetadataDetails

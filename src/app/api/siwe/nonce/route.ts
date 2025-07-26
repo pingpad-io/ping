@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
-import { generateNonce } from "siwe";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
-import { sessionOptions, type SessionData } from "~/lib/siwe-session";
+import { NextResponse } from "next/server";
+import { generateNonce } from "siwe";
+import { type SessionData, sessionOptions } from "~/lib/siwe-session";
 
 export async function GET() {
   try {
@@ -10,7 +10,7 @@ export async function GET() {
     const nonce = generateNonce();
     session.nonce = nonce;
     await session.save();
-    
+
     return NextResponse.json({ nonce });
   } catch (error) {
     console.error("Failed to generate nonce:", error);

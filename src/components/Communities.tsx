@@ -2,11 +2,8 @@
 
 import type { Group } from "@cartel-sh/ui";
 import { useSearchParams } from "next/navigation";
-import { Feed } from "~/components/Feed";
 import { CommunityView } from "~/components/communities/CommunityView";
-import { TrendingCommunities } from "~/components/communities/TrendingCommunities";
-import { SearchBar } from "~/components/menu/Search";
-import { TRENDING_COMMUNITY_ADDRESSES } from "~/constants/trendingCommunities";
+import { Feed } from "~/components/Feed";
 
 interface CommunitiesProps {
   initialQuery?: string;

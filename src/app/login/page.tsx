@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAccount, useConnect } from "wagmi";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { useConnect } from "wagmi";
+import { FamilyIcon, GlobeIcon, WalletConnectIcon } from "~/components/Icons";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { useAuth } from "~/hooks/useSiweAuth";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import { FamilyIcon, GlobeIcon, WalletConnectIcon } from "~/components/Icons";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function LoginPage() {
   }, [isAuthenticated, router]);
 
   const getConnectorButton = (connectorId: string) => {
-    const connector = connectors.find(c => c.id === connectorId);
+    const connector = connectors.find((c) => c.id === connectorId);
     if (!connector) return null;
 
     let name: string;
@@ -84,12 +84,7 @@ export default function LoginPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              <Button
-                onClick={signIn}
-                disabled={isLoading}
-                className="w-full"
-                size="lg"
-              >
+              <Button onClick={signIn} disabled={isLoading} className="w-full" size="lg">
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -99,9 +94,7 @@ export default function LoginPage() {
                   "Sign in with Ethereum"
                 )}
               </Button>
-              {error && (
-                <p className="text-sm text-red-500 text-center">{error}</p>
-              )}
+              {error && <p className="text-sm text-red-500 text-center">{error}</p>}
             </div>
           )}
         </CardContent>

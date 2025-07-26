@@ -8,11 +8,12 @@ import { UserAvatar } from "./UserAvatar";
 
 export const UserView = ({ item }: { item: User }) => {
   const resolvedUser = useResolvedUser(item);
-  
-  const displayUsername = resolvedUser.username === resolvedUser.address 
-    ? `${resolvedUser.address.slice(0, 6)}...${resolvedUser.address.slice(-4)}`
-    : resolvedUser.username;
-  
+
+  const displayUsername =
+    resolvedUser.username === resolvedUser.address
+      ? `${resolvedUser.address.slice(0, 6)}...${resolvedUser.address.slice(-4)}`
+      : resolvedUser.username;
+
   return (
     <Link href={`/u/${resolvedUser.username}`}>
       <Card className="flex flex-row gap-3 p-3 transition-colors cursor-pointer">

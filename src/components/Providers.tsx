@@ -12,10 +12,10 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { injected, walletConnect } from "wagmi/connectors";
+import { getAllChains, getAvailableChains } from "~/config/networks";
 import { env } from "~/env.mjs";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { ExplosionProvider } from "./ExplosionPortal";
-import { getAvailableChains, getAllChains } from "~/config/networks";
 import "overlayscrollbars/styles/overlayscrollbars.css";
 import { Toaster } from "~/components/ui/sonner";
 
@@ -24,10 +24,13 @@ const url = getBaseUrl();
 
 const availableChains = getAvailableChains();
 const allChains = getAllChains();
-const transports = allChains.reduce((acc, chain) => {
-  acc[chain.id] = http();
-  return acc;
-}, {} as Record<number, ReturnType<typeof http>>);
+const transports = allChains.reduce(
+  (acc, chain) => {
+    acc[chain.id] = http();
+    return acc;
+  },
+  {} as Record<number, ReturnType<typeof http>>,
+);
 
 const wagmiConfig = createConfig({
   chains: availableChains,
@@ -84,7 +87,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-
   return (
     <JotaiProvider>
       <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme>
@@ -92,13 +94,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <QueryClientProvider client={queryClient}>
             <ConnectKitProvider>
               <TransactionProvider>
-                  <ExplosionProvider>
-                    <OverlayScrollbarsComponent defer className="h-full">
-                      {children}
-                    </OverlayScrollbarsComponent>
-                    <Toaster position="top-center" offset={16} />
-                    <ReactQueryDevtools initialIsOpen={false} />
-                  </ExplosionProvider>
+                <ExplosionProvider>
+                  <OverlayScrollbarsComponent defer className="h-full">
+                    {children}
+                  </OverlayScrollbarsComponent>
+                  <Toaster position="top-center" offset={16} />
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </ExplosionProvider>
               </TransactionProvider>
             </ConnectKitProvider>
           </QueryClientProvider>

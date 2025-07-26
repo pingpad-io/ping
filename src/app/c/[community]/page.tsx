@@ -1,9 +1,9 @@
 "use client";
 
-import { Feed } from "~/components/Feed";
-import { FeedSuspense } from "~/components/FeedSuspense";
 import { CommunityHeader } from "~/components/communities/CommunityHeader";
 import { CommunityNavigation } from "~/components/communities/CommunityNavigation";
+import { Feed } from "~/components/Feed";
+import { FeedSuspense } from "~/components/FeedSuspense";
 import PostComposer from "~/components/post/PostComposer";
 import { PostView } from "~/components/post/PostView";
 import { Card } from "~/components/ui/card";

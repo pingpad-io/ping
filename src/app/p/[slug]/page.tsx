@@ -24,21 +24,21 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 const post = async ({ params }: { params: { slug: string } }) => {
   try {
     const response = await fetch(`${getBaseUrl()}/api/posts/${params.slug}`, {
-      cache: 'no-store'
+      cache: "no-store",
     });
 
     if (!response.ok) {
       if (response.status === 404) {
         notFound();
       }
-      throw new Error('Failed to fetch post');
+      throw new Error("Failed to fetch post");
     }
 
     const postData = await response.json();
 
     return <PostThread post={postData} />;
   } catch (error) {
-    console.error('Error fetching post:', error);
+    console.error("Error fetching post:", error);
     notFound();
   }
 };

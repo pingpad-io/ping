@@ -68,19 +68,22 @@ export function ensAccountToUser(account: EthFollowAccount): User {
     profilePictureUrl: avatar || `https://api.dicebear.com/7.x/identicon/svg?seed=${address}`,
     description: description || null,
     namespace: "ens",
-    metadata: attributes.length > 0 ? {
-      attributes
-    } : undefined,
+    metadata:
+      attributes.length > 0
+        ? {
+            attributes,
+          }
+        : undefined,
     actions: {
       followed: false,
       following: false,
       blocked: false,
-      muted: false
+      muted: false,
     },
     stats: {
       following: 0,
-      followers: 0
-    }
+      followers: 0,
+    },
   };
 
   return user;
@@ -91,7 +94,7 @@ async function fetchUserStats(addressOrEns: string): Promise<{ following: number
   try {
     const response = await fetch(
       `${API_URLS.EFP}/users/${addressOrEns}/stats`,
-      { next: { revalidate: 300 } } // Cache for 5 minutes
+      { next: { revalidate: 300 } }, // Cache for 5 minutes
     );
 
     if (!response.ok) {
@@ -101,7 +104,7 @@ async function fetchUserStats(addressOrEns: string): Promise<{ following: number
     const data = await response.json();
     return {
       following: data.following_count || 0,
-      followers: data.followers_count || 0
+      followers: data.followers_count || 0,
     };
   } catch (error) {
     console.error("Failed to fetch user stats:", error);
@@ -115,7 +118,7 @@ export async function fetchEnsUser(addressOrEns: string, currentUserAddress?: st
     // Fetch ENS data
     const ensResponse = await fetch(
       `${API_URLS.EFP}/users/${addressOrEns}/account`,
-      { next: { revalidate: 3600 } } // Cache for 1 hour
+      { next: { revalidate: 3600 } }, // Cache for 1 hour
     );
 
     if (!ensResponse.ok) {
@@ -130,7 +133,7 @@ export async function fetchEnsUser(addressOrEns: string, currentUserAddress?: st
     if (stats) {
       user.stats = {
         following: stats.following,
-        followers: stats.followers
+        followers: stats.followers,
       };
     }
 
@@ -138,29 +141,27 @@ export async function fetchEnsUser(addressOrEns: string, currentUserAddress?: st
     if (currentUserAddress) {
       try {
         // Check if current user follows this user
-        const followingResponse = await fetch(
-          `${API_URLS.EFP}/users/${currentUserAddress}/following`,
-          { next: { revalidate: 300 } }
-        );
+        const followingResponse = await fetch(`${API_URLS.EFP}/users/${currentUserAddress}/following`, {
+          next: { revalidate: 300 },
+        });
 
         if (followingResponse.ok) {
           const followingData = await followingResponse.json();
-          const isFollowing = followingData.following?.some((account: any) =>
-            account.address?.toLowerCase() === user.address.toLowerCase()
+          const isFollowing = followingData.following?.some(
+            (account: any) => account.address?.toLowerCase() === user.address.toLowerCase(),
           );
           user.actions.followed = isFollowing || false;
         }
 
         // Check if this user follows current user
-        const followerResponse = await fetch(
-          `${API_URLS.EFP}/users/${addressOrEns}/following`,
-          { next: { revalidate: 300 } }
-        );
+        const followerResponse = await fetch(`${API_URLS.EFP}/users/${addressOrEns}/following`, {
+          next: { revalidate: 300 },
+        });
 
         if (followerResponse.ok) {
           const followerData = await followerResponse.json();
-          const followsMe = followerData.following?.some((account: any) =>
-            account.address?.toLowerCase() === currentUserAddress.toLowerCase()
+          const followsMe = followerData.following?.some(
+            (account: any) => account.address?.toLowerCase() === currentUserAddress.toLowerCase(),
           );
           user.actions.following = followsMe || false;
         }

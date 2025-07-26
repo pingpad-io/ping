@@ -7,6 +7,7 @@ import { AvatarViewer } from "~/components/user/AvatarViewer";
 import { useUserActions } from "~/hooks/useUserActions";
 import { socialPlatforms } from "~/lib/socialPlatforms";
 import { FollowButton } from "../FollowButton";
+import { formatAddress } from "../menu/UserMenu";
 import PostComposer from "../post/PostComposer";
 import { TruncatedText } from "../TruncatedText";
 import { Badge } from "../ui/badge";
@@ -16,7 +17,6 @@ import { Dialog, DialogContent } from "../ui/dialog";
 // import { EditProfileModal } from "./EditProfileModal";
 import { useUser } from "./UserContext";
 import { UserFollowing } from "./UserFollowing";
-import { formatAddress } from "../menu/UserMenu";
 
 const MutedBadge = ({ onUnmute }: { onUnmute: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -101,7 +101,9 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
 
         <div className="flex flex-col gap-2  flex-grow">
           <div className="flex gap-2">
-            <div className="text-xl sm:text-3xl font-bold  w-fit truncate">{user.username || formatAddress(user.address)}</div>
+            <div className="text-xl sm:text-3xl font-bold  w-fit truncate">
+              {user.username || formatAddress(user.address)}
+            </div>
             {isFollowingMe && (
               <Badge variant="secondary" className="text-xs h-6 font-semibold">
                 Follows you
@@ -199,7 +201,9 @@ export const UserProfile = ({ user, stats }: { user?: User; stats?: UserStats | 
           size="sm"
           variant="outline"
           className="w-full h-8 bg-transparent font-semibold"
-          onClick={() => {/* setIsEditProfileOpen(true) */ }}
+          onClick={() => {
+            /* setIsEditProfileOpen(true) */
+          }}
         >
           Edit Profile
         </Button>

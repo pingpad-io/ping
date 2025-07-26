@@ -29,7 +29,6 @@ export const maxDuration = 60;
 export default async function RootLayout({ children }) {
   const { isAuthenticated, user } = await getServerAuth();
 
-  console.log(user)
   return (
     <html className={`${quicksand.variable} scroll-smooth font-sans`} lang="en">
       <head>

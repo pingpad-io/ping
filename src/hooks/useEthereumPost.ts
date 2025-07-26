@@ -2,10 +2,10 @@
 
 import { COMMENT_MANAGER_ADDRESS, CommentManagerABI } from "@ecp.eth/sdk";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
 import { base } from "viem/chains";
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 interface UseSimplePostCommentOptions {
   onSuccess?: () => void;
@@ -26,13 +26,14 @@ export function useEthereumPost(options?: UseSimplePostCommentOptions) {
     mutationFn: async ({
       content,
       parentId,
-      channelId
+      channelId,
     }: {
       content: string;
       parentId?: string;
       channelId?: string;
     }) => {
       if (!address) {
+        toast.error("Please connect your wallet to post");
         throw new Error("Please connect your wallet");
       }
 
@@ -55,8 +56,6 @@ export function useEthereumPost(options?: UseSimplePostCommentOptions) {
           requestBody.targetUri = "app://pingpad";
         }
 
-        console.log("[POST-COMMENT] Preparing to sign comment with:", requestBody);
-
         const response = await fetch("/api/sign", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -64,7 +63,9 @@ export function useEthereumPost(options?: UseSimplePostCommentOptions) {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to prepare comment");
+          const errorData = await response.json().catch(() => ({}));
+          console.error("[POST-COMMENT] Sign API error:", errorData);
+          throw new Error(errorData.error || "Failed to prepare comment");
         }
 
         const { signature, commentData } = await response.json();
@@ -82,7 +83,7 @@ export function useEthereumPost(options?: UseSimplePostCommentOptions) {
         });
 
         setTxHash(hash);
-        toast.loading("Confirming...", { id: toastId });
+        toast.success("Comment posted!", { id: toastId });
 
         // Transaction will be confirmed by useWaitForTransactionReceipt
         return hash;
@@ -116,7 +117,6 @@ export function useEthereumPost(options?: UseSimplePostCommentOptions) {
 
   useEffect(() => {
     if (isSuccess && txHash) {
-      toast.success("Comment posted successfully!", { id: "post-comment" });
       setTxHash(undefined);
     }
   }, [isSuccess, txHash]);

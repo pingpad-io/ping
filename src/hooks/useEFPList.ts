@@ -10,22 +10,24 @@ interface ProfileListsResponse {
 export function useEFPList() {
   const { address } = useAccount();
 
-  const { data: profileLists, isLoading, error, refetch } = useQuery({
+  const {
+    data: profileLists,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["efp-profile-lists", address],
     queryFn: async () => {
       if (!address) return null;
-      
+
       try {
-        const response = await fetch(
-          `${EFP_API_BASE_URL}/users/${address}/lists`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          }
-        );
-        
+        const response = await fetch(`${EFP_API_BASE_URL}/users/${address}/lists`, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+
         if (!response.ok) {
           if (response.status === 404) {
             return {
@@ -35,9 +37,9 @@ export function useEFPList() {
           }
           throw new Error("Failed to fetch EFP lists");
         }
-        
-        const data = await response.json() as ProfileListsResponse;
-        console.log('[useEFPList] API response:', data);
+
+        const data = (await response.json()) as ProfileListsResponse;
+        console.log("[useEFPList] API response:", data);
         return data;
       } catch (err) {
         return {
@@ -53,8 +55,8 @@ export function useEFPList() {
   const hasEFPList = !!(profileLists?.primary_list || (profileLists?.lists && profileLists.lists.length > 0));
   const primaryListId = profileLists?.primary_list;
   const lists = profileLists?.lists || [];
-  
-  console.log('[useEFPList] Result:', {
+
+  console.log("[useEFPList] Result:", {
     hasEFPList,
     primaryListId,
     listsCount: lists.length,

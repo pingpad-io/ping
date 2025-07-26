@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import { useAccount, useSignMessage, useDisconnect } from "wagmi";
-import { SiweMessage } from "siwe";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { SiweMessage } from "siwe";
+import { useAccount, useDisconnect, useSignMessage } from "wagmi";
 
 interface SessionData {
   isAuthenticated: boolean;

@@ -1,25 +1,25 @@
-import { NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
-import { sessionOptions, type SessionData } from "~/lib/siwe-session";
+import { NextResponse } from "next/server";
+import { type SessionData, sessionOptions } from "~/lib/siwe-session";
 
 export async function GET() {
   try {
     const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
-    
+
     if (!session.siwe?.address) {
       return NextResponse.json({ isAuthenticated: false });
     }
-    
+
     const now = new Date();
     const expirationTime = new Date(session.siwe.expirationTime);
-    
+
     if (now > expirationTime) {
       // Session expired, clear it
       session.destroy();
       return NextResponse.json({ isAuthenticated: false });
     }
-    
+
     return NextResponse.json({
       isAuthenticated: true,
       address: session.siwe.address,

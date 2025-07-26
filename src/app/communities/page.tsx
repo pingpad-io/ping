@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { FeedSuspense } from "~/components/FeedSuspense";
 import Communities from "~/components/Communities";
+import { FeedSuspense } from "~/components/FeedSuspense";
 
 export const metadata: Metadata = {
   title: "Communities",

@@ -4,7 +4,6 @@ import type { Group } from "@cartel-sh/ui";
 import { Users } from "lucide-react";
 import Link from "~/components/Link";
 import { useUser } from "~/components/user/UserContext";
-import { formatNumber } from "~/utils/formatNumber";
 import { resolveUrl } from "~/utils/resolveUrl";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -54,7 +53,8 @@ export function CommunityView({ community, isVertical = false, showJoin = true }
 
             <div className={isVertical ? "mt-3" : "flex-1 min-w-0"}>
               <h3 className={isVertical ? "font-semibold text-base" : "font-semibold text-base truncate"}>
-                {community.metadata?.name || `Community ${community.address.slice(0, 6)}...${community.address.slice(-4)}`}
+                {community.metadata?.name ||
+                  `Community ${community.address.slice(0, 6)}...${community.address.slice(-4)}`}
               </h3>
             </div>
 

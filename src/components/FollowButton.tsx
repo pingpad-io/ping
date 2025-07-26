@@ -2,6 +2,7 @@
 
 import type { User } from "@cartel-sh/ui";
 import { useFollowButton, useFollowingState } from "ethereum-identity-kit";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import { useUser } from "~/components/user/UserContext";
@@ -9,7 +10,6 @@ import { useEFPList } from "~/hooks/useEFPList";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { UserAvatar } from "./user/UserAvatar";
-import { useRouter } from "next/navigation";
 
 export const FollowButton = ({ user, className }: { user: User; className?: string }) => {
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
@@ -17,72 +17,59 @@ export const FollowButton = ({ user, className }: { user: User; className?: stri
   const { address: connectedAddress } = useAccount();
   const { hasEFPList, isLoading: isLoadingList, primaryListId } = useEFPList();
   const router = useRouter();
-  
+
   const userAddress = user.address as `0x${string}`;
-  
+
   const { state: followingState } = useFollowingState({
     lookupAddressOrName: userAddress,
     connectedAddress: connectedAddress || undefined,
   });
-  
-  const {
-    handleAction,
-    isLoading,
-    isDisabled,
-    error,
-    ariaLabel,
-    ariaPressed,
-    disableHover,
-    setDisableHover,
-  } = useFollowButton({
-    lookupAddress: userAddress,
-    connectedAddress: connectedAddress || undefined,
-    selectedList: primaryListId || undefined,
-  });
-  
+
+  const { handleAction, isLoading, isDisabled, error, ariaLabel, ariaPressed, disableHover, setDisableHover } =
+    useFollowButton({
+      lookupAddress: userAddress,
+      connectedAddress: connectedAddress || undefined,
+      selectedList: primaryListId || undefined,
+    });
+
   const followsMe = user.actions.following;
   const isFollowing = followingState === "follows";
-  
+
   const handleButtonClick = () => {
-    console.log('[FollowButton] Click handler:', {
+    console.log("[FollowButton] Click handler:", {
       connectedAddress,
       hasEFPList,
       isFollowing,
       isLoadingList,
     });
-    
+
     if (!connectedAddress) {
-      console.log('[FollowButton] No connected address, requiring auth');
+      console.log("[FollowButton] No connected address, requiring auth");
       requireAuth(() => {});
       return;
     }
-    
+
     if (!hasEFPList) {
-      console.log('[FollowButton] No EFP List found, navigating to mint page');
-      router.push('/mint-efp');
+      console.log("[FollowButton] No EFP List found, navigating to mint page");
+      router.push("/mint-efp");
       return;
     }
-    
+
     if (isFollowing) {
-      console.log('[FollowButton] Already following, showing unfollow dialog');
+      console.log("[FollowButton] Already following, showing unfollow dialog");
       setShowUnfollowDialog(true);
     } else {
-      console.log('[FollowButton] Not following, executing follow action');
+      console.log("[FollowButton] Not following, executing follow action");
       handleAction();
     }
   };
-  
+
   const handleUnfollow = () => {
     setShowUnfollowDialog(false);
     handleAction();
   };
-  
-  
-  const displayText = isFollowing 
-    ? "Following" 
-    : followsMe 
-      ? "Follow back" 
-      : "Follow";
+
+  const displayText = isFollowing ? "Following" : followsMe ? "Follow back" : "Follow";
 
   return (
     <>

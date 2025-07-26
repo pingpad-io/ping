@@ -1,8 +1,8 @@
 "use client";
 
-import { FeedSuspense } from "~/components/FeedSuspense";
 import { CommunityHeader } from "~/components/communities/CommunityHeader";
 import { CommunityNavigation } from "~/components/communities/CommunityNavigation";
+import { FeedSuspense } from "~/components/FeedSuspense";
 import { Card, CardContent } from "~/components/ui/card";
 import { useCommunity } from "~/hooks/useCommunity";
 

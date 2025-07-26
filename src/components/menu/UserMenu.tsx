@@ -22,7 +22,6 @@ export function UserMenuButtons({ user }: { user?: User | null }) {
     await signOut();
   };
 
-
   const displayName = user?.username || (user?.address ? formatAddress(user.address) : "User");
   const profileLink = `/u/${user?.username || user?.address}`;
 

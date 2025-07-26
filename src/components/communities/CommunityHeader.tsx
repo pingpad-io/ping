@@ -3,7 +3,6 @@
 import { Ban, Users } from "lucide-react";
 import { useUser } from "~/components/user/UserContext";
 import type { CommunityWithOperations } from "~/hooks/useCommunity";
-import { formatNumber } from "~/utils/formatNumber";
 import { resolveUrl } from "~/utils/resolveUrl";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -18,7 +17,7 @@ export function CommunityHeader({ community }: CommunityHeaderProps) {
   const canLeave = community.canLeave || false;
   const { isAuthenticated } = useUser();
 
-  const handleJoinLeave = () => { };
+  const handleJoinLeave = () => {};
 
   return (
     <Card className="flex items-center gap-4 p-4 rounded-xl mb-4">
@@ -39,7 +38,9 @@ export function CommunityHeader({ community }: CommunityHeaderProps) {
       <div className="flex-1 min-w-0">
         <h1 className="text-2xl font-bold">
           {community.metadata?.name ||
-            (community.address ? `Community ${community.address.slice(0, 6)}...${community.address.slice(-4)}` : "Unknown Community")}
+            (community.address
+              ? `Community ${community.address.slice(0, 6)}...${community.address.slice(-4)}`
+              : "Unknown Community")}
         </h1>
         <div className="flex items-center gap-3 mt-1">
           {community.isBanned && (

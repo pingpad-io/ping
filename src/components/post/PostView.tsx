@@ -57,7 +57,6 @@ export const PostView = ({
   const isJustBlocked = blockedUsers.has(item.author.id);
   const isJustDeleted = deletedPosts.has(item.id);
 
-
   useEffect(() => {
     if ((isJustMuted || isJustBlocked) && !isOnUserProfile) {
       setIsDissolving(true);

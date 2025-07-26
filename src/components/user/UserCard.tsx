@@ -23,7 +23,7 @@ const fetchUser = async (addressOrEns: string): Promise<User> => {
 export const UserCard = ({ children, handle, address }: PropsWithChildren & { handle?: string; address?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const identifier = handle || address;
-  
+
   if (!identifier) {
     return <>{children}</>;
   }

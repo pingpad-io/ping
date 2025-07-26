@@ -25,7 +25,7 @@ export interface ECPChannelsResponse {
 export async function fetchChannel(channelId: string): Promise<ECPChannel | null> {
   try {
     const response = await fetch(`${API_URLS.ECP}/api/channels/${channelId}`, {
-      headers: { 'Accept': 'application/json' }
+      headers: { Accept: "application/json" },
     });
 
     if (!response.ok) {
@@ -37,30 +37,26 @@ export async function fetchChannel(channelId: string): Promise<ECPChannel | null
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching channel:', error);
+    console.error("Error fetching channel:", error);
     throw error;
   }
 }
 
-export async function fetchChannels(params: {
-  cursor?: string;
-  owner?: string;
-  chainId?: number;
-  limit?: number;
-  sort?: 'asc' | 'desc';
-} = {}): Promise<ECPChannelsResponse> {
+export async function fetchChannels(
+  params: { cursor?: string; owner?: string; chainId?: number; limit?: number; sort?: "asc" | "desc" } = {},
+): Promise<ECPChannelsResponse> {
   try {
     const queryParams = new URLSearchParams({
       chainId: (params.chainId || DEFAULT_CHAIN_ID).toString(),
       limit: (params.limit || 50).toString(),
-      sort: params.sort || 'desc'
+      sort: params.sort || "desc",
     });
 
-    if (params.cursor) queryParams.append('cursor', params.cursor);
-    if (params.owner) queryParams.append('owner', params.owner);
+    if (params.cursor) queryParams.append("cursor", params.cursor);
+    if (params.owner) queryParams.append("owner", params.owner);
 
     const response = await fetch(`${API_URLS.ECP}/api/channels?${queryParams}`, {
-      headers: { 'Accept': 'application/json' }
+      headers: { Accept: "application/json" },
     });
 
     if (!response.ok) {
@@ -69,7 +65,7 @@ export async function fetchChannels(params: {
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching channels:', error);
+    console.error("Error fetching channels:", error);
     throw error;
   }
 }

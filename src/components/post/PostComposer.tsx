@@ -26,6 +26,7 @@ import { useEthereumPost } from "~/hooks/useEthereumPost";
 import { storageClient } from "~/utils/lens/storage";
 
 export const MAX_CONTENT_LENGTH = 1000;
+
 import {
   castToMediaImageType,
   castToMediaVideoType,
@@ -34,12 +35,12 @@ import {
 } from "~/utils/mimeTypes";
 import { LexicalEditorWrapper } from "../composer/LexicalEditor";
 import { LoadingSpinner } from "../LoadingSpinner";
+import { formatAddress } from "../menu/UserMenu";
 import { Button } from "../ui/button";
 import { UserAvatar } from "../user/UserAvatar";
 import { ComposerProvider, useComposer } from "./ComposerContext";
 import { PostComposerActions } from "./PostComposerActions";
 import { QuotedPostPreview } from "./QuotedPostPreview";
-import { formatAddress } from "../menu/UserMenu";
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
@@ -307,23 +308,23 @@ function ComposerContent() {
         const attachments =
           uploadedMedia.length > 1
             ? uploadedMedia
-              .slice(1)
-              .map((m) => {
-                if (m.type.startsWith("image/")) {
-                  return {
-                    item: m.uri,
-                    type: castToMediaImageType(m.type),
-                  };
-                }
-                if (m.type.startsWith("video/")) {
-                  return {
-                    item: m.uri,
-                    type: castToMediaVideoType(m.type),
-                  };
-                }
-                return null;
-              })
-              .filter(Boolean)
+                .slice(1)
+                .map((m) => {
+                  if (m.type.startsWith("image/")) {
+                    return {
+                      item: m.uri,
+                      type: castToMediaImageType(m.type),
+                    };
+                  }
+                  if (m.type.startsWith("video/")) {
+                    return {
+                      item: m.uri,
+                      type: castToMediaVideoType(m.type),
+                    };
+                  }
+                  return null;
+                })
+                .filter(Boolean)
             : undefined;
 
         return {
@@ -382,13 +383,6 @@ function ComposerContent() {
       finalContent += `\n\nQuoting: https://pingpad.io/p/${quotedPost.id}`;
     }
 
-    console.log("[POST-COMPOSER] Submitting comment with:", {
-      content: finalContent,
-      parentId: replyingTo?.id,
-      hasMedia: mediaFiles.length > 0,
-      hasQuote: !!quotedPost,
-    });
-
     post({
       content: finalContent,
       parentId: replyingTo?.id,
@@ -434,7 +428,9 @@ function ComposerContent() {
             <div className="grow flex-1">
               <div className="flex h-5 justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-xs sm:text-sm">{currentUser?.username || formatAddress(currentUser.address)}</span>
+                  <span className="font-bold text-xs sm:text-sm">
+                    {currentUser?.username || formatAddress(currentUser.address)}
+                  </span>
                   {editingPost && <span className="text-muted-foreground text-xs sm:text-sm">editing</span>}
                 </div>
                 {editingPost && onCancel && (
