@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor") || undefined;
   const limit = parseInt(searchParams.get("limit") || "20");
   const author = searchParams.get("author") || undefined;
+  const moderationStatus = searchParams.get("moderationStatus") || undefined;
 
   const { address: currentUserAddress } = await getServerAuth();
 
@@ -24,6 +25,7 @@ export async function GET(req: NextRequest) {
     
     if (cursor) queryParams.append('cursor', cursor);
     if (author) queryParams.append('author', author);
+    if (moderationStatus) queryParams.append('moderationStatus', moderationStatus);
     
     const apiResponse = await fetch(
       `${API_URLS.ECP}/api/comments?${queryParams}`,

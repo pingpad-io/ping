@@ -6,6 +6,10 @@ import { useTheme } from "next-themes";
 import Link from "~/components/Link";
 import { useAuth } from "~/hooks/useSiweAuth";
 
+export const formatAddress = (addr: string) => {
+  return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+};
+
 export function UserMenuButtons({ user }: { user?: User | null }) {
   const { theme, setTheme } = useTheme();
   const { signOut } = useAuth();
@@ -18,9 +22,6 @@ export function UserMenuButtons({ user }: { user?: User | null }) {
     await signOut();
   };
 
-  const formatAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
 
   const displayName = user?.username || (user?.address ? formatAddress(user.address) : "User");
   const profileLink = `/u/${user?.username || user?.address}`;

@@ -39,6 +39,7 @@ import { UserAvatar } from "../user/UserAvatar";
 import { ComposerProvider, useComposer } from "./ComposerContext";
 import { PostComposerActions } from "./PostComposerActions";
 import { QuotedPostPreview } from "./QuotedPostPreview";
+import { formatAddress } from "../menu/UserMenu";
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
@@ -377,7 +378,6 @@ function ComposerContent() {
       }
     }
 
-    // Add quote reference if needed
     if (quotedPost) {
       finalContent += `\n\nQuoting: https://pingpad.io/p/${quotedPost.id}`;
     }
@@ -434,7 +434,7 @@ function ComposerContent() {
             <div className="grow flex-1">
               <div className="flex h-5 justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-xs sm:text-sm">{currentUser?.username}</span>
+                  <span className="font-bold text-xs sm:text-sm">{currentUser?.username || formatAddress(currentUser.address)}</span>
                   {editingPost && <span className="text-muted-foreground text-xs sm:text-sm">editing</span>}
                 </div>
                 {editingPost && onCancel && (

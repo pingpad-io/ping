@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
   const feed = searchParams.get("feed");
   const group = searchParams.get("group");
   const limit = parseInt(searchParams.get("limit") || "50");
+  const moderationStatus = searchParams.get("moderationStatus");
 
   const { address: currentUserAddress } = await getServerAuth();
 
@@ -25,7 +26,8 @@ export async function GET(req: NextRequest) {
       group,
       limit,
       cursor,
-      chainId: DEFAULT_CHAIN_ID
+      chainId: DEFAULT_CHAIN_ID,
+      moderationStatus
     });
 
     // Build query parameters
@@ -46,6 +48,10 @@ export async function GET(req: NextRequest) {
     } else {
       // For main feed, query our app-specific targetUri
       queryParams.append('targetUri', 'app://pingpad');
+    }
+    
+    if (moderationStatus) {
+      queryParams.append('moderationStatus', moderationStatus);
     }
 
     const apiUrl = `${API_URLS.ECP}/api/comments?${queryParams}`;

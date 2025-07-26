@@ -22,12 +22,6 @@ export default function Communities({ initialQuery = "" }: CommunitiesProps) {
 
   return (
     <>
-      <div className="mb-6">
-        <SearchBar defaultText={query} />
-      </div>
-
-      {!query && <TrendingCommunities communityAddresses={TRENDING_COMMUNITY_ADDRESSES} />}
-
       <Feed<Group>
         ItemView={CommunityViewWrapper}
         endpoint={`/api/communities${query ? `?q=${encodeURIComponent(query)}` : ""}`}

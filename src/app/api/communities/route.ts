@@ -7,7 +7,6 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
-  const q = searchParams.get("q");
   const limit = parseInt(searchParams.get("limit") || "50");
 
   try {
@@ -19,16 +18,9 @@ export async function GET(req: NextRequest) {
 
     const communities = response.results.map(ecpChannelToCommunity);
 
-    // If there's a search query, filter the results
-    const filteredCommunities = q 
-      ? communities.filter(community => 
-          community.metadata?.name?.toLowerCase().includes(q.toLowerCase()) ||
-          community.metadata?.description?.toLowerCase().includes(q.toLowerCase())
-        )
-      : communities;
 
     return NextResponse.json({
-      data: filteredCommunities,
+      data: communities,
       nextCursor: response.pagination.hasNext ? response.pagination.endCursor : null
     });
   } catch (error) {

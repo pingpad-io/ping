@@ -4,8 +4,6 @@ import type { Group } from "@cartel-sh/ui";
 import { Users } from "lucide-react";
 import Link from "~/components/Link";
 import { useUser } from "~/components/user/UserContext";
-// import { useCommunityMutations } from "~/hooks/useCommunityMutations";
-import { useCommunityStats } from "~/hooks/useCommunityStats";
 import { formatNumber } from "~/utils/formatNumber";
 import { resolveUrl } from "~/utils/resolveUrl";
 import { Button } from "../ui/button";
@@ -17,41 +15,16 @@ interface CommunityViewProps {
   showJoin?: boolean;
 }
 
-function MemberCount({ communityId }: { communityId: string }) {
-  const { data, isLoading } = useCommunityStats(communityId);
-
-  if (isLoading) {
-    return null;
-  }
-
-  if (!data) {
-    return null;
-  }
-
-  return (
-    <p className="text-sm text-muted-foreground mt-1">
-      {formatNumber(data.totalMembers)} {data.totalMembers === 1 ? "member" : "members"}
-    </p>
-  );
-}
-
 export function CommunityView({ community, isVertical = false, showJoin = true }: CommunityViewProps) {
   const communityUrl = `/c/${community.address}`;
   const iconUrl = resolveUrl(community.metadata?.icon);
   const canJoin = community.operations?.canJoin || false;
   const canLeave = community.operations?.canLeave || false;
   const { isAuthenticated } = useUser();
-  // const { joinMutation, leaveMutation } = useCommunityMutations(community.address);
 
   const handleJoinLeave = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    // if (canJoin) {
-    //   joinMutation.mutate();
-    // } else if (canLeave) {
-    //   leaveMutation.mutate();
-    // }
   };
 
   return (
@@ -83,8 +56,6 @@ export function CommunityView({ community, isVertical = false, showJoin = true }
               <h3 className={isVertical ? "font-semibold text-base" : "font-semibold text-base truncate"}>
                 {community.metadata?.name || `Community ${community.address.slice(0, 6)}...${community.address.slice(-4)}`}
               </h3>
-
-              <MemberCount communityId={community.address} />
             </div>
 
             {showJoin && isAuthenticated && (canJoin || canLeave) && (

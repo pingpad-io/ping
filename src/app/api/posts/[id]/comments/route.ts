@@ -21,10 +21,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 
   try {
-    // Convert post ID to ECP target URI
     const targetUri = postIdToEcpTarget(id);
     
-    // Use direct API call to bypass SDK validation issues
     const queryParams = new URLSearchParams({
       targetUri,
       chainId: SUPPORTED_CHAIN_IDS.join(','),
@@ -49,7 +47,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     
     const comments = await Promise.all(ecpComments.map((comment: any) => ecpCommentToPost(comment, currentUserAddress)));
     
-    // Use the cursor from the response for pagination
     const nextCursor = response.pagination?.hasNext ? response.pagination.endCursor : null;
 
     return NextResponse.json(

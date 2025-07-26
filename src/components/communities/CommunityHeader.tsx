@@ -3,8 +3,6 @@
 import { Ban, Users } from "lucide-react";
 import { useUser } from "~/components/user/UserContext";
 import type { CommunityWithOperations } from "~/hooks/useCommunity";
-// import { useCommunityMutations } from "~/hooks/useCommunityMutations";
-import { useCommunityStats } from "~/hooks/useCommunityStats";
 import { formatNumber } from "~/utils/formatNumber";
 import { resolveUrl } from "~/utils/resolveUrl";
 import { Button } from "../ui/button";
@@ -19,16 +17,8 @@ export function CommunityHeader({ community }: CommunityHeaderProps) {
   const canJoin = community.canJoin || false;
   const canLeave = community.canLeave || false;
   const { isAuthenticated } = useUser();
-  // const { joinMutation, leaveMutation } = useCommunityMutations(community.address || "");
-  const { data: stats } = useCommunityStats(community.address || "");
 
-  const handleJoinLeave = () => {
-    // if (canJoin) {
-    //   joinMutation.mutate();
-    // } else if (canLeave) {
-    //   leaveMutation.mutate();
-    // }
-  };
+  const handleJoinLeave = () => { };
 
   return (
     <Card className="flex items-center gap-4 p-4 rounded-xl mb-4">
@@ -52,11 +42,6 @@ export function CommunityHeader({ community }: CommunityHeaderProps) {
             (community.address ? `Community ${community.address.slice(0, 6)}...${community.address.slice(-4)}` : "Unknown Community")}
         </h1>
         <div className="flex items-center gap-3 mt-1">
-          {stats && (
-            <p className="text-sm text-muted-foreground">
-              {formatNumber(stats.totalMembers)} {stats.totalMembers === 1 ? "member" : "members"}
-            </p>
-          )}
           {community.isBanned && (
             <div className="flex items-center gap-1 text-sm text-destructive">
               <Ban size={14} />
