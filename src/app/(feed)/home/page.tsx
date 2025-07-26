@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 const endpoint = "api/posts/feed?moderationStatus=approved,pending";
 
 const home = async () => {
-  return <Feed ItemView={PostView} endpoint={endpoint} />;
+  return <Feed ItemView={PostView} endpoint={endpoint} refetchInterval={300000} />;
 };
 
 export default home;

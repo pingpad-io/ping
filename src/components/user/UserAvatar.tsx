@@ -12,7 +12,7 @@ export function UserAvatar({ user, link = true, card = true }: { user: User; lin
     </Avatar>
   );
   const avatarLink = link ? (
-    <Link className="w-full h-full" href={`/u/${user.username}`} prefetch>
+    <Link className="w-full h-full" href={`/u/${user.username || user.address}`} prefetch>
       {avatar}
     </Link>
   ) : (

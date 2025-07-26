@@ -13,8 +13,6 @@ async function UserProfileSection({ handle }: { handle: string }) {
   const user = await getUserByUsername(handle);
   if (!user) return notFound();
 
-  // For now, we'll use the default stats from the user object
-  // In the future, you could fetch stats from your own database or another source
   const stats = user.stats || {
     following: 0,
     followers: 0,

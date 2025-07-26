@@ -95,6 +95,19 @@ export function useEthereumPost(options?: UseSimplePostCommentOptions) {
       options?.onSuccess?.();
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["feed"], exact: false });
+
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["feed"], exact: false });
+      }, 3000);
+
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["feed"], exact: false });
+      }, 4000);
+
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["feed"], exact: false });
+      }, 5000);
     },
     onError: (error) => {
       options?.onError?.(error);

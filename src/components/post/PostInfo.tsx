@@ -20,6 +20,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { menuItems } from "./PostMenuConfig";
 import { usePostStateContext } from "./PostStateContext";
+import { formatAddress } from "../menu/UserMenu";
 
 export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }) => {
   const [open, setOpen] = useState(false);
@@ -28,6 +29,7 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
   const { shouldShowItem, getItemProps, postLink, isSaved } = usePostStateContext();
   const author = post.author;
   const handle = author.username;
+  const displayName = handle || formatAddress(author.address)
   const tags = post?.metadata?.tags || [];
   const content = "content" in post.metadata ? (post.metadata.content as string) : "";
 
@@ -89,9 +91,9 @@ export const PostInfo = ({ post, onReply }: { post: Post; onReply?: () => void }
       suppressHydrationWarning
       className="group flex h-5 flex-row items-center place-items-center gap-2 text-xs font-light leading-4 text-base-content sm:text-sm"
     >
-      <Link className="flex gap-2" href={`/u/${handle}`}>
+      <Link className="flex gap-2" href={`/u/${handle || author.address}`}>
         {/* <span className="w-fit truncate font-bold">{author.name}</span> */}
-        <span className="font-bold w-fit">{`${handle}`}</span>
+        <span className="font-bold w-fit">{`${displayName}`}</span>
       </Link>
       {community && (
         <>
