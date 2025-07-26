@@ -11,5 +11,5 @@ export const EFP_CONTRACTS = {
 } as const;
 
 export const EFP_API_BASE_URL = API_URLS.EFP;
-
 export const EFP_CHAIN_ID = base.id;
+export const SUPPORTED_CHAIN_IDS = [8453, 1];

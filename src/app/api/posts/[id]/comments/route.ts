@@ -1,13 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { API_URLS } from "~/config/api";
+import { SUPPORTED_CHAIN_IDS } from "~/lib/efp/config";
 import { ecpCommentToPost } from "~/utils/ecp/converters/commentConverter";
 import { postIdToEcpTarget } from "~/utils/ecp/targetConverter";
 import { getServerAuth } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
-
-// Support multiple chains: Base and Mainnet
-const SUPPORTED_CHAIN_IDS = [8453, 1];
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const id = params.id;

@@ -36,6 +36,7 @@ const post = async ({ params }: { params: { slug: string } }) => {
 
     const postData = await response.json();
 
+
     return <PostThread post={postData} />;
   } catch (error) {
     console.error("Error fetching post:", error);
