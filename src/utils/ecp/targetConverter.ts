@@ -3,9 +3,7 @@
  * ECP uses URL-like identifiers for comment targets
  */
 export function postIdToEcpTarget(postId: string): string {
-  // For now, we'll use the Flow Talk post URL as the target
-  // This creates a unique identifier for each post
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://flow.talk";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://paper.flow.industries";
   return `${baseUrl}/p/${postId}`;
 }
 

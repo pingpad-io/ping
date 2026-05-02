@@ -16,11 +16,11 @@ export async function generateMetadata(props: { params: Promise<{ post: string }
     if (!response.ok) {
       return {
         title: "Post",
-        description: "View post on Flow Talk",
+        description: "View post on Paper",
         openGraph: {
           type: "article",
           title: "Post",
-          description: "View post on Flow Talk",
+          description: "View post on Paper",
         },
       };
     }
@@ -35,8 +35,8 @@ export async function generateMetadata(props: { params: Promise<{ post: string }
     const profilePictureUrl = post.author?.profilePictureUrl || "";
     const postImage = isImageMetadata(post.metadata) ? post.metadata?.image?.item : "";
 
-    const title = `${handle} on Flow Talk`;
-    const description = content.length > 160 ? `${content.slice(0, 160)}...` : content || "View post on Flow Talk";
+    const title = `${handle} on Paper`;
+    const description = content.length > 160 ? `${content.slice(0, 160)}...` : content || "View post on Paper";
 
     const ogImageURL = generatePostOGUrl({
       handle,
@@ -54,7 +54,7 @@ export async function generateMetadata(props: { params: Promise<{ post: string }
         description,
         images: [ogImageURL],
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/p/${params.post}`,
-        siteName: "Flow Talk",
+        siteName: "Paper",
         locale: "en_US",
       },
       twitter: {
@@ -68,11 +68,11 @@ export async function generateMetadata(props: { params: Promise<{ post: string }
     console.error("Error generating metadata:", error);
     return {
       title: "Post",
-      description: "View post on Flow Talk",
+      description: "View post on Paper",
       openGraph: {
         type: "article",
         title: "Post",
-        description: "View post on Flow Talk",
+        description: "View post on Paper",
       },
     };
   }

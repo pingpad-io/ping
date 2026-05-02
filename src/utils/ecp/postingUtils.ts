@@ -107,7 +107,7 @@ export async function createCommentDataWithValidation({
           ...(channelIdBigInt ? { channelId: channelIdBigInt } : {}),
         }
       : {
-          targetUri: channelIdBigInt ? "" : targetUri || "app://flow.talk",
+          targetUri: channelIdBigInt ? "" : targetUri || "app://paper.flow.industries",
           ...(channelIdBigInt ? { channelId: channelIdBigInt } : {}),
         }),
   } as any);

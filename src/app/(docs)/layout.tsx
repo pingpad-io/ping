@@ -5,12 +5,12 @@ import "fumadocs-ui/style.css";
 import { quicksand } from "~/styles/fonts";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://flow.talk"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://paper.flow.industries"),
   title: {
-    default: "Flow Talk Docs",
-    template: "%s | Flow Talk Docs",
+    default: "Paper Docs",
+    template: "%s | Paper Docs",
   },
-  description: "Flow Talk Documentation",
+  description: "Paper Documentation",
 };
 
 export default function DocsRootLayout({ children }: { children: ReactNode }) {

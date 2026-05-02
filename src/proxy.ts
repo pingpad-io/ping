@@ -10,15 +10,6 @@ const i18nMiddleware = createI18nMiddleware(i18n);
 const protectedPaths = ["/activity", "/bookmarks"] as const;
 
 export async function proxy(request: NextRequest) {
-  const hostname = request.headers.get("host") || "";
-
-  // Redirect paper.ink to flow.talk (preserving path and query)
-  if (hostname === "paper.ink" || hostname.endsWith(".paper.ink")) {
-    const newHost = hostname.replace("paper.ink", "flow.talk");
-    const redirectUrl = `https://${newHost}${request.nextUrl.pathname}${request.nextUrl.search}`;
-    return NextResponse.redirect(redirectUrl, { status: 301 });
-  }
-
   const path = request.nextUrl.pathname;
 
   // Redirect /docs root to /docs/overview

@@ -6,6 +6,44 @@ import { getServerAuthLight } from "~/utils/getServerAuth";
 
 export const dynamic = "force-dynamic";
 
+// Pre-rename posts were tagged with "app://flow.talk"; new posts use the rebranded URI.
+// The indexer's targetUri filter is single-valued, so the main feed runs both queries in
+// parallel and merges. Cursors are encoded as a compound { o, n } pair.
+const MAIN_FEED_TARGET_URIS = ["app://flow.talk", "app://paper.flow.industries"] as const;
+
+type MainFeedCursor = { o?: string | null; n?: string | null };
+
+function decodeMainFeedCursor(raw: string | null): MainFeedCursor {
+  if (!raw) return {};
+  try {
+    return JSON.parse(Buffer.from(raw, "base64url").toString("utf8"));
+  } catch {
+    return { o: raw };
+  }
+}
+
+function encodeMainFeedCursor(c: MainFeedCursor): string | null {
+  if (!c.o && !c.n) return null;
+  return Buffer.from(JSON.stringify(c)).toString("base64url");
+}
+
+function commentTimestamp(c: { createdAt: number | string }): number {
+  return typeof c.createdAt === "number" ? c.createdAt : Date.parse(c.createdAt) / 1000;
+}
+
+async function fetchEcpPage(params: URLSearchParams) {
+  const apiUrl = `${API_URLS.ECP}/api/comments?${params}`;
+  const resp = await fetch(apiUrl, { headers: { Accept: "application/json" } });
+  if (!resp.ok) {
+    throw new Error(`API returned ${resp.status}: ${resp.statusText}`);
+  }
+  const json = await resp.json();
+  return {
+    results: (json.results || []) as any[],
+    nextCursor: (json.pagination?.hasNext ? json.pagination.endCursor : null) as string | null,
+  };
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const cursor = searchParams.get("cursor");
@@ -18,6 +56,7 @@ export async function GET(req: NextRequest) {
 
   const auth = await getServerAuthLight();
   const currentUserAddress = auth.address || "";
+  const isMainFeed = !address && !channelId && !feed && !group;
 
   try {
     console.log("Fetching posts with params:", {
@@ -29,47 +68,57 @@ export async function GET(req: NextRequest) {
       cursor,
       chainId: getDefaultChainId(),
       moderationStatus,
+      isMainFeed,
     });
 
-    // Build query parameters
-    const queryParams = new URLSearchParams({
+    const baseParams = new URLSearchParams({
       chainId: getDefaultChainId().toString(),
       limit: limit.toString(),
       sort: "desc",
       mode: address ? "nested" : "flat",
     });
+    if (moderationStatus) baseParams.append("moderationStatus", moderationStatus);
 
-    if (cursor) queryParams.append("cursor", cursor);
-    if (address) {
-      queryParams.append("author", address);
-    } else if (channelId || feed || group) {
-      const targetChannelId = channelId || feed || group;
-      if (targetChannelId) {
-        queryParams.append("channelId", targetChannelId);
+    let ecpComments: any[];
+    let nextCursor: string | null;
+
+    if (isMainFeed) {
+      const compound = decodeMainFeedCursor(cursor);
+      const upstreamCursors = [compound.o, compound.n] as const;
+      const streams = await Promise.all(
+        MAIN_FEED_TARGET_URIS.map((uri, i) => {
+          const params = new URLSearchParams(baseParams);
+          params.set("targetUri", uri);
+          if (upstreamCursors[i]) params.set("cursor", upstreamCursors[i] as string);
+          return fetchEcpPage(params);
+        }),
+      );
+
+      const seen = new Set<string>();
+      const merged: any[] = [];
+      for (const c of streams.flatMap((s) => s.results)) {
+        if (!seen.has(c.id)) {
+          seen.add(c.id);
+          merged.push(c);
+        }
       }
+      merged.sort((a, b) => commentTimestamp(b) - commentTimestamp(a));
+      ecpComments = merged.slice(0, limit);
+
+      nextCursor = encodeMainFeedCursor({ o: streams[0].nextCursor, n: streams[1].nextCursor });
     } else {
-      // For main feed, query our app-specific targetUri
-      queryParams.append("targetUri", "https://flow.talk");
+      const params = new URLSearchParams(baseParams);
+      if (cursor) params.set("cursor", cursor);
+      if (address) {
+        params.set("author", address);
+      } else {
+        const targetChannelId = channelId || feed || group;
+        if (targetChannelId) params.set("channelId", targetChannelId);
+      }
+      const page = await fetchEcpPage(params);
+      ecpComments = page.results;
+      nextCursor = page.nextCursor;
     }
-
-    if (moderationStatus) {
-      queryParams.append("moderationStatus", moderationStatus);
-    }
-
-    const apiUrl = `${API_URLS.ECP}/api/comments?${queryParams}`;
-    console.log("Fetching from:", apiUrl);
-
-    const apiResponse = await fetch(apiUrl, {
-      headers: { Accept: "application/json" },
-    });
-
-    if (!apiResponse.ok) {
-      throw new Error(`API returned ${apiResponse.status}: ${apiResponse.statusText}`);
-    }
-
-    const response = await apiResponse.json();
-
-    const ecpComments = response.results || [];
 
     const posts = await Promise.all(
       ecpComments.map((comment: any) => ecpCommentToPost(comment, { currentUserAddress, includeReplies: true })),
@@ -79,8 +128,6 @@ export async function GET(req: NextRequest) {
       const content = post.metadata?.content;
       return content !== "[deleted]";
     });
-
-    const nextCursor = response.pagination?.hasNext ? response.pagination.endCursor : null;
 
     return NextResponse.json(
       {
