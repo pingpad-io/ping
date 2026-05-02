@@ -25,7 +25,7 @@ export async function generateMetadata(props: CommunityPageProps): Promise<Metad
 
   const name =
     community.metadata?.name || `Community ${community.address.slice(0, 6)}...${community.address.slice(-4)}`;
-  const description = community.metadata?.description || `Join ${name} on Flow Talk`;
+  const description = community.metadata?.description || `Join ${name} on Paper`;
 
   const ogImageURL = generateCommunityOGUrl({
     name: community.metadata?.name,
@@ -42,7 +42,7 @@ export async function generateMetadata(props: CommunityPageProps): Promise<Metad
       images: [ogImageURL],
       type: "website",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/c/${params.community}`,
-      siteName: "Flow Talk",
+      siteName: "Paper",
       locale: "en_US",
     },
     twitter: {

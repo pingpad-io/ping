@@ -9,10 +9,10 @@ export async function generateMetadata(props: { params: Promise<{ user: string }
   const title = `${handle}`;
   return {
     title,
-    description: `@${handle}'s comments on Flow Talk`,
+    description: `@${handle}'s comments on Paper`,
     openGraph: {
       title,
-      description: `@${handle}'s comments on Flow Talk`,
+      description: `@${handle}'s comments on Paper`,
       images: [
         {
           url: "/logo.png",

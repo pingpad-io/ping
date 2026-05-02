@@ -378,7 +378,7 @@ export const VideoPlayer = ({
     if ("mediaSession" in navigator && shown) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: authorHandle ? `Video by @${authorHandle}` : "Video",
-        artist: "Flow Talk",
+        artist: "Paper",
         artwork: [{ src: preview || generatedThumbnail || "", sizes: "512x512", type: "image/jpeg" }],
       });
 

@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import { generateDefaultOGUrl } from "~/utils/generateOGUrl";
 import { LandingContent } from "~/components/LandingContent";
+import { generateDefaultOGUrl } from "~/utils/generateOGUrl";
 
 const ogImageURL = generateDefaultOGUrl();
 
 export const metadata: Metadata = {
-  title: "Flow Talk",
-  description: "Permanent. Permissionless. Flow Talk.",
+  title: "Paper",
+  description: "Permanent. Permissionless. Paper.",
   openGraph: {
-    title: "Flow Talk",
-    description: "Permanent. Permissionless. Flow Talk.",
+    title: "Paper",
+    description: "Permanent. Permissionless. Paper.",
     images: [ogImageURL],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Flow Talk",
-    description: "Permanent. Permissionless. Flow Talk.",
+    title: "Paper",
+    description: "Permanent. Permissionless. Paper.",
     images: [ogImageURL],
   },
 };

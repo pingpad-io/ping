@@ -16,12 +16,12 @@ import { RouteTracker } from "~/components/RouteTracker";
 import { UpdateNotification } from "~/components/updates/UpdateNotification";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://flow.talk"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://paper.flow.industries"),
   title: {
-    default: "Flow Talk",
-    template: "%s | Flow Talk",
+    default: "Paper",
+    template: "%s | Paper",
   },
-  description: "reach your people on Flow Talk",
+  description: "reach your people on Paper",
 };
 
 export const maxDuration = 60;

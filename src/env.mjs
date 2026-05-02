@@ -49,7 +49,7 @@ if (!!process.env.SKIP_ENV_VALIDATION === false) {
       const currentDomain = currentUrl.port ? `${currentUrl.hostname}:${currentUrl.port}` : currentUrl.hostname;
 
       // Allow Vercel preview deployments to bypass domain check
-      const isVercelPreview = currentUrl.hostname.endsWith('.vercel.app');
+      const isVercelPreview = currentUrl.hostname.endsWith(".vercel.app");
 
       if (expectedDomain !== currentDomain && !isVercelPreview) {
         console.error(`❌ NEXT_PUBLIC_SITE_URL domain mismatch: expected ${expectedDomain}, got ${currentDomain}`);

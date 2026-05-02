@@ -13,12 +13,12 @@ export async function generateMetadata(props: { params: Promise<{ user: string }
   if (!user) {
     return {
       title: username,
-      description: `${username} on Flow Talk`,
+      description: `${username} on Paper`,
     };
   }
 
   const title = `${username}`;
-  const description = user.description || `${username} on Flow Talk`;
+  const description = user.description || `${username} on Paper`;
 
   const ogImageURL = generateUserOGUrl({
     username: username,
@@ -34,7 +34,7 @@ export async function generateMetadata(props: { params: Promise<{ user: string }
       description,
       type: "profile",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/u/${username}`,
-      siteName: "Flow Talk",
+      siteName: "Paper",
       locale: "en_US",
     },
     twitter: {

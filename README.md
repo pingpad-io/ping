@@ -2,7 +2,7 @@
 
 **what?**
 
-clarity paves the way for brilliance. [Flow Talk](https://flow.talk) is a minimalistic decentralized social platform, focusing on clear and efficient solutions.
+clarity paves the way for brilliance. [Paper](https://paper.flow.industries) is a minimalistic decentralized social platform, focusing on clear and efficient solutions.
 
 **how?**
 
@@ -15,7 +15,7 @@ built on top of ENS, EFP & ECP
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/flow-industries/talk.git && cd talk
+   git clone https://github.com/flow-industries/paper.git && cd paper
    ```
 
 2. Create a `.env` file:

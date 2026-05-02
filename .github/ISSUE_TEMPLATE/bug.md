@@ -1,6 +1,6 @@
 ---
 name: bug
-about: Flow Talk improvement report
+about: Paper improvement report
 title: "[bug] "
 labels: bug
 assignees: ''

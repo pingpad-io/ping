@@ -11,11 +11,11 @@ export function baseOptions(): BaseLayoutProps {
       title: (
         <>
           <FlowTalkLogo className="w-5 h-5" stroke="currentColor" strokeWidth={2.25} />
-          <span className="font-bold">Flow Talk</span>
+          <span className="font-bold">Paper</span>
         </>
       ),
     },
-    githubUrl: "https://github.com/flow-industries/talk",
+    githubUrl: "https://github.com/flow-industries/paper",
     themeSwitch: {
       enabled: true,
     },

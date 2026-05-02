@@ -126,7 +126,7 @@ export const LandingContent = () => {
                   <p className="text-sm text-primary/60 text-right">
                     Every line of code{" "}
                     <a
-                      href="https://github.com/flow-industries/talk"
+                      href="https://github.com/flow-industries/paper"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:underline underline-offset-2"
@@ -201,7 +201,7 @@ export const LandingContent = () => {
                 <SquareLibrary className="absolute right-3 top-1/2 -translate-y-1/2 w-24 h-24 text-primary opacity-20 transition-opacity duration-200 group-hover:opacity-30" />
                 <div className="relative pr-28 z-10">
                   <p className="text-2xl font-semibold text-primary">Want to learn more?</p>
-                  <p className="text-lg text-primary/60">Read the Flow Talk documentation</p>
+                  <p className="text-lg text-primary/60">Read the Paper documentation</p>
                 </div>
               </div>
             </Link>
@@ -238,7 +238,7 @@ export const LandingContent = () => {
           </div>
 
           <div className="mt-24 flex flex-col items-center gap-4">
-            <p className="text-3xl font-semibold text-primary">Try Flow Talk now!</p>
+            <p className="text-3xl font-semibold text-primary">Try Paper now!</p>
             <Button asChild size="lg" className="dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] drop-shadow-md">
               <Link href="/login" className="inline-flex items-center gap-2">
                 <LogIn className="h-4 w-4" aria-hidden />

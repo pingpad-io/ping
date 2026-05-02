@@ -21,7 +21,7 @@ export default async function Page({ params }: { params: Promise<{ slug?: string
     <DocsPage
       toc={page.data.toc}
       footer={{ enabled: true }}
-      editOnGithub={{ owner: "flow-industries", repo: "talk", sha: "main", path: `/docs/${page.locale}/${page.path}` }}
+      editOnGithub={{ owner: "flow-industries", repo: "paper", sha: "main", path: `/docs/${page.locale}/${page.path}` }}
     >
       <DocsTitle className="font-extrabold">{page.data.title}</DocsTitle>
       {page.data.description && <DocsDescription>{page.data.description}</DocsDescription>}
@@ -62,16 +62,16 @@ export async function generateMetadata({
     openGraph: {
       type: "article",
       title,
-      description: description || `${title} - Flow Talk Documentation`,
+      description: description || `${title} - Paper Documentation`,
       images: [ogImageURL],
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}/docs/${docPath}`,
-      siteName: "Flow Talk",
+      siteName: "Paper",
       locale: lang === "en" ? "en_US" : lang === "zh" ? "zh_CN" : "ja_JP",
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description: description || `${title} - Flow Talk Documentation`,
+      description: description || `${title} - Paper Documentation`,
       images: [ogImageURL],
     },
   };

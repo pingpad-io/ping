@@ -19,5 +19,5 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/flow-industries/talk:latest
-            ghcr.io/flow-industries/talk:${{ github.sha }}
+            ghcr.io/flow-industries/paper:latest
+            ghcr.io/flow-industries/paper:${{ github.sha }}
